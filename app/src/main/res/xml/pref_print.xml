@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:entries="@array/print_fonts_choose"
+        android:entryValues="@array/print_fonts_choose_value"
+        android:key="@string/key_print_text"
+        android:title="@string/pref_print_text"/>
+</PreferenceScreen>

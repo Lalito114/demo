@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:icon="@mipmap/card"
+        android:key="@string/key_card"
+        android:title="Leer tarjeta" />
+    <Preference
+        android:icon="@mipmap/print"
+        android:key="@string/key_print"
+        android:title="Imprimir" />
+
+    <ListPreference
+        android:entries="@array/update_f"
+        android:entryValues="@array/update_f_value"
+        android:icon="@mipmap/update_2"
+        android:key="@string/key_update_firmware"
+        android:title="Actualizar"/>
+</PreferenceScreen>
