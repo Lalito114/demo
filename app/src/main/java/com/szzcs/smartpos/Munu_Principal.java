@@ -26,25 +26,25 @@ public class Munu_Principal extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        ImageButton btnPuntada = (ImageButton)findViewById(R.id.puntada);
-        btnPuntada.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent intent = new Intent(getApplicationContext(),leerTargeta.class);
-//                startActivity(intent);
-                CardReaderTypeEnum cardType = MAG_CARD;
-                CardFragment cf = new CardFragment();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("card_type", cardType);
-                cf.setArguments(bundle);
-                getFragmentManager().beginTransaction().replace(R.id.fragments_container, cf).
-                        addToBackStack(CardFragment.class.getName()).
-                        commit();
-
-                //cf.searchBankCard(cardType);
-            }
-        });
+//
+//        ImageButton btnPuntada = (ImageButton)findViewById(R.id.puntada);
+//        btnPuntada.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+////                Intent intent = new Intent(getApplicationContext(),leerTargeta.class);
+////                startActivity(intent);
+//                CardReaderTypeEnum cardType = MAG_CARD;
+//                CardFragment cf = new CardFragment();
+//                Bundle bundle = new Bundle();
+//                bundle.putSerializable("card_type", cardType);
+//                cf.setArguments(bundle);
+//                getFragmentManager().beginTransaction().replace(R.id.fragments_container, cf).
+//                        addToBackStack(CardFragment.class.getName()).
+//                        commit();
+//
+//                //cf.searchBankCard(cardType);
+//            }
+//        });
     }
 
 }

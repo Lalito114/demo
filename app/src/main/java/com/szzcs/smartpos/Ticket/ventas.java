@@ -1,6 +1,7 @@
 package com.szzcs.smartpos.Ticket;
 
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -22,16 +23,21 @@ import java.util.Map;
 
 public class ventas extends AppCompatActivity {
 
+    String titulo = "Ticket - Posicion";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ventas);
-
+        this.setTitle(titulo);
 
         PosicionesCargar();
     }
+
     public void PosicionesCargar(){
+
         String url = "http://10.0.1.20/TransferenciaDatosAPI/api/PosCarga/GetMax";
+
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -50,7 +56,10 @@ public class ventas extends AppCompatActivity {
                     //Asignamos propiedades de layout al boton
                     button.setLayoutParams(lp);
                     //Asignamos Texto al botón
+                    button.setBackgroundColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimary));
+
                     button.setText("" + i);
+                    // Ingresamos un icono
 
                     //Asignamose el Listener
                     button.setOnClickListener(new ButtonsOnClickListener(this));
@@ -70,8 +79,6 @@ public class ventas extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> parametros = new HashMap<String, String>();
-
-
 
                 return parametros;
             }
