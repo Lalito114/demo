@@ -4,13 +4,12 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 
+import com.szzcs.smartpos.Ticket.ventas;
 import com.zcs.sdk.card.CardReaderTypeEnum;
 
 import static com.zcs.sdk.card.CardReaderTypeEnum.MAG_CARD;
-import static com.zcs.sdk.card.CardReaderTypeEnum.MAG_IC_RF_CARD;
 
 public class Munu_Principal extends AppCompatActivity {
 

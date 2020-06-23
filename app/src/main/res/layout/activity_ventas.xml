@@ -5,7 +5,7 @@
     android:id="@+id/datos"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ventas">
+    tools:context=".Ticket.ventas">
     <TextView
         android:id="@+id/textView"
         android:layout_width="221dp"

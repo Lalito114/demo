@@ -38,9 +38,9 @@
         <activity android:name=".PosicionCargaPuntada" />
         <activity android:name=".ClavePuntada" />
         <activity android:name=".leerTargeta" />
-        <activity android:name=".formas_de_pago" />
-        <activity android:name=".claveUsuario" />
-        <activity android:name=".ventas" />
+        <activity android:name=".Ticket.formas_de_pago" />
+        <activity android:name=".Ticket.claveUsuario" />
+        <activity android:name=".Ticket.ventas" />
         <activity android:name=".Munu_Principal" />
         <activity
             android:name=".Splash"

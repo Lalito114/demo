@@ -1,4 +1,4 @@
-package com.szzcs.smartpos;
+package com.szzcs.smartpos.Ticket;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -27,6 +27,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.szzcs.smartpos.PrintFragment;
+import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.utils.Kits;
 
 import org.json.JSONArray;
