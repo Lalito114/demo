@@ -43,7 +43,7 @@
         <activity android:name=".ventas" />
         <activity android:name=".Munu_Principal" />
         <activity
-            android:name=".MainActivity"
+            android:name=".Splash"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden"
             android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
