@@ -27,6 +27,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.utils.Kits;
@@ -194,10 +195,19 @@ public class formas_de_pago extends AppCompatActivity {
                             args.putString("mensaje",mensaje);
                             //args.putString("mensaje",mensaje);
 
-                            PrintFragment newFragment = new PrintFragment();
-                            newFragment.setArguments(args);
+//                            PrintFragment newFragment = new PrintFragment();
+//
+//                            newFragment.setArguments(args);
+//
+//
+//                            FragmentManager fm = getFragmentManager();
 
-                            FragmentManager fm = getFragmentManager();
+
+//                            PrintFragment cf = new PrintFragment();
+//                            cf.setArguments(args);
+//                            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+//                                    addToBackStack(PrintFragment.class.getName()).
+//                                    commit();
 
 
 
@@ -284,13 +294,20 @@ public class formas_de_pago extends AppCompatActivity {
                         args.putString("cp",cp);
                         args.putString("pais",pais);
 
-                        PrintFragment newFragment = new PrintFragment();
-                        newFragment.setArguments(args);
+//                        PrintFragment newFragment = new PrintFragment();
+//                        newFragment.setArguments(args);
+//
+//                        FragmentManager fm = getFragmentManager();
+//                        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+//                        fragmentTransaction.replace(R.id.tv1, newFragment); //donde fragmentContainer_id es el ID del FrameLayout donde tu Fragment está contenido.
+//                        fragmentTransaction.commit();
 
-                        FragmentManager fm = getFragmentManager();
-                        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-                        fragmentTransaction.replace(R.id.tv1, newFragment); //donde fragmentContainer_id es el ID del FrameLayout donde tu Fragment está contenido.
-                        fragmentTransaction.commit();
+                        PrintFragment cf = new PrintFragment();
+                            cf.setArguments(args);
+                            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+                                    addToBackStack(PrintFragment.class.getName()).
+                                    commit();
+
 
                     }else{
                         Toast.makeText(getApplicationContext(),"No se obtuvo un venta", Toast.LENGTH_LONG).show();
