@@ -99,6 +99,8 @@ public class formas_de_pago extends AppCompatActivity {
                         TextView nombre = (TextView)findViewById(R.id.nombre);
                         nombre.append(nombre_pago);
                         nombre.append("\n\n");
+
+
                     }
                 }catch (JSONException e){
                     //herramienta  para diagnostico de excepciones
