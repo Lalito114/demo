@@ -88,7 +88,7 @@ public class formas_de_pago extends AppCompatActivity {
                         // Display the formatted json data in text view
 
                         TextView numero = (TextView)findViewById(R.id.numero);
-                        numero.append(numero_pago);
+                        numero.append(numero_pago+"Hola");
                         numero.append("\n\n");
 
                         TextView nombre = (TextView)findViewById(R.id.nombre);
