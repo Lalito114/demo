@@ -84,11 +84,12 @@ public class formas_de_pago extends AppCompatActivity {
                         // Get the current student (json object) data
                         String numero_pago = student.getString("IdFormaPago");
                         String nombre_pago = student.getString("DescLarga");
+                        String numero_ticket = student.getString("NumCopias");
 
                         // Display the formatted json data in text view
 
                         TextView numero = (TextView)findViewById(R.id.numero);
-                        numero.append(numero_pago+"Hola");
+                        numero.append(numero_pago);
                         numero.append("\n\n");
 
                         TextView nombre = (TextView)findViewById(R.id.nombre);
