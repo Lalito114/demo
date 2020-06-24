@@ -64,6 +64,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="152dp"
         android:layout_marginBottom="74dp"
-        android:text="TextView" />
+        android:text="TextView"
+        android:visibility="invisible" />
 
 </RelativeLayout>
