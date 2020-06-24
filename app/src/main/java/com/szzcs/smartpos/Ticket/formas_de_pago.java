@@ -40,8 +40,9 @@ import org.w3c.dom.Text;
 import java.util.HashMap;
 import java.util.Map;
 
+//Clase para desplegar Formas de Pago
 public class formas_de_pago extends AppCompatActivity {
-
+    //Definicion de variables
     TextView nose;
     String carga;
     String nousuario;
@@ -58,27 +59,30 @@ public class formas_de_pago extends AppCompatActivity {
 
     }
 
+    //funcion para obtener formas de pago
     private void obtenerformasdepago(){
 
         Button enviar = (Button) findViewById(R.id.enviar);
         enviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //AL realizar el click del boton Enviar, se genera el encabezado para el ticket
                 obtenerEncabezado();
+                //Funcion para obtener los datos del ticker
                 obtenerdatosticket();
 
 
             }
         });
 
+        //Solicitud de las formas de Pago/GetAll
         JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET,"http://10.0.1.20/TransferenciaDatosAPI/api/FormasPago/GetAll",null, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
                 try{
-                    // Loop through the array elements
+                    // Recorre los elementos de la matriz del json
                     for(int i=0;i<response.length();i++){
-                        // Get current json object
+                        // Obtiene el objeto json actual
                         JSONObject student = response.getJSONObject(i);
 
                         // Get the current student (json object) data
@@ -86,7 +90,7 @@ public class formas_de_pago extends AppCompatActivity {
                         String nombre_pago = student.getString("DescLarga");
                         String numero_ticket = student.getString("NumCopias");
 
-                        // Display the formatted json data in text view
+                        // Muestra los datos json formateados en el  text view
 
                         TextView numero = (TextView)findViewById(R.id.numero);
                         numero.append(numero_pago);
@@ -97,12 +101,14 @@ public class formas_de_pago extends AppCompatActivity {
                         nombre.append("\n\n");
                     }
                 }catch (JSONException e){
+                    //herramienta  para diagnostico de excepciones
                     e.printStackTrace();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                //descripcion del error
                 Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
 
             }
@@ -112,14 +118,16 @@ public class formas_de_pago extends AppCompatActivity {
 
     }
 
+    //Funcion para obtener los datos del ticket
     public void obtenerdatosticket(){
         String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tickets/getticket";
-
+        //Utilizamos el metodo Post para colocar los datos en el  ticket
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
+                            //Se instancia la respuesta del json
                             JSONObject ticket = new JSONObject(response);
                             String body1 = ticket.getString("body");
 
@@ -215,9 +223,11 @@ public class formas_de_pago extends AppCompatActivity {
 
 
                         } catch (JSONException e) {
+                            //herramienta  para diagnostico de excepciones
                             e.printStackTrace();
                         }
                     }
+                    //funcion para capturar errores
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -253,15 +263,20 @@ public class formas_de_pago extends AppCompatActivity {
 
     }
 
-
+    //Funcion para encabezado del Ticket
     public void obtenerEncabezado(){
+        //Utilizamos el metodo Get para obtener el encabezado para los tickets
         String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tickets/getheader";
+        //Se solicita peticion GET para obtener el encabezado
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
+                    //se instancia la respuesta del JSON
                     JSONObject encabezado = new JSONObject(response);
+                    // si la respuesta del json contine informacion
                     if (encabezado != null){
+                        //Asignacion a variables para encabezado
                         String idestacion = encabezado.getString("IdEstacionInt");
                         String nombre = encabezado.getString("Nombre");
                         String rfc = encabezado.getString("RFC");
@@ -303,6 +318,7 @@ public class formas_de_pago extends AppCompatActivity {
 //                        fragmentTransaction.replace(R.id.tv1, newFragment); //donde fragmentContainer_id es el ID del FrameLayout donde tu Fragment está contenido.
 //                        fragmentTransaction.commit();
 
+                        //Se instancia el PrintFragment
                         PrintFragment cf = new PrintFragment();
                             cf.setArguments(args);
                             getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
@@ -311,14 +327,17 @@ public class formas_de_pago extends AppCompatActivity {
 
 
                     }else{
+                        //Si el json no contiene informacion se envia mensahje
                         Toast.makeText(getApplicationContext(),"No se obtuvo un venta", Toast.LENGTH_LONG).show();
                     }
 
 
                 } catch (JSONException e) {
+                    //herramienta  para diagnostico de excepciones
                     e.printStackTrace();
                 }
             }
+            //funcion para capturar errores
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
