@@ -30,6 +30,7 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="334dp"
+        android:drawableLeft="@dra"
         android:ems="10"
         android:gravity="center_vertical"
         android:inputType="textPassword"
