@@ -295,13 +295,263 @@ public class PrintFragment extends PreferenceFragment {
 
                     //Forma de Pago
                     String formapago = getArguments().getString("formadepago");
-                    String nombreforma;
+                    String nombreforma = null;
                     int efectivo = 1;
                     int ban = Integer.parseInt(formapago);
                     if (efectivo == ban){
                         nombreforma = "EFECTIVO";
                     }else {
-                        nombreforma = "OTRO";
+                        int vales = 2;
+                        if (vales == ban){
+                            nombreforma = "VALES";
+                        }else {
+                            int american = 3;
+                            if (american == ban){
+                                nombreforma = "AMERICAN EXPRESS";
+                            }else{
+                                int gascard = 4;
+                                if (gascard == ban){
+                                    nombreforma = "GAS CARD AMEX";
+                                }else{
+                                    int visa = 5;
+                                    if (visa == ban){
+                                        nombreforma = "VISA/MASTERCARD";
+                                    }else{
+                                        int electronic = 6;
+                                        if (electronic == ban){
+                                            nombreforma = "VALE ELECTRONICO";
+                                        }else{
+                                            int credito = 7;
+                                            if (credito == ban){
+                                                nombreforma = "CREDITO ES";
+                                            }else{
+                                                int mobile = 10;
+                                                if (mobile == ban){
+                                                    nombreforma = "CORPOMOBILE";
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    mPrinter.setPrintAppendString("FORMA DE PAGO:" + nombreforma, format);
+
+                    //Datos de tiempo de venta
+                    Date date = new Date();
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    DateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
+                    mPrinter.setPrintAppendString(getResources().getString(R.string.exe_date) + dateFormat.format(date)+ "  HORA:" + hourFormat.format(date), format);
+
+                    //Numero de terminqal, posicion de cargar y datos del vendedor
+                    String posicion = getArguments().getString("posicion");
+                    String idusuario = getArguments().getString("idusuario");
+                    mPrinter.setPrintAppendString("TERM: "+"PC: "+ posicion+" DESP: "+idusuario+" VEND: " + idusuario, format);
+                    mPrinter.setPrintAppendString(" ", format);
+                    //----------------------------------------------------------------------------------------------------
+
+                    //-----------------------------Inician los datos de las ventas realizadas
+                    format.setTextSize(20);
+                    format.setAli(Layout.Alignment.ALIGN_NORMAL);
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    mPrinter.setPrintAppendString("  CANT  II   DESC   PRECIO   IMPORTE", format);
+                    mPrinter.setPrintAppendString("- - - - - - - - - - - - - - - - - - - ", format);
+                    String cantidad = getArguments().getString("cantidad");
+                    String numero = getArguments().getString("numero");
+                    String descrip = getArguments().getString("descrip");
+                    String precio = getArguments().getString("precio");
+                    String importe = getArguments().getString("impor");
+
+                    format.setAli(Layout.Alignment.ALIGN_NORMAL);
+                    mPrinter.setPrintAppendString(cantidad, format);
+                    //-- -------------------costos finales
+
+                    format.setAli(Layout.Alignment.ALIGN_NORMAL);
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    format.setTextSize(20);
+                    String subtotal = getArguments().getString("subtotal");
+                    String iva = getArguments().getString("iva");
+                    String total = getArguments().getString("total");
+                    String totaltexto = getArguments().getString("totaltexto");
+                    mPrinter.setPrintAppendString("                  SUBTOTAL:   "+ subtotal, format);
+                    mPrinter.setPrintAppendString("                       IVA:   "+ iva, format);
+                    mPrinter.setPrintAppendString("                     TOTAL:   "+ total, format);
+                    mPrinter.setPrintAppendString("    ", format);
+                    format.setAli(Layout.Alignment.ALIGN_OPPOSITE);
+                    mPrinter.setPrintAppendString(totaltexto, format);
+                    mPrinter.setPrintAppendString("- - - - -- -- - - - - - - - - ", format);
+
+                    mPrinter.setPrintAppendString( " ", format);
+                    String mensaje = getArguments().getString("mensaje");
+                    mPrinter.setPrintAppendString(mensaje + " ", format);
+                    mPrinter.setPrintAppendString( " ", format);
+                    mPrinter.setPrintAppendString( " ", format);
+                    mPrinter.setPrintAppendString( " ", format);
+                    mPrinter.setPrintAppendString( " ", format);
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    printStatus = mPrinter.setPrintStart();
+                    if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                DialogUtils.show(getActivity(), getString(R.string.printer_out_of_paper));
+
+                            }
+                        });
+                    }
+                    if (ban == 3){
+                        segundometodo();
+                    }
+                    enviarPrincipal();
+                }
+            }
+        }).start();
+    }
+
+    private void segundometodo() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AssetManager asm = getActivity().getAssets();
+                InputStream inputStream = null;
+                try {
+                    inputStream = asm.open("copo.png");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Drawable d = Drawable.createFromStream(inputStream, null);
+                Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
+
+                int printStatus = mPrinter.getPrinterStatus();
+                if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            DialogUtils.show(getActivity(), getString(R.string.printer_out_of_paper));
+
+                        }
+                    });
+                } else {
+
+
+                    mPrinter.setPrintAppendBitmap(bitmap, Layout.Alignment.ALIGN_CENTER);
+                    PrnStrFormat format = new PrnStrFormat();
+                    format.setTextSize(30);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    format.setStyle(PrnTextStyle.BOLD);
+                    if (fontsStyle == 0) {
+                        format.setFont(PrnTextFont.CUSTOM);
+                        format.setPath(Environment.getExternalStorageDirectory() + "/fonts/simsun.ttf");
+                    } else if (fontsStyle == 1) {
+                        format.setFont(PrnTextFont.DEFAULT);
+                        //  format.setPath(Environment.getExternalStorageDirectory()+"/fonts/heiti.ttf");
+                    } else {
+                        format.setFont(PrnTextFont.CUSTOM);
+                        format.setPath(Environment.getExternalStorageDirectory() + "/fonts/fangzhengyouyuan.ttf");
+                    }
+
+                    format.setTextSize(20);
+                    format.setStyle(PrnTextStyle.ITALIC);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    //------------------------------Encabezado------------------------------
+                    mPrinter.setPrintAppendString(" ", format);
+                    String texto = getArguments().getString("noestacion");
+                    mPrinter.setPrintAppendString(getResources().getString(R.string.pos_sales_slip)+texto,format);
+
+                    //Nombre de la Esatcion de Servicio
+                    String nombre = getArguments().getString("nombreestacion");
+                    mPrinter.setPrintAppendString(nombre, format);
+
+                    //RFC de la estacion de Servicio y SIIC
+                    String rfc = getArguments().getString("razonsocial");
+                    String siic = getArguments().getString("datos");
+                    mPrinter.setPrintAppendString(getResources().getString(R.string.merchant_no)+rfc+"  "+getResources().getString(R.string.terminal_name)+siic, format);
+
+                    //Regimen fiscal
+                    String regimen = getArguments().getString("regimenfiscal");
+                    mPrinter.setPrintAppendString(regimen, format);
+
+                    //-------Datos Direccion--------------------
+                    //calle de la empresa
+                    String calle = getArguments().getString("calle");
+                    String exterior = getArguments().getString("exterior");
+                    String colonia = getArguments().getString("colonia");
+                    String localidad = getArguments().getString("localidad");
+                    String municipio = getArguments().getString("municipio");
+                    String estado = getArguments().getString("estado");
+                    String cp = getArguments().getString("cp");
+                    String pais = getArguments().getString("pais");
+                    mPrinter.setPrintAppendString(calle+" "+ exterior + " " + colonia + " " + localidad + " " + municipio
+                            + " " + estado + " " + cp + " " + pais, format);
+                    mPrinter.setPrintAppendString(" ", format);
+                    mPrinter.setPrintAppendString(" ", format);
+
+                    //------------------Aqui termina el encabezado
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    format.setTextSize(20);
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    format.setStyle(PrnTextStyle.NORMAL);
+
+
+
+                    //-------------------------------------------- Inicia el anticuerpo del ticket
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    format.setTextSize(20);
+                    mPrinter.setPrintAppendString("COPIA", format);
+                    //--------Numero de Recibo
+                    String recibo = getArguments().getString("norecibo");
+                    mPrinter.setPrintAppendString("RECIBO: " + recibo, format);
+
+                    //-- numero de rastreo
+                    String rastreo = getArguments().getString("norastreo");
+                    mPrinter.setPrintAppendString("No. Rastreo: " + rastreo, format);
+
+
+                    //Forma de Pago
+                    String formapago = getArguments().getString("formadepago");
+                    String nombreforma = null;
+                    int efectivo = 1;
+                    int ban = Integer.parseInt(formapago);
+                    if (efectivo == ban){
+                        nombreforma = "EFECTIVO";
+                    }else {
+                        int vales = 2;
+                        if (vales == ban){
+                            nombreforma = "VALES";
+                        }else {
+                            int american = 3;
+                            if (american == ban){
+                                nombreforma = "AMERICAN EXPRESS";
+                            }else{
+                                int gascard = 4;
+                                if (gascard == ban){
+                                    nombreforma = "GAS CARD AMEX";
+                                }else{
+                                    int visa = 5;
+                                    if (visa == ban){
+                                        nombreforma = "VISA/MASTERCARD";
+                                    }else{
+                                        int electronic = 6;
+                                        if (electronic == ban){
+                                            nombreforma = "VALE ELECTRONICO";
+                                        }else{
+                                            int credito = 7;
+                                            if (credito == ban){
+                                                nombreforma = "CREDITO ES";
+                                            }else{
+                                                int mobile = 10;
+                                                if (mobile == ban){
+                                                    nombreforma = "CORPOMOBILE";
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
                     }
                     mPrinter.setPrintAppendString("FORMA DE PAGO:" + nombreforma, format);
 
@@ -371,6 +621,7 @@ public class PrintFragment extends PreferenceFragment {
                 }
             }
         }).start();
+
     }
 
     private void enviarPrincipal() {
@@ -405,7 +656,6 @@ public class PrintFragment extends PreferenceFragment {
             e.printStackTrace();
         }
     }
-
 
     @Override
     public void onDestroy() {

@@ -52,12 +52,14 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="165dp"
         android:layout_marginBottom="608dp"
-        android:text="TextView" />
+        android:text="TextView"
+        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/usuario"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="TextView" />
+        android:text="TextView"
+        android:visibility="invisible" />
 
 </RelativeLayout>
