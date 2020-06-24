@@ -115,7 +115,7 @@
     <color name="grey">#C0C0C0</color>
     <color name="baseColor">#fb630b</color>
     <color name="a_press">#edecec</color>
-    <color name="a_normal">#ffffff</color>
+    <color name="a_normal">#FFFFFF</color>
     <color name="black">#000000</color> <!-- 黑色 -->
 
     <color name="contents_text">#ff000000</color>
