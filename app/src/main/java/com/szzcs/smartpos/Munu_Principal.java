@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 
 import com.szzcs.smartpos.Ticket.ventas;
 import com.zcs.sdk.card.CardReaderTypeEnum;
@@ -18,7 +19,7 @@ public class Munu_Principal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_munu__principal);
 
-        ImageButton btnventa = (ImageButton) findViewById(R.id.ventas);
+        ImageView btnventa =  findViewById(R.id.iconVentas);
         btnventa.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
