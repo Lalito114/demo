@@ -91,7 +91,7 @@ public class formas_de_pago extends AppCompatActivity {
                 //se genera el encabezado para el ticket
                 obtenerEncabezado();
                 //Funcion para obtener los datos del ticker
-                obtenerdatosticket(PagoS);
+                obtenerdatosticket();
 
             }
         });
@@ -156,29 +156,6 @@ public class formas_de_pago extends AppCompatActivity {
                         TextView nombre = (TextView)findViewById(R.id.nombre);
                         nombre.append(nombre_pago);
                         nombre.append("\n\n");
-
-
-                        switch(numero_pago)
-                        {
-                            case "1"
-                            {
-
-                            }
-                            case "2"{
-
-                            }
-
-                            case "3"{
-
-                            }
-                            case "4"{
-
-                            }
-
-
-                        }
-
-
 
                         if (numero_pago == "1")
                         {
@@ -255,7 +232,7 @@ public class formas_de_pago extends AppCompatActivity {
     }
 
     //Funcion para obtener los datos del ticket
-    public void obtenerdatosticket(final String PagoSeleccionado){
+    public void obtenerdatosticket(){
         String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tickets/getticket";
         //Utilizamos el metodo Post para colocar los datos en el  ticket
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
@@ -377,17 +354,13 @@ public class formas_de_pago extends AppCompatActivity {
                 carga = getIntent().getExtras().getString("car");
                 nousuario = getIntent().getExtras().getString("user");
                 //pago = findViewById(R.id.pago);
-                String formapago = PagoSeleccionado; //pago.getText().toString();
-                Toast.makeText(getApplicationContext(), formapago, Toast.LENGTH_SHORT).show();
-                if (formapago.isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Ingresa la forma de pago",Toast.LENGTH_SHORT).show();
-                }else{
-                    args.putString("formadepago", formapago);
-                    params.put("IdFormaPago", formapago);
-                    params.put("Id_Usuario",nousuario);
-                    args.putString("idusuario", nousuario);
-                    params.put("PosCarga",carga);
-                }
+                String formapago = "1"; //pago.getText().toString();
+                //Toast.makeText(getApplicationContext(), formapago, Toast.LENGTH_SHORT).show();
+                args.putString("formadepago", formapago);
+                params.put("IdFormaPago", formapago);
+                params.put("Id_Usuario",nousuario);
+                args.putString("idusuario", nousuario);
+                params.put("PosCarga",carga);
                 return params;
             }
         };
