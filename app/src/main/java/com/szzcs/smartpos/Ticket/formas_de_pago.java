@@ -4,15 +4,19 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,6 +31,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.szzcs.smartpos.MainActivity;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.R;
@@ -37,11 +42,16 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 //Clase para desplegar Formas de Pago
 public class formas_de_pago extends AppCompatActivity {
+    private ListView lvItems;
+    private Adaptador adaptador;
+    private ArrayList<Entidad> arrayentidad;
+
     //Definicion de variables
     TextView nose;
     String carga;
@@ -50,14 +60,60 @@ public class formas_de_pago extends AppCompatActivity {
     EditText pago;
     Bundle args = new Bundle();
 
+    private Entidad Item;
+    private TextView tvDescripcion;
+    private String tvIdent;
+
+    ArrayList<Entidad> listItems = new ArrayList<>();
+
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_formas_de_pago);
         nose = findViewById(R.id.nose);
         obtenerformasdepago();
 
+        lvItems = (ListView) findViewById(R.id.lvItems);
+        arrayentidad = GetArrayItems();
+        adaptador = new Adaptador(this, arrayentidad);
+        lvItems.setAdapter(adaptador);
+
+        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+                //Toast.makeText(getApplicationContext(), "posicion  " +  (position + 1), Toast.LENGTH_SHORT).show();
+                Entidad e =  arrayentidad.get(position);
+                String PagoS = e.getContenido();
+
+                Toast.makeText(getApplicationContext(), "Pago  " +  PagoS, Toast.LENGTH_SHORT).show();
+
+                //se genera el encabezado para el ticket
+                obtenerEncabezado();
+                //Funcion para obtener los datos del ticker
+                obtenerdatosticket(PagoS);
+
+            }
+        });
     }
+
+    private ArrayList<Entidad> GetArrayItems()
+    {
+        //ArrayList<Entidad> listItems = new ArrayList<>();
+        //String Titulo = "EFECTIVO";
+        //String Contenido =  "1";
+        //listItems.add(new Entidad(R.drawable.billete, Titulo,  Contenido ));
+        //listItems.add(new Entidad(R.drawable.vale , "VALES", "2"  ));
+        //listItems.add(new Entidad(R.drawable.amex, "AMERICAN EXPRESS", "3"  ));
+//        listItems.add(new Entidad(R.drawable.gascard, "GAS CARD AMEX", "4"  ));
+//        listItems.add(new Entidad(R.drawable.visa, "VISA MASTERCARD", "5" ));
+//        listItems.add(new Entidad(R.drawable.valeelectronico, "VALE ELECTRONICO", "6" ));
+//        listItems.add(new Entidad(R.drawable.corpogas, "CREDITO ES", "7" ));
+//        listItems.add(new Entidad(R.drawable.corpomobil, "CORPOMOBILE ", "8" ));
+        return listItems;
+    };
+
+
 
     //funcion para obtener formas de pago
     private void obtenerformasdepago(){
@@ -67,9 +123,9 @@ public class formas_de_pago extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //AL realizar el click del boton Enviar, se genera el encabezado para el ticket
-                obtenerEncabezado();
+                //obtenerEncabezado();
                 //Funcion para obtener los datos del ticker
-                obtenerdatosticket();
+                //obtenerdatosticket();
 
 
             }
@@ -80,6 +136,7 @@ public class formas_de_pago extends AppCompatActivity {
             @Override
             public void onResponse(JSONArray response) {
                 try{
+                    //ArrayList<Entidad> listItems = new ArrayList<>();
                     // Recorre los elementos de la matriz del json
                     for(int i=0;i<response.length();i++){
                         // Obtiene el objeto json actual
@@ -92,7 +149,7 @@ public class formas_de_pago extends AppCompatActivity {
 
                         // Muestra los datos json formateados en el  text view
 
-                        TextView numero = (TextView)findViewById(R.id.numero);
+                        TextView  numero = (TextView)findViewById(R.id.numero);
                         numero.append(numero_pago);
                         numero.append("\n\n");
 
@@ -100,8 +157,63 @@ public class formas_de_pago extends AppCompatActivity {
                         nombre.append(nombre_pago);
                         nombre.append("\n\n");
 
+                        if (numero_pago == "1")
+                        {
+                            listItems.add(new Entidad(R.drawable.billete, nombre_pago,  numero_pago  ));
+                        }
+                        else
+                        {
+                            if (numero_pago == "2")
+                            {
+                                listItems.add(new Entidad(R.drawable.vale, nombre_pago,  numero_pago  ));
+                            }
+                            else{
+                                if (numero_pago == "3")
+                                {
+                                    listItems.add(new Entidad(R.drawable.amex, nombre_pago,  numero_pago  ));
+                                }
+                                else{
+                                    if (numero_pago == "4")
+                                    {
+                                        listItems.add(new Entidad(R.drawable.gascard, nombre_pago,  numero_pago  ));
+                                    }
+                                    else
+                                    {
+                                        if (numero_pago == "5")
+                                        {
+                                            listItems.add(new Entidad(R.drawable.visa, nombre_pago,  numero_pago  ));
+                                        }
+                                        else{
+                                            if (numero_pago == "6")
+                                            {
+                                                listItems.add(new Entidad(R.drawable.valeelectronico, nombre_pago,  numero_pago  ));
+                                            }
+                                            else {
+                                                if (numero_pago == "7")
+                                                {
+                                                    listItems.add(new Entidad(R.drawable.corpogas, nombre_pago,  numero_pago  ));
+                                                }
+                                                else
+                                                {
+                                                    if (numero_pago == "10")
+                                                    {
+                                                        listItems.add(new Entidad(R.drawable.corpomobil, nombre_pago,  numero_pago  ));
+                                                    }
+                                                    else
+                                                    {
+                                                        listItems.add(new Entidad(R.drawable.camera, nombre_pago,  numero_pago  ));
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
 
                     }
+
                 }catch (JSONException e){
                     //herramienta  para diagnostico de excepciones
                     e.printStackTrace();
@@ -117,11 +229,10 @@ public class formas_de_pago extends AppCompatActivity {
         });
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(jsonArrayRequest);
-
     }
 
     //Funcion para obtener los datos del ticket
-    public void obtenerdatosticket(){
+    public void obtenerdatosticket(final String PagoSeleccionado){
         String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tickets/getticket";
         //Utilizamos el metodo Post para colocar los datos en el  ticket
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
@@ -242,8 +353,9 @@ public class formas_de_pago extends AppCompatActivity {
                 Map<String, String> params = new HashMap<String, String>();
                 carga = getIntent().getExtras().getString("car");
                 nousuario = getIntent().getExtras().getString("user");
-                pago = findViewById(R.id.pago);
-                String formapago = pago.getText().toString();
+                //pago = findViewById(R.id.pago);
+                String formapago = PagoSeleccionado; //pago.getText().toString();
+                Toast.makeText(getApplicationContext(), formapago, Toast.LENGTH_SHORT).show();
                 if (formapago.isEmpty()){
                     Toast.makeText(getApplicationContext(),"Ingresa la forma de pago",Toast.LENGTH_SHORT).show();
                 }else{
