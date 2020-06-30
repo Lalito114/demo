@@ -9,15 +9,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
+import com.szzcs.smartpos.Puntada.leerTargeta;
 import com.szzcs.smartpos.utils.DialogUtils;
 import com.szzcs.smartpos.utils.SDK_Result;
 import com.zcs.sdk.DriverManager;
@@ -319,7 +318,7 @@ public class CardFragment extends PreferenceFragment {
             mMagCard.magCardClose();
             // search again
             mCardReadManager.searchCard(mCardType, READ_TIMEOUT, mListener);
-            Intent intent = new Intent(getActivity(),leerTargeta.class);
+            Intent intent = new Intent(getActivity(), leerTargeta.class);
             startActivity(intent);
         }else{
             mMagCard.magCardClose();

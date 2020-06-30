@@ -1,27 +1,207 @@
-<?xml    version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frame_container"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.szzcs.smartpos.Munu_Principal">
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
 
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:context="com.szzcs.smartpos.Munu_Principal"
-        tools:ignore="UselessParent">
+        android:layout_width="fill_parent"
+        android:layout_height="80dp"
+        android:id="@+id/ventas">
 
-        <ListView
-            android:id="@+id/list"
-            android:layout_width="match_parent"
+
+        <ImageView
+            android:id="@+id/iconVentas"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="0dp"
+            android:src="@drawable/ventas" />
+
+        <TextView
+            android:id="@+id/tituloVentas"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="50dp">
-        </ListView>
+            android:layout_alignTop="@+id/iconVentas"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="12dp"
+            android:layout_toEndOf="@+id/iconVentas"
+            android:text="Tickets"
+            android:textSize="20sp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
     </RelativeLayout>
 
 
-</FrameLayout>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="75dp"
+        android:id="@+id/facturas">
 
 
+        <ImageView
+            android:id="@+id/iconFacturas"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/fact" />
+
+
+        <TextView
+            android:id="@+id/tituloFacturas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iconFacturas"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="12dp"
+            android:layout_toEndOf="@+id/iconFacturas"
+            android:text="Facturas"
+            android:textSize="20sp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </RelativeLayout>
+
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="75dp"
+        android:id="@+id/productos">
+
+
+        <ImageView
+            android:id="@+id/iconProductos"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/product" />
+
+
+        <TextView
+            android:id="@+id/tituloProductos"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iconProductos"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="12dp"
+            android:layout_toEndOf="@+id/iconProductos"
+            android:text="Productos"
+            android:textSize="20sp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="75dp"
+        android:id="@+id/cortes">
+
+
+        <ImageView
+            android:id="@+id/iconCortes"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/cortes" />
+
+
+        <TextView
+            android:id="@+id/tituloCortes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iconCortes"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="12dp"
+            android:layout_toEndOf="@+id/iconCortes"
+            android:text="Cortes"
+            android:textSize="20sp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="75dp"
+        android:id="@+id/reportes">
+
+
+        <ImageView
+            android:id="@+id/iconReportes"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/report" />
+
+
+        <TextView
+            android:id="@+id/tituloReportes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iconReportes"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="12dp"
+            android:layout_toEndOf="@+id/iconReportes"
+            android:text="Reportes"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textSize="20sp" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="75dp"
+        android:id="@+id/pendientes">
+
+
+        <ImageView
+            android:id="@+id/iconPendientes"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
+            android:src="@drawable/pendientes" />
+
+
+        <TextView
+            android:id="@+id/tituloPendientes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/iconPendientes"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="12dp"
+            android:layout_toEndOf="@+id/iconPendientes"
+            android:text="Pendientes"
+            android:textSize="20sp"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    </RelativeLayout>
+
+</LinearLayout>
