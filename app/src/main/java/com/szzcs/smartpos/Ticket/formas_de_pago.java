@@ -160,7 +160,8 @@ public class formas_de_pago extends AppCompatActivity {
 
                         switch(numero_pago)
                         {
-                            case "1":{
+                            case "1":
+                            {
                                 listItems.add(new Entidad(R.drawable.billete, nombre_pago,  numero_pago  ));
                                 break;
                             }
@@ -168,6 +169,7 @@ public class formas_de_pago extends AppCompatActivity {
                                 listItems.add(new Entidad(R.drawable.vale, nombre_pago,  numero_pago  ));
                                 break;
                             }
+
                             case "3":{
                                 listItems.add(new Entidad(R.drawable.amex, nombre_pago,  numero_pago  ));
                                 break;
@@ -176,7 +178,8 @@ public class formas_de_pago extends AppCompatActivity {
                                 listItems.add(new Entidad(R.drawable.gascard, nombre_pago,  numero_pago  ));
                                 break;
                             }
-                            case "5":{
+                            case "5":
+                            {
                                 listItems.add(new Entidad(R.drawable.visa, nombre_pago,  numero_pago  ));
                                 break;
                             }
@@ -184,6 +187,7 @@ public class formas_de_pago extends AppCompatActivity {
                                 listItems.add(new Entidad(R.drawable.valeelectronico, nombre_pago,  numero_pago  ));
                                 break;
                             }
+
                             case "7":{
                                 listItems.add(new Entidad(R.drawable.corpogas, nombre_pago,  numero_pago  ));
                                 break;
@@ -196,8 +200,6 @@ public class formas_de_pago extends AppCompatActivity {
                                 listItems.add(new Entidad(R.drawable.camera, nombre_pago,  numero_pago  ));
                                 break;
                             }
-
-
                         }
                     }
 
