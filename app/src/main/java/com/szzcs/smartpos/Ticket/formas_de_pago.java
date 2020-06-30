@@ -160,81 +160,45 @@ public class formas_de_pago extends AppCompatActivity {
 
                         switch(numero_pago)
                         {
-                            case "1"
-                            {
-
+                            case "1":{
+                                listItems.add(new Entidad(R.drawable.billete, nombre_pago,  numero_pago  ));
+                                break;
                             }
-                            case "2"{
-
-                            }
-
-                            case "3"{
-
-                            }
-                            case "4"{
-
-                            }
-
-
-                        }
-
-
-
-                        if (numero_pago == "1")
-                        {
-                            listItems.add(new Entidad(R.drawable.billete, nombre_pago,  numero_pago  ));
-                        }
-                        else
-                        {
-                            if (numero_pago == "2")
-                            {
+                            case "2":{
                                 listItems.add(new Entidad(R.drawable.vale, nombre_pago,  numero_pago  ));
+                                break;
                             }
-                            else{
-                                if (numero_pago == "3")
-                                {
-                                    listItems.add(new Entidad(R.drawable.amex, nombre_pago,  numero_pago  ));
-                                }
-                                else{
-                                    if (numero_pago == "4")
-                                    {
-                                        listItems.add(new Entidad(R.drawable.gascard, nombre_pago,  numero_pago  ));
-                                    }
-                                    else
-                                    {
-                                        if (numero_pago == "5")
-                                        {
-                                            listItems.add(new Entidad(R.drawable.visa, nombre_pago,  numero_pago  ));
-                                        }
-                                        else{
-                                            if (numero_pago == "6")
-                                            {
-                                                listItems.add(new Entidad(R.drawable.valeelectronico, nombre_pago,  numero_pago  ));
-                                            }
-                                            else {
-                                                if (numero_pago == "7")
-                                                {
-                                                    listItems.add(new Entidad(R.drawable.corpogas, nombre_pago,  numero_pago  ));
-                                                }
-                                                else
-                                                {
-                                                    if (numero_pago == "10")
-                                                    {
-                                                        listItems.add(new Entidad(R.drawable.corpomobil, nombre_pago,  numero_pago  ));
-                                                    }
-                                                    else
-                                                    {
-                                                        listItems.add(new Entidad(R.drawable.camera, nombre_pago,  numero_pago  ));
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                            case "3":{
+                                listItems.add(new Entidad(R.drawable.amex, nombre_pago,  numero_pago  ));
+                                break;
                             }
+                            case "4":{
+                                listItems.add(new Entidad(R.drawable.gascard, nombre_pago,  numero_pago  ));
+                                break;
+                            }
+                            case "5":{
+                                listItems.add(new Entidad(R.drawable.visa, nombre_pago,  numero_pago  ));
+                                break;
+                            }
+                            case "6":{
+                                listItems.add(new Entidad(R.drawable.valeelectronico, nombre_pago,  numero_pago  ));
+                                break;
+                            }
+                            case "7":{
+                                listItems.add(new Entidad(R.drawable.corpogas, nombre_pago,  numero_pago  ));
+                                break;
+                            }
+                            case "10":{
+                                listItems.add(new Entidad(R.drawable.corpomobil, nombre_pago,  numero_pago  ));
+                                break;
+                            }
+                            default:{
+                                listItems.add(new Entidad(R.drawable.camera, nombre_pago,  numero_pago  ));
+                                break;
+                            }
+
 
                         }
-
                     }
 
                 }catch (JSONException e){
