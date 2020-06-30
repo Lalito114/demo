@@ -489,7 +489,7 @@ public class SettingsFragment extends PreferenceFragment {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         if (!to.isAdded()) {
-            getFragmentManager().beginTransaction().addToBackStack(null).hide(from).add(R.id.frame_container, to).commit();
+            int commit = getFragmentManager().beginTransaction().addToBackStack(null).hide(from).add(R.id.frame_container, to).commit();
         } else {
             getFragmentManager().beginTransaction().addToBackStack(null).hide(from).show(to).commit();
         }
