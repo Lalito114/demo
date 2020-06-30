@@ -157,6 +157,29 @@ public class formas_de_pago extends AppCompatActivity {
                         nombre.append(nombre_pago);
                         nombre.append("\n\n");
 
+
+                        switch(numero_pago)
+                        {
+                            case "1"
+                            {
+
+                            }
+                            case "2"{
+
+                            }
+
+                            case "3"{
+
+                            }
+                            case "4"{
+
+                            }
+
+
+                        }
+
+
+
                         if (numero_pago == "1")
                         {
                             listItems.add(new Entidad(R.drawable.billete, nombre_pago,  numero_pago  ));
