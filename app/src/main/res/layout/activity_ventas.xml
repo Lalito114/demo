@@ -1,45 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/datos"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context=".Ticket.ventas">
+
+<ListView
+    android:id="@+id/list"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".Ticket.ventas">
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="29dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="26dp"
-        android:fontFamily="monospace"
-        android:gravity="center_horizontal"
-        android:text="Selecciona la posicion de carga"
-        android:textAlignment="center"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <ScrollView
-        android:layout_width="263dp"
-        android:layout_height="561dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="63dp"
-        android:layout_marginTop="108dp"
-        android:layout_marginEnd="85dp"
-        android:layout_marginBottom="62dp">
-
-        <LinearLayout
-            android:id="@+id/posicionCarga"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_marginLeft="80dp"
-            android:orientation="vertical">
-
-        </LinearLayout>
-    </ScrollView>
+    android:layout_height="match_parent" />
 </RelativeLayout>

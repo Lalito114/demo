@@ -5,8 +5,10 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -18,12 +20,15 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ventas extends AppCompatActivity {
 
     String titulo = "Ticket - Posicion";
+    ListView list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,33 +46,7 @@ public class ventas extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-
-                //Obtenemos el linear layout donde colocar los botones
-                LinearLayout llBotonera = (LinearLayout) findViewById(R.id.posicionCarga);
-
-                //Creamos las propiedades de layout que tendrán los botones.
-                //Son LinearLayout.LayoutParams porque los botones van a estar en un LinearLayout.
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT );
-
-                //Creamos los botones en bucle
-                for (int i=1; i<=Integer.parseInt(response); i++){
-                    Button button = new Button(getApplicationContext());
-                    //Asignamos propiedades de layout al boton
-                    button.setLayoutParams(lp);
-                    //Asignamos Texto al botón
-                    button.setBackgroundColor(ContextCompat.getColor(getBaseContext(), R.color.colorPrimary));
-
-                    button.setText("" + i);
-                    // Ingresamos un icono
-
-                    //Asignamose el Listener
-                    button.setOnClickListener(new ButtonsOnClickListener(this));
-                    //Añadimos el botón a la botonera
-                    llBotonera.addView(button);
-
-                }
-
+                vax(response);
 
             }
         }, new Response.ErrorListener() {
@@ -87,6 +66,47 @@ public class ventas extends AppCompatActivity {
         requestQueue.add(stringRequest);
 
     }
+
+    private void vax(final String response) {
+        List<String> maintitle;
+        maintitle = new ArrayList<String>();
+
+        List<String> subtitle;
+        subtitle = new ArrayList<String>();
+
+        List<Integer> imgid;
+        imgid = new ArrayList<>();
+
+
+        for (int i = 1; i <= Integer.parseInt(response); i++) {
+            maintitle.add("Posicion de carga " + String.valueOf(i));
+            subtitle.add("Combustible Disponible");
+            imgid.add(R.drawable.gas);
+        }
+
+        ListAdapter adapter=new ListAdapter(this, maintitle, subtitle,imgid);
+        list=(ListView)findViewById(R.id.list);
+        list.setAdapter(adapter);
+
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO Auto-generated method stub
+                for (int i = 1; i <= Integer.parseInt(response); i++) {
+
+                    Intent intente = new Intent(getApplicationContext(), claveUsuario.class);
+                    intente.putExtra("pos",String.valueOf(i));
+                    startActivity(intente);
+
+                }
+
+
+            }
+        });
+    }
+
     class ButtonsOnClickListener implements View.OnClickListener
     {
         public ButtonsOnClickListener(Response.Listener<String> stringListener) {
