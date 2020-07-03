@@ -91,7 +91,7 @@ public class formas_de_pago extends AppCompatActivity {
                 //se genera el encabezado para el ticket
                 obtenerEncabezado();
                 //Funcion para obtener los datos del ticker
-                obtenerdatosticket();
+                obtenerdatosticket(PagoS);
 
             }
         });
@@ -157,61 +157,50 @@ public class formas_de_pago extends AppCompatActivity {
                         nombre.append(nombre_pago);
                         nombre.append("\n\n");
 
-                        if (numero_pago == "1")
+
+                        switch(numero_pago)
                         {
-                            listItems.add(new Entidad(R.drawable.billete, nombre_pago,  numero_pago  ));
-                        }
-                        else
-                        {
-                            if (numero_pago == "2")
+                            case "1":
                             {
+                                listItems.add(new Entidad(R.drawable.billete, nombre_pago,  numero_pago  ));
+                                break;
+                            }
+                            case "2":{
                                 listItems.add(new Entidad(R.drawable.vale, nombre_pago,  numero_pago  ));
-                            }
-                            else{
-                                if (numero_pago == "3")
-                                {
-                                    listItems.add(new Entidad(R.drawable.amex, nombre_pago,  numero_pago  ));
-                                }
-                                else{
-                                    if (numero_pago == "4")
-                                    {
-                                        listItems.add(new Entidad(R.drawable.gascard, nombre_pago,  numero_pago  ));
-                                    }
-                                    else
-                                    {
-                                        if (numero_pago == "5")
-                                        {
-                                            listItems.add(new Entidad(R.drawable.visa, nombre_pago,  numero_pago  ));
-                                        }
-                                        else{
-                                            if (numero_pago == "6")
-                                            {
-                                                listItems.add(new Entidad(R.drawable.valeelectronico, nombre_pago,  numero_pago  ));
-                                            }
-                                            else {
-                                                if (numero_pago == "7")
-                                                {
-                                                    listItems.add(new Entidad(R.drawable.corpogas, nombre_pago,  numero_pago  ));
-                                                }
-                                                else
-                                                {
-                                                    if (numero_pago == "10")
-                                                    {
-                                                        listItems.add(new Entidad(R.drawable.corpomobil, nombre_pago,  numero_pago  ));
-                                                    }
-                                                    else
-                                                    {
-                                                        listItems.add(new Entidad(R.drawable.camera, nombre_pago,  numero_pago  ));
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
+                                break;
                             }
 
+                            case "3":{
+                                listItems.add(new Entidad(R.drawable.amex, nombre_pago,  numero_pago  ));
+                                break;
+                            }
+                            case "4":{
+                                listItems.add(new Entidad(R.drawable.gascard, nombre_pago,  numero_pago  ));
+                                break;
+                            }
+                            case "5":
+                            {
+                                listItems.add(new Entidad(R.drawable.visa, nombre_pago,  numero_pago  ));
+                                break;
+                            }
+                            case "6":{
+                                listItems.add(new Entidad(R.drawable.valeelectronico, nombre_pago,  numero_pago  ));
+                                break;
+                            }
+
+                            case "7":{
+                                listItems.add(new Entidad(R.drawable.corpogas, nombre_pago,  numero_pago  ));
+                                break;
+                            }
+                            case "10":{
+                                listItems.add(new Entidad(R.drawable.corpomobil, nombre_pago,  numero_pago  ));
+                                break;
+                            }
+                            default:{
+                                listItems.add(new Entidad(R.drawable.camera, nombre_pago,  numero_pago  ));
+                                break;
+                            }
                         }
-
                     }
 
                 }catch (JSONException e){
@@ -232,7 +221,7 @@ public class formas_de_pago extends AppCompatActivity {
     }
 
     //Funcion para obtener los datos del ticket
-    public void obtenerdatosticket(){
+    public void obtenerdatosticket(final String PagoSeleccionado){
         String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tickets/getticket";
         //Utilizamos el metodo Post para colocar los datos en el  ticket
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
@@ -354,13 +343,17 @@ public class formas_de_pago extends AppCompatActivity {
                 carga = getIntent().getExtras().getString("car");
                 nousuario = getIntent().getExtras().getString("user");
                 //pago = findViewById(R.id.pago);
-                String formapago = "1"; //pago.getText().toString();
-                //Toast.makeText(getApplicationContext(), formapago, Toast.LENGTH_SHORT).show();
-                args.putString("formadepago", formapago);
-                params.put("IdFormaPago", formapago);
-                params.put("Id_Usuario",nousuario);
-                args.putString("idusuario", nousuario);
-                params.put("PosCarga",carga);
+                String formapago = PagoSeleccionado; //pago.getText().toString();
+                Toast.makeText(getApplicationContext(), formapago, Toast.LENGTH_SHORT).show();
+                if (formapago.isEmpty()){
+                    Toast.makeText(getApplicationContext(),"Ingresa la forma de pago",Toast.LENGTH_SHORT).show();
+                }else{
+                    args.putString("formadepago", formapago);
+                    params.put("IdFormaPago", formapago);
+                    params.put("Id_Usuario",nousuario);
+                    args.putString("idusuario", nousuario);
+                    params.put("PosCarga",carga);
+                }
                 return params;
             }
         };
