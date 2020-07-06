@@ -21,6 +21,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:autoSizeMaxTextSize="20dp"
+            android:text="Medium"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#4d4d4d"
             android:textStyle="bold" />
 
         <!-- contenido -->+

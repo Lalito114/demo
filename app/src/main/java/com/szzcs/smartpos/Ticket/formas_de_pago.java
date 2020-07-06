@@ -86,7 +86,7 @@ public class formas_de_pago extends AppCompatActivity {
                 Entidad e =  arrayentidad.get(position);
                 String PagoS = e.getContenido();
 
-                Toast.makeText(getApplicationContext(), "Pago  " +  PagoS, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "Pago  " +  PagoS, Toast.LENGTH_SHORT).show();
 
                 //se genera el encabezado para el ticket
                 obtenerEncabezado();
@@ -147,6 +147,10 @@ public class formas_de_pago extends AppCompatActivity {
                         String nombre_pago = student.getString("DescLarga");
                         String numero_ticket = student.getString("NumCopias");
 
+                        String NPIzquierda = nombre_pago.substring(0,1).toUpperCase();
+                        String NPDerecha = nombre_pago.substring(1, nombre_pago.length()).toLowerCase();
+
+                        nombre_pago = NPIzquierda + NPDerecha;
                         // Muestra los datos json formateados en el  text view
 
                         TextView  numero = (TextView)findViewById(R.id.numero);
