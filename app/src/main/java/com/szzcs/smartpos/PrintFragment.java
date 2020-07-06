@@ -138,55 +138,6 @@ public class PrintFragment extends PreferenceFragment {
         }
 
 
-
-//        findPreference(getString(R.string.key_print_text)).setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
-//            @Override
-//            public boolean onPreferenceChange(final Preference preference, final Object newValue) {
-//
-//                ListPreference listPreference = (ListPreference) preference;
-//                final int index = listPreference.findIndexOfValue((String) newValue);
-//                final CharSequence[] entries = listPreference.getEntries();
-//                if (entries[index].equals("宋体") || entries[index].equals("Song Typeface")) {
-//                    LogUtils.error("打印宋体");
-//                    fontsStyle = 0;
-//                    try {
-//                        File file = new File(Environment.getExternalStorageDirectory() + "/fonts/simsun.ttf");
-//                        if (file.exists()) {
-//                        } else {
-//                            AssetManager mAssetManger = getActivity().getAssets();
-//                            // String[] fileNames = mAssetManger.list("fonts");// 获取assets目录下的所有文件及有文件的目录名
-//                            InputStream in = mAssetManger.open("fonts/simsun.ttf");
-//                            saveFile(in, "simsun.ttf");
-//                        }
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                } else if (entries[index].equals("默认字体") || entries[index].equals("Default Typeface")) {
-//                    LogUtils.error("打印默认字体");
-//                    fontsStyle = 1;
-//
-//
-//                } else if (entries[index].equals("幼圆体") || entries[index].equals("Rounded Fonts")) {
-//                    LogUtils.error("打印圆幼体");
-//                    fontsStyle = 2;
-//                    try {
-//
-//                        File file = new File(Environment.getExternalStorageDirectory() + "/fonts/fangzhengyouyuan.ttf");
-//                        if (file.exists()) {
-//                        } else {
-//                            AssetManager mAssetManger = getActivity().getAssets();
-//
-//                            InputStream in = mAssetManger.open("fonts/fangzhengyouyuan.ttf");
-//                            saveFile(in, "fangzhengyouyuan.ttf");
-//                        }
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                printMatrixText();
-//                return true;
-//            }
-//        });
         printMatrixText();
 
     }
@@ -299,7 +250,7 @@ public class PrintFragment extends PreferenceFragment {
                     int efectivo = 1;
                     int ban = Integer.parseInt(formapago);
                     if (efectivo == ban){
-                        nombreforma = "EFECTIVO";
+                        nombreforma = "Efectivo";
                     }else {
                         int vales = 2;
                         if (vales == ban){

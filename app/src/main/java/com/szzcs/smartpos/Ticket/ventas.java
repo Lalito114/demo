@@ -80,7 +80,7 @@ public class ventas extends AppCompatActivity {
 
 
         for (int i = 1; i <= Integer.parseInt(response); i++) {
-            maintitle.add("Posicion de carga " + String.valueOf(i));
+            maintitle.add("PC" + String.valueOf(i));
             subtitle.add("Combustible Disponible");
             imgid.add(R.drawable.gas);
         }
@@ -95,13 +95,14 @@ public class ventas extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // TODO Auto-generated method stub
-                for (int i = 1; i <= Integer.parseInt(response); i++) {
+                  int posicion = position +1;
+                  String posi = String.valueOf(posicion);
 
                     Intent intente = new Intent(getApplicationContext(), claveUsuario.class);
-                    intente.putExtra("pos",String.valueOf(i));
+                    intente.putExtra("pos",posi);
                     startActivity(intente);
 
-                }
+
 
 
             }

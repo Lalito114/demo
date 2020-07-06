@@ -119,18 +119,18 @@ public class formas_de_pago extends AppCompatActivity {
     //funcion para obtener formas de pago
     private void obtenerformasdepago(){
 
-        Button enviar = (Button) findViewById(R.id.enviar);
-        enviar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //AL realizar el click del boton Enviar, se genera el encabezado para el ticket
-                //obtenerEncabezado();
-                //Funcion para obtener los datos del ticker
-                //obtenerdatosticket();
-
-
-            }
-        });
+//        Button enviar = (Button) findViewById(R.id.enviar);
+//        enviar.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //AL realizar el click del boton Enviar, se genera el encabezado para el ticket
+//                //obtenerEncabezado();
+//                //Funcion para obtener los datos del ticker
+//                //obtenerdatosticket();
+//
+//
+//            }
+//        });
 
         //Solicitud de las formas de Pago/GetAll
         JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET,"http://10.0.1.20/TransferenciaDatosAPI/api/FormasPago/GetAll",null, new Response.Listener<JSONArray>() {
@@ -154,13 +154,13 @@ public class formas_de_pago extends AppCompatActivity {
                         nombre_pago = NPIzquierda + NPDerecha;
                         // Muestra los datos json formateados en el  text view
 
-                        TextView  numero = (TextView)findViewById(R.id.numero);
-                        numero.append(numero_pago);
-                        numero.append("\n\n");
-
-                        TextView nombre = (TextView)findViewById(R.id.nombre);
-                        nombre.append(nombre_pago);
-                        nombre.append("\n\n");
+//                        TextView  numero = (TextView)findViewById(R.id.numero);
+//                        numero.append(numero_pago);
+//                        numero.append("\n\n");
+//
+//                        TextView nombre = (TextView)findViewById(R.id.nombre);
+//                        nombre.append(nombre_pago);
+//                        nombre.append("\n\n");
 
 
                         switch(numero_pago)
@@ -290,7 +290,7 @@ public class formas_de_pago extends AppCompatActivity {
                                 String prec = p1.getString("Precio");
                                 precio += prec;
 
-                                protic += "   "+value + "    " + num + "     " + descripcion + "  " + prec + "  " + importe+"\n";
+                                protic += "   "+ value + "    " + num + "     " + descripcion + "  " + prec + "  " + importe+"\n";
                             }
 
 
@@ -349,16 +349,14 @@ public class formas_de_pago extends AppCompatActivity {
                 nousuario = getIntent().getExtras().getString("user");
                 //pago = findViewById(R.id.pago);
                 String formapago = PagoSeleccionado; //pago.getText().toString();
-                Toast.makeText(getApplicationContext(), formapago, Toast.LENGTH_SHORT).show();
-                if (formapago.isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Ingresa la forma de pago",Toast.LENGTH_SHORT).show();
-                }else{
-                    args.putString("formadepago", formapago);
+               // Toast.makeText(getApplicationContext(), formapago, Toast.LENGTH_SHORT).show();
+
+                    args.putString("formadepago", PagoSeleccionado);
                     params.put("IdFormaPago", formapago);
                     params.put("Id_Usuario",nousuario);
                     args.putString("idusuario", nousuario);
                     params.put("PosCarga",carga);
-                }
+
                 return params;
             }
         };
