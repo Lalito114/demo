@@ -40,7 +40,13 @@
         <activity android:name=".Puntada.leerTargeta" />
         <activity android:name=".Ticket.formas_de_pago" />
         <activity android:name=".Ticket.claveUsuario" />
-        <activity android:name=".Ticket.ventas" />
+        <activity android:name=".Ticket.ventas"
+            android:parentActivityName=".Munu_Principal">
+            <!--  Soporte para versiones 4.0 o menores -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Munu_Principal"></meta-data>
+        </activity>
         <activity android:name=".Munu_Principal" />
         <activity
             android:name=".Splash"
