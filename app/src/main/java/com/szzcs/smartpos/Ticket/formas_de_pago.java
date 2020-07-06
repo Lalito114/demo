@@ -70,6 +70,7 @@ public class formas_de_pago extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_formas_de_pago);
         nose = findViewById(R.id.nose);
         obtenerformasdepago();
