@@ -32,6 +32,7 @@ public class claveUsuario extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_usuario);
         setTitle("Ticket - Password");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //lee valores usuario y carga
         usuario= findViewById(R.id.usuario);
