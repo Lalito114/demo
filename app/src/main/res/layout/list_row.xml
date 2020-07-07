@@ -34,6 +34,14 @@
             android:layout_height="wrap_content"
             android:autoSizeMaxTextSize="16dp" />
 
+        <TextView
+            android:id="@+id/tvCopias"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:autoSizeMaxTextSize="6dp"
+            android:visibility="invisible"/>
+
+
         <!-- ID -->
         <!--TextView
             android:id="@+id/tvIdentifica"
