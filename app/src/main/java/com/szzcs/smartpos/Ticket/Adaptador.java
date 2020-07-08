@@ -1,7 +1,6 @@
 package com.szzcs.smartpos.Ticket;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.szzcs.smartpos.R;
-import com.szzcs.smartpos.Ticket.Entidad;
-import java.util.ArrayList;
 
-import static android.view.View.*;
+import java.util.ArrayList;
 
 
 public class Adaptador extends BaseAdapter {
@@ -46,13 +43,15 @@ public class Adaptador extends BaseAdapter {
         final Entidad Item = (Entidad) getItem(position);
 
         convertView = LayoutInflater.from(context).inflate(R.layout.list_row, null);
-        ImageView imgFoto = (ImageView) convertView.findViewById(R.id.imgFoto);
+        ImageView imgFoto = (ImageView) convertView.findViewById(R.id.icon);
         TextView tvTitulo = (TextView) convertView.findViewById(R.id.tvTitulo);
         TextView tvContenido = (TextView) convertView.findViewById(R.id.tvContenido );
+        TextView tvCopias = (TextView) convertView.findViewById(R.id.tvCopias );
         //TextView tvIdentifica = (TextView) convertView.findViewById(R.id.tvIdentifica);
         imgFoto.setImageResource(Item.getImgFoto());
         tvTitulo.setText(Item.getTitulo());
         tvContenido.setText(Item.getContenido());
+        tvCopias.setText(Item.getcopias());
         //tvIdentifica.setText(Item.getIdentifica());
 
         return convertView;

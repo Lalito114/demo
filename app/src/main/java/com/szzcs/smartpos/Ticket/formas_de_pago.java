@@ -83,16 +83,22 @@ public class formas_de_pago extends AppCompatActivity {
         lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+                //Obtiene valor del numero de copias!
+                TextView numcopias = (TextView) view.findViewById(R.id.tvCopias);
+                String copias = numcopias.getText().toString();
+
                 //Toast.makeText(getApplicationContext(), "posicion  " +  (position + 1), Toast.LENGTH_SHORT).show();
                 Entidad e =  arrayentidad.get(position);
                 String PagoS = e.getContenido();
 
+
                 //Toast.makeText(getApplicationContext(), "Pago  " +  PagoS, Toast.LENGTH_SHORT).show();
 
                 //se genera el encabezado para el ticket
-                obtenerEncabezado();
+                obtenerEncabezado(copias);
                 //Funcion para obtener los datos del ticker
-                obtenerdatosticket(PagoS);
+                obtenerdatosticket(PagoS, copias);
 
             }
         });
@@ -137,6 +143,7 @@ public class formas_de_pago extends AppCompatActivity {
             @Override
             public void onResponse(JSONArray response) {
                 try{
+
                     //ArrayList<Entidad> listItems = new ArrayList<>();
                     // Recorre los elementos de la matriz del json
                     for(int i=0;i<response.length();i++){
@@ -147,6 +154,7 @@ public class formas_de_pago extends AppCompatActivity {
                         String numero_pago = student.getString("IdFormaPago");
                         String nombre_pago = student.getString("DescLarga");
                         String numero_ticket = student.getString("NumCopias");
+
 
                         String NPIzquierda = nombre_pago.substring(0,1).toUpperCase();
                         String NPDerecha = nombre_pago.substring(1, nombre_pago.length()).toLowerCase();
@@ -167,42 +175,42 @@ public class formas_de_pago extends AppCompatActivity {
                         {
                             case "1":
                             {
-                                listItems.add(new Entidad(R.drawable.billete, nombre_pago,  numero_pago  ));
+                                listItems.add(new Entidad(R.drawable.billete, nombre_pago,  numero_pago, numero_ticket));
                                 break;
                             }
                             case "2":{
-                                listItems.add(new Entidad(R.drawable.vale, nombre_pago,  numero_pago  ));
+                                listItems.add(new Entidad(R.drawable.vale, nombre_pago,  numero_pago, numero_ticket));
                                 break;
                             }
 
                             case "3":{
-                                listItems.add(new Entidad(R.drawable.amex, nombre_pago,  numero_pago  ));
+                                listItems.add(new Entidad(R.drawable.amex, nombre_pago,  numero_pago, numero_ticket));
                                 break;
                             }
                             case "4":{
-                                listItems.add(new Entidad(R.drawable.gascard, nombre_pago,  numero_pago  ));
+                                listItems.add(new Entidad(R.drawable.gascard, nombre_pago,  numero_pago, numero_ticket));
                                 break;
                             }
                             case "5":
                             {
-                                listItems.add(new Entidad(R.drawable.visa, nombre_pago,  numero_pago  ));
+                                listItems.add(new Entidad(R.drawable.visa, nombre_pago,  numero_pago, numero_ticket));
                                 break;
                             }
                             case "6":{
-                                listItems.add(new Entidad(R.drawable.valeelectronico, nombre_pago,  numero_pago  ));
+                                listItems.add(new Entidad(R.drawable.valeelectronico, nombre_pago,  numero_pago, numero_ticket));
                                 break;
                             }
 
                             case "7":{
-                                listItems.add(new Entidad(R.drawable.corpogas, nombre_pago,  numero_pago  ));
+                                listItems.add(new Entidad(R.drawable.corpogas, nombre_pago,  numero_pago, numero_ticket));
                                 break;
                             }
                             case "10":{
-                                listItems.add(new Entidad(R.drawable.corpomobil, nombre_pago,  numero_pago  ));
+                                listItems.add(new Entidad(R.drawable.corpomobil, nombre_pago,  numero_pago, numero_ticket));
                                 break;
                             }
                             default:{
-                                listItems.add(new Entidad(R.drawable.camera, nombre_pago,  numero_pago  ));
+                                listItems.add(new Entidad(R.drawable.camera, nombre_pago,  numero_pago, numero_ticket));
                                 break;
                             }
                         }
@@ -226,7 +234,7 @@ public class formas_de_pago extends AppCompatActivity {
     }
 
     //Funcion para obtener los datos del ticket
-    public void obtenerdatosticket(final String PagoSeleccionado){
+    public void obtenerdatosticket(final String PagoSeleccionado, final String ncopias){
         String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tickets/getticket";
         //Utilizamos el metodo Post para colocar los datos en el  ticket
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
@@ -370,7 +378,7 @@ public class formas_de_pago extends AppCompatActivity {
     }
 
     //Funcion para encabezado del Ticket
-    public void obtenerEncabezado(){
+    public void obtenerEncabezado(final String ncopias){
         //Utilizamos el metodo Get para obtener el encabezado para los tickets
         String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tickets/getheader";
         //Se solicita peticion GET para obtener el encabezado
@@ -425,12 +433,14 @@ public class formas_de_pago extends AppCompatActivity {
 //                        fragmentTransaction.commit();
 
                         //Se instancia el PrintFragment
-                        PrintFragment cf = new PrintFragment();
+                        int h;
+                        for (h=0; h<Integer.parseInt(ncopias); h++) {
+                            PrintFragment cf = new PrintFragment();
                             cf.setArguments(args);
                             getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
                                     addToBackStack(PrintFragment.class.getName()).
                                     commit();
-
+                        }
 
                     }else{
                         //Si el json no contiene informacion se envia mensahje
