@@ -11,7 +11,6 @@ import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.os.SystemClock;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.support.annotation.NonNull;
@@ -23,7 +22,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.szzcs.smartpos.qr.QRTestActivity;
 import com.szzcs.smartpos.scan.PermissionsManager;
 import com.szzcs.smartpos.utils.Config;
 import com.szzcs.smartpos.utils.DialogUtils;
@@ -489,7 +487,7 @@ public class SettingsFragment extends PreferenceFragment {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         if (!to.isAdded()) {
-            int commit = getFragmentManager().beginTransaction().addToBackStack(null).hide(from).add(R.id.frame_container, to).commit();
+            int commit = getFragmentManager().beginTransaction().addToBackStack(null).hide(from).add(R.id.menu, to).commit();
         } else {
             getFragmentManager().beginTransaction().addToBackStack(null).hide(from).show(to).commit();
         }
