@@ -351,59 +351,74 @@ public class PrintFragment extends PreferenceFragment {
                             }
                         });
                     }
-                    if (ban == 3){
+
+                    //Número de copias
+                    String numcop = getArguments().getString("numcopias");
+
+                    int numcopias = Integer.parseInt(numcop);
+
+                    if (numcopias==2) {
                         try {
                             Thread.sleep(1000);
                             segundometodo();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
-                    }else{
-                        if (ban == 4) {
-                            try {
-                                Thread.sleep(1000);
-                                segundometodo();
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
-                            }
-                        }else{
-                            if (ban == 5) {
-                                try {
-                                    Thread.sleep(1000);
-                                    segundometodo();
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }else{
-                                if (ban == 6) {
-                                    try {
-                                        Thread.sleep(1000);
-                                        segundometodo();
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
-                                    }
-                                }else{
-                                    if (ban == 7) {
-                                        try {
-                                            Thread.sleep(1000);
-                                            segundometodo();
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
-                                    }else{
-                                        if (ban == 10) {
-                                            try {
-                                                Thread.sleep(1000);
-                                                segundometodo();
-                                            } catch (InterruptedException e) {
-                                                e.printStackTrace();
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
                     }
+
+//                    if (ban == 3){
+//                        try {
+//                            Thread.sleep(1000);
+//                            segundometodo();
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }else{
+//                        if (ban == 4) {
+//                            try {
+//                                Thread.sleep(1000);
+//                                segundometodo();
+//                            } catch (InterruptedException e) {
+//                                e.printStackTrace();
+//                            }
+//                        }else{
+//                            if (ban == 5) {
+//                                try {
+//                                    Thread.sleep(1000);
+//                                    segundometodo();
+//                                } catch (InterruptedException e) {
+//                                    e.printStackTrace();
+//                                }
+//                            }else{
+//                                if (ban == 6) {
+//                                    try {
+//                                        Thread.sleep(1000);
+//                                        segundometodo();
+//                                    } catch (InterruptedException e) {
+//                                        e.printStackTrace();
+//                                    }
+//                                }else{
+//                                    if (ban == 7) {
+//                                        try {
+//                                            Thread.sleep(1000);
+//                                            segundometodo();
+//                                        } catch (InterruptedException e) {
+//                                            e.printStackTrace();
+//                                        }
+//                                    }else{
+//                                        if (ban == 10) {
+//                                            try {
+//                                                Thread.sleep(1000);
+//                                                segundometodo();
+//                                            } catch (InterruptedException e) {
+//                                                e.printStackTrace();
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                        }
+//                    }
                     enviarPrincipal();
                 }
             }

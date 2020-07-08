@@ -359,6 +359,8 @@ public class formas_de_pago extends AppCompatActivity {
                 String formapago = PagoSeleccionado; //pago.getText().toString();
                // Toast.makeText(getApplicationContext(), formapago, Toast.LENGTH_SHORT).show();
 
+
+                    args.putString("numcopias", ncopias);
                     args.putString("formadepago", PagoSeleccionado);
                     params.put("IdFormaPago", formapago);
                     params.put("Id_Usuario",nousuario);
@@ -391,6 +393,7 @@ public class formas_de_pago extends AppCompatActivity {
                     // si la respuesta del json contine informacion
                     if (encabezado != null){
                         //Asignacion a variables para encabezado
+
                         String idestacion = encabezado.getString("IdEstacionInt");
                         String nombre = encabezado.getString("Nombre");
                         String rfc = encabezado.getString("RFC");
@@ -409,7 +412,7 @@ public class formas_de_pago extends AppCompatActivity {
 
 
 
-
+                        args.putString("numcopias",ncopias);
                         args.putString("noestacion", idestacion);
                         args.putString("nombreestacion", nombre);
                         args.putString("razonsocial", rfc);
@@ -424,6 +427,7 @@ public class formas_de_pago extends AppCompatActivity {
                         args.putString("cp",cp);
                         args.putString("pais",pais);
 
+
 //                        PrintFragment newFragment = new PrintFragment();
 //                        newFragment.setArguments(args);
 //
@@ -433,14 +437,13 @@ public class formas_de_pago extends AppCompatActivity {
 //                        fragmentTransaction.commit();
 
                         //Se instancia el PrintFragment
-                        int h;
-                        for (h=0; h<Integer.parseInt(ncopias); h++) {
+
                             PrintFragment cf = new PrintFragment();
                             cf.setArguments(args);
                             getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
                                     addToBackStack(PrintFragment.class.getName()).
                                     commit();
-                        }
+
 
                     }else{
                         //Si el json no contiene informacion se envia mensahje
