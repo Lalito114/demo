@@ -8,7 +8,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.szzcs.smartpos.Puntada.leerTargeta;
 import com.szzcs.smartpos.Ticket.ventas;
+import com.zcs.sdk.card.CardReaderTypeEnum;
+
+import static com.zcs.sdk.card.CardReaderTypeEnum.MAG_CARD;
 
 public class Munu_Principal extends AppCompatActivity {
     ListView list;
@@ -34,6 +38,14 @@ public class Munu_Principal extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_munu__principal);
+        CardReaderTypeEnum cardType = MAG_CARD;
+        CardFragment cf = new CardFragment();
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("card_type", cardType);
+        cf.setArguments(bundle);
+        getFragmentManager().beginTransaction().replace(R.id.menu, cf).
+                addToBackStack(CardFragment.class.getName()).
+                commit();
 
         MyListAdapter adapter=new MyListAdapter(this, maintitle, subtitle,imgid);
         list= findViewById(R.id.list);
@@ -54,7 +66,19 @@ public class Munu_Principal extends AppCompatActivity {
 
                 else if(position == 1) {
                     //code specific to 2nd list item
-                    Toast.makeText(getApplicationContext(),"Place Your Second Option Code",Toast.LENGTH_SHORT).show();
+                    //Intent intent = new Intent(getApplicationContext(), leerTargeta.class);
+                    //startActivity(intent);
+                    CardReaderTypeEnum cardType = MAG_CARD;
+                    CardFragment cf = new CardFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("card_type", cardType);
+                    cf.setArguments(bundle);
+                    getFragmentManager().beginTransaction().replace(R.id.menu, cf).
+                            addToBackStack(CardFragment.class.getName()).
+                            commit();
+
+
+                   // cf.searchBankCard(cardType);
                 }
 
                 else if(position == 2) {
@@ -76,5 +100,7 @@ public class Munu_Principal extends AppCompatActivity {
 
             }
         });
+
+
     }
 }
