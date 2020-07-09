@@ -15,6 +15,7 @@ import android.support.annotation.StringRes;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.szzcs.smartpos.Puntada.leerTargeta;
 import com.szzcs.smartpos.utils.DialogUtils;
@@ -324,12 +325,39 @@ public class CardFragment extends PreferenceFragment {
             mMagCard.magCardClose();
             // search again
             mCardReadManager.searchCard(mCardType, READ_TIMEOUT, mListener);
+
+            String space = mtk2.substring(0,1);
+
+            int mb= Integer.parseInt(space);
+
+            if (mb == 4){
+                Intent intent = new Intent(getActivity(),leerTargeta.class);
+                Bundle bundle  = new Bundle();
+                bundle.putString("track",mtk2);
+                intent.putExtras(bundle);
+                startActivity(intent);
+            }else{
+                int tl= Integer.parseInt(space);
+                if (tl == 3){
+
+                    Intent intent = new Intent(getActivity(),leerTargeta.class);
+                    Bundle bundle  = new Bundle();
+                    bundle.putString("track",mtk2);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
+                }else{
+                    Toast.makeText(getActivity(),"Ya pelucas",Toast.LENGTH_LONG).show();
+                }
+
+            }
+
+
+
             Intent intent = new Intent(getActivity(),leerTargeta.class);
             Bundle bundle  = new Bundle();
             bundle.putString("track",mtk2);
             intent.putExtras(bundle);
             startActivity(intent);
-
         }
 //        if (cardInfo.getResultcode() == SdkResult.SDK_OK) {
 //            String exp = cardInfo.getExpiredDate();

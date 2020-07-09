@@ -34,7 +34,6 @@ public class ventas extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ventas);
-        this.setTitle(titulo);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         PosicionesCargar();
