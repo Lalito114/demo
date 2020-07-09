@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".Puntada.posicionCargaAcumular">
 
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <ScrollView
         android:layout_width="wrap_content"
         android:layout_height="489dp"
@@ -16,7 +21,8 @@
         android:layout_marginStart="56dp"
         android:layout_marginTop="84dp"
         android:layout_marginEnd="56dp"
-        android:layout_marginBottom="67dp">
+        android:layout_marginBottom="67dp"
+        android:visibility="invisible">
 
         <LinearLayout
             android:id="@+id/posicionCarga"
@@ -47,5 +53,6 @@
         android:layout_marginBottom="532dp"
         android:text="Selecciona la Posicion de carga"
         android:textColor="@color/black"
-        android:textSize="18sp" />
+        android:textSize="18sp"
+        android:visibility="invisible" />
 </RelativeLayout>
