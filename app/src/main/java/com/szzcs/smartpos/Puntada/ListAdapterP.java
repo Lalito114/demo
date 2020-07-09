@@ -1,4 +1,4 @@
-package com.szzcs.smartpos.Ticket;
+package com.szzcs.smartpos.Puntada;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,17 +10,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.Puntada.posicionCargaAcumular;
 
 import java.util.List;
 
-public class ListAdapter extends ArrayAdapter<String> {
-
+public class ListAdapterP  extends ArrayAdapter<String>{
     private final Activity context;
     private final String[] maintitle;
     private final String[] subtitle;
     private final Integer[] imgid;
 
-    public ListAdapter(ventas context, List<String> maintitle, List<String> subtitle, List<Integer> imgid) {
+    public ListAdapterP(posicionCargaAcumular context, List<String> maintitle, List<String> subtitle, List<Integer> imgid) {
         super((Context) context, R.layout.list, maintitle);
         // TODO Auto-generated constructor stub
 
@@ -47,4 +47,5 @@ public class ListAdapter extends ArrayAdapter<String> {
         return rowView;
 
     };
+
 }
