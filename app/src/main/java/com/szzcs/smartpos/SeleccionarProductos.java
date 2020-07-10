@@ -4,8 +4,11 @@ import android.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -16,18 +19,25 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonObject;
+import com.szzcs.smartpos.Puntada.ListAdapterP;
+import com.szzcs.smartpos.Puntada.ListAdapterSP;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SeleccionarProductos extends AppCompatActivity {
-    Button btnp1, btnp2, btnp3,btnAgregar,btnEnviar;
+    Button btnAgregar,btnEnviar;
+    TextView cantidadProducto;
     String cantidad;
     JSONObject mjason = new JSONObject();
+    ListView list;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +53,8 @@ public class SeleccionarProductos extends AppCompatActivity {
         CantidadProducto();
         MostrarProductos();
         CrearJSON();
+
+
 
     }
 
@@ -86,29 +98,9 @@ public class SeleccionarProductos extends AppCompatActivity {
     }
 
     private void CantidadProducto() {
-        btnp1 = findViewById(R.id.btnp1);
-        btnp1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cantidad = "1";
-            }
-        });
+        cantidadProducto = findViewById(R.id.cantidadProducto);
+        cantidad = cantidadProducto.toString();
 
-        btnp2 = findViewById(R.id.btnp2);
-        btnp2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cantidad = "2";
-            }
-        });
-
-        btnp3 = findViewById(R.id.btnp3);
-        btnp3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cantidad = "3";
-            }
-        });
     }
 
     private void MostrarProductos() {
@@ -128,7 +120,18 @@ public class SeleccionarProductos extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
+
     private void mostarProductor(String response) {
+
+        List<String> ID;
+        ID = new ArrayList<String>();
+
+        List<String> NombreProducto;
+        NombreProducto = new ArrayList<String>();
+
+        List<String> PrecioProducto;
+        PrecioProducto = new ArrayList<>();
+
         try {
             JSONArray productos = new JSONArray(response);
             for (int i = 0; i <productos.length() ; i++) {
@@ -140,29 +143,28 @@ public class SeleccionarProductos extends AppCompatActivity {
 
                 String precio = p1.getString("Precio");
 
-                //Obtenemos el linear layout donde colocar los botones
-                LinearLayout llBotonera = (LinearLayout) findViewById(R.id.llBotonera);
-
-                //Creamos las propiedades de layout que tendrán los botones.
-                //Son LinearLayout.LayoutParams porque los botones van a estar en un LinearLayout.
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-                        LinearLayout.LayoutParams.WRAP_CONTENT );
-
-                //Creamos los botones en bucle
-                    Button button = new Button(getApplicationContext());
-                    //Asignamos propiedades de layout al boton
-                    button.setLayoutParams(lp);
-                    //Asignamos Texto al botón
-                    button.setText(idArticulo + " | " + DesLarga + " $" + precio);
-
-                    //Asignamose el Listener
-                    button.setOnClickListener(new ButonsOnClickListener(this));
-                    //Añadimos el botón a la botonera
-                    llBotonera.addView(button);
+                NombreProducto.add("ID: " + idArticulo + "    |     $"+precio);
+                ID.add(DesLarga);
+                PrecioProducto.add(precio);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+
+        //ListAdapterP adapterP=new ListAdapterP(this, maintitle, subtitle,imgid);
+        ListAdapterSP adapterP = new ListAdapterSP(this, ID, NombreProducto);
+        list=(ListView)findViewById(R.id.list);
+        list.setAdapter(adapterP);
+//        ListView listview = null;
+//
+//        List<String> maintitle;
+//        maintitle = new ArrayList<String>();
+//
+//        ArrayList<String> names = null;
+//
+//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
+//        listview.setAdapter(adapter);
     }
 
     private class ButonsOnClickListener implements View.OnClickListener {

@@ -33,38 +33,38 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".SeleccionarProductos"></activity>
+        <activity android:name=".Productos.VentaProductos"></activity>
+        <activity android:name=".SeleccionarProductos" />
         <activity android:name=".Puntada.posicionCargaAcumular" />
         <activity android:name=".Puntada.PosicionCargaPuntada" />
         <activity android:name=".Puntada.ClavePuntada" />
-        <activity android:name=".Puntada.leerTargeta" />
-
-        <!-- Esto es la escala gerarquica de herncia entre ventanas -->
-<!--        Este Activity es formas de pago-->
-        <activity android:name=".Ticket.formas_de_pago"
+        <activity android:name=".Puntada.leerTargeta" /> <!-- Esto es la escala gerarquica de herncia entre ventanas -->
+        <!-- Este Activity es formas de pago -->
+        <activity
+            android:name=".Ticket.formas_de_pago"
             android:parentActivityName=".Ticket.claveUsuario">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Ticket.claveUsuario"></meta-data>
+                android:value=".Ticket.claveUsuario" />
         </activity>
-
-        <activity android:name=".Ticket.claveUsuario"
+        <activity
+            android:name=".Ticket.claveUsuario"
             android:parentActivityName=".Ticket.ventas">
-            <!-- Soporte para versiones 4.0 o menores-->
+
+            <!-- Soporte para versiones 4.0 o menores -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Ticket.ventas"></meta-data>
+                android:value=".Ticket.ventas" />
         </activity>
-
-        <activity android:name=".Ticket.ventas"
+        <activity
+            android:name=".Ticket.ventas"
             android:parentActivityName=".Munu_Principal">
-            <!--  Soporte para versiones 4.0 o menores -->
+
+            <!-- Soporte para versiones 4.0 o menores -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Munu_Principal"></meta-data>
-        </activity>
-
-<!--        Aqui termina la jeraquia del modulo de ticket-->
+                android:value=".Munu_Principal" />
+        </activity> <!-- Aqui termina la jeraquia del modulo de ticket -->
         <activity android:name=".Munu_Principal" />
         <activity
             android:name=".Splash"
