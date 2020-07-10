@@ -38,7 +38,12 @@
         <activity android:name=".Puntada.posicionCargaAcumular" />
         <activity android:name=".Puntada.PosicionCargaPuntada" />
         <activity android:name=".Puntada.ClavePuntada" />
-        <activity android:name=".Puntada.leerTargeta" /> <!-- Esto es la escala gerarquica de herncia entre ventanas -->
+        <!--Gerarqui de puntada-->
+        <activity android:name=".Puntada.leerTargeta"
+            android:parentActivityName=".Munu_Principal"> </activity>
+
+
+        <!-- Esto es la escala gerarquica de herncia entre ventanas -->
         <!-- Este Activity es formas de pago -->
         <activity
             android:name=".Ticket.formas_de_pago"
