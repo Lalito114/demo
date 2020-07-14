@@ -326,11 +326,11 @@ public class CardFragment extends PreferenceFragment {
             // search again
             mCardReadManager.searchCard(mCardType, READ_TIMEOUT, mListener);
 
-            String space = mtk2.substring(0,1);
+            String space = mtk2.substring(0,2);
 
             int mb= Integer.parseInt(space);
 
-            if (mb == 4){
+            if (mb == 40){
                 Intent intent = new Intent(getActivity(),leerTargeta.class);
                 Bundle bundle  = new Bundle();
                 bundle.putString("track",mtk2);

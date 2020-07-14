@@ -359,7 +359,7 @@ public class PrintFragment extends PreferenceFragment {
 
                     if (numcopias==2) {
                         try {
-                            Thread.sleep(1000);
+                            Thread.sleep(1);
                             segundometodo();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
@@ -419,7 +419,6 @@ public class PrintFragment extends PreferenceFragment {
 //                            }
 //                        }
 //                    }
-                    enviarPrincipal();
                 }
             }
         }).start();
@@ -643,6 +642,7 @@ public class PrintFragment extends PreferenceFragment {
     private void enviarPrincipal() {
         Intent i = new Intent(getActivity(),Munu_Principal.class);
         startActivity(i);
+
 
     }
 
