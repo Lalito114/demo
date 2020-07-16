@@ -123,20 +123,7 @@ public class formas_de_pago extends AppCompatActivity {
 
 
     //funcion para obtener formas de pago
-    private void obtenerformasdepago(){
-
-//        Button enviar = (Button) findViewById(R.id.enviar);
-//        enviar.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //AL realizar el click del boton Enviar, se genera el encabezado para el ticket
-//                //obtenerEncabezado();
-//                //Funcion para obtener los datos del ticker
-//                //obtenerdatosticket();
-//
-//
-//            }
-//        });
+    public void obtenerformasdepago(){
 
         //Solicitud de las formas de Pago/GetAll
         JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET,"http://10.0.1.20/TransferenciaDatosAPI/api/FormasPago/GetAll",null, new Response.Listener<JSONArray>() {
@@ -160,15 +147,7 @@ public class formas_de_pago extends AppCompatActivity {
                         String NPDerecha = nombre_pago.substring(1, nombre_pago.length()).toLowerCase();
 
                         nombre_pago = NPIzquierda + NPDerecha;
-                        // Muestra los datos json formateados en el  text view
 
-//                        TextView  numero = (TextView)findViewById(R.id.numero);
-//                        numero.append(numero_pago);
-//                        numero.append("\n\n");
-//
-//                        TextView nombre = (TextView)findViewById(R.id.nombre);
-//                        nombre.append(nombre_pago);
-//                        nombre.append("\n\n");
 
 
                         switch(numero_pago)

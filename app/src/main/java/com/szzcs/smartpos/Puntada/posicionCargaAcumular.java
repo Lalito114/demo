@@ -124,7 +124,7 @@ public class posicionCargaAcumular extends AppCompatActivity {
 
         for (int i = 1; i <= Integer.parseInt(response); i++) {
             maintitle.add("PC" + String.valueOf(i));
-            subtitle.add("C");
+            subtitle.add("Combustible");
             imgid.add(R.drawable.gas);
         }
 
