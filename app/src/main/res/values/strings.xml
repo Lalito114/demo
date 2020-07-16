@@ -3,7 +3,6 @@
     <!--menu-->
     <string name="menu_scan">Activate barcode</string>
     <string name="input_pwd">Please enter password</string>
-    <string name="pwd_str">111111</string>
     <string name="pwd_wrong">Wrong password</string>
     <string name="menu_debug">debug</string>
     <string name="menu_home">home</string>
@@ -198,6 +197,9 @@
     <string name="verify_failed">verify failed</string>
     <string name="read_first">Read first</string>
     <string name="input_byte">Input first byte to write(16进制)</string>
+
+    <!-- Strings used for fragments for navigation -->
+
 
 
 </resources>

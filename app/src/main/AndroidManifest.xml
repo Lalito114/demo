@@ -33,17 +33,18 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Productos.VentaProductos"></activity>
+        <activity android:name=".TanqueLleno.PedirNipTqll"></activity>
+        <activity android:name=".TanqueLleno.SeleccionaProductosTqll" />
+        <activity android:name=".TanqueLleno.PosicionCargaTqll" />
+        <activity android:name=".TanqueLleno.claveuser_tqll" />
+        <activity android:name=".Productos.VentaProductos" />
         <activity android:name=".SeleccionarProductos" />
         <activity android:name=".Puntada.posicionCargaAcumular" />
         <activity android:name=".Puntada.PosicionCargaPuntada" />
-        <activity android:name=".Puntada.ClavePuntada" />
-        <!--Gerarqui de puntada-->
-        <activity android:name=".Puntada.leerTargeta"
-            android:parentActivityName=".Munu_Principal"> </activity>
-
-
-        <!-- Esto es la escala gerarquica de herncia entre ventanas -->
+        <activity android:name=".Puntada.ClavePuntada" /> <!-- Gerarqui de puntada -->
+        <activity
+            android:name=".Puntada.leerTargeta"
+            android:parentActivityName=".Munu_Principal" /> <!-- Esto es la escala gerarquica de herncia entre ventanas -->
         <!-- Este Activity es formas de pago -->
         <activity
             android:name=".Ticket.formas_de_pago"

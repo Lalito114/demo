@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.szzcs.smartpos.Puntada.leerTargeta;
+import com.szzcs.smartpos.TanqueLleno.PosicionCargaTqll;
 import com.szzcs.smartpos.utils.DialogUtils;
 import com.szzcs.smartpos.utils.SDK_Result;
 import com.zcs.sdk.DriverManager;
@@ -340,7 +341,7 @@ public class CardFragment extends PreferenceFragment {
                 int tl= Integer.parseInt(space);
                 if (tl == 3){
 
-                    Intent intent = new Intent(getActivity(),leerTargeta.class);
+                    Intent intent = new Intent(getActivity(),PosicionCargaTqll.class);
                     Bundle bundle  = new Bundle();
                     bundle.putString("track",mtk2);
                     intent.putExtras(bundle);
