@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
 
-    compileSdkVersion 22
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.szzcs.smartpos"
         minSdkVersion 19
@@ -37,7 +37,7 @@ android {
         // but continue the build even when errors are found:
         abortOnError false
     }
-    buildToolsVersion '26.0.2'
+    buildToolsVersion '29.0.2'
     android.applicationVariants.all { variant ->
         variant.outputs.all { output ->
             def outputFile = output.outputFile
