@@ -33,6 +33,8 @@ public class VentaProductos extends AppCompatActivity {
     String cantidad;
     JSONObject mjason = new JSONObject();
     ListView list;
+    Button incrementar;
+    Button decrementar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,12 +103,11 @@ public class VentaProductos extends AppCompatActivity {
                 int posicion = i +1;
                 String posi = String.valueOf(posicion);
 
-                Intent intente = new Intent(getApplicationContext(), VentaProductos.class);
-                intente.putExtra("pos",posi);
-                startActivity(intente);
 
             }
         });
+
+
 
 
     }
