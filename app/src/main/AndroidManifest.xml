@@ -34,7 +34,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".Productos.VentaProductos"></activity>
-        <activity android:name=".SeleccionarProductos" />
+        <activity android:name=".Puntada.SeleccionarProductos" />
         <activity android:name=".Puntada.posicionCargaAcumular" />
         <activity android:name=".Puntada.PosicionCargaPuntada" />
         <activity android:name=".Puntada.ClavePuntada" />

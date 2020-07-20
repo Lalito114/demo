@@ -8,12 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.szzcs.smartpos.R;
-import com.szzcs.smartpos.Puntada.posicionCargaAcumular;
-import com.szzcs.smartpos.SeleccionarProductos;
 
 import java.util.List;
 

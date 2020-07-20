@@ -6,9 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.TableLayout;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -19,9 +17,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
-import com.szzcs.smartpos.SeleccionarProductos;
-import com.szzcs.smartpos.Ticket.ListAdapter;
-import com.szzcs.smartpos.Ticket.claveUsuario;
 
 import java.util.ArrayList;
 import java.util.HashMap;
