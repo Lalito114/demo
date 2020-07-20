@@ -31,7 +31,7 @@ public class Munu_Principal extends AppCompatActivity {
     };
 
     Integer[] imgid={
-            R.drawable.acumularpuntada,R.drawable.fact,
+            R.drawable.puntada,R.drawable.fact,
             R.drawable.product,R.drawable.cortes,
             R.drawable.pendientes, R.drawable.report,
     };

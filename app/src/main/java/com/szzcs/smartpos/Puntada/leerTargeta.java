@@ -35,8 +35,8 @@ public class leerTargeta extends AppCompatActivity {
     };
 
     Integer[] imgid={
-            R.drawable.acumularpuntada,R.drawable.RedimirPuntada,
-            R.drawable.RegistarPuntada,
+            R.drawable.acumular,R.drawable.redimir,
+            R.drawable.registrar,
     };
 
     Button btnRegistrar, btnAcumular;

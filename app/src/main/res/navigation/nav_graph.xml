@@ -8,7 +8,7 @@
     <fragment
         android:id="@+id/FirstFragment"
         android:name="com.szzcs.smartpos.FirstFragment"
-        android:label="@string/first_fragment_label"
+        android:label="Hola"
         tools:layout="@layout/fragment_first">
 
         <action
@@ -18,7 +18,7 @@
     <fragment
         android:id="@+id/SecondFragment"
         android:name="com.szzcs.smartpos.SecondFragment"
-        android:label="@string/second_fragment_label"
+        android:label="hola2"
         tools:layout="@layout/fragment_second">
 
         <action
