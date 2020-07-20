@@ -79,11 +79,8 @@ public class VentaProductos extends AppCompatActivity {
                 JSONObject p1 = productos.getJSONObject(i);
 
                 String idArticulo = p1.getString("IdArticulo");
-
                 String DesLarga = p1.getString("DescLarga");
-
                 String precio = p1.getString("Precio");
-
                 NombreProducto.add("ID: " + idArticulo + "    |     $" + precio);
                 ID.add(DesLarga);
                 PrecioProducto.add(precio);

@@ -30,7 +30,6 @@ public class ListAdapterProductos extends ArrayAdapter<String>{
         this.DescripcionProducto = DescripcionProducto.toArray(new String[0]);
     }
 
-
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView=inflater.inflate(R.layout.listaproductos, null,true);

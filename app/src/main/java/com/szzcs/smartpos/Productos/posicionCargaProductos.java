@@ -86,7 +86,6 @@ public class posicionCargaProductos extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 int posicion = position +1;
                 String posi = String.valueOf(posicion);
-
                 Intent intente = new Intent(getApplicationContext(), ClaveProductos.class);
                 intente.putExtra("pos",posi);
                 startActivity(intente);

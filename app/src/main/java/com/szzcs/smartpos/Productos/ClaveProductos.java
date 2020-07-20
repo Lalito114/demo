@@ -61,6 +61,7 @@ public class ClaveProductos extends AppCompatActivity {
                                     try {
                                         //Se instancia la respuesta del json
                                         JSONObject validar = new JSONObject(response);
+
                                         String valido = validar.getString("EsValido");
                                         String idusuario = validar.getString("IdUsuario");
                                         String reimpresion = validar.getString("Reimpresion");
