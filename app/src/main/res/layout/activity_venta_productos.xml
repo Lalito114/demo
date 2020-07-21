@@ -13,10 +13,10 @@
         android:layout_width="65dp"
         android:layout_height="36dp"
         android:layout_marginStart="328dp"
-        android:layout_marginTop="224dp"
+        android:layout_marginBottom="57dp"
         android:text="-"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintBottom_toBottomOf="@+id/Producto"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/textView15"
@@ -67,16 +67,6 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/decrementar"
-        android:layout_width="65dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="328dp"
-        android:layout_marginTop="224dp"
-        android:text="-"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textView15"
@@ -162,10 +152,12 @@
         android:layout_width="65dp"
         android:layout_height="36dp"
         android:layout_marginStart="248dp"
-        android:layout_marginTop="224dp"
+        android:layout_marginBottom="24dp"
         android:text="+"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.333" />
 
     <ListView
         android:id="@+id/list"
@@ -194,17 +186,8 @@
         android:layout_marginBottom="20dp"
         android:text="Enviar"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" /><![CDATA[
 
-    <Button
-        android:id="@+id/incrementar"
-        android:layout_width="65dp"
-        android:layout_height="36dp"
-        android:layout_marginStart="248dp"
-        android:layout_marginTop="224dp"
-        android:text="+"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
->>>>>>> dce8fcdbc73128247c43d08bef036c8f74473e79
+    >>>>>>> dce8fcdbc73128247c43d08bef036c8f74473e79
+]]>
 </android.support.constraint.ConstraintLayout>

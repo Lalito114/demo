@@ -19,7 +19,7 @@ public class ListAdapterProd extends ArrayAdapter<String>{
     private final String[] subtitle;
     private final Integer[] imgid;
 
-    public ListAdapterProd(posicionCargaProductos context, List<String> maintitle, List<String> subtitle, List<Integer> imgid) {
+    public ListAdapterProd(posicionProductos context, List<String> maintitle, List<String> subtitle, List<Integer> imgid) {
         super((Context) context, R.layout.list, maintitle );
         // TODO Auto-generated constructor stub
         this.context= (Activity) context;

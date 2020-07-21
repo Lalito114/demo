@@ -17,24 +17,22 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
 
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-
-public class posicionCargaProductos extends AppCompatActivity {
+public class posicionProductos extends AppCompatActivity {
     String titulo = "Seleccione Posicion de Carga";
     ListView list;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_posicion_carga_productos);
+        setContentView(R.layout.activity_posicion_productos);
         posicionCargaProductos();
     }
-
     private void posicionCargaProductos() {
         String url = "http://10.0.1.20/TransferenciaDatosAPI/api/PosCarga/GetMax";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -75,22 +73,25 @@ public class posicionCargaProductos extends AppCompatActivity {
             imgid.add(R.drawable.gas);
         }
 
-//        ListAdapterProd adapterProd = new ListAdapterProd(this, maintitle, subtitle, imgid);
-//        list=(ListView)findViewById(R.id.list);
-//        list.setAdapter(adapterProd);
-//
-//        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                // TODO Auto-generated method stub
-//                int posicion = position +1;
-//                String posi = String.valueOf(posicion);
-//                Intent intente = new Intent(getApplicationContext(), ClaveProductos.class);
-//                intente.putExtra("pos",posi);
-//                startActivity(intente);
-//            }
-//        });
+
+
+        ListAdapterProd adapterProd = new ListAdapterProd(this, maintitle, subtitle, imgid);
+        list=(ListView)findViewById(R.id.list);
+        list.setAdapter(adapterProd);
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO Auto-generated method stub
+                int posicion = position +1;
+                String posi = String.valueOf(posicion);
+                Intent intente = new Intent(getApplicationContext(), ClaveProductos.class);
+                intente.putExtra("pos",posi);
+                startActivity(intente);
+            }
+        });
     }
+
 
 }
