@@ -33,7 +33,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Productos.posicionProductos"></activity>
+        <activity android:name=".Productos.claveUsuarioProducto"></activity>
+        <activity android:name=".Productos.posicionProductos" />
         <activity android:name=".Productos.VentaProductos" />
         <activity android:name=".SeleccionarProductos" />
         <activity android:name=".Puntada.posicionCargaAcumular" />
@@ -41,7 +42,7 @@
         <activity android:name=".Puntada.ClavePuntada" /> <!-- Gerarqui de puntada -->
         <activity
             android:name=".Puntada.leerTargeta"
-            android:parentActivityName=".Munu_Principal"></activity> <!-- Esto es la escala gerarquica de herncia entre ventanas -->
+            android:parentActivityName=".Munu_Principal" /> <!-- Esto es la escala gerarquica de herncia entre ventanas -->
         <!-- Este Activity es formas de pago -->
         <activity
             android:name=".Ticket.formas_de_pago"
