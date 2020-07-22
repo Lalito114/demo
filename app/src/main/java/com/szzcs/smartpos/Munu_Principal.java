@@ -64,7 +64,7 @@ public class Munu_Principal extends AppCompatActivity {
                 if(position == 0) {
                     //code specific to first list item
                    // Toast.makeText(getApplicationContext(),"Place Your First Option Code",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent( getApplicationContext(), PosicionCargaTqll.class);
+                    Intent intent = new Intent( getApplicationContext(), ventas.class);
                     startActivity(intent);
                 }
 
