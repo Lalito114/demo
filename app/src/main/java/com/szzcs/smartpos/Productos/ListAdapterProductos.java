@@ -1,35 +1,34 @@
-package com.szzcs.smartpos.Puntada;
-
-
+package com.szzcs.smartpos.Productos;
 
 import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.szzcs.smartpos.R;
 
+import com.szzcs.smartpos.Productos.posicionCargaProductos;
+import com.szzcs.smartpos.Productos.VentaProductos;
+
+
 import java.util.List;
 
-public class ListAdapterSP  extends ArrayAdapter<String>{
+public class ListAdapterProductos extends ArrayAdapter<String>{
     private final Activity context;
     private final String[] ID;
-    private final String[] NombreProducto;
+    private final String[] DescripcionProducto;
 
-
-    public ListAdapterSP(SeleccionarProductos context, List<String> ID, List<String> NombreProducto) {
+    public ListAdapterProductos(VentaProductos context, List<String> ID, List<String> DescripcionProducto){
         super((Context) context, R.layout.list, ID);
-        // TODO Auto-generated constructor stub
 
-        this.context= (Activity) context;
-        this.ID= ID.toArray(new String[0]);
-        this.NombreProducto= NombreProducto.toArray(new String[0]);
-
+        this.context=(Activity) context;
+        this.ID = ID.toArray(new String[0]);
+        this.DescripcionProducto = DescripcionProducto.toArray(new String[0]);
     }
-
 
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater=context.getLayoutInflater();
@@ -39,11 +38,11 @@ public class ListAdapterSP  extends ArrayAdapter<String>{
         TextView subtitleText = (TextView) rowView.findViewById(R.id.subtitle);
 
         titleText.setText(ID[position]);
-        subtitleText.setText(NombreProducto[position]);
+        subtitleText.setText(DescripcionProducto[position]);
 
         return rowView;
 
     };
 
-}
 
+}
