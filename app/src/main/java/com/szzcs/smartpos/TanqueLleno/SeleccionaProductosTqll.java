@@ -1,6 +1,6 @@
-package com.szzcs.smartpos;
-
+package com.szzcs.smartpos.TanqueLleno;
 import android.app.FragmentManager;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -19,80 +19,62 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonObject;
-import com.szzcs.smartpos.Puntada.ListAdapterP;
-import com.szzcs.smartpos.Puntada.ListAdapterSP;
+import com.szzcs.smartpos.TanqueLleno.ListAdapterTqll;
+import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.TanqueLleno.SeleccionaProductosTqll;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SeleccionarProductos extends AppCompatActivity {
-    Button btnAgregar,btnEnviar;
+public class SeleccionaProductosTqll extends AppCompatActivity {
+
+    Button btnAgregar, btnSiguiente;
     TextView cantidadProducto;
-    String cantidad;
+    String cantidad, poscarga;
     JSONObject mjason = new JSONObject();
     ListView list;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seleccionar_productos);
-        btnEnviar = findViewById(R.id.btnEnviar);
-        btnEnviar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EnviarDatos();
-            }
-        });
+        setContentView(R.layout.activity_selecciona_productos_tqll);
+        poscarga = getIntent().getStringExtra("car");
+        String usuario = getIntent().getStringExtra("user");
         CantidadProducto();
         MostrarProductos();
         CrearJSON();
+
+        btnSiguiente = findViewById(R.id.btnSiguiente);
+        btnSiguiente.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Se instancia y se llama a la clase pedir nip
+                Intent intent = new Intent(getApplicationContext(), PedirNipTqll.class);
+
+                //intent.putExtra("json", mjason.toString());
+                //intent.putExtra("mjason", (Serializable) mjason);
+                intent.putExtra("poscarga",poscarga);
+                startActivity(intent);
+            }
+        });
+
+
+
+
+
+
+
+
     }
 
-    private void EnviarDatos() {
-        String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tarjetas/sendtarjeta";
 
-        StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() {
-                // Posting parameters to login url
-                Map<String, String> params = new HashMap<String, String>();
-                    params.put("RequestId", "33");
-                    params.put("PosCarga","1");
-                    params.put("Tarjeta","4000004210500001");
-                    params.put("Productos",mjason.toString());
-
-                return params;
-            }
-        };
-
-        // Añade la peticion a la cola
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        requestQueue.add(eventoReq);
-    }
 
     private void CantidadProducto() {
         cantidadProducto = findViewById(R.id.cantidadProducto);
@@ -105,7 +87,7 @@ public class SeleccionarProductos extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                mostarProductor(response);
+                mostrarProductos(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -118,7 +100,7 @@ public class SeleccionarProductos extends AppCompatActivity {
     }
 
 
-    private void mostarProductor(String response) {
+    private void mostrarProductos(String response) {
 
         List<String> ID;
         ID = new ArrayList<String>();
@@ -150,7 +132,7 @@ public class SeleccionarProductos extends AppCompatActivity {
 
 
         //ListAdapterP adapterP=new ListAdapterP(this, maintitle, subtitle,imgid);
-        ListAdapterSP adapterP = new ListAdapterSP(this, ID, NombreProducto);
+        ListAdapterTqll adapterP = new ListAdapterTqll(this, ID, NombreProducto);
         list=(ListView)findViewById(R.id.list);
         list.setAdapter(adapterP);
 //        ListView listview = null;
@@ -165,7 +147,7 @@ public class SeleccionarProductos extends AppCompatActivity {
     }
 
     private class ButonsOnClickListener implements View.OnClickListener {
-        public ButonsOnClickListener(SeleccionarProductos seleccionarProductos) {
+        public ButonsOnClickListener(SeleccionaProductosTqll seleccionaProductosTqll) {
         }
 
         @Override
@@ -193,4 +175,7 @@ public class SeleccionarProductos extends AppCompatActivity {
         });
 
     }
+
+
+
 }
