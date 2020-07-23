@@ -8,7 +8,9 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.szzcs.smartpos.Productos.posicionProductos;
+import com.szzcs.smartpos.Productos.VentaProductos;
+import com.szzcs.smartpos.Puntada.leerTargeta;
+import com.szzcs.smartpos.TanqueLleno.PosicionCargaTqll;
 import com.szzcs.smartpos.Ticket.ventas;
 import com.zcs.sdk.card.CardReaderTypeEnum;
 
@@ -85,7 +87,7 @@ public class Munu_Principal extends AppCompatActivity {
 
                 else if(position == 2) {
 
-                    Intent intent = new Intent(getApplicationContext(), posicionProductos.class);
+                    Intent intent = new Intent(getApplicationContext(), VentaProductos.class);
                     startActivity(intent);
                 }
                 else if(position == 3) {
