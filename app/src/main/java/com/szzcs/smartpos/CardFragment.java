@@ -18,7 +18,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.szzcs.smartpos.Puntada.leerTargeta;
-
+import com.szzcs.smartpos.TanqueLleno.PosicionCargaTqll;
 import com.szzcs.smartpos.utils.DialogUtils;
 import com.szzcs.smartpos.utils.SDK_Result;
 import com.zcs.sdk.DriverManager;
@@ -327,11 +327,11 @@ public class CardFragment extends PreferenceFragment {
             // search again
             mCardReadManager.searchCard(mCardType, READ_TIMEOUT, mListener);
 
-            String space = mtk2.substring(0,2);
+            String space = mtk2.substring(0,1);
 
             int mb= Integer.parseInt(space);
 
-            if (mb == 40){
+            if (mb == 4){
                 Intent intent = new Intent(getActivity(),leerTargeta.class);
                 Bundle bundle  = new Bundle();
                 bundle.putString("track",mtk2);
@@ -341,11 +341,11 @@ public class CardFragment extends PreferenceFragment {
                 int tl= Integer.parseInt(space);
                 if (tl == 3){
 
-//                    Intent intent = new Intent(getActivity(),PosicionCargaTqll.class);
-//                    Bundle bundle  = new Bundle();
-//                    bundle.putString("track",mtk2);
-//                    intent.putExtras(bundle);
-//                    startActivity(intent);
+                    Intent intent = new Intent(getActivity(),PosicionCargaTqll.class);
+                    Bundle bundle  = new Bundle();
+                    bundle.putString("track",mtk2);
+                    intent.putExtras(bundle);
+                    startActivity(intent);
                 }else{
                     Toast.makeText(getActivity(),"Ya pelucas",Toast.LENGTH_LONG).show();
                 }

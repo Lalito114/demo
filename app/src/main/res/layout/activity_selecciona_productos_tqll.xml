@@ -63,6 +63,16 @@
         android:layout_marginBottom="20dp"
         android:text=" agregar producto" />
 
+    <Button
+        android:id="@+id/btnSiguiente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="38dp"
+        android:layout_marginBottom="19dp"
+        android:text="Siguiente" />
+
 <!--    <Button-->
 <!--        android:id="@+id/btnEnviar"-->
 <!--        android:layout_width="wrap_content"-->
