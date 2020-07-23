@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class claveUsuarioProducto extends AppCompatActivity {
+    String titulo = "Bolonia";
     TextView usuario, carga;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public class claveUsuarioProducto extends AppCompatActivity {
                                             usuario.setText(idusuario);
                                             carga.setText(posicion);
                                             //Se instancia y se llama a la clase VentaProductos
-                                            Intent intent = new Intent(getApplicationContext(), VentaProductos.class);
+                                            Intent intent = new Intent(getApplicationContext(), VentasProductos.class);
                                             intent.putExtra("car",posicion);
                                             intent.putExtra("user",idusuario);
                                             startActivity(intent);

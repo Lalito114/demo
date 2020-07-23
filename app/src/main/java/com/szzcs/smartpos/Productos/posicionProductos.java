@@ -69,7 +69,7 @@ public class posicionProductos extends AppCompatActivity {
 
         for (int i = 1; i <= Integer.parseInt(response); i++) {
             maintitle.add("PC" + String.valueOf(i));
-            subtitle.add("Combustible");
+            subtitle.add("Magna |  Premium  |  Diesel");
             imgid.add(R.drawable.gas);
         }
 

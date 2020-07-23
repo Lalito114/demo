@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.szzcs.smartpos.R;
 
-import com.szzcs.smartpos.Productos.posicionCargaProductos;
-import com.szzcs.smartpos.Productos.VentaProductos;
+import com.szzcs.smartpos.Productos.posicionProductos;
+import com.szzcs.smartpos.Productos.VentasProductos;
 
 
 import java.util.List;
@@ -22,7 +22,7 @@ public class ListAdapterProductos extends ArrayAdapter<String>{
     private final String[] ID;
     private final String[] DescripcionProducto;
 
-    public ListAdapterProductos(VentaProductos context, List<String> ID, List<String> DescripcionProducto){
+    public ListAdapterProductos(VentasProductos context, List<String> ID, List<String> DescripcionProducto){
         super((Context) context, R.layout.list, ID);
 
         this.context=(Activity) context;

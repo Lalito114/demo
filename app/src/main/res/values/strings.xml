@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">App CorpoGas</string>
+    <string name="app_name">Bolonia</string>
     <!--menu-->
     <string name="menu_scan">Activate barcode</string>
     <string name="input_pwd">Please enter password</string>
