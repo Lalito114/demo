@@ -197,7 +197,6 @@
     <string name="verify_failed">verify failed</string>
     <string name="read_first">Read first</string>
     <string name="input_byte">Input first byte to write(16进制)</string>
-    <string name="cantidad">Cantidad</string>
 
     <!-- Strings used for fragments for navigation -->
 
