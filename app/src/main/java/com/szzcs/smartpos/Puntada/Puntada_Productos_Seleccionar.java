@@ -25,18 +25,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SeleccionarProductos extends AppCompatActivity {
+public class Puntada_Productos_Seleccionar extends AppCompatActivity {
     Button btnAgregar,btnEnviar;
     TextView cantidadProducto;
     String cantidad;
     JSONObject mjason = new JSONObject();
     ListView list;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_seleccionar_productos);
+        setContentView( R.layout.activity_puntada__productos);
         btnEnviar = findViewById(R.id.btnEnviar);
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -74,10 +73,10 @@ public class SeleccionarProductos extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 // Posting parameters to login url
                 Map<String, String> params = new HashMap<String, String>();
-                    params.put("RequestId", "33");
-                    params.put("PosCarga","1");
-                    params.put("Tarjeta","4000004210500001");
-                    params.put("Productos",mjason.toString());
+                params.put("RequestId", "33");
+                params.put("PosCarga","1");
+                params.put("Tarjeta","4000004210500001");
+                params.put("Productos",mjason.toString());
 
                 return params;
             }
@@ -87,13 +86,11 @@ public class SeleccionarProductos extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(eventoReq);
     }
-
     private void CantidadProducto() {
         cantidadProducto = findViewById(R.id.cantidadProducto);
         cantidad = cantidadProducto.toString();
 
     }
-
     private void MostrarProductos() {
         String url = "http://10.0.1.20/TransferenciaDatosAPI/api/catarticulos/getall";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -110,8 +107,6 @@ public class SeleccionarProductos extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
         requestQueue.add(stringRequest);
     }
-
-
     private void mostarProductor(String response) {
 
         List<String> ID;
@@ -147,27 +142,8 @@ public class SeleccionarProductos extends AppCompatActivity {
         ListAdapterSP adapterP = new ListAdapterSP(this, ID, NombreProducto);
         list=(ListView)findViewById(R.id.list);
         list.setAdapter(adapterP);
-//        ListView listview = null;
-//
-//        List<String> maintitle;
-//        maintitle = new ArrayList<String>();
-//
-//        ArrayList<String> names = null;
-//
-//        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, names);
-//        listview.setAdapter(adapter);
+
     }
-
-    private class ButonsOnClickListener implements View.OnClickListener {
-        public ButonsOnClickListener(SeleccionarProductos seleccionarProductos) {
-        }
-
-        @Override
-        public void onClick(View v) {
-
-        }
-    }
-
     private void CrearJSON() {
         btnAgregar = findViewById(R.id.btnAgregar);
         btnAgregar.setOnClickListener(new View.OnClickListener() {

@@ -12,24 +12,11 @@
         android:id="@+id/decrementar"
         android:layout_width="65dp"
         android:layout_height="36dp"
-        android:layout_marginStart="328dp"
-        android:layout_marginBottom="57dp"
+        android:layout_marginStart="184dp"
+        android:layout_marginBottom="52dp"
         android:text="-"
         app:layout_constraintBottom_toBottomOf="@+id/Producto"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textView15"
-        android:layout_width="108dp"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="220dp"
-        android:layout_marginBottom="468dp"
-        android:text="Cantidad"
-        android:textColor="#070707"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
         android:id="@+id/cantidadProducto"
@@ -83,8 +70,8 @@
 
     <EditText
         android:id="@+id/cantidadProducto"
-        android:layout_width="58dp"
-        android:layout_height="51dp"
+        android:layout_width="81dp"
+        android:layout_height="43dp"
         android:layout_marginEnd="176dp"
         android:layout_marginBottom="460dp"
         android:ems="10"
@@ -125,7 +112,15 @@
         android:layout_marginEnd="20dp"
         android:layout_marginBottom="85dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" >
+
+        <ListView
+            android:id="@+id/list"
+            android:layout_width="308dp"
+            android:layout_height="307dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="85dp" />
+    </ListView>
 
     <Button
         android:id="@+id/btnAgregar3"
@@ -151,22 +146,13 @@
         android:id="@+id/incrementar"
         android:layout_width="65dp"
         android:layout_height="36dp"
-        android:layout_marginStart="248dp"
+        android:layout_marginStart="256dp"
         android:layout_marginBottom="24dp"
         android:text="+"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.333" />
-
-    <ListView
-        android:id="@+id/list"
-        android:layout_width="308dp"
-        android:layout_height="307dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="85dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintVertical_bias="0.019" />
 
     <Button
         android:id="@+id/btnAgregar3"
