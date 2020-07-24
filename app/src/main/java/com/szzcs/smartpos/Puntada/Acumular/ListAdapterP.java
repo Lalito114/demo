@@ -1,4 +1,4 @@
-package com.szzcs.smartpos.TanqueLleno;
+package com.szzcs.smartpos.Puntada.Acumular;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,17 +10,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.Puntada.Acumular.posicionCargaAcumular;
 
 import java.util.List;
 
-public class ListAdapterTqllPosCarga extends ArrayAdapter<String> {
-
+public class ListAdapterP  extends ArrayAdapter<String>{
     private final Activity context;
     private final String[] maintitle;
     private final String[] subtitle;
     private final Integer[] imgid;
 
-    public ListAdapterTqllPosCarga(PosicionCargaTqll context, List<String> maintitle, List<String> subtitle, List<Integer> imgid) {
+    public ListAdapterP(posicionCargaAcumular context, List<String> maintitle, List<String> subtitle, List<Integer> imgid) {
         super((Context) context, R.layout.list, maintitle);
         // TODO Auto-generated constructor stub
 
@@ -47,4 +47,5 @@ public class ListAdapterTqllPosCarga extends ArrayAdapter<String> {
         return rowView;
 
     };
+
 }

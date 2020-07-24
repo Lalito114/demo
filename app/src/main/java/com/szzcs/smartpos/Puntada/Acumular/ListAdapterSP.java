@@ -1,4 +1,4 @@
-package com.szzcs.smartpos.Puntada;
+package com.szzcs.smartpos.Puntada.Acumular;
 
 
 
@@ -20,14 +20,15 @@ public class ListAdapterSP  extends ArrayAdapter<String>{
     private final String[] NombreProducto;
 
 
-    public ListAdapterSP(SeleccionarProductos context, List<String> ID, List<String> NombreProducto) {
+
+
+    public ListAdapterSP(Productos_Seleccionar_Puntada context, List<String> ID, List<String> NombreProducto) {
         super((Context) context, R.layout.list, ID);
         // TODO Auto-generated constructor stub
 
         this.context= (Activity) context;
         this.ID= ID.toArray(new String[0]);
         this.NombreProducto= NombreProducto.toArray(new String[0]);
-
     }
 
 

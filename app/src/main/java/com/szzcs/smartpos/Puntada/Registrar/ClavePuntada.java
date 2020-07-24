@@ -1,4 +1,4 @@
-package com.szzcs.smartpos.Puntada;
+package com.szzcs.smartpos.Puntada.Registrar;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;

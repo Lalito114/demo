@@ -9,8 +9,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.szzcs.smartpos.Productos.VentaProductos;
-import com.szzcs.smartpos.Puntada.leerTargeta;
-import com.szzcs.smartpos.TanqueLleno.PosicionCargaTqll;
 import com.szzcs.smartpos.Ticket.ventas;
 import com.zcs.sdk.card.CardReaderTypeEnum;
 
@@ -42,14 +40,14 @@ public class Munu_Principal extends AppCompatActivity {
         setContentView(R.layout.activity_munu__principal);
 
 
-        CardReaderTypeEnum cardType = MAG_CARD;
-        CardFragment cf = new CardFragment();
-        Bundle bundle = new Bundle();
-        bundle.putSerializable("card_type", cardType);
-        cf.setArguments(bundle);
-        getFragmentManager().beginTransaction().replace(R.id.menu, cf).
-                addToBackStack(CardFragment.class.getName()).
-                commit();
+//        CardReaderTypeEnum cardType = MAG_CARD;
+//        CardFragment cf = new CardFragment();
+//        Bundle bundle = new Bundle();
+//        bundle.putSerializable("card_type", cardType);
+//        cf.setArguments(bundle);
+//        getFragmentManager().beginTransaction().replace(R.id.menu, cf).
+//                addToBackStack(CardFragment.class.getName()).
+//                commit();
 
         MyListAdapter adapter=new MyListAdapter(this, maintitle, subtitle,imgid);
         list= findViewById(R.id.list);

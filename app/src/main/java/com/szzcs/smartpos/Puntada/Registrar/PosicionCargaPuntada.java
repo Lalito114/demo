@@ -1,4 +1,4 @@
-package com.szzcs.smartpos.Puntada;
+package com.szzcs.smartpos.Puntada.Registrar;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;

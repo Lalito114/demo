@@ -1,11 +1,10 @@
-package com.szzcs.smartpos.Puntada;
+package com.szzcs.smartpos.Puntada.Acumular;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -40,7 +39,7 @@ public class posicionCargaAcumular extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                vax(response);
+                MetodoResponse(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -58,55 +57,9 @@ public class posicionCargaAcumular extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
         requestQueue.add(stringRequest);
 
-        //StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-        //    @Override
-        //    public void onResponse(String response) {
-
-        //        //Obtenemos el linear layout donde colocar los botones
-        //        LinearLayout llBotonera = (LinearLayout) findViewById(R.id.posicionCarga);
-
-        //        //Creamos las propiedades de layout que tendrán los botones.
-        //        //Son LinearLayout.LayoutParams porque los botones van a estar en un LinearLayout.
-        //        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,
-        //                LinearLayout.LayoutParams.WRAP_CONTENT );
-
-        //        //Creamos los botones en bucle
-        //        for (int i=1; i<=Integer.parseInt(response); i++){
-        //            Button button = new Button(getApplicationContext());
-        //            //Asignamos propiedades de layout al boton
-        //            button.setLayoutParams(lp);
-        //            //Asignamos Texto al botón
-        //            button.setText("" + i);
-
-        //            //Asignamose el Listener
-        //            button.setOnClickListener(new ButtonOnClickListener(this));
-        //            //Añadimos el botón a la botonera
-        //            llBotonera.addView(button);
-
-        //        }
-
-
-        //    }
-        //}, new Response.ErrorListener() {
-        //    @Override
-        //    public void onErrorResponse(VolleyError error) {
-        //        Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
-        //    }
-        //}){
-        //    @Override
-        //    protected Map<String, String> getParams() throws AuthFailureError {
-        //        Map<String,String> parametros = new HashMap<String, String>();
-
-
-
-        //        return parametros;
-        //    }
-        //};
-        //RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
-        //requestQueue.add(stringRequest);
     }
 
-    private void vax(final String response) {
+    private void MetodoResponse(final String response) {
         List<String> maintitle;
         maintitle = new ArrayList<String>();
 
@@ -137,7 +90,7 @@ public class posicionCargaAcumular extends AppCompatActivity {
                 int posicion = position +1;
                 String posi = String.valueOf(posicion);
 
-                Intent intente = new Intent(getApplicationContext(), SeleccionarProductos.class);
+                Intent intente = new Intent(getApplicationContext(), Productos_Seleccionar_Puntada.class);
                 intente.putExtra("pos",posi);
                 startActivity(intente);
             }
@@ -145,18 +98,4 @@ public class posicionCargaAcumular extends AppCompatActivity {
     }
 
 
-
-
-    private class ButtonOnClickListener implements View.OnClickListener {
-        public ButtonOnClickListener(Response.Listener<String> listener) {
-        }
-
-        @Override
-        public void onClick(View v) {
-            Button b = (Button) v;
-            Intent intente = new Intent(getApplicationContext(), SeleccionarProductos.class);
-            intente.putExtra("pos",b.getText());
-            startActivity(intente);
-        }
-    }
 }
