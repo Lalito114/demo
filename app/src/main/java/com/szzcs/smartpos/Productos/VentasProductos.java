@@ -19,8 +19,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.szzcs.smartpos.Puntada.ListAdapterSP;
-import com.szzcs.smartpos.Puntada.SeleccionarProductos;
 import com.szzcs.smartpos.R;
 
 import org.json.JSONArray;
@@ -218,15 +216,6 @@ public class VentasProductos extends AppCompatActivity {
         });
     }
 
-    private class ButonsOnClickListener implements View.OnClickListener {
-        public ButonsOnClickListener(SeleccionarProductos seleccionarProductos) {
-        }
-
-        @Override
-        public void onClick(View v) {
-
-        }
-    }
 
     private void CrearJSON() {
         btnAgregar = findViewById(R.id.btnAgregar);
