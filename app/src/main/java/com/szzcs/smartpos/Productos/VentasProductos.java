@@ -217,7 +217,6 @@ public class VentasProductos extends AppCompatActivity {
     }
 
 
-
     private void CrearJSON() {
         btnAgregar = findViewById(R.id.btnAgregar);
         btnAgregar.setOnClickListener(new View.OnClickListener() {
