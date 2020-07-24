@@ -1,4 +1,4 @@
-package com.szzcs.smartpos.Puntada;
+package com.szzcs.smartpos.Puntada.Acumular;
 
 
 
@@ -22,7 +22,7 @@ public class ListAdapterSP  extends ArrayAdapter<String>{
 
 
 
-    public ListAdapterSP(Puntada_Productos_Seleccionar context, List<String> ID, List<String> NombreProducto) {
+    public ListAdapterSP(Productos_Seleccionar_Puntada context, List<String> ID, List<String> NombreProducto) {
         super((Context) context, R.layout.list, ID);
         // TODO Auto-generated constructor stub
 

@@ -1,4 +1,4 @@
-package com.szzcs.smartpos.Puntada;
+package com.szzcs.smartpos.Puntada.Registrar;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -9,16 +9,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.szzcs.smartpos.CardFragment;
 import com.szzcs.smartpos.MyListAdapter;
+import com.szzcs.smartpos.Puntada.Acumular.posicionCargaAcumular;
+import com.szzcs.smartpos.Puntada.Registrar.ClavePuntada;
 import com.szzcs.smartpos.R;
-import com.szzcs.smartpos.Ticket.Entidad;
-import com.szzcs.smartpos.Ticket.ventas;
-import com.zcs.sdk.card.CardReaderTypeEnum;
-
-import java.util.List;
-
-import static com.zcs.sdk.card.CardReaderTypeEnum.MAG_CARD;
 
 
 public class leerTargeta extends AppCompatActivity {

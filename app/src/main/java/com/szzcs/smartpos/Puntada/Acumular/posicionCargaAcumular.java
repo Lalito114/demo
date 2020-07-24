@@ -1,11 +1,10 @@
-package com.szzcs.smartpos.Puntada;
+package com.szzcs.smartpos.Puntada.Acumular;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -91,7 +90,7 @@ public class posicionCargaAcumular extends AppCompatActivity {
                 int posicion = position +1;
                 String posi = String.valueOf(posicion);
 
-                Intent intente = new Intent(getApplicationContext(), Puntada_Productos_Seleccionar.class);
+                Intent intente = new Intent(getApplicationContext(), Productos_Seleccionar_Puntada.class);
                 intente.putExtra("pos",posi);
                 startActivity(intente);
             }

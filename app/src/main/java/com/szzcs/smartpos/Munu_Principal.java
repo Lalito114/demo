@@ -9,8 +9,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.szzcs.smartpos.Productos.VentaProductos;
-import com.szzcs.smartpos.Puntada.leerTargeta;
-import com.szzcs.smartpos.TanqueLleno.PosicionCargaTqll;
 import com.szzcs.smartpos.Ticket.ventas;
 import com.zcs.sdk.card.CardReaderTypeEnum;
 

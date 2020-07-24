@@ -1,4 +1,4 @@
-package com.szzcs.smartpos.Puntada;
+package com.szzcs.smartpos.Puntada.Acumular;
 
 import android.app.Activity;
 import android.content.Context;
@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.szzcs.smartpos.R;
-import com.szzcs.smartpos.Puntada.posicionCargaAcumular;
+import com.szzcs.smartpos.Puntada.Acumular.posicionCargaAcumular;
 
 import java.util.List;
 

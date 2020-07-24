@@ -1,4 +1,4 @@
-package com.szzcs.smartpos.Puntada;
+package com.szzcs.smartpos.Puntada.Acumular;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Puntada_Productos_Seleccionar extends AppCompatActivity {
+public class Productos_Seleccionar_Puntada extends AppCompatActivity {
     Button btnAgregar,btnEnviar;
     TextView cantidadProducto;
     String cantidad;
@@ -35,7 +35,8 @@ public class Puntada_Productos_Seleccionar extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView( R.layout.activity_puntada__productos);
+        setContentView(R.layout.activity_productos__puntada);
+
         btnEnviar = findViewById(R.id.btnEnviar);
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -47,6 +48,7 @@ public class Puntada_Productos_Seleccionar extends AppCompatActivity {
         MostrarProductos();
         CrearJSON();
     }
+
 
     private void EnviarDatos() {
         String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tarjetas/sendtarjeta";
