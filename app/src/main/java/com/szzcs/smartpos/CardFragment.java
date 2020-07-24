@@ -15,9 +15,8 @@ import android.support.annotation.StringRes;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.szzcs.smartpos.Puntada.Registrar.leerTargeta;
+import com.szzcs.smartpos.Puntada.SeccionTarjeta;
 import com.szzcs.smartpos.utils.DialogUtils;
 import com.szzcs.smartpos.utils.SDK_Result;
 import com.zcs.sdk.DriverManager;
@@ -313,7 +312,8 @@ public class CardFragment extends PreferenceFragment {
         Log.d(TAG, "cardInfo.getResultcode():" + cardInfo.getResultcode());
         String tk1 = cardInfo.getTk1();
         String tk3 = cardInfo.getTk3();
-        String tk2 = cardInfo.getTk2();
+        //tring tk2 = cardInfo.getTk2();
+        String tk2 = "4000004210100001";
         String mtk2 =tk2.substring(0,16);
         if(mtk2.isEmpty()){
             mMagCard.magCardClose();
@@ -326,38 +326,21 @@ public class CardFragment extends PreferenceFragment {
             // search again
             mCardReadManager.searchCard(mCardType, READ_TIMEOUT, mListener);
 
-            String space = mtk2.substring(0,1);
+            String space = mtk2.substring(0,2);
 
             int mb= Integer.parseInt(space);
 
-            if (mb == 4){
-                Intent intent = new Intent(getActivity(),leerTargeta.class);
+            if (mb == 40){
+                Intent intent = new Intent(getActivity(),SeccionTarjeta.class);
                 Bundle bundle  = new Bundle();
                 bundle.putString("track",mtk2);
                 intent.putExtras(bundle);
                 startActivity(intent);
-            }else{
-                int tl= Integer.parseInt(space);
-                if (tl == 3){
-
-//                    Intent intent = new Intent(getActivity(),PosicionCargaTqll.class);
-//                    Bundle bundle  = new Bundle();
-//                    bundle.putString("track",mtk2);
-//                    intent.putExtras(bundle);
-//                    startActivity(intent);
-                }else{
-                    Toast.makeText(getActivity(),"Ya pelucas",Toast.LENGTH_LONG).show();
-                }
-
             }
 
 
 
-            Intent intent = new Intent(getActivity(),leerTargeta.class);
-            Bundle bundle  = new Bundle();
-            bundle.putString("track",mtk2);
-            intent.putExtras(bundle);
-            startActivity(intent);
+
         }
 //        if (cardInfo.getResultcode() == SdkResult.SDK_OK) {
 //            String exp = cardInfo.getExpiredDate();

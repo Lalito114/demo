@@ -33,10 +33,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Productos.VentasProductos"></activity>
+        <activity android:name=".Puntada.SeccionTarjeta"></activity>
+        <activity android:name=".Productos.VentasProductos" />
         <activity android:name=".Productos.claveUsuarioProducto" />
         <activity android:name=".Productos.posicionProductos" />
-
         <activity android:name=".Puntada.posicionCargaAcumular" />
         <activity android:name=".Puntada.PosicionCargaPuntada" />
         <activity android:name=".Puntada.ClavePuntada" /> <!-- Gerarqui de puntada -->

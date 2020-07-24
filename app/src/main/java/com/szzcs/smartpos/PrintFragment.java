@@ -50,6 +50,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import static android.content.Intent.getIntent;
+import static android.content.Intent.makeRestartActivityTask;
 
 /**
  * Created by yyzz on 2018/5/25.
@@ -250,7 +251,7 @@ public class PrintFragment extends PreferenceFragment {
                     int efectivo = 1;
                     int ban = Integer.parseInt(formapago);
                     if (efectivo == ban){
-                        nombreforma = "Efectivo";
+                        nombreforma = "EFECTIVO";
                     }else {
                         int vales = 2;
                         if (vales == ban){
@@ -364,6 +365,9 @@ public class PrintFragment extends PreferenceFragment {
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+                    }else{
+                        Intent intent = new Intent (getActivity(),Munu_Principal.class);
+                        startActivity(intent);
                     }
 
 //                    if (ban == 3){
