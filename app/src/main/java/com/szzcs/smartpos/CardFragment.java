@@ -319,7 +319,7 @@ public class CardFragment extends PreferenceFragment {
             mMagCard.magCardClose();
             // search again
             mCardReadManager.searchCard(mCardType, READ_TIMEOUT, mListener);
-            Intent intent = new Intent(getActivity(), leerTargeta.class);
+            Intent intent = new Intent(getActivity(), SeccionTarjeta.class);
             startActivity(intent);
         }else{
             mMagCard.magCardClose();
