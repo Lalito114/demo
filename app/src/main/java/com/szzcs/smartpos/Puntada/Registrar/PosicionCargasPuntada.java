@@ -39,7 +39,6 @@ public class PosicionCargasPuntada extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posicion_cargas_puntada);
         PosicionesCargar();
-        EnviarDatos("");
 
     }
     public void PosicionesCargar(){
@@ -144,7 +143,7 @@ public class PosicionCargasPuntada extends AppCompatActivity {
     private void EnviarDatos(String response) {
         try {
             JSONObject respuesta = new JSONObject(response);
-            String estado = respuesta.getString("sMesanje");
+            String estado = respuesta.getString("sMensaje");
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Tarjeta Puntada");
             builder.setMessage(estado);
