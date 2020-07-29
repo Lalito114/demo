@@ -77,7 +77,6 @@ public class Munu_Principal extends AppCompatActivity {
                     bundle.putSerializable("card_type", cardType);
                     cf.setArguments(bundle);
                     getFragmentManager().beginTransaction().replace(R.id.menu, cf).
-                            addToBackStack(CardFragment.class.getName()).
                             commit();
 
 

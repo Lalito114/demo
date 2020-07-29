@@ -32,7 +32,7 @@ import java.util.Map;
 
 import static java.lang.Integer.parseInt;
 
-public class VentasProductos extends AppCompatActivity {
+public class  VentasProductos extends AppCompatActivity {
     Button btnAgregar,btnEnviar, incrementar, decrementar;
     TextView cantidadProducto;
     EditText Producto;

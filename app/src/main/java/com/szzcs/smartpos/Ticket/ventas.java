@@ -100,10 +100,6 @@ public class ventas extends AppCompatActivity {
                     Intent intente = new Intent(getApplicationContext(), claveUsuario.class);
                     intente.putExtra("pos",posi);
                     startActivity(intente);
-
-
-
-
             }
         });
     }

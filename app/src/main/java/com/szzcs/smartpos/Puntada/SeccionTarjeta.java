@@ -11,7 +11,7 @@ import android.widget.Toast;
 
 import com.szzcs.smartpos.MyListAdapter;
 import com.szzcs.smartpos.Puntada.Acumular.posicionCargaAcumular;
-import com.szzcs.smartpos.Puntada.Registrar.ClavePuntada;
+import com.szzcs.smartpos.Puntada.Registrar.ClaveRegistrarPuntada;
 import com.szzcs.smartpos.R;
 
 public class SeccionTarjeta extends AppCompatActivity {
@@ -61,11 +61,12 @@ public class SeccionTarjeta extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"En construcción",Toast.LENGTH_SHORT).show();
                         break;
                     case 2://Registrar
-                        Intent intent1 = new Intent(getApplicationContext(), ClavePuntada.class);
+                        Intent intent1 = new Intent(getApplicationContext(), ClaveRegistrarPuntada.class);
                         Bundle bundle1  = new Bundle();
                         bundle1.putString("track",track2);
                         intent1.putExtras(bundle1);
                         startActivity(intent1);
+                        finish();
                         break;
                     default:
 

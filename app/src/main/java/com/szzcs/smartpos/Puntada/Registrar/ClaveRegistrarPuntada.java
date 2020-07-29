@@ -10,14 +10,14 @@ import android.widget.Toast;
 
 import com.szzcs.smartpos.R;
 
-public class ClavePuntada extends AppCompatActivity {
+public class ClaveRegistrarPuntada extends AppCompatActivity {
     Button btnSiguiente;
     EditText pasword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_clave_puntada);
+        setContentView(R.layout.activity_clave_registrar_puntada);
         Bundle bundle = getIntent().getExtras();
         final String track2 = bundle.getString("track");
 
@@ -31,12 +31,13 @@ public class ClavePuntada extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Ingresa el NIP de la nueva targeta",Toast.LENGTH_LONG).show();
                 }else {
                     Toast.makeText(getApplicationContext(), pasword.getText(), Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(getApplicationContext(), PosicionCargaPuntada.class);
+                    Intent intent = new Intent(getApplicationContext(), PosicionCargasPuntada.class);
                     Bundle bundle  = new Bundle();
                     bundle.putString("track",track2);
                     bundle.putString("nip",pas);
                     intent.putExtras(bundle);
                     startActivity(intent);
+                    finish();
                 }
             }
         });
