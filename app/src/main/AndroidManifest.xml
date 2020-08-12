@@ -33,7 +33,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Puntada.Registrar.PosicionCargasPuntada"></activity>
+        <activity android:name=".TanqueLleno.ClaveDespachadorTL"></activity>
+        <activity android:name=".TanqueLleno.PosicionCargaTLl" />
+        <activity android:name=".Puntada.Registrar.PosicionCargasPuntada" />
         <activity android:name=".Puntada.Registrar.ClaveRegistrarPuntada" />
         <activity android:name=".Puntada.SeccionTarjeta" />
         <activity android:name=".Productos.VentasProductos" />
