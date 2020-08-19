@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.szzcs.smartpos.Puntada.Acumular.posicionCargaAcumular;
 import com.szzcs.smartpos.R;
 
 import java.util.List;

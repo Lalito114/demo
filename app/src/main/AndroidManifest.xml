@@ -33,7 +33,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".TanqueLleno.ClaveDespachadorTL"></activity>
+        <activity android:name=".Puntada.Acumular.posicionCarga"></activity>
+        <activity android:name=".TanqueLleno.ClaveDespachadorTL" />
         <activity android:name=".TanqueLleno.PosicionCargaTLl" />
         <activity android:name=".Puntada.Registrar.PosicionCargasPuntada" />
         <activity android:name=".Puntada.Registrar.ClaveRegistrarPuntada" />

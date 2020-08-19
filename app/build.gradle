@@ -43,6 +43,8 @@ android {
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
                 outputFileName = "SmartPosTest-${buildType.name}_V${defaultConfig.versionName}_${buildTime()}.apk"
+
+
             }
         }
     }

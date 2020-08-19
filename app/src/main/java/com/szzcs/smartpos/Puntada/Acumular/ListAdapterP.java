@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.szzcs.smartpos.R;
-import com.szzcs.smartpos.Puntada.Acumular.posicionCargaAcumular;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class ListAdapterP  extends ArrayAdapter<String>{
     private final String[] subtitle;
     private final Integer[] imgid;
 
-    public ListAdapterP(posicionCargaAcumular context, List<String> maintitle, List<String> subtitle, List<Integer> imgid) {
+    public ListAdapterP(posicionCarga context, List<String> maintitle, List<String> subtitle, List<Integer> imgid) {
         super((Context) context, R.layout.list, maintitle);
         // TODO Auto-generated constructor stub
 

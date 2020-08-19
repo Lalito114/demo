@@ -10,7 +10,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.szzcs.smartpos.MyListAdapter;
-import com.szzcs.smartpos.Puntada.Acumular.posicionCargaAcumular;
+import com.szzcs.smartpos.Puntada.Acumular.posicionCarga;
 import com.szzcs.smartpos.Puntada.Registrar.ClaveRegistrarPuntada;
 import com.szzcs.smartpos.R;
 
@@ -51,13 +51,19 @@ public class SeccionTarjeta extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 switch (position) {
                     case 0: //Acumular
-                        Intent intent = new Intent(getApplicationContext(), posicionCargaAcumular.class);
+                        Intent intent = new Intent(getApplicationContext(), posicionCarga.class);
                         Bundle bundle  = new Bundle();
                         bundle.putString("track",track2);
                         intent.putExtras(bundle);
                         startActivity(intent);
                         break;
                     case 1://Redimir
+                        Intent intent2 = new Intent(getApplicationContext(), ClaveRegistrarPuntada.class);
+                        Bundle bundle1  = new Bundle();
+                        bundle1.putString("track",track2);
+                        intent1.putExtras(bundle1);
+                        startActivity(intent1);
+                        finish();
                         Toast.makeText(getApplicationContext(),"En construcción",Toast.LENGTH_SHORT).show();
                         break;
                     case 2://Registrar

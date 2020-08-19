@@ -22,7 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class posicionCargaAcumular extends AppCompatActivity {
+public class posicionCarga extends AppCompatActivity {
     String titulo = "Seleccione Posicion de Carga";
     ListView list;
 
@@ -99,3 +99,4 @@ public class posicionCargaAcumular extends AppCompatActivity {
 
 
 }
+
