@@ -1,4 +1,4 @@
-package com.szzcs.smartpos.Puntada.Acumular;
+package com.szzcs.smartpos.Puntada.Redimir;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -15,6 +15,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Puntada.Acumular.ListAdapterP;
+import com.szzcs.smartpos.Puntada.Acumular.productos;
 import com.szzcs.smartpos.R;
 
 import java.util.ArrayList;
@@ -22,18 +24,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class posicionCarga extends AppCompatActivity {
-    String titulo = "Seleccione Posicion de Carga";
+public class PosicionRedimir extends AppCompatActivity {
     ListView list;
-
-    static int numBotones = 20;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_posicion_carga_acumular);
+        setContentView(R.layout.activity_posicion_redimir);
         posicionAcumular();
     }
-
     private void posicionAcumular() {
         String url = "http://10.0.1.20/TransferenciaDatosAPI/api/PosCarga/GetMax";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -77,9 +75,9 @@ public class posicionCarga extends AppCompatActivity {
         }
 
         //ListAdapterP adapterP=new ListAdapterP(this, maintitle, subtitle,imgid);
-        ListAdapterP adapterP = new ListAdapterP(this, maintitle, subtitle, imgid);
+        ListAdapterPR adapterPR = new ListAdapterPR(this, maintitle, subtitle, imgid);
         list=(ListView)findViewById(R.id.list);
-        list.setAdapter(adapterP);
+        list.setAdapter(adapterPR);
 
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -90,13 +88,10 @@ public class posicionCarga extends AppCompatActivity {
                 int posicion = position +1;
                 String posi = String.valueOf(posicion);
 
-                Intent intente = new Intent(getApplicationContext(), productos.class);
+                Intent intente = new Intent(getApplicationContext(), ClaveTarjeta.class);
                 intente.putExtra("pos",posi);
                 startActivity(intente);
             }
         });
     }
-
-
 }
-

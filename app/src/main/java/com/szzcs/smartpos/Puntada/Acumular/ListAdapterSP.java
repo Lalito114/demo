@@ -22,7 +22,7 @@ public class ListAdapterSP  extends ArrayAdapter<String>{
 
 
 
-    public ListAdapterSP(Productos_Seleccionar_Puntada context, List<String> ID, List<String> NombreProducto) {
+    public ListAdapterSP(productos context, List<String> ID, List<String> NombreProducto) {
         super((Context) context, R.layout.list, ID);
         // TODO Auto-generated constructor stub
 

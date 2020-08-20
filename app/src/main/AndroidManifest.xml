@@ -33,7 +33,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Puntada.Acumular.posicionCarga"></activity>
+        <activity android:name=".Puntada.Redimir.BalanceProductos"></activity>
+        <activity android:name=".Puntada.Redimir.ClaveTarjeta" />
+        <activity android:name=".Puntada.Acumular.productos" />
+        <activity android:name=".Puntada.Redimir.PosicionRedimir" />
+        <activity android:name=".Puntada.Acumular.posicionCarga" />
         <activity android:name=".TanqueLleno.ClaveDespachadorTL" />
         <activity android:name=".TanqueLleno.PosicionCargaTLl" />
         <activity android:name=".Puntada.Registrar.PosicionCargasPuntada" />

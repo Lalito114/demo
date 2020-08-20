@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.szzcs.smartpos.MyListAdapter;
 import com.szzcs.smartpos.Puntada.Acumular.posicionCarga;
+import com.szzcs.smartpos.Puntada.Redimir.PosicionRedimir;
 import com.szzcs.smartpos.Puntada.Registrar.ClaveRegistrarPuntada;
 import com.szzcs.smartpos.R;
 
@@ -58,11 +59,11 @@ public class SeccionTarjeta extends AppCompatActivity {
                         startActivity(intent);
                         break;
                     case 1://Redimir
-                        Intent intent2 = new Intent(getApplicationContext(), ClaveRegistrarPuntada.class);
-                        Bundle bundle1  = new Bundle();
-                        bundle1.putString("track",track2);
-                        intent1.putExtras(bundle1);
-                        startActivity(intent1);
+                        Intent intent2 = new Intent(getApplicationContext(), PosicionRedimir.class);
+                        Bundle bundle2  = new Bundle();
+                        bundle2.putString("track",track2);
+                        intent2.putExtras(bundle2);
+                        startActivity(intent2);
                         finish();
                         Toast.makeText(getApplicationContext(),"En construcción",Toast.LENGTH_SHORT).show();
                         break;

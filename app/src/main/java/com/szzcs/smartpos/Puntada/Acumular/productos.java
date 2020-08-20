@@ -25,7 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Productos_Seleccionar_Puntada extends AppCompatActivity {
+public class productos extends AppCompatActivity {
     Button btnAgregar,btnEnviar;
     TextView cantidadProducto;
     String cantidad;
