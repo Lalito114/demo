@@ -28,6 +28,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.szzcs.smartpos.R;
+
 public class BalanceProductos extends AppCompatActivity {
     Button btnAgregar,btnEnviar, incrementar, decrementar;
     TextView cantidadProducto;
@@ -39,7 +41,7 @@ public class BalanceProductos extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_balance_productos);
+        //setContentView(R.layout.activity_balance_productos);
         btnEnviar = findViewById(R.id.btnEnviar);
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,14 +1,18 @@
-package com.szzcs.smartpos.Productos;
+    package com.szzcs.smartpos.Productos;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Filter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 import com.szzcs.smartpos.R;
 
 import org.json.JSONArray;
@@ -28,29 +33,50 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static java.lang.Integer.parseInt;
+import org.json.JSONObject;
+import org.json.JSONException;
 
-public class  VentasProductos extends AppCompatActivity {
+public class VentasProductos extends AppCompatActivity{
+    private RecyclerView mRecyclerView;
+    private RecyclerView.Adapter mAdapter;
+    private RecyclerView.LayoutManager mLayoutManager;
+
     Button btnAgregar,btnEnviar, incrementar, decrementar;
-    TextView cantidadProducto;
+    TextView cantidadProducto, txtDescripcion, NumeroProductos;
     EditText Producto;
     String cantidad;
     JSONObject mjason = new JSONObject();
     ListView list;
 
+    Integer ProductosAgregados = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ventas_productos);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         btnEnviar = findViewById(R.id.btnEnviar);
         btnEnviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EnviarDatos();
+                //Toast.makeText(getApplicationContext(), "Productos Seleccionados: " + ProductosAgregados, Toast.LENGTH_LONG).show();
+                if (mjason.length() >0)       //!= null)
+                    EnviarDatos();
+                else
+                    Toast.makeText(getApplicationContext(), "Seleccione al menos uno de los Productos", Toast.LENGTH_LONG).show();
+           }
+        });
+        btnAgregar = findViewById(R.id.btnAgregar);
+        btnAgregar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                AgregarProducto();
+                //CrearJSON();
             }
         });
+
         incrementar = findViewById(R.id.incrementar);
         incrementar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,71 +91,38 @@ public class  VentasProductos extends AppCompatActivity {
                 Decrementar();
             }
         });
+        //btnAgregar = findViewById(R.id.btnAgregar);
+        //btnAgregar.setOnClickListener(new View.OnClickListener() {
+        //    @Override
+        //    public void onClick(View view) {
+        //        AgregarProducto();
+        //    }
+        //});
 
         CantidadProducto();
         MostrarProductos();
-        CrearJSON();
     }
     private void EnviarDatos() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Desea imprimir el ticket?");
-        builder.setTitle("Venta de Productos");
-        builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-//                String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tarjetas/sendtarjeta";
-//
-//                StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
-//                        new Response.Listener<String>() {
-//                            @Override
- //                           public void onResponse(String response) {
-//                                Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
-//                                try {
-//                                    JSONObject jsonObject = new JSONObject(response);
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-
-//                            }
-//                        }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
-//                    }
-//                }){
-//                    @Override
-//                    protected Map<String, String> getParams() {
-//                        // Posting parameters to login url
-//                        Map<String, String> params = new HashMap<String, String>();
-//                        params.put("RequestId", "33");
-//                        params.put("PosCarga","1");
-//                        params.put("Tarjeta","4000004210500001");
-//                        params.put("Productos",mjason.toString());
-
-//                        return params;
-//                    }
-//                };
-
-//                // Añade la peticion a la cola
-//                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-//                requestQueue.add(eventoReq);
-//
-            }
-        });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
-            }
-        });
-        AlertDialog dialog= builder.create();
-        dialog.show();
+        //Si es valido se asignan valores
+        final String posicion;
+        posicion = getIntent().getStringExtra("posicion");
+        final String usuarioid;
+        usuarioid = getIntent().getStringExtra("usuario");
+        //Se instancia y se llama a la clase VentaProductos
+        Intent intent = new Intent(getApplicationContext(), formaPago.class);
+        intent.putExtra("posicion",posicion);
+        intent.putExtra("usuario",usuarioid);
+        Gson gson = new Gson();
+        String myJson = gson.toJson(mjason);
+        intent.putExtra("myjson", myJson);
+        startActivity(intent);
     }
 
     private void CantidadProducto() {
         cantidadProducto = findViewById(R.id.cantidadProducto);
         Producto= findViewById(R.id.Producto);
         cantidad = cantidadProducto.toString();
+        txtDescripcion = findViewById(R.id.txtDescripcion);
     }
     private void Aumentar() {
         cantidad = cantidadProducto.getText().toString();
@@ -139,7 +132,6 @@ public class  VentasProductos extends AppCompatActivity {
         cantidadProducto.setText(resultado);
 
     }
-
     private void Decrementar() {
         cantidad = cantidadProducto.getText().toString();
         int numero = Integer.parseInt(cantidad);
@@ -152,6 +144,27 @@ public class  VentasProductos extends AppCompatActivity {
         }
     };
 
+    private void AgregarProducto(){
+        String resultado  = "";
+        //EditText cantidadProducto = (EditText)getActivity().findViewById();
+        String  ProductoId;
+        int TotalProducto = 0;
+
+        TotalProducto = Integer.parseInt(cantidadProducto.getText().toString());
+        ProductoId = Producto.getText().toString();
+        if (ProductoId.isEmpty())
+        {
+            Toast.makeText(getApplicationContext(), "Seleccione uno de los Productos", Toast.LENGTH_LONG).show();
+        }
+        else{
+            try {
+                mjason.put("cantidad", TotalProducto);
+                mjason.put("producto", ProductoId);
+                ProductosAgregados++;
+            } catch (JSONException error) {
+            }
+        }
+    }
 
     private void MostrarProductos() {
         String url = "http://10.0.1.20/TransferenciaDatosAPI/api/catarticulos/getall";
@@ -184,6 +197,7 @@ public class  VentasProductos extends AppCompatActivity {
 
         final List<String> ClaveProducto;
         ClaveProducto = new ArrayList();
+        //ArrayList<singleRow> singlerow = new ArrayList<>();
 
         try {
             JSONArray productos = new JSONArray(response);
@@ -196,22 +210,48 @@ public class  VentasProductos extends AppCompatActivity {
                 ID.add(DesLarga);
                 PrecioProducto.add(precio);
                 ClaveProducto.add(idArticulo);
+                //singlerow.add(new singleRow(DesLarga, idArticulo));
             }
+            //mRecyclerView = findViewById(R.id.recyclerView);
+            //mRecyclerView.setHasFixedSize(true);
+            //mLayoutManager = new LinearLayoutManager(this);
+            //mAdapter = new AdaptadorProducto(singlerow);
+            //mRecyclerView.setLayoutManager(mLayoutManager);
+            //mRecyclerView.setAdapter(mAdapter);
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        ListAdapterProductos adapterP = new ListAdapterProductos(this, ID, NombreProducto);
+        final ListAdapterProductos adapterP = new ListAdapterProductos(this,  ID, NombreProducto);
         list=(ListView)findViewById(R.id.list);
+        list.setTextFilterEnabled(true);
         list.setAdapter(adapterP);
+        Producto.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                //adapterP.getFilter().filter(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 //        Agregado Mikel
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-               //String  a = PrecioProducto.get(i).toString();
+               String  Descripcion = ID.get(i).toString();
                //String b = NombreProducto.get(i).toString();
                String paso= ClaveProducto.get(i).toString();
                Producto.setText(paso);
+               txtDescripcion.setText(Descripcion);
             }
         });
     }
@@ -222,18 +262,26 @@ public class  VentasProductos extends AppCompatActivity {
         btnAgregar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    for (int i = 0; i <1; i++) {
-                        mjason.put("Cantidad",cantidad);
-                        mjason.put("IdProducto","35");
-                    }
-                    Toast.makeText(getApplicationContext(),mjason.toString(),Toast.LENGTH_LONG).show();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                String  ProductoId;
+                int TotalProducto = 0;
 
+                TotalProducto = Integer.parseInt(cantidadProducto.getText().toString());
+                ProductoId = Producto.getText().toString();
+                if (ProductoId.isEmpty())
+                {
+                    Toast.makeText(getApplicationContext(), "Seleccione uno de los Productos", Toast.LENGTH_LONG).show();
+                }
+                else{
+                    try {
+                        mjason.put("cantidad", TotalProducto);
+                        mjason.put("producto", ProductoId);
+                        ProductosAgregados = ProductosAgregados +1;
+                    } catch (JSONException error) {
+                    }
+                }
             }
         });
 
     }
+
 }

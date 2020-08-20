@@ -6,6 +6,29 @@
     android:layout_height="match_parent"
     tools:context=".Productos.claveUsuarioProducto">
 
+    <TextView
+        android:id="@+id/txtPendientes2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="140dp"
+        android:layout_marginBottom="80dp"
+        android:text="PRODUCTOS"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/imgProducto"
+        android:layout_width="135dp"
+        android:layout_height="107dp"
+        android:layout_marginEnd="112dp"
+        android:layout_marginBottom="120dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/product"
+        android:background="@drawable/border"/>
+
     <Button
         android:id="@+id/enviar"
         android:layout_width="216dp"
@@ -17,11 +40,12 @@
         android:background="@drawable/b3"
         android:text="Enviar"
         android:textColor="@color/a_normal"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
-        android:id="@+id/pasword"
+        android:id="@+id/password"
         android:layout_width="289dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
