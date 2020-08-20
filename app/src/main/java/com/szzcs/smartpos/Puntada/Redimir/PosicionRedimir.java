@@ -87,9 +87,12 @@ public class PosicionRedimir extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 int posicion = position +1;
                 String posi = String.valueOf(posicion);
+                Bundle bundle = getIntent().getExtras();
+                final String track2 = bundle.getString("track");
 
                 Intent intente = new Intent(getApplicationContext(), ClaveTarjeta.class);
                 intente.putExtra("pos",posi);
+                intente.putExtra("track",track2);
                 startActivity(intente);
             }
         });

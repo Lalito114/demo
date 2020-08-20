@@ -34,7 +34,7 @@
         android:inputType="number" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/btnEnviar"
         android:layout_width="187dp"
         android:layout_height="41dp"
         android:layout_alignParentEnd="true"
