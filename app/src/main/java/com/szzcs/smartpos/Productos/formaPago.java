@@ -1,21 +1,13 @@
-package com.szzcs.smartpos.Ticket;
+package com.szzcs.smartpos.Productos;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.ClipData;
-import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
-import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,35 +18,29 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.szzcs.smartpos.MainActivity;
+import com.google.gson.Gson;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.R;
-import com.szzcs.smartpos.configuracion.SQLiteBD;
-import com.szzcs.smartpos.configuracion.tipoempresa;
-import com.szzcs.smartpos.utils.Kits;
+import com.szzcs.smartpos.Ticket.Adaptador;
+import com.szzcs.smartpos.Ticket.Entidad;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-//Clase para desplegar Formas de Pago
-public class formas_de_pago extends AppCompatActivity {
+public class formaPago extends AppCompatActivity {
+    //Definicion de variables
     private ListView lvItems;
     private Adaptador adaptador;
     private ArrayList<Entidad> arrayentidad;
 
-    //Definicion de variables
     TextView nose;
     String carga;
     String nousuario;
@@ -69,147 +55,132 @@ public class formas_de_pago extends AppCompatActivity {
     ArrayList<Entidad> listItems = new ArrayList<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_forma_pago);
+        //instruccion para que aparezca la flecha de regreso
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        setContentView(R.layout.activity_formas_de_pago);
-        nose = findViewById(R.id.nose);
-        obtenerformasdepago();
 
+        //inicializa listview
+        nose = findViewById(R.id.nose);
         lvItems = (ListView) findViewById(R.id.lvItems);
         arrayentidad = GetArrayItems();
+        //se realiza el adaptador para el listview
         adaptador = new Adaptador(this, arrayentidad);
         lvItems.setAdapter(adaptador);
+        //Se obtienen formas de pago para desplegar en el listview
+        obtenerformasdepago();
 
+        //Evento clic en el listview
         lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
                 //Obtiene valor del numero de copias!
                 TextView numcopias = (TextView) view.findViewById(R.id.tvCopias);
                 String copias = numcopias.getText().toString();
 
-                //Toast.makeText(getApplicationContext(), "posicion  " +  (position + 1), Toast.LENGTH_SHORT).show();
+                //Se asigna el valor del elelmento seleccionado Forma de Pago a la variable PagoS
                 Entidad e =  arrayentidad.get(position);
                 String PagoS = e.getContenido();
-
-
-                //Toast.makeText(getApplicationContext(), "Pago  " +  PagoS, Toast.LENGTH_SHORT).show();
-
-                //se genera el encabezado para el ticket
-                obtenerEncabezado(copias);
-                //Funcion para obtener los datos del ticker
-                obtenerdatosticket(PagoS, copias);
-
+                //Se envian datos
+                EnviarDatos(PagoS, copias);
             }
         });
     }
 
     private ArrayList<Entidad> GetArrayItems()
     {
-        //ArrayList<Entidad> listItems = new ArrayList<>();
-        //String Titulo = "EFECTIVO";
-        //String Contenido =  "1";
-        //listItems.add(new Entidad(R.drawable.billete, Titulo,  Contenido ));
-        //listItems.add(new Entidad(R.drawable.vale , "VALES", "2"  ));
-        //listItems.add(new Entidad(R.drawable.amex, "AMERICAN EXPRESS", "3"  ));
-//        listItems.add(new Entidad(R.drawable.gascard, "GAS CARD AMEX", "4"  ));
-//        listItems.add(new Entidad(R.drawable.visa, "VISA MASTERCARD", "5" ));
-//        listItems.add(new Entidad(R.drawable.valeelectronico, "VALE ELECTRONICO", "6" ));
-//        listItems.add(new Entidad(R.drawable.corpogas, "CREDITO ES", "7" ));
-//        listItems.add(new Entidad(R.drawable.corpomobil, "CORPOMOBILE ", "8" ));
         return listItems;
     };
 
-
-
     //funcion para obtener formas de pago
     public void obtenerformasdepago(){
-        String url = "http://10.0.1.20/CorpogasService/api/sucursalformapagos/sucursal/1";
 
-        StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String formapago = jsonObject.getString("SucursalFormapagos");
+        //Solicitud de las formas de Pago/GetAll
+        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET,"http://10.0.1.20/TransferenciaDatosAPI/api/FormasPago/GetAll",null, new Response.Listener<JSONArray>() {
+            @Override
+            public void onResponse(JSONArray response) {
+                try{
+
+                    //ArrayList<Entidad> listItems = new ArrayList<>();
+                    // Recorre los elementos de la matriz del json
+                    for(int i=0;i<response.length();i++){
+                        // Obtiene el objeto json actual
+                        JSONObject student = response.getJSONObject(i);
+
+                        // Get the current student (json object) data
+                        String numero_pago = student.getString("IdFormaPago");
+                        String nombre_pago = student.getString("DescLarga");
+                        String numero_ticket = student.getString("NumCopias");
 
 
-                            JSONArray nodo = new JSONArray(formapago);
-                            for (int i = 0; i <nodo.length() ; i++) {
+                        String NPIzquierda = nombre_pago.substring(0,1).toUpperCase();
+                        String NPDerecha = nombre_pago.substring(1, nombre_pago.length()).toLowerCase();
 
-                                JSONObject nodo1 = nodo.getJSONObject(i);
-                                String numero_pago = nodo1.getString("FormaPagoId");
-                                String formapago1 = nodo1.getString("FormaPago");
-                                JSONObject nodo2 = new JSONObject(formapago1);
-                                String nombre_pago = nodo2.getString("DescripcionLarga");
-                                String numero_ticket = nodo2.getString("NumeroTickets");
+                        nombre_pago = NPIzquierda + NPDerecha;
 
-                                switch(numero_pago)
-                                {
-                                    case "1":
-                                    {
-                                        listItems.add(new Entidad(R.drawable.billete, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-                                    case "2":{
-                                        listItems.add(new Entidad(R.drawable.vale, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
 
-                                    case "3":{
-                                        listItems.add(new Entidad(R.drawable.amex, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-                                    case "4":{
-                                        listItems.add(new Entidad(R.drawable.gascard, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-                                    case "5":
-                                    {
-                                        listItems.add(new Entidad(R.drawable.visa, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-                                    case "6":{
-                                        listItems.add(new Entidad(R.drawable.valeelectronico, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
 
-                                    case "7":{
-                                        listItems.add(new Entidad(R.drawable.corpogas, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-                                    case "10":{
-                                        listItems.add(new Entidad(R.drawable.corpomobil, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-                                    default:{
-                                        listItems.add(new Entidad(R.drawable.camera, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-                                }
-
+                        switch(numero_pago)
+                        {
+                            case "1":
+                            {
+                                listItems.add(new Entidad(R.drawable.billete, nombre_pago,  numero_pago, numero_ticket));
+                                break;
+                            }
+                            case "2":{
+                                listItems.add(new Entidad(R.drawable.vale, nombre_pago,  numero_pago, numero_ticket));
+                                break;
                             }
 
+                            case "3":{
+                                listItems.add(new Entidad(R.drawable.amex, nombre_pago,  numero_pago, numero_ticket));
+                                break;
+                            }
+                            case "4":{
+                                listItems.add(new Entidad(R.drawable.gascard, nombre_pago,  numero_pago, numero_ticket));
+                                break;
+                            }
+                            case "5":
+                            {
+                                listItems.add(new Entidad(R.drawable.visa, nombre_pago,  numero_pago, numero_ticket));
+                                break;
+                            }
+                            case "6":{
+                                listItems.add(new Entidad(R.drawable.valeelectronico, nombre_pago,  numero_pago, numero_ticket));
+                                break;
+                            }
 
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            case "7":{
+                                listItems.add(new Entidad(R.drawable.corpogas, nombre_pago,  numero_pago, numero_ticket));
+                                break;
+                            }
+                            case "10":{
+                                listItems.add(new Entidad(R.drawable.corpomobil, nombre_pago,  numero_pago, numero_ticket));
+                                break;
+                            }
+                            default:{
+                                listItems.add(new Entidad(R.drawable.camera, nombre_pago,  numero_pago, numero_ticket));
+                                break;
+                            }
                         }
                     }
-                    //funcion para capturar errores
-                }, new Response.ErrorListener() {
+
+                }catch (JSONException e){
+                    //herramienta  para diagnostico de excepciones
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                //descripcion del error
                 Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+
             }
         });
-
-        // Añade la peticion a la cola
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        requestQueue.add(eventoReq);
+        requestQueue.add(jsonArrayRequest);
     }
 
     //Funcion para obtener los datos del ticket
@@ -336,15 +307,15 @@ public class formas_de_pago extends AppCompatActivity {
                 nousuario = getIntent().getExtras().getString("user");
                 //pago = findViewById(R.id.pago);
                 String formapago = PagoSeleccionado; //pago.getText().toString();
-               // Toast.makeText(getApplicationContext(), formapago, Toast.LENGTH_SHORT).show();
+                // Toast.makeText(getApplicationContext(), formapago, Toast.LENGTH_SHORT).show();
 
 
-                    args.putString("numcopias", ncopias);
-                    args.putString("formadepago", PagoSeleccionado);
-                    params.put("IdFormaPago", formapago);
-                    params.put("Id_Usuario",nousuario);
-                    args.putString("idusuario", nousuario);
-                    params.put("PosCarga",carga);
+                args.putString("numcopias", ncopias);
+                args.putString("formadepago", PagoSeleccionado);
+                params.put("IdFormaPago", formapago);
+                params.put("Id_Usuario",nousuario);
+                args.putString("idusuario", nousuario);
+                params.put("PosCarga",carga);
 
                 return params;
             }
@@ -417,11 +388,11 @@ public class formas_de_pago extends AppCompatActivity {
 
                         //Se instancia el PrintFragment
 
-                            PrintFragment cf = new PrintFragment();
-                            cf.setArguments(args);
-                            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
-                                    addToBackStack(PrintFragment.class.getName()).
-                                    commit();
+                        PrintFragment cf = new PrintFragment();
+                        cf.setArguments(args);
+                        getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+                                addToBackStack(PrintFragment.class.getName()).
+                                commit();
 
 
                     }else{
@@ -445,9 +416,6 @@ public class formas_de_pago extends AppCompatActivity {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String,String> parametros = new HashMap<String, String>();
-
-
-
                 return parametros;
             }
         };
@@ -455,37 +423,88 @@ public class formas_de_pago extends AppCompatActivity {
         requestQueue.add(stringRequest);
 
     }
+
+    private void EnviarDatos(final String FormaPago, final String Copias){
+        //Se inicializa el control para solicitar confirmacion
+        AlertDialog.Builder builder;
+        //Obtengo la posicion de carga que se pasa como parametro
+        //String Posi = Posicion;
+        //Enviar datos de peoductos y posicion de carga para regresar Ticket
+        EnviarTransaccion();
+
+        builder = new AlertDialog.Builder(this);
+        builder.setMessage("Desea imprimir el ticket?");
+        builder.setTitle("Venta de Productos");
+        builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //se genera el encabezado para el ticket
+                obtenerEncabezado(Copias);
+                //Funcion para obtener los datos del ticker
+                obtenerdatosticket(FormaPago, Copias);
+                Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                startActivity(intent);
+            }
+        }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                //EnviaVenta;
+                dialogInterface.cancel();
+                Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                startActivity(intent);
+
+            }
+        });
+        AlertDialog dialog= builder.create();
+        dialog.show();
+    }
+
+    private void EnviarTransaccion(){
+        //Se obtienen los datos de las variables posicion de carga y usuario
+        final String posicion;
+        posicion = getIntent().getStringExtra("posicion");
+        final String usuarioid;
+        usuarioid = getIntent().getStringExtra("usuario");
+        //se inicializa nuevo objeto gson
+        Gson gson = new Gson();
+        //se recibe el objeto json con los productos a vender
+        final JSONObject mjason = gson.fromJson(getIntent().getStringExtra("myjson"),  JSONObject.class);
+        //Cambiarlo a arreglo para poder enviar el json
+
+
+        //Utilizamos el metodo POST para  enviar la transaccion y regrese el numero de ticket
+        String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tarjetas/sendtarjeta";
+
+        StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                // Colocar parametros para ingresar la  url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("PosCarga",posicion);
+                params.put("Productos",mjason.toString());
+                return params;
+            }
+        };
+
+        // Añade la peticion a la cola
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(eventoReq);
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

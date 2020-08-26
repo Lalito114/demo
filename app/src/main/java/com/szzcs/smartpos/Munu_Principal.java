@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
+import com.szzcs.smartpos.Pendientes.posicionPendientes;
 import com.szzcs.smartpos.Productos.VentasProductos;
 import com.szzcs.smartpos.Ticket.ventas;
 import com.zcs.sdk.card.CardReaderTypeEnum;
@@ -84,7 +85,8 @@ public class Munu_Principal extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Place Your Forth Option Code",Toast.LENGTH_SHORT).show();
                 }
                 else if(position == 4) {
-                    Toast.makeText(getApplicationContext(),"Place Your Fifth Option Code",Toast.LENGTH_SHORT).show();
+                    Intent intente = new Intent(getApplicationContext(), posicionPendientes.class);
+                    startActivity(intente);
                 }
                 else if(position == 5) {
                     Toast.makeText(getApplicationContext(),"Place Your Fifth Option Code",Toast.LENGTH_SHORT).show();
