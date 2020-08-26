@@ -35,6 +35,8 @@ import com.szzcs.smartpos.MainActivity;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
+import com.szzcs.smartpos.configuracion.tipoempresa;
 import com.szzcs.smartpos.utils.Kits;
 
 import org.json.JSONArray;
@@ -124,92 +126,91 @@ public class formas_de_pago extends AppCompatActivity {
 
     //funcion para obtener formas de pago
     public void obtenerformasdepago(){
+        String url = "http://10.0.1.20/CorpogasService/api/sucursalformapagos/sucursal/1";
 
-        //Solicitud de las formas de Pago/GetAll
-        JsonArrayRequest jsonArrayRequest=new JsonArrayRequest(Request.Method.GET,"http://10.0.1.20/TransferenciaDatosAPI/api/FormasPago/GetAll",null, new Response.Listener<JSONArray>() {
-            @Override
-            public void onResponse(JSONArray response) {
-                try{
-
-                    //ArrayList<Entidad> listItems = new ArrayList<>();
-                    // Recorre los elementos de la matriz del json
-                    for(int i=0;i<response.length();i++){
-                        // Obtiene el objeto json actual
-                        JSONObject student = response.getJSONObject(i);
-
-                        // Get the current student (json object) data
-                        String numero_pago = student.getString("IdFormaPago");
-                        String nombre_pago = student.getString("DescLarga");
-                        String numero_ticket = student.getString("NumCopias");
+        StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(getApplicationContext(),response,Toast.LENGTH_SHORT).show();
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String formapago = jsonObject.getString("SucursalFormapagos");
 
 
-                        String NPIzquierda = nombre_pago.substring(0,1).toUpperCase();
-                        String NPDerecha = nombre_pago.substring(1, nombre_pago.length()).toLowerCase();
+                            JSONArray nodo = new JSONArray(formapago);
+                            for (int i = 0; i <nodo.length() ; i++) {
 
-                        nombre_pago = NPIzquierda + NPDerecha;
+                                JSONObject nodo1 = nodo.getJSONObject(i);
+                                String numero_pago = nodo1.getString("FormaPagoId");
+                                String formapago1 = nodo1.getString("FormaPago");
+                                JSONObject nodo2 = new JSONObject(formapago1);
+                                String nombre_pago = nodo2.getString("DescripcionLarga");
+                                String numero_ticket = nodo2.getString("NumeroTickets");
 
+                                switch(numero_pago)
+                                {
+                                    case "1":
+                                    {
+                                        listItems.add(new Entidad(R.drawable.billete, nombre_pago,  numero_pago, numero_ticket));
+                                        break;
+                                    }
+                                    case "2":{
+                                        listItems.add(new Entidad(R.drawable.vale, nombre_pago,  numero_pago, numero_ticket));
+                                        break;
+                                    }
 
+                                    case "3":{
+                                        listItems.add(new Entidad(R.drawable.amex, nombre_pago,  numero_pago, numero_ticket));
+                                        break;
+                                    }
+                                    case "4":{
+                                        listItems.add(new Entidad(R.drawable.gascard, nombre_pago,  numero_pago, numero_ticket));
+                                        break;
+                                    }
+                                    case "5":
+                                    {
+                                        listItems.add(new Entidad(R.drawable.visa, nombre_pago,  numero_pago, numero_ticket));
+                                        break;
+                                    }
+                                    case "6":{
+                                        listItems.add(new Entidad(R.drawable.valeelectronico, nombre_pago,  numero_pago, numero_ticket));
+                                        break;
+                                    }
 
-                        switch(numero_pago)
-                        {
-                            case "1":
-                            {
-                                listItems.add(new Entidad(R.drawable.billete, nombre_pago,  numero_pago, numero_ticket));
-                                break;
+                                    case "7":{
+                                        listItems.add(new Entidad(R.drawable.corpogas, nombre_pago,  numero_pago, numero_ticket));
+                                        break;
+                                    }
+                                    case "10":{
+                                        listItems.add(new Entidad(R.drawable.corpomobil, nombre_pago,  numero_pago, numero_ticket));
+                                        break;
+                                    }
+                                    default:{
+                                        listItems.add(new Entidad(R.drawable.camera, nombre_pago,  numero_pago, numero_ticket));
+                                        break;
+                                    }
+                                }
+
                             }
-                            case "2":{
-                                listItems.add(new Entidad(R.drawable.vale, nombre_pago,  numero_pago, numero_ticket));
-                                break;
-                            }
 
-                            case "3":{
-                                listItems.add(new Entidad(R.drawable.amex, nombre_pago,  numero_pago, numero_ticket));
-                                break;
-                            }
-                            case "4":{
-                                listItems.add(new Entidad(R.drawable.gascard, nombre_pago,  numero_pago, numero_ticket));
-                                break;
-                            }
-                            case "5":
-                            {
-                                listItems.add(new Entidad(R.drawable.visa, nombre_pago,  numero_pago, numero_ticket));
-                                break;
-                            }
-                            case "6":{
-                                listItems.add(new Entidad(R.drawable.valeelectronico, nombre_pago,  numero_pago, numero_ticket));
-                                break;
-                            }
 
-                            case "7":{
-                                listItems.add(new Entidad(R.drawable.corpogas, nombre_pago,  numero_pago, numero_ticket));
-                                break;
-                            }
-                            case "10":{
-                                listItems.add(new Entidad(R.drawable.corpomobil, nombre_pago,  numero_pago, numero_ticket));
-                                break;
-                            }
-                            default:{
-                                listItems.add(new Entidad(R.drawable.camera, nombre_pago,  numero_pago, numero_ticket));
-                                break;
-                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
-
-                }catch (JSONException e){
-                    //herramienta  para diagnostico de excepciones
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
+                    //funcion para capturar errores
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //descripcion del error
                 Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
-
             }
         });
+
+        // Añade la peticion a la cola
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        requestQueue.add(jsonArrayRequest);
+        requestQueue.add(eventoReq);
     }
 
     //Funcion para obtener los datos del ticket

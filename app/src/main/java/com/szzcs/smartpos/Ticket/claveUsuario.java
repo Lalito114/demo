@@ -53,20 +53,20 @@ public class claveUsuario extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Ingresa la contraseña",Toast.LENGTH_SHORT).show();
                 }else{
                     //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
+
                     //Conexion con la base y ejecuta valida clave
-                    String url = "http://10.0.1.20/TransferenciaDatosAPI/api/cve/GetValidaCve";
+                    String url = "http://10.0.1.20/CorpogasService/api/SucursalEmpleados/clave/"+pass;
+
                     // Utilizamos el metodo Post para validar la contraseña
-                    StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
+                    StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
                                     try {
                                         //Se instancia la respuesta del json
                                         JSONObject validar = new JSONObject(response);
-                                        String valido = validar.getString("EsValido");
-                                        String idusuario = validar.getString("IdUsuario");
-                                        String reimpresion = validar.getString("Reimpresion");
-                                        String ticket = validar.getString("TicketImpreso");
+                                        String valido = validar.getString("Activo");
+                                        String idusuario = validar.getString("Id");
                                         if (valido == "true"){
                                             //Si es valido se asignan valores
                                             usuario.setText(idusuario);
@@ -91,16 +91,7 @@ public class claveUsuario extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error) {
                             Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
                         }
-                    }){
-                        @Override
-                        protected Map<String, String> getParams() {
-                            // Posting parameters to login url
-                            Map<String, String> params = new HashMap<String, String>();
-                            params.put("PosCarga",posicion);
-                            params.put("Clave",pass);
-                            return params;
-                        }
-                    };
+                    });
 
                     // Añade la peticion a la cola
                     RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());

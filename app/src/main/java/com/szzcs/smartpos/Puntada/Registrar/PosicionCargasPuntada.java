@@ -120,6 +120,7 @@ public class PosicionCargasPuntada extends AppCompatActivity {
                     protected Map<String, String> getParams() {
                         // Posting parameters to login url
                         Map<String, String> params = new HashMap<String, String>();
+                        params.put("EstacionId", "1");
                         params.put("RequestId","39");
                         params.put("PosCarga", posi);
                         params.put("Tarjeta",track2);

@@ -1,6 +1,8 @@
 package com.szzcs.smartpos;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,9 +12,15 @@ import android.widget.Toast;
 
 
 import com.szzcs.smartpos.Productos.VentasProductos;
-import com.szzcs.smartpos.Productos.posicionProductos;
 import com.szzcs.smartpos.Ticket.ventas;
 import com.zcs.sdk.card.CardReaderTypeEnum;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 
 import static com.zcs.sdk.card.CardReaderTypeEnum.MAG_CARD;
 
@@ -42,15 +50,6 @@ public class Munu_Principal extends AppCompatActivity {
         setContentView(R.layout.activity_munu__principal);
 
 
-//        CardReaderTypeEnum cardType = MAG_CARD;
-//        CardFragment cf = new CardFragment();
-//        Bundle bundle = new Bundle();
-//        bundle.putSerializable("card_type", cardType);
-//        cf.setArguments(bundle);
-//        getFragmentManager().beginTransaction().replace(R.id.menu, cf).
-//                addToBackStack(CardFragment.class.getName()).
-//                commit();
-
         MyListAdapter adapter=new MyListAdapter(this, maintitle, subtitle,imgid);
         list= findViewById(R.id.list);
         list.setAdapter(adapter);
@@ -69,9 +68,6 @@ public class Munu_Principal extends AppCompatActivity {
                 }
 
                 else if(position == 1) {
-                    //code specific to 2nd list item
-                    //Intent intent = new Intent(getApplicationContext(), leerTargeta.class);
-                    //startActivity(intent);
                     CardReaderTypeEnum cardType = MAG_CARD;
                     CardFragment cf = new CardFragment();
                     Bundle bundle = new Bundle();
@@ -79,32 +75,27 @@ public class Munu_Principal extends AppCompatActivity {
                     cf.setArguments(bundle);
                     getFragmentManager().beginTransaction().replace(R.id.menu, cf).
                             commit();
-
-
-                   // cf.searchBankCard(cardType);
                 }
-
                 else if(position == 2) {
-
-                    Intent intent = new Intent(getApplicationContext(), posicionProductos.class);
+                    Intent intent = new Intent(getApplicationContext(), VentasProductos.class);
                     startActivity(intent);
                 }
                 else if(position == 3) {
-
                     Toast.makeText(getApplicationContext(),"Place Your Forth Option Code",Toast.LENGTH_SHORT).show();
                 }
                 else if(position == 4) {
-
                     Toast.makeText(getApplicationContext(),"Place Your Fifth Option Code",Toast.LENGTH_SHORT).show();
                 }
                 else if(position == 5) {
-
                     Toast.makeText(getApplicationContext(),"Place Your Fifth Option Code",Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
+        //Escribir url del Archivo
 
-
+       
     }
+
+
 }

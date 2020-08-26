@@ -33,7 +33,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Puntada.Redimir.BalanceProductos"></activity>
+        <activity android:name=".configuracion.tipoempresa"></activity>
+        <activity android:name=".configuracion.ConfiguracionServidor" />
+        <activity android:name=".Puntada.Redimir.BalanceProductos" />
         <activity android:name=".Puntada.Redimir.ClaveTarjeta" />
         <activity android:name=".Puntada.Acumular.productos" />
         <activity android:name=".Puntada.Redimir.PosicionRedimir" />
