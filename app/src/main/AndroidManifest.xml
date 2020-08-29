@@ -81,6 +81,8 @@
                 android:value=".Munu_Principal" />
         </activity> <!-- Aqui termina la jeraquia del modulo de ticket -->
         <activity android:name=".Munu_Principal" />
+
+
         <activity
             android:name=".Splash"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden"
@@ -91,6 +93,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
         <activity
             android:name="com.zcs.sdk.pin.pinpad.PinPadPasswordActivity"
             android:theme="@style/Theme.WindowActivity" />

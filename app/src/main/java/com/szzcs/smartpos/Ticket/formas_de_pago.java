@@ -136,9 +136,11 @@ public class formas_de_pago extends AppCompatActivity {
                             JSONObject jsonObject = new JSONObject(response);
                             String formapago = jsonObject.getString("SucursalFormapagos");
 
+                            Toast.makeText(getApplicationContext(),formapago,Toast.LENGTH_LONG).show();
+
 
                             JSONArray nodo = new JSONArray(formapago);
-                            for (int i = 0; i <nodo.length() ; i++) {
+                            for (int i = 0; i <=11 ; i++) {
 
                                 JSONObject nodo1 = nodo.getJSONObject(i);
                                 String numero_pago = nodo1.getString("FormaPagoId");
@@ -296,25 +298,6 @@ public class formas_de_pago extends AppCompatActivity {
                             args.putString("total",total);
                             args.putString("totaltexto",totaltexto);
                             args.putString("mensaje",mensaje);
-                            //args.putString("mensaje",mensaje);
-
-//                            PrintFragment newFragment = new PrintFragment();
-//
-//                            newFragment.setArguments(args);
-//
-//
-//                            FragmentManager fm = getFragmentManager();
-
-
-//                            PrintFragment cf = new PrintFragment();
-//                            cf.setArguments(args);
-//                            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
-//                                    addToBackStack(PrintFragment.class.getName()).
-//                                    commit();
-
-
-
-
 
                         } catch (JSONException e) {
                             //herramienta  para diagnostico de excepciones
@@ -361,7 +344,8 @@ public class formas_de_pago extends AppCompatActivity {
     //Funcion para encabezado del Ticket
     public void obtenerEncabezado(final String ncopias){
         //Utilizamos el metodo Get para obtener el encabezado para los tickets
-        String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tickets/getheader";
+        //hay que cambiar el volo 1 del fina po el numeo de la estacion que se encuentra
+        String url = "http://10.0.1.20/CorpogasService/api/tickets/cabecero/estacion/1";
         //Se solicita peticion GET para obtener el encabezado
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -369,13 +353,22 @@ public class formas_de_pago extends AppCompatActivity {
                 try {
                     //se instancia la respuesta del JSON
                     JSONObject encabezado = new JSONObject(response);
+
+                    String cabecero = encabezado.getString("Cabecero");
+                    JSONObject encabezado1 = new JSONObject(cabecero);
+                    String empresa = encabezado1.getString("Empresa");
+
+                    JSONObject empresa1 = new JSONObject(empresa);
+                    String rfc = empresa1.getString("Rfc");
+
+
                     // si la respuesta del json contine informacion
                     if (encabezado != null){
                         //Asignacion a variables para encabezado
 
                         String idestacion = encabezado.getString("IdEstacionInt");
                         String nombre = encabezado.getString("Nombre");
-                        String rfc = encabezado.getString("RFC");
+                        //String rfc = encabezado.getString("RFC");
                         String siic = encabezado.getString("SIIC");
                         String regimen = encabezado.getString("Regimen");
 

@@ -28,7 +28,7 @@
     <string name="title_ic_card">IC card</string>
     <string name="title_rf_card">QuickPass card</string>
     <string name="msg_bank_card">Por favor deslice la tarjeta</string>
-    <string name="msg_mag_card">Please swipe card</string>
+    <string name="msg_mag_card">Por Favor deslice la tarjeta</string>
     <string name="msg_ic_card">Please insert IC card</string>
     <string name="msg_rf_card">Please swing card</string>
     <string name="msg_m1_card">Please swing m1 card</string>

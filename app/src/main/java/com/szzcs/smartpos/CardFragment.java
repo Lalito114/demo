@@ -17,6 +17,7 @@ import android.view.View;
 import android.widget.EditText;
 
 import com.szzcs.smartpos.Puntada.SeccionTarjeta;
+import com.szzcs.smartpos.TanqueLleno.ClaveDespachadorTL;
 import com.szzcs.smartpos.TanqueLleno.PosicionCargaTLl;
 import com.szzcs.smartpos.utils.DialogUtils;
 import com.szzcs.smartpos.utils.SDK_Result;
@@ -320,7 +321,7 @@ public class CardFragment extends PreferenceFragment {
             mMagCard.magCardClose();
             // search again
             mCardReadManager.searchCard(mCardType, READ_TIMEOUT, mListener);
-            Intent intent = new Intent(getActivity(), SeccionTarjeta.class);
+            Intent intent = new Intent(getActivity(), ClaveDespachadorTL.class);
             startActivity(intent);
         }else{
             mMagCard.magCardClose();
@@ -331,13 +332,7 @@ public class CardFragment extends PreferenceFragment {
 
             int mb= Integer.parseInt(space);
 
-            if (mb == 40){
-                Intent intent = new Intent(getActivity(),SeccionTarjeta.class);
-                Bundle bundle  = new Bundle();
-                bundle.putString("track",mtk2);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }else{
+
                 if (mb == 39){
                     Intent intent = new Intent(getActivity(), PosicionCargaTLl.class);
                     Bundle bundle  = new Bundle();
@@ -346,7 +341,6 @@ public class CardFragment extends PreferenceFragment {
                     intent.putExtras(bundle);
                     startActivity(intent);
                 }
-            }
 
 
 

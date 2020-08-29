@@ -52,36 +52,13 @@ public class ClaveDespachadorTL extends AppCompatActivity {
                 }else{
                     //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
                     //Conexion con la base y ejecuta valida clave
-                    String url = "http://10.0.1.20/TransferenciaDatosAPI/api/cve/GetValidaCve";
+                    String url = "http://10.0.1.20/CorpogasService/api/tanqueLleno/InicioAutorizacion/clave/123456";
                     // Utilizamos el metodo Post para validar la contraseña
                     StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-                                    try {
-                                        //Se instancia la respuesta del json
-                                        JSONObject validar = new JSONObject(response);
-                                        String valido = validar.getString("EsValido");
-                                        String idusuario = validar.getString("IdUsuario");
-                                        String reimpresion = validar.getString("Reimpresion");
-                                        String ticket = validar.getString("TicketImpreso");
-                                        if (valido == "true"){
-                                            //Si es valido se asignan valores
-                                            usuario.setText(idusuario);
-                                            carga.setText(posicion);
-                                            //Se instancia y se llama a la clase formas de pago
-                                            Intent intent = new Intent(getApplicationContext(), formas_de_pago.class);
-                                            intent.putExtra("car",posicion);
-                                            intent.putExtra("user",idusuario);
-                                            startActivity(intent);
-                                        }else{
-                                            //Si no es valido se envia mensaje
-                                            Toast.makeText(getApplicationContext(),"La contraseña es incorecta",Toast.LENGTH_SHORT).show();
-                                        }
-                                    } catch (JSONException e) {
-                                        //herramienta  para diagnostico de excepciones
-                                        e.printStackTrace();
-                                    }
+                                    Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
                                 }
                                 //funcion para capturar errores
                             }, new Response.ErrorListener() {
@@ -94,8 +71,9 @@ public class ClaveDespachadorTL extends AppCompatActivity {
                         protected Map<String, String> getParams() {
                             // Posting parameters to login url
                             Map<String, String> params = new HashMap<String, String>();
-                            params.put("PosCarga",posicion);
-                            params.put("Clave",pass);
+                            params.put("EstacionId","1");
+                            params.put("PosicionCarga","1");
+                            params.put("TarjetaCliente","3999990020015649");
                             return params;
                         }
                     };
