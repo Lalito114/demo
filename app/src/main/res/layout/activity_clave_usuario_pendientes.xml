@@ -36,7 +36,7 @@
         tools:layout_editor_absoluteY="185dp" />
 
     <Button
-        android:id="@+id/enviar"
+        android:id="@+id/btnsiguiente"
         android:layout_width="216dp"
         android:layout_height="41dp"
         android:layout_alignParentEnd="true"

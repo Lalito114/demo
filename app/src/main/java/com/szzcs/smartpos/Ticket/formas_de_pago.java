@@ -46,11 +46,12 @@ import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 //Clase para desplegar Formas de Pago
 public class formas_de_pago extends AppCompatActivity {
-    private ListView lvItems;
+    private ListView list;
     private Adaptador adaptador;
     private ArrayList<Entidad> arrayentidad;
 
@@ -62,11 +63,7 @@ public class formas_de_pago extends AppCompatActivity {
     EditText pago;
     Bundle args = new Bundle();
 
-    private Entidad Item;
-    private TextView tvDescripcion;
-    private String tvIdent;
 
-    ArrayList<Entidad> listItems = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -74,53 +71,11 @@ public class formas_de_pago extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_formas_de_pago);
-        nose = findViewById(R.id.nose);
         obtenerformasdepago();
 
-        lvItems = (ListView) findViewById(R.id.lvItems);
-        arrayentidad = GetArrayItems();
-        adaptador = new Adaptador(this, arrayentidad);
-        lvItems.setAdapter(adaptador);
-
-        lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-
-                //Obtiene valor del numero de copias!
-                TextView numcopias = (TextView) view.findViewById(R.id.tvCopias);
-                String copias = numcopias.getText().toString();
-
-                //Toast.makeText(getApplicationContext(), "posicion  " +  (position + 1), Toast.LENGTH_SHORT).show();
-                Entidad e =  arrayentidad.get(position);
-                String PagoS = e.getContenido();
-
-
-                //Toast.makeText(getApplicationContext(), "Pago  " +  PagoS, Toast.LENGTH_SHORT).show();
-
-                //se genera el encabezado para el ticket
-                obtenerEncabezado(copias);
-                //Funcion para obtener los datos del ticker
-                obtenerdatosticket(PagoS, copias);
-
-            }
-        });
     }
 
-    private ArrayList<Entidad> GetArrayItems()
-    {
-        //ArrayList<Entidad> listItems = new ArrayList<>();
-        //String Titulo = "EFECTIVO";
-        //String Contenido =  "1";
-        //listItems.add(new Entidad(R.drawable.billete, Titulo,  Contenido ));
-        //listItems.add(new Entidad(R.drawable.vale , "VALES", "2"  ));
-        //listItems.add(new Entidad(R.drawable.amex, "AMERICAN EXPRESS", "3"  ));
-//        listItems.add(new Entidad(R.drawable.gascard, "GAS CARD AMEX", "4"  ));
-//        listItems.add(new Entidad(R.drawable.visa, "VISA MASTERCARD", "5" ));
-//        listItems.add(new Entidad(R.drawable.valeelectronico, "VALE ELECTRONICO", "6" ));
-//        listItems.add(new Entidad(R.drawable.corpogas, "CREDITO ES", "7" ));
-//        listItems.add(new Entidad(R.drawable.corpomobil, "CORPOMOBILE ", "8" ));
-        return listItems;
-    };
+
 
 
 
@@ -132,74 +87,8 @@ public class formas_de_pago extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        try {
-                            JSONObject jsonObject = new JSONObject(response);
-                            String formapago = jsonObject.getString("SucursalFormapagos");
+                        formadepago(response);
 
-                            Toast.makeText(getApplicationContext(),formapago,Toast.LENGTH_LONG).show();
-
-
-                            JSONArray nodo = new JSONArray(formapago);
-                            for (int i = 0; i <=11 ; i++) {
-
-                                JSONObject nodo1 = nodo.getJSONObject(i);
-                                String numero_pago = nodo1.getString("FormaPagoId");
-                                String formapago1 = nodo1.getString("FormaPago");
-                                JSONObject nodo2 = new JSONObject(formapago1);
-                                String nombre_pago = nodo2.getString("DescripcionLarga");
-                                String numero_ticket = nodo2.getString("NumeroTickets");
-
-                                switch(numero_pago)
-                                {
-                                    case "1":
-                                    {
-                                        listItems.add(new Entidad(R.drawable.billete, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-                                    case "2":{
-                                        listItems.add(new Entidad(R.drawable.vale, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-
-                                    case "3":{
-                                        listItems.add(new Entidad(R.drawable.amex, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-                                    case "4":{
-                                        listItems.add(new Entidad(R.drawable.gascard, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-                                    case "5":
-                                    {
-                                        listItems.add(new Entidad(R.drawable.visa, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-                                    case "6":{
-                                        listItems.add(new Entidad(R.drawable.valeelectronico, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-
-                                    case "7":{
-                                        listItems.add(new Entidad(R.drawable.corpogas, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-                                    case "10":{
-                                        listItems.add(new Entidad(R.drawable.corpomobil, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-                                    default:{
-                                        listItems.add(new Entidad(R.drawable.camera, nombre_pago,  numero_pago, numero_ticket));
-                                        break;
-                                    }
-                                }
-
-                            }
-
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
                     }
                     //funcion para capturar errores
                 }, new Response.ErrorListener() {
@@ -212,6 +101,108 @@ public class formas_de_pago extends AppCompatActivity {
         // Añade la peticion a la cola
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(eventoReq);
+    }
+
+    private void formadepago(String response) {
+        //Declaramos la lista de titulo
+        List<String> maintitle;
+        //lo assignamos a un nuevo ArrayList
+        maintitle = new ArrayList<String>();
+
+        //Creamos la lista para los subtitulos
+        List<String> subtitle;
+        //Lo asignamos a un nuevo ArrayList
+        subtitle = new ArrayList<String>();
+
+        //CReamos una nueva list de tipo Integer con la cual cargaremos a una imagen
+        List<Integer> imgid;
+        //La asignamos a un nuevo elemento de ArrayList
+        imgid = new ArrayList<>();
+
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            String formapago = jsonObject.getString("SucursalFormapagos");
+
+            JSONArray nodo = new JSONArray(formapago);
+            for (int i = 0; i <=11 ; i++) {
+
+                JSONObject nodo1 = nodo.getJSONObject(i);
+                String numero_pago = nodo1.getString("FormaPagoId");
+                String formapago1 = nodo1.getString("FormaPago");
+                JSONObject nodo2 = new JSONObject(formapago1);
+                String nombre_pago = nodo2.getString("DescripcionLarga");
+                String numero_ticket = nodo2.getString("NumeroTickets");
+
+                maintitle.add( nombre_pago);
+                subtitle.add("ID Forma de Pago:" + numero_pago);
+
+
+                    int idpago = Integer.parseInt(numero_pago);
+                switch (idpago){
+                    case 1:
+                        imgid.add(R.drawable.monedero);
+                        break;
+                    case 2:
+                        imgid.add(R.drawable.billete);
+                        break;
+                    case 3:
+                        imgid.add(R.drawable.vale);
+                        break;
+                    case 4:
+                        imgid.add(R.drawable.american);
+                        break;
+                    case 5:
+                        imgid.add(R.drawable.gascard);
+                        break;
+                    case  6:
+                        imgid.add(R.drawable.visa);
+                        break;
+                    case 7:
+                        imgid.add(R.drawable.valeelectronico);
+                        break;
+                    case 8:
+                        imgid.add(R.drawable.credito);
+                        break;
+                    case 9:
+                        imgid.add(R.drawable.corpomobil);
+                        break;
+                    case 10:
+                        imgid.add(R.drawable.monedero);
+                        break;
+                    case 11:
+                        imgid.add(R.drawable.jarreo);
+                        break;
+                    case 12:
+                        imgid.add(R.drawable.monedero);
+                     break;
+                     default:
+                         imgid.add(R.drawable.monedero);
+                }
+
+            }
+
+
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        //Hacemos el ciclo para que cuente las posiciones de carga en las cuales se van a ver dibijadas
+
+        //Invocamos a la clase de listadapter para crear la vista sobre el layout
+        Adaptador adapter=new Adaptador(this, maintitle, subtitle,imgid);
+        list=(ListView)findViewById(R.id.list);
+        list.setAdapter(adapter);
+
+        //Optenemos el numero del Item seleccionado que corresponde a al numero de posicion de carga
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO Auto-generated method stub
+                obtenerEncabezado();
+            }
+        });
     }
 
     //Funcion para obtener los datos del ticket
@@ -342,7 +333,7 @@ public class formas_de_pago extends AppCompatActivity {
     }
 
     //Funcion para encabezado del Ticket
-    public void obtenerEncabezado(final String ncopias){
+    public void obtenerEncabezado(){
         //Utilizamos el metodo Get para obtener el encabezado para los tickets
         //hay que cambiar el volo 1 del fina po el numeo de la estacion que se encuentra
         String url = "http://10.0.1.20/CorpogasService/api/tickets/cabecero/estacion/1";
@@ -350,6 +341,7 @@ public class formas_de_pago extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
                 try {
                     //se instancia la respuesta del JSON
                     JSONObject encabezado = new JSONObject(response);
@@ -384,7 +376,7 @@ public class formas_de_pago extends AppCompatActivity {
 
 
 
-                        args.putString("numcopias",ncopias);
+
                         args.putString("noestacion", idestacion);
                         args.putString("nombreestacion", nombre);
                         args.putString("razonsocial", rfc);
@@ -434,16 +426,7 @@ public class formas_de_pago extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
             }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> parametros = new HashMap<String, String>();
-
-
-
-                return parametros;
-            }
-        };
+        });
         RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
         requestQueue.add(stringRequest);
 

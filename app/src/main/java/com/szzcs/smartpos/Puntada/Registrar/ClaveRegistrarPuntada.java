@@ -20,6 +20,7 @@ public class ClaveRegistrarPuntada extends AppCompatActivity {
         setContentView(R.layout.activity_clave_registrar_puntada);
         Bundle bundle = getIntent().getExtras();
         final String track2 = bundle.getString("track");
+        final String ClaveDespachador = bundle.getString("PasswordDespachador");
 
         btnSiguiente = findViewById(R.id.btnSiguente);
         btnSiguiente.setOnClickListener(new View.OnClickListener() {
@@ -33,6 +34,7 @@ public class ClaveRegistrarPuntada extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), pasword.getText(), Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getApplicationContext(), PosicionCargasPuntada.class);
                     Bundle bundle  = new Bundle();
+                    bundle.putString("ClaveDespachador",ClaveDespachador);
                     bundle.putString("track",track2);
                     bundle.putString("nip",pas);
                     intent.putExtras(bundle);

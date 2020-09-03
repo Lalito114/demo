@@ -29,21 +29,21 @@ public class Munu_Principal extends AppCompatActivity {
     ListView list;
 
     String[] maintitle ={
-            "Tickets","Facturas",
+            "Tickets","Monederos Electronicos",
             "Productos","Cortes",
-            "Pendientes","Reportes",
+            "Pendientes","Reportes","Facturas",
     };
 
     String[] subtitle ={
-            "Emite tickets de venta","Emisión de facturas",
+            "Emite tickets de venta","Registro, Acumular y Redimir",
             "Administra productos","Realiza cortes de turnos",
-            "Enlista pendientes","Muestra reportes",
+            "Enlista pendientes","Muestra reportes", "Imprime tus Tickets",
     };
 
     Integer[] imgid={
-            R.drawable.ventas,R.drawable.fact,
+            R.drawable.ventas,R.drawable.monedero,
             R.drawable.product,R.drawable.cortes,
-            R.drawable.pendientes, R.drawable.report,
+            R.drawable.pendientes, R.drawable.report,R.drawable.fact,
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {

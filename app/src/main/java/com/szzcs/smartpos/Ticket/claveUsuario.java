@@ -21,9 +21,6 @@ import com.szzcs.smartpos.R;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.HashMap;
-import java.util.Map;
-
 //Clase para validar la contraseña del empleado
 public class claveUsuario extends AppCompatActivity {
     TextView usuario, carga;
@@ -37,7 +34,7 @@ public class claveUsuario extends AppCompatActivity {
         usuario= findViewById(R.id.usuario);
         carga = findViewById(R.id.carga);
         //Crea Boton Enviar
-        Button btnenviar = (Button) findViewById(R.id.enviar);
+        Button btnenviar = (Button) findViewById(R.id.btnsiguiente);
         //En espera a recibir el evento Onclick del boton Enviar
         btnenviar.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -5,23 +5,27 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Puntada.Registrar.ClaveRegistrarPuntada">
+
     <TextView
         android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Ingresa el NIP"
-        android:textColor="#040404"
+        android:gravity="center"
+        android:text="INGRESA EN NIP DE LA NUEVA TARJETA"
+        android:textColor="@color/button_selected"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.148" />
+        app:layout_constraintVertical_bias="0.228" />
 
     <EditText
         android:id="@+id/etNIP"
         android:layout_width="249dp"
         android:layout_height="48dp"
+        android:background="@drawable/cajadetextopuntada"
         android:ems="10"
         android:gravity="center_horizontal|center_vertical"
         android:hint="****"
@@ -29,19 +33,29 @@
         android:maxLength="4"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.503"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.289" />
+        app:layout_constraintVertical_bias="0.458" />
 
     <Button
         android:id="@+id/btnSiguente"
         android:layout_width="169dp"
         android:layout_height="50dp"
+        android:background="@drawable/fondoazulpuntada"
         android:text="Siguiente"
+        android:textColor="@color/a_normal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.7" />
+
+    <ImageView
+        android:id="@+id/imageView2"
+        android:layout_width="166dp"
+        android:layout_height="62dp"
+        app:srcCompat="@drawable/logopuntada"
+        tools:layout_editor_absoluteX="179dp"
+        tools:layout_editor_absoluteY="16dp" />
 
 </android.support.constraint.ConstraintLayout>

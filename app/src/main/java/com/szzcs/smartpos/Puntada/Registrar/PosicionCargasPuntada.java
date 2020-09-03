@@ -79,9 +79,9 @@ public class PosicionCargasPuntada extends AppCompatActivity {
         imgid = new ArrayList<>();
 
 
-        for (int i = 1; i <= Integer.parseInt(response); i++) {
+        for (int i = 1; i <= 16; i++) {
             maintitle.add("PC" + String.valueOf(i));
-            subtitle.add("Combustible Disponible");
+            subtitle.add("Magna  |  Premium  |  Diesel");
             imgid.add(R.drawable.gas);
         }
         ListAdapterRegistrar adapter = new ListAdapterRegistrar(this, maintitle, subtitle, imgid);
@@ -99,8 +99,9 @@ public class PosicionCargasPuntada extends AppCompatActivity {
                 Bundle bundle = getIntent().getExtras();
                 final String track2 = bundle.getString("track");
                 final String nip = bundle.getString("nip");
+                final String ClaveDespachador = bundle.getString("ClaveDespachador");
 
-                String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tarjetas/sendinfo";
+                String url = "http://10.0.1.20/CorpogasService/api/puntadas/Registrar/clave/"+ClaveDespachador;
 
                 StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                         new Response.Listener<String>() {
@@ -121,8 +122,8 @@ public class PosicionCargasPuntada extends AppCompatActivity {
                         // Posting parameters to login url
                         Map<String, String> params = new HashMap<String, String>();
                         params.put("EstacionId", "1");
-                        params.put("RequestId","39");
-                        params.put("PosCarga", posi);
+                        params.put("RequestID","39");
+                        params.put("PosicionCarga", posi);
                         params.put("Tarjeta",track2);
                         params.put("NuTarjetero","1");
                         params.put("NIP", nip);
@@ -144,7 +145,7 @@ public class PosicionCargasPuntada extends AppCompatActivity {
     private void EnviarDatos(String response) {
         try {
             JSONObject respuesta = new JSONObject(response);
-            String estado = respuesta.getString("sMensaje");
+            String estado = respuesta.getString("Mensaje");
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Tarjeta Puntada");
             builder.setMessage(estado);

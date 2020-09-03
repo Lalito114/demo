@@ -15,7 +15,9 @@ import android.support.annotation.StringRes;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.szzcs.smartpos.Puntada.Registrar.ClaveDespachadorPuntada;
 import com.szzcs.smartpos.Puntada.SeccionTarjeta;
 import com.szzcs.smartpos.TanqueLleno.ClaveDespachadorTL;
 import com.szzcs.smartpos.TanqueLleno.PosicionCargaTLl;
@@ -334,12 +336,20 @@ public class CardFragment extends PreferenceFragment {
 
 
                 if (mb == 39){
-                    Intent intent = new Intent(getActivity(), PosicionCargaTLl.class);
-                    Bundle bundle  = new Bundle();
-                    bundle.putString("track",mtk2);
-
-                    intent.putExtras(bundle);
+                    Intent intent = new Intent(getActivity(),ClaveDespachadorTL.class);
+                    intent.putExtra("track",mtk2);
                     startActivity(intent);
+                }else{
+                    if (mb==40){
+                        Intent intent = new Intent(getActivity(), SeccionTarjeta.class);
+                        intent.putExtra("track",mtk2);
+                        startActivity(intent);
+                    }else{
+                        Intent intent = new Intent(getActivity(), Munu_Principal.class);
+                        startActivity(intent);
+                        Toast.makeText(getActivity(),"NO PERTENECE A NINGUN MONEDERO",Toast.LENGTH_LONG).show();
+
+                    }
                 }
 
 

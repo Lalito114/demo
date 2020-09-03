@@ -1,6 +1,8 @@
 package com.szzcs.smartpos.configuracion;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.Splash;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -100,32 +103,49 @@ public class ConfiguracionServidor extends AppCompatActivity {
 
     }
 
-//    private void obtenerPosicionesdeCarga() {
-//
-////Declaramos direccion URL de las posiciones de carga. Para acceder a los metodos de la API
-//        String url = "http://"+ip2+"/CorpogasService/api/posicionCargas/estacion/1/maximo";
-//        //inicializamos el String reques que es el metodo de la funcion de Volley que no va a permir accder a la API
-//        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-//            @Override
-//            //El metodo onResponse el cual va cachar si hay una respuesta de tipo cadena
-//            public void onResponse(String response) {
-//                //llamamos al metodo posicion en donde aoptine como resultado
-//                //el valos maximo de posiciones de carga
-//                posicion(response);
-//
-//            }
-//            //si exite un error este entrata de el metodo ErrorListener
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
-//            }
-//        });
-//        //Ejecutamos el stringrequest para invocar a la clase volley
-//        RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
-//        //Agregamos el stringrequest al Requestque
-//        requestQueue.add(stringRequest);
-//    }
+    private void obtenerPosicionesdeCarga() {
+
+        //Declaramos direccion URL de las posiciones de carga. Para acceder a los metodos de la API
+
+        SQLiteBD data = new SQLiteBD(this);
+        SQLiteDatabase db  = data.getWritableDatabase();
+
+        if (db != null){
+            Cursor c = db.rawQuery("SELECT ID, IP FROM comments", null);
+
+            if (c != null) {
+                c.moveToFirst();
+                do {
+                    //Asignamos el valor en nuestras variables para usarlos en lo que necesitemos
+                    String user = c.getString(c.getColumnIndex("user"));
+                    String comment = c.getString(c.getColumnIndex("comment"));
+                } while (c.moveToNext());
+            }
+            String url = "http://"+ip2+"/CorpogasService/api/posicionCargas/estacion/1/maximo";
+            //inicializamos el String reques que es el metodo de la funcion de Volley que no va a permir accder a la API
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                //El metodo onResponse el cual va cachar si hay una respuesta de tipo cadena
+                public void onResponse(String response) {
+                    //llamamos al metodo posicion en donde aoptine como resultado
+                    //el valos maximo de posiciones de carga
+
+
+                }
+                //si exite un error este entrata de el metodo ErrorListener
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+                }
+            });
+            //Ejecutamos el stringrequest para invocar a la clase volley
+            RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
+            //Agregamos el stringrequest al Requestque
+            requestQueue.add(stringRequest);
+        }
+
+    }
 
     private void guardarDatosDBEmpresa(String response) {
         try {
@@ -143,9 +163,11 @@ public class ConfiguracionServidor extends AppCompatActivity {
             String numinterno = sucursal1.getString("NumeroInterno");
 
             SQLiteBD data = new SQLiteBD(getApplicationContext());
-            data.agregaEmpresa(id,siic,correo,empresaid,ip,nombre,numerofranquicia,numinterno);
+            data.DatosEstacion(id,siic,correo,empresaid,ip,nombre,numerofranquicia,numinterno);
 
             Toast.makeText(getApplicationContext(),"Los datos se guardaron correctamente",Toast.LENGTH_LONG).show();
+            Intent intent = new Intent(getApplicationContext(), Splash.class);
+            startActivity(intent);
         } catch (JSONException e) {
             e.printStackTrace();
         }

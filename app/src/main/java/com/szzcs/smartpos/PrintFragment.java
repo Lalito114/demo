@@ -139,7 +139,7 @@ public class PrintFragment extends PreferenceFragment {
         }
 
 
-        printMatrixText();
+        printMatrixText1();
 
     }
 
@@ -369,60 +369,6 @@ public class PrintFragment extends PreferenceFragment {
                         Intent intent = new Intent (getActivity(),Munu_Principal.class);
                         startActivity(intent);
                     }
-
-//                    if (ban == 3){
-//                        try {
-//                            Thread.sleep(1000);
-//                            segundometodo();
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }else{
-//                        if (ban == 4) {
-//                            try {
-//                                Thread.sleep(1000);
-//                                segundometodo();
-//                            } catch (InterruptedException e) {
-//                                e.printStackTrace();
-//                            }
-//                        }else{
-//                            if (ban == 5) {
-//                                try {
-//                                    Thread.sleep(1000);
-//                                    segundometodo();
-//                                } catch (InterruptedException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }else{
-//                                if (ban == 6) {
-//                                    try {
-//                                        Thread.sleep(1000);
-//                                        segundometodo();
-//                                    } catch (InterruptedException e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                }else{
-//                                    if (ban == 7) {
-//                                        try {
-//                                            Thread.sleep(1000);
-//                                            segundometodo();
-//                                        } catch (InterruptedException e) {
-//                                            e.printStackTrace();
-//                                        }
-//                                    }else{
-//                                        if (ban == 10) {
-//                                            try {
-//                                                Thread.sleep(1000);
-//                                                segundometodo();
-//                                            } catch (InterruptedException e) {
-//                                                e.printStackTrace();
-//                                            }
-//                                        }
-//                                    }
-//                                }
-//                            }
-//                        }
-//                    }
                 }
             }
         }).start();
@@ -641,6 +587,91 @@ public class PrintFragment extends PreferenceFragment {
             }
         }).start();
 
+    }
+
+    public void printMatrixText1() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AssetManager asm = getActivity().getAssets();
+                InputStream inputStream = null;
+                try {
+                    inputStream = asm.open("copo.png");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Drawable d = Drawable.createFromStream(inputStream, null);
+                Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
+
+                int printStatus = mPrinter.getPrinterStatus();
+                if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            DialogUtils.show(getActivity(), getString(R.string.printer_out_of_paper));
+
+                        }
+                    });
+                } else {
+
+
+                    mPrinter.setPrintAppendBitmap(bitmap, Layout.Alignment.ALIGN_CENTER);
+                    PrnStrFormat format = new PrnStrFormat();
+                    format.setTextSize(30);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    format.setStyle(PrnTextStyle.BOLD);
+                    if (fontsStyle == 0) {
+                        format.setFont(PrnTextFont.CUSTOM);
+                        format.setPath(Environment.getExternalStorageDirectory() + "/fonts/simsun.ttf");
+                    } else if (fontsStyle == 1) {
+                        format.setFont(PrnTextFont.DEFAULT);
+                        //  format.setPath(Environment.getExternalStorageDirectory()+"/fonts/heiti.ttf");
+                    } else {
+                        format.setFont(PrnTextFont.CUSTOM);
+                        format.setPath(Environment.getExternalStorageDirectory() + "/fonts/fangzhengyouyuan.ttf");
+                    }
+
+                    format.setTextSize(20);
+                    format.setStyle(PrnTextStyle.ITALIC);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    //------------------------------Encabezado------------------------------
+                    mPrinter.setPrintAppendString(" ", format);
+                    String texto = getArguments().getString("noestacion");
+                    mPrinter.setPrintAppendString(getResources().getString(R.string.pos_sales_slip)+texto,format);
+
+
+
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    printStatus = mPrinter.setPrintStart();
+                    if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                DialogUtils.show(getActivity(), getString(R.string.printer_out_of_paper));
+
+                            }
+                        });
+                    }
+
+                    //Número de copias
+                    String numcop = getArguments().getString("numcopias");
+
+                    int numcopias = Integer.parseInt(numcop);
+
+                    if (numcopias==2) {
+                        try {
+                            Thread.sleep(1);
+                            segundometodo();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        Intent intent = new Intent (getActivity(),Munu_Principal.class);
+                        startActivity(intent);
+                    }
+                }
+            }
+        }).start();
     }
 
     private void enviarPrincipal() {
