@@ -163,7 +163,7 @@ public class ConfiguracionServidor extends AppCompatActivity {
             String numinterno = sucursal1.getString("NumeroInterno");
 
             SQLiteBD data = new SQLiteBD(getApplicationContext());
-            data.DatosEstacion(id,siic,correo,empresaid,ip,nombre,numerofranquicia,numinterno);
+            data.InsertarDatosEstacion(id,siic,correo,empresaid,ip,nombre,numerofranquicia,numinterno);
 
             Toast.makeText(getApplicationContext(),"Los datos se guardaron correctamente",Toast.LENGTH_LONG).show();
             Intent intent = new Intent(getApplicationContext(), Splash.class);

@@ -89,7 +89,11 @@ public class Munu_Principal extends AppCompatActivity {
                     startActivity(intente);
                 }
                 else if(position == 5) {
-                    Toast.makeText(getApplicationContext(),"Place Your Fifth Option Code",Toast.LENGTH_SHORT).show();
+                    PrintFragment cf = new PrintFragment();
+                    getFragmentManager().beginTransaction().replace(R.id.menu, cf).
+                            addToBackStack(PrintFragment.class.getName()).
+                            commit();
+//                    Toast.makeText(getApplicationContext(),"Place Your Fifth Option Code",Toast.LENGTH_SHORT).show();
                 }
 
             }

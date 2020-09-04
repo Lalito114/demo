@@ -630,14 +630,45 @@ public class PrintFragment extends PreferenceFragment {
                         format.setFont(PrnTextFont.CUSTOM);
                         format.setPath(Environment.getExternalStorageDirectory() + "/fonts/fangzhengyouyuan.ttf");
                     }
-
-                    format.setTextSize(20);
-                    format.setStyle(PrnTextStyle.ITALIC);
-                    format.setAli(Layout.Alignment.ALIGN_CENTER);
-                    //------------------------------Encabezado------------------------------
+                    //------------------------------Encabezado Datos fiscales------------------------------
+                    //Asignamos la hora y fecha de la impresion del ticket, alinenadolos del lado izquierdo del ticket
+                    format.setTextSize(23);
+                    //Tamaño del tipo de letra
+                    //Formato o tipo de letra de molde
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    //Alineacion del texto
+                    format.setAli(Layout.Alignment.ALIGN_OPPOSITE);
+                    //Asignamos dos saltos de linea
                     mPrinter.setPrintAppendString(" ", format);
-                    String texto = getArguments().getString("noestacion");
-                    mPrinter.setPrintAppendString(getResources().getString(R.string.pos_sales_slip)+texto,format);
+                    mPrinter.setPrintAppendString(" ", format);
+                    //Asignamos la primera linea de texto que es para la fecha y hora de la impresion del ticket
+                    //Clase donde obtenemos el dia y lo hora del sistema
+                    Date date = new Date();
+                    //Formato para el dia, mes y año
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    //Formato para la hora, minutos y segundos
+                    DateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
+                    mPrinter.setPrintAppendString(dateFormat.format(date)+ " " + hourFormat.format(date), format);
+
+                    // Nombre de la Estacion y Numero de la Estacion
+                    format.setTextSize(23);
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    mPrinter.setPrintAppendString("NOMBRE ESTACION" + "No. ESTACION", format);
+
+                    //Datos obre el regimen y domicilio Fiscal
+                    mPrinter.setPrintAppendString("REGIMEN FISCAL, ADEMAS DE LOS DATOS ",format);
+                    mPrinter.setPrintAppendString("DE UBICACION DE LA ESTACION DE ",format);
+                    mPrinter.setPrintAppendString("SERVICIO",format);
+
+                    mPrinter.setPrintAppendString("RFC:       SIIC",format);
+
+
+                    format.setTextSize(80);
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+
+                    mPrinter.setPrintAppendString("$99,999.99",format);
 
 
 
@@ -653,22 +684,6 @@ public class PrintFragment extends PreferenceFragment {
                         });
                     }
 
-                    //Número de copias
-                    String numcop = getArguments().getString("numcopias");
-
-                    int numcopias = Integer.parseInt(numcop);
-
-                    if (numcopias==2) {
-                        try {
-                            Thread.sleep(1);
-                            segundometodo();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }else{
-                        Intent intent = new Intent (getActivity(),Munu_Principal.class);
-                        startActivity(intent);
-                    }
                 }
             }
         }).start();
