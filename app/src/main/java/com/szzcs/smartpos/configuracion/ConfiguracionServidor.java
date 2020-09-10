@@ -41,7 +41,8 @@ public class ConfiguracionServidor extends AppCompatActivity {
             String tipo = data.getTipoEstacion();
             if (tipo.equals("CORPOGAS")){
                         Intent intent = new Intent(getApplicationContext(), Splash.class);
-                        startActivity(intent);
+                        startActivity(intent);//h
+
                         finish();
             }else{
                 if (tipo.equals("GULF")){
