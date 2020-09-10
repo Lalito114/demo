@@ -83,7 +83,7 @@ public class ConfiguracionServidor extends AppCompatActivity {
 
 
                     if (oct1.isEmpty()){
-                        Toast.makeText(getApplicationContext(),"Ingresa el campo 1",Toast.LENGTH_LONG).show();
+                        Toast.makeText(getApplicationContext(),"Ingresa el campo 12",Toast.LENGTH_LONG).show();
                         //happy
                     }else{
                         if (oct2.isEmpty()){
