@@ -38,34 +38,32 @@ public class posicionProductos extends AppCompatActivity {
         posicionCargaProductos();
     }
     //Proceso para cargar el listView con las posiciones de carga
-    private void posicionCargaProductos() {
-        //metodo que trae las posiciones de carga
-        //String url = "http://sso.corpogas.com.mx:1080/ControllerService/api/posicionCargas/estacion/1/maximo";
-        //String url = "http://10.0.1.20/TransferenciaDatosAPI/api/PosCarga/GetMax";
-        String url = "http://10.0.2.11/ControllerService/api/posicionCargas/estacion/1/maximo";
-        //Obtiene respuesta del metodo
+    public void posicionCargaProductos(){
+
+        //Declaramos direccion URL de las posiciones de carga. Para acceder a los metodos de la API
+        String url = "http://10.2.251.58/CorpogasService/api/posicionCargas/estacion/1/maximo";
+        //inicializamos el String reques que es el metodo de la funcion de Volley que no va a permir accder a la API
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
+            //El metodo onResponse el cual va cachar si hay una respuesta de tipo cadena
             public void onResponse(String response) {
-                //procedimiento vax que recibe la respuesta del metodo
+                //llamamos al metodo posicion en donde aoptine como resultado
+                //el valos maximo de posiciones de carga
                 vax(response);
+
             }
-            //Respuesta con Error recibido en el metodo
+            //si exite un error este entrata de el metodo ErrorListener
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                //Enviamos el error a pantalla para ser visualizado
                 Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
             }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> parametros = new HashMap<String, String>();
-                return parametros;
-            }
-        };
+        });
+        //Ejecutamos el stringrequest para invocar a la clase volley
         RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
+        //Agregamos el stringrequest al Requestque
         requestQueue.add(stringRequest);
+
     }
 
     //Procedimiento que carga las posiciones de carga
@@ -98,7 +96,7 @@ public class posicionProductos extends AppCompatActivity {
                 int posicion = position +1;
                 String posi = String.valueOf(posicion);
                 //Se llama la clase para la clave del usuario
-                Intent intente = new Intent(getApplicationContext(), claveUsuarioProducto.class);
+                Intent intente = new Intent(getApplicationContext(), claveProducto.class);
                 //se envia el id seleccionado a la clase Usuario Producto
                 intente.putExtra("posicion",posi);
                 //Ejecuta la clase del Usuario producto

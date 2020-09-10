@@ -13,8 +13,9 @@ import android.widget.Toast;
 
 import com.szzcs.smartpos.Encriptacion.EncriptarMAC;
 import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
-import com.szzcs.smartpos.Pendientes.posicionPendientes;
+import com.szzcs.smartpos.Pendientes.claveUPendientes;
 import com.szzcs.smartpos.Productos.VentasProductos;
+import com.szzcs.smartpos.Productos.posicionProductos;
 import com.szzcs.smartpos.Ticket.ventas;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 import com.zcs.sdk.card.CardReaderTypeEnum;
@@ -88,7 +89,7 @@ public class Munu_Principal extends AppCompatActivity {
                             commit();
                 }
                 else if(position == 2) {
-                    Intent intent = new Intent(getApplicationContext(), VentasProductos.class);
+                    Intent intent = new Intent(getApplicationContext(), posicionProductos.class);
                     startActivity(intent);
                 }
                 else if(position == 3) {
@@ -98,7 +99,7 @@ public class Munu_Principal extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),macmd5,Toast.LENGTH_LONG).show();
                 }
                 else if(position == 4) {
-                    Intent intente = new Intent(getApplicationContext(), posicionPendientes.class);
+                    Intent intente = new Intent(getApplicationContext(), claveUPendientes.class);
                     startActivity(intente);
                 }
                 else if(position == 5) {
