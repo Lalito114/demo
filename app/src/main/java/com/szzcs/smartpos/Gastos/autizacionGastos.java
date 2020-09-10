@@ -27,6 +27,7 @@ public class autizacionGastos extends AppCompatActivity {
                 //intent.putExtra("user", idusuario);
                 intent.putExtra("isla", islaId);
                 intent.putExtra("turno", turnoId);
+                
                 startActivity(intent);
 
             }
