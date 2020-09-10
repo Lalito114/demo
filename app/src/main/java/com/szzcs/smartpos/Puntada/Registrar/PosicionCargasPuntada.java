@@ -19,10 +19,8 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
-import com.szzcs.smartpos.Ticket.ListAdapter;
-import com.szzcs.smartpos.Ticket.claveUsuario;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -38,12 +36,14 @@ public class PosicionCargasPuntada extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posicion_cargas_puntada);
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEsatcion());
         PosicionesCargar();
 
     }
     public void PosicionesCargar(){
-
-        String url = "http://10.0.1.20/TransferenciaDatosAPI/api/PosCarga/GetMax";
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/posicionCargas/estacion/"+data.getIdEstacion()+"/maximo";
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -79,9 +79,9 @@ public class PosicionCargasPuntada extends AppCompatActivity {
         imgid = new ArrayList<>();
 
 
-        for (int i = 1; i <= Integer.parseInt(response); i++) {
+        for (int i = 1; i <= 16; i++) {
             maintitle.add("PC" + String.valueOf(i));
-            subtitle.add("Combustible Disponible");
+            subtitle.add("Magna  |  Premium  |  Diesel");
             imgid.add(R.drawable.gas);
         }
         ListAdapterRegistrar adapter = new ListAdapterRegistrar(this, maintitle, subtitle, imgid);
@@ -99,8 +99,10 @@ public class PosicionCargasPuntada extends AppCompatActivity {
                 Bundle bundle = getIntent().getExtras();
                 final String track2 = bundle.getString("track");
                 final String nip = bundle.getString("nip");
+                final String ClaveDespachador = bundle.getString("ClaveDespachador");
+                final SQLiteBD data = new SQLiteBD(getApplicationContext());
 
-                String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tarjetas/sendinfo";
+                String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/puntadas/Registrar/clave/"+ClaveDespachador;
 
                 StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                         new Response.Listener<String>() {
@@ -120,8 +122,9 @@ public class PosicionCargasPuntada extends AppCompatActivity {
                     protected Map<String, String> getParams() {
                         // Posting parameters to login url
                         Map<String, String> params = new HashMap<String, String>();
-                        params.put("RequestId","39");
-                        params.put("PosCarga", posi);
+                        params.put("EstacionId", data.getIdEstacion());
+                        params.put("RequestID","39");
+                        params.put("PosicionCarga", posi);
                         params.put("Tarjeta",track2);
                         params.put("NuTarjetero","1");
                         params.put("NIP", nip);
@@ -143,7 +146,7 @@ public class PosicionCargasPuntada extends AppCompatActivity {
     private void EnviarDatos(String response) {
         try {
             JSONObject respuesta = new JSONObject(response);
-            String estado = respuesta.getString("sMensaje");
+            String estado = respuesta.getString("Mensaje");
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Tarjeta Puntada");
             builder.setMessage(estado);

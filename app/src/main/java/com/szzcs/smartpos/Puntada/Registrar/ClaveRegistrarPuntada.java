@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 public class ClaveRegistrarPuntada extends AppCompatActivity {
     Button btnSiguiente;
@@ -18,8 +19,11 @@ public class ClaveRegistrarPuntada extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_registrar_puntada);
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEsatcion());
         Bundle bundle = getIntent().getExtras();
         final String track2 = bundle.getString("track");
+        final String ClaveDespachador = bundle.getString("PasswordDespachador");
 
         btnSiguiente = findViewById(R.id.btnSiguente);
         btnSiguiente.setOnClickListener(new View.OnClickListener() {
@@ -33,6 +37,7 @@ public class ClaveRegistrarPuntada extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), pasword.getText(), Toast.LENGTH_LONG).show();
                     Intent intent = new Intent(getApplicationContext(), PosicionCargasPuntada.class);
                     Bundle bundle  = new Bundle();
+                    bundle.putString("ClaveDespachador",ClaveDespachador);
                     bundle.putString("track",track2);
                     bundle.putString("nip",pas);
                     intent.putExtras(bundle);

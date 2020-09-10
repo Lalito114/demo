@@ -27,10 +27,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/product"
-        android:background="@drawable/border"/>
+        />
 
     <Button
-        android:id="@+id/enviar"
+        android:id="@+id/btnsiguiente"
         android:layout_width="216dp"
         android:layout_height="41dp"
         android:layout_alignParentEnd="true"

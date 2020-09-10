@@ -17,12 +17,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 //Clase para validar la contraseña del empleado
 public class claveUsuario extends AppCompatActivity {
@@ -31,13 +29,15 @@ public class claveUsuario extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_usuario);
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEsatcion());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //lee valores usuario y carga
         usuario= findViewById(R.id.usuario);
         carga = findViewById(R.id.carga);
         //Crea Boton Enviar
-        Button btnenviar = (Button) findViewById(R.id.enviar);
+        Button btnenviar = (Button) findViewById(R.id.btnsiguiente);
         //En espera a recibir el evento Onclick del boton Enviar
         btnenviar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,20 +53,21 @@ public class claveUsuario extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Ingresa la contraseña",Toast.LENGTH_SHORT).show();
                 }else{
                     //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
+
                     //Conexion con la base y ejecuta valida clave
-                    String url = "http://10.0.1.20/TransferenciaDatosAPI/api/cve/GetValidaCve";
+                    SQLiteBD data = new SQLiteBD(getApplicationContext());
+                    String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/SucursalEmpleados/clave/"+pass;
+
                     // Utilizamos el metodo Post para validar la contraseña
-                    StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
+                    StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
                                     try {
                                         //Se instancia la respuesta del json
                                         JSONObject validar = new JSONObject(response);
-                                        String valido = validar.getString("EsValido");
-                                        String idusuario = validar.getString("IdUsuario");
-                                        String reimpresion = validar.getString("Reimpresion");
-                                        String ticket = validar.getString("TicketImpreso");
+                                        String valido = validar.getString("Activo");
+                                        String idusuario = validar.getString("Id");
                                         if (valido == "true"){
                                             //Si es valido se asignan valores
                                             usuario.setText(idusuario);
@@ -76,6 +77,7 @@ public class claveUsuario extends AppCompatActivity {
                                             intent.putExtra("car",posicion);
                                             intent.putExtra("user",idusuario);
                                             startActivity(intent);
+                                            finish();
                                         }else{
                                             //Si no es valido se envia mensaje
                                             Toast.makeText(getApplicationContext(),"La contraseña es incorecta",Toast.LENGTH_SHORT).show();
@@ -91,16 +93,7 @@ public class claveUsuario extends AppCompatActivity {
                         public void onErrorResponse(VolleyError error) {
                             Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
                         }
-                    }){
-                        @Override
-                        protected Map<String, String> getParams() {
-                            // Posting parameters to login url
-                            Map<String, String> params = new HashMap<String, String>();
-                            params.put("PosCarga",posicion);
-                            params.put("Clave",pass);
-                            return params;
-                        }
-                    };
+                    });
 
                     // Añade la peticion a la cola
                     RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());

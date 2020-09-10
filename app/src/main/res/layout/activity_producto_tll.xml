@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tv2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".TanqueLleno.ProductoTLl">
+
+    <TextView
+        android:id="@+id/textView9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="510dp"
+        android:text="SELECCIONA EL COMBUSTIBLE"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="263dp"
+        android:layout_height="254dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="248dp" />
+
+    <EditText
+        android:id="@+id/edtLitros"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="43dp"
+        android:layout_marginBottom="199dp"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:hint="0.00"
+        android:inputType="numberDecimal" />
+
+    <EditText
+        android:id="@+id/edtPesos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="42dp"
+        android:layout_marginBottom="141dp"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:hint="0.00"
+        android:inputType="numberDecimal" />
+
+    <TextView
+        android:id="@+id/textView14"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="263dp"
+        android:layout_marginBottom="207dp"
+        android:text="Litros: "
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView15"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="263dp"
+        android:layout_marginBottom="149dp"
+        android:text="Pesos: "
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnagregarProductos"
+        android:layout_width="145dp"
+        android:layout_height="48dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="197dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/b3"
+        android:text="Imprimir Ticket"
+        android:textColor="@color/a_normal" />
+
+    <Button
+        android:id="@+id/btnenciarProductos"
+        android:layout_width="161dp"
+        android:layout_height="49dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/b3"
+        android:text="Enviar productos"
+        android:textColor="@color/a_normal" />
+
+    <Button
+        android:id="@+id/btnAgregarcombustible"
+        android:layout_width="121dp"
+        android:layout_height="43dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="44dp"
+        android:layout_marginBottom="84dp"
+        android:background="@drawable/b3"
+        android:text="Agregar combustible"
+        android:textColor="@color/a_normal" />
+
+    <Button
+        android:id="@+id/btnLipmpiarProducto"
+        android:layout_width="121dp"
+        android:layout_height="43dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="206dp"
+        android:layout_marginBottom="85dp"
+        android:background="@drawable/b3"
+        android:text="Limpiar"
+        android:textColor="@color/a_normal" />
+</RelativeLayout>

@@ -12,25 +12,27 @@ import android.widget.Toast;
 import com.szzcs.smartpos.MyListAdapter;
 import com.szzcs.smartpos.Puntada.Acumular.posicionCarga;
 import com.szzcs.smartpos.Puntada.Redimir.PosicionRedimir;
+import com.szzcs.smartpos.Puntada.Registrar.ClaveDespachadorPuntada;
 import com.szzcs.smartpos.Puntada.Registrar.ClaveRegistrarPuntada;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 public class SeccionTarjeta extends AppCompatActivity {
     ListView list;
 
     String[] maintitle ={
-            "Acumular","Redimir",
-            "Registrar",
+            "Puntada Acumular","Puntada Redimir",
+            "Registrar Puntada",
     };
 
     String[] subtitle ={
-            "Acumula puntos","Redimir puntos",
+            "Acumula Puntos Para Otra Ocasion","Paga con Puntos",
             "Registrar Tarjeta Puntada",
     };
 
     Integer[] imgid={
-            R.drawable.acumular,R.drawable.redimir,
-            R.drawable.registrar,
+            R.drawable.acumularpuntada,R.drawable.redimirpuntada,
+            R.drawable.registrarpuntada,
     };
 
     Button btnRegistrar, btnAcumular;
@@ -39,6 +41,8 @@ public class SeccionTarjeta extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seccion_tarjeta);
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEsatcion());
 
         Bundle bundle = getIntent().getExtras();
         final String track2 = bundle.getString("track");
@@ -68,7 +72,7 @@ public class SeccionTarjeta extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(),"En construcción",Toast.LENGTH_SHORT).show();
                         break;
                     case 2://Registrar
-                        Intent intent1 = new Intent(getApplicationContext(), ClaveRegistrarPuntada.class);
+                        Intent intent1 = new Intent(getApplicationContext(), ClaveDespachadorPuntada.class);
                         Bundle bundle1  = new Bundle();
                         bundle1.putString("track",track2);
                         intent1.putExtras(bundle1);

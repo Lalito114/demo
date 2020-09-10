@@ -109,13 +109,13 @@ public class VentasProductos extends AppCompatActivity{
         final String usuarioid;
         usuarioid = getIntent().getStringExtra("usuario");
         //Se instancia y se llama a la clase VentaProductos
-        Intent intent = new Intent(getApplicationContext(), formaPago.class);
-        intent.putExtra("posicion",posicion);
-        intent.putExtra("usuario",usuarioid);
-        Gson gson = new Gson();
-        String myJson = gson.toJson(mjason);
-        intent.putExtra("myjson", myJson);
-        startActivity(intent);
+//        Intent intent = new Intent(getApplicationContext(), formaPago.class);
+//        intent.putExtra("posicion",posicion);
+//        intent.putExtra("usuario",usuarioid);
+//        Gson gson = new Gson();
+//        String myJson = gson.toJson(mjason);
+//        intent.putExtra("myjson", myJson);
+//        startActivity(intent);
     }
 
     private void CantidadProducto() {

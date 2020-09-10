@@ -1,9 +1,11 @@
 package com.szzcs.smartpos.Ticket;
 
+import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -11,49 +13,40 @@ import android.widget.TextView;
 import com.szzcs.smartpos.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
-public class Adaptador extends BaseAdapter {
-    private Context context;
-    final ArrayList<Entidad> listItems;
+public class Adaptador extends ArrayAdapter<String> {
+    private final Activity context;
+    private final String[] maintitle;
+    private final String[] subtitle;
+    private final Integer[] imgid;
 
-    public Adaptador(Context context, ArrayList<Entidad> listItems) {
-        this.context = context;
-        this.listItems = listItems;
+    public Adaptador(formas_de_pago context, List<String> maintitle, List<String> subtitle, List<Integer> imgid) {
+        super((Context) context, R.layout.list, maintitle);
+        // TODO Auto-generated constructor stub
+
+        this.context= (Activity) context;
+        this.maintitle= maintitle.toArray(new String[0]);
+        this.subtitle= subtitle.toArray(new String[0]);
+        this.imgid= imgid.toArray(new Integer[0]);
+
     }
 
-    @Override
-    public int getCount() {
-        return listItems.size();
-    }
 
-    @Override
-    public Object getItem(int position) {
-        return listItems.get(position);
-    }
+    public View getView(int position, View view, ViewGroup parent) {
+        LayoutInflater inflater=context.getLayoutInflater();
+        View rowView=inflater.inflate(R.layout.mylist, null,true);
 
-    @Override
-    public long getItemId(int i) {
-        return 0;
-    }
+        TextView titleText = (TextView) rowView.findViewById(R.id.title);
+        ImageView imageView = (ImageView) rowView.findViewById(R.id.icon);
+        TextView subtitleText = (TextView) rowView.findViewById(R.id.subtitle);
 
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+        titleText.setText(maintitle[position]);
+        imageView.setImageResource(imgid[position]);
+        subtitleText.setText(subtitle[position]);
 
-        final Entidad Item = (Entidad) getItem(position);
+        return rowView;
 
-        convertView = LayoutInflater.from(context).inflate(R.layout.list_row, null);
-        ImageView imgFoto = (ImageView) convertView.findViewById(R.id.icon);
-        TextView tvTitulo = (TextView) convertView.findViewById(R.id.tvTitulo);
-        TextView tvContenido = (TextView) convertView.findViewById(R.id.tvContenido );
-        TextView tvCopias = (TextView) convertView.findViewById(R.id.tvCopias );
-        //TextView tvIdentifica = (TextView) convertView.findViewById(R.id.tvIdentifica);
-        imgFoto.setImageResource(Item.getImgFoto());
-        tvTitulo.setText(Item.getTitulo());
-        tvContenido.setText(Item.getContenido());
-        tvCopias.setText(Item.getcopias());
-        //tvIdentifica.setText(Item.getIdentifica());
-
-        return convertView;
-    }
+    };
 }
