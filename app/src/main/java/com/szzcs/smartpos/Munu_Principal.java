@@ -11,9 +11,12 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
+import com.szzcs.smartpos.Encriptacion.EncriptarMAC;
+import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
 import com.szzcs.smartpos.Pendientes.posicionPendientes;
 import com.szzcs.smartpos.Productos.VentasProductos;
 import com.szzcs.smartpos.Ticket.ventas;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 import com.zcs.sdk.card.CardReaderTypeEnum;
 
 import java.io.File;
@@ -26,6 +29,7 @@ import java.io.OutputStreamWriter;
 import static com.zcs.sdk.card.CardReaderTypeEnum.MAG_CARD;
 
 public class Munu_Principal extends AppCompatActivity {
+
     ListView list;
 
     String[] maintitle ={
@@ -49,6 +53,12 @@ public class Munu_Principal extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_munu__principal);
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEsatcion());
+
+        EncriptarMAC mac = new EncriptarMAC();
+        String mac2 = mac.getMacAddr();
+        String macmd5 = mac.getMD5(mac2);
 
 
         MyListAdapter adapter=new MyListAdapter(this, maintitle, subtitle,imgid);
@@ -74,7 +84,7 @@ public class Munu_Principal extends AppCompatActivity {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("card_type", cardType);
                     cf.setArguments(bundle);
-                    getFragmentManager().beginTransaction().replace(R.id.menu, cf).
+                    getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.menu, cf).
                             commit();
                 }
                 else if(position == 2) {
@@ -82,18 +92,20 @@ public class Munu_Principal extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 3) {
-                    Toast.makeText(getApplicationContext(),"Place Your Forth Option Code",Toast.LENGTH_SHORT).show();
+                    EncriptarMAC mac = new EncriptarMAC();
+                    String mac2 = mac.getMacAddr();
+                    String macmd5 = mac.getMD5(mac2);
+                    Toast.makeText(getApplicationContext(),macmd5,Toast.LENGTH_LONG).show();
                 }
                 else if(position == 4) {
                     Intent intente = new Intent(getApplicationContext(), posicionPendientes.class);
                     startActivity(intente);
                 }
                 else if(position == 5) {
-                    PrintFragment cf = new PrintFragment();
-                    getFragmentManager().beginTransaction().replace(R.id.menu, cf).
-                            addToBackStack(PrintFragment.class.getName()).
-                            commit();
-//                    Toast.makeText(getApplicationContext(),"Place Your Fifth Option Code",Toast.LENGTH_SHORT).show();
+                    EncriptarObtenerIP encriptarObtenerIP = new EncriptarObtenerIP();
+                    String ip = encriptarObtenerIP.getIP();
+                    String ipmd5 = encriptarObtenerIP.getIPMD5(ip);
+                    Toast.makeText(getApplicationContext(),ipmd5,Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -101,8 +113,11 @@ public class Munu_Principal extends AppCompatActivity {
 
         //Escribir url del Archivo
 
-       
+
     }
+
+
+
 
 
 }

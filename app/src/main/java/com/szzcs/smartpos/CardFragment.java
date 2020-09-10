@@ -12,15 +12,23 @@ import android.os.Message;
 import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Puntada.Registrar.ClaveDespachadorPuntada;
 import com.szzcs.smartpos.Puntada.SeccionTarjeta;
 import com.szzcs.smartpos.TanqueLleno.ClaveDespachadorTL;
 import com.szzcs.smartpos.TanqueLleno.PosicionCargaTLl;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 import com.szzcs.smartpos.utils.DialogUtils;
 import com.szzcs.smartpos.utils.SDK_Result;
 import com.zcs.sdk.DriverManager;
@@ -36,7 +44,14 @@ import com.zcs.sdk.card.RfCard;
 import com.zcs.sdk.listener.OnSearchCardListener;
 import com.zcs.sdk.util.StringUtils;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.lang.ref.WeakReference;
+
+import static android.support.v4.app.ActivityCompat.finishAffinity;
+import static android.support.v4.app.ActivityCompat.getPermissionCompatDelegate;
 
 
 /**
@@ -47,7 +62,7 @@ public class CardFragment extends PreferenceFragment {
 
     private static final String TAG = "CardFragment";
 
-    private static final int READ_TIMEOUT = 60 * 1000;
+    private static final int READ_TIMEOUT = 60 * 100000;
     private static final int MSG_CARD_OK = 2001;
     private static final int MSG_CARD_ERROR = 2002;
     private static final int MSG_CARD_APDU = 2003;
@@ -112,6 +127,8 @@ public class CardFragment extends PreferenceFragment {
         mICCard = mCardReadManager.getICCard();
         mRfCard = mCardReadManager.getRFCard();
         mMagCard = mCardReadManager.getMAGCard();
+        mMagCard.magCardClose();
+
     }
 
     //Este metodo lee cualquier tipo de tarjeta
@@ -320,11 +337,7 @@ public class CardFragment extends PreferenceFragment {
        // String tk2 = "4000004210100001";
         String mtk2 =tk2.substring(0,16);
         if(mtk2.isEmpty()){
-            mMagCard.magCardClose();
-            // search again
-            mCardReadManager.searchCard(mCardType, READ_TIMEOUT, mListener);
-            Intent intent = new Intent(getActivity(), ClaveDespachadorTL.class);
-            startActivity(intent);
+           Toast.makeText(getActivity(), "No se ha leido correctamente la tarjeta", Toast.LENGTH_LONG).show();
         }else{
             mMagCard.magCardClose();
             // search again
@@ -332,46 +345,89 @@ public class CardFragment extends PreferenceFragment {
 
             String space = mtk2.substring(0,2);
 
-            int mb= Integer.parseInt(space);
-
-
-                if (mb == 39){
-                    Intent intent = new Intent(getActivity(),ClaveDespachadorTL.class);
-                    intent.putExtra("track",mtk2);
-                    startActivity(intent);
-                }else{
-                    if (mb==40){
-                        Intent intent = new Intent(getActivity(), SeccionTarjeta.class);
-                        intent.putExtra("track",mtk2);
-                        startActivity(intent);
-                    }else{
-                        Intent intent = new Intent(getActivity(), Munu_Principal.class);
-                        startActivity(intent);
-                        Toast.makeText(getActivity(),"NO PERTENECE A NINGUN MONEDERO",Toast.LENGTH_LONG).show();
-
-                    }
-                }
-
-
-
+            CompararTarjetas(mtk2);
 
         }
-//        if (cardInfo.getResultcode() == SdkResult.SDK_OK) {
-//            String exp = cardInfo.getExpiredDate();
-//            String cardNo = cardInfo.getCardNo();
 
-//            Message msg = Message.obtain();
-//            msg.what = MSG_CARD_OK;
-//           msg.arg1 = cardInfo.getResultcode();
-//           msg.obj = cardInfo;
-//           mHandler.sendMessage(msg);
-//        } else {
-//            mHandler.sendEmptyMessage(cardInfo.getResultcode());
-//        }
-//        mMagCard.magCardClose();
-//        // search again
-//        mCardReadManager.searchCard(mCardType, READ_TIMEOUT, mListener);
     }
+
+    private void CompararTarjetas(final String mtk2) {
+        SQLiteBD data = new SQLiteBD(getActivity());
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/Bines";
+
+        StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            String mascaraInicialTarjeta = mtk2.substring(0,5);
+                            String mascaraIdentificador;
+                            JSONArray identificado = new JSONArray(response);
+                            for (int i = 0; i <identificado.length() ; i++) {
+                                JSONObject identificador = identificado.getJSONObject(i);
+                                String mascara = identificador.getString("Mascara");
+                                mascaraIdentificador = mascara.substring(0,5);
+
+                                char[] cadena_div = mascara.toCharArray();
+                                String n = "";
+                                for (int j = 0; j <cadena_div.length ; j++) {
+                                    if (Character.isDigit(cadena_div[j])){
+                                        n += cadena_div[j];
+                                    }
+                                }
+
+                                switch (i){
+                                    case 0:
+                                        if (mtk2.contains(n)){
+                                            Intent intent = new Intent(getActivity(),ClaveDespachadorTL.class);
+                                            intent.putExtra("track",mtk2);
+                                            startActivity(intent);
+
+                                        }
+                                        break;
+                                    case 1:
+                                        if (mtk2.contains(n)){
+                                            Toast.makeText(getActivity(),"Esta tarjeta es Tanque Lleno SurEste", Toast.LENGTH_LONG).show();
+                                        }
+                                        break;
+                                    case 2:
+                                        if (mtk2.contains(n)){
+                                            Intent intent = new Intent(getActivity(),SeccionTarjeta.class);
+                                            intent.putExtra("track",mtk2);
+                                            startActivity(intent);
+                                        }
+                                        break;
+                                    default:
+                                        Intent intent = new Intent(getActivity(),Munu_Principal.class);
+                                        startActivity(intent);
+                                        break;
+                                }
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    //funcion para capturar errores
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getActivity(),error.toString(),Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Añade la peticion a la cola
+        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
+        requestQueue.add(eventoReq);
+    }
+
+    private void IdentificarTarjeta(String response,String mtk2) {
+
+
+    }
+
+
 
 
     private void readICCard(CardSlotNoEnum slotNo) {
@@ -444,7 +500,6 @@ public class CardFragment extends PreferenceFragment {
         researchRfCard();
     }
 
-
     private void readM1Card() {
         StringBuilder m1_message = new StringBuilder();
         byte[] key = StringUtils.convertHexToBytes(keyM1);
@@ -491,7 +546,6 @@ public class CardFragment extends PreferenceFragment {
             }
         }
     }
-
 
     private void readMFPlusCard() {
         StringBuilder m1_mf_puls = new StringBuilder();
@@ -597,6 +651,7 @@ public class CardFragment extends PreferenceFragment {
     }
 
 
+
     class CardHandler extends Handler implements DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
         WeakReference<Fragment> mFragment;
 
@@ -697,4 +752,5 @@ public class CardFragment extends PreferenceFragment {
             }
         }
     }
+
 }

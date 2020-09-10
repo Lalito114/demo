@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 public class ClaveDespachadorPuntada extends AppCompatActivity {
 
@@ -16,6 +17,8 @@ public class ClaveDespachadorPuntada extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_despachador_puntada);
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEsatcion());
         Bundle bundle = getIntent().getExtras();
         final String track2 = bundle.getString("track");
 

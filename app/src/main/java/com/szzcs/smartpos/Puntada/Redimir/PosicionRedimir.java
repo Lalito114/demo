@@ -18,6 +18,7 @@ import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Puntada.Acumular.ListAdapterP;
 import com.szzcs.smartpos.Puntada.Acumular.productos;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,10 +31,13 @@ public class PosicionRedimir extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posicion_redimir);
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEsatcion());
         posicionAcumular();
     }
     private void posicionAcumular() {
-        String url = "http://10.0.1.20/TransferenciaDatosAPI/api/PosCarga/GetMax";
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/posicionCargas/estacion/"+data.getIdEstacion()+"/maximo";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -69,9 +73,9 @@ public class PosicionRedimir extends AppCompatActivity {
 
 
         for (int i = 1; i <= Integer.parseInt(response); i++) {
-            maintitle.add("PC" + String.valueOf(i));
-            subtitle.add("C");
-            imgid.add(R.drawable.gas);
+            maintitle.add("PC " + String.valueOf(i));
+            subtitle.add("Magna  |  Premium  | Diesel");
+            imgid.add(R.drawable.gaspuntada);
         }
 
         //ListAdapterP adapterP=new ListAdapterP(this, maintitle, subtitle,imgid);

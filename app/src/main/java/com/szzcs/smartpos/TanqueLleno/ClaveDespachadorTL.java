@@ -18,6 +18,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -29,6 +30,8 @@ public class ClaveDespachadorTL extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_despachador_tl);
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEsatcion());
 
         //Crea Boton Enviar
         Button btnenviar = (Button) findViewById(R.id.btnsiguiente);
@@ -50,6 +53,7 @@ public class ClaveDespachadorTL extends AppCompatActivity {
                     intent.putExtra("track", track);
                     intent.putExtra("pass",pass);
                     startActivity(intent);
+                    pasword.setText("");
                 }
 
             }

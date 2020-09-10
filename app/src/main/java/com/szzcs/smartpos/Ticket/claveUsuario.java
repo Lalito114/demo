@@ -17,6 +17,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +29,8 @@ public class claveUsuario extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_usuario);
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEsatcion());
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //lee valores usuario y carga
@@ -52,7 +55,8 @@ public class claveUsuario extends AppCompatActivity {
                     //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
 
                     //Conexion con la base y ejecuta valida clave
-                    String url = "http://10.0.1.20/CorpogasService/api/SucursalEmpleados/clave/"+pass;
+                    SQLiteBD data = new SQLiteBD(getApplicationContext());
+                    String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/SucursalEmpleados/clave/"+pass;
 
                     // Utilizamos el metodo Post para validar la contraseña
                     StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
@@ -73,6 +77,7 @@ public class claveUsuario extends AppCompatActivity {
                                             intent.putExtra("car",posicion);
                                             intent.putExtra("user",idusuario);
                                             startActivity(intent);
+                                            finish();
                                         }else{
                                             //Si no es valido se envia mensaje
                                             Toast.makeText(getApplicationContext(),"La contraseña es incorecta",Toast.LENGTH_SHORT).show();

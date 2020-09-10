@@ -6,9 +6,11 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.Image;
 import android.support.design.widget.CoordinatorLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -61,34 +63,34 @@ public class formas_de_pago extends AppCompatActivity {
     String nousuario;
 
     EditText pago;
+    String formapago, nombrepago, numticket;
     Bundle args = new Bundle();
+
 
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setContentView(R.layout.activity_formas_de_pago);
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEsatcion());
         obtenerformasdepago();
 
     }
 
-
-
-
-
     //funcion para obtener formas de pago
     public void obtenerformasdepago(){
-        String url = "http://10.0.1.20/CorpogasService/api/sucursalformapagos/sucursal/1";
-
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/sucursalformapagos/sucursal/"+data.getIdEstacion();
         StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         formadepago(response);
-
                     }
                     //funcion para capturar errores
                 }, new Response.ErrorListener() {
@@ -97,7 +99,6 @@ public class formas_de_pago extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
             }
         });
-
         // Añade la peticion a la cola
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(eventoReq);
@@ -105,7 +106,7 @@ public class formas_de_pago extends AppCompatActivity {
 
     private void formadepago(String response) {
         //Declaramos la lista de titulo
-        List<String> maintitle;
+        final List<String> maintitle;
         //lo assignamos a un nuevo ArrayList
         maintitle = new ArrayList<String>();
 
@@ -119,12 +120,15 @@ public class formas_de_pago extends AppCompatActivity {
         //La asignamos a un nuevo elemento de ArrayList
         imgid = new ArrayList<>();
 
+        final List<String> numerotickets;
+        //Lo asignamos a un nuevo ArrayList
+        numerotickets = new ArrayList<String>();
+
         try {
             JSONObject jsonObject = new JSONObject(response);
             String formapago = jsonObject.getString("SucursalFormapagos");
-
             JSONArray nodo = new JSONArray(formapago);
-            for (int i = 0; i <=11 ; i++) {
+            for (int i = 0; i <=nodo.length() ; i++) {
 
                 JSONObject nodo1 = nodo.getJSONObject(i);
                 String numero_pago = nodo1.getString("FormaPagoId");
@@ -133,6 +137,7 @@ public class formas_de_pago extends AppCompatActivity {
                 String nombre_pago = nodo2.getString("DescripcionLarga");
                 String numero_ticket = nodo2.getString("NumeroTickets");
 
+                numerotickets.add(numero_ticket);
                 maintitle.add( nombre_pago);
                 subtitle.add("ID Forma de Pago:" + numero_pago);
 
@@ -178,11 +183,7 @@ public class formas_de_pago extends AppCompatActivity {
                      default:
                          imgid.add(R.drawable.monedero);
                 }
-
             }
-
-
-
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -200,102 +201,98 @@ public class formas_de_pago extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // TODO Auto-generated method stub
-                obtenerEncabezado();
+                int pos = position + 1;
+
+                formapago = String.valueOf(pos);
+                nombrepago = maintitle.get(position);
+
+                numticket = numerotickets.get(position);
+                ObtenerCuerpoTicket(nombrepago,numticket);
+
+
             }
         });
     }
 
-    //Funcion para obtener los datos del ticket
-    public void obtenerdatosticket(final String PagoSeleccionado, final String ncopias){
-        String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tickets/getticket";
-        //Utilizamos el metodo Post para colocar los datos en el  ticket
+    public void ObtenerCuerpoTicket(final String nombrepago, final String numticket) {
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/tickets/generar";
+
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            //Se instancia la respuesta del json
-                            JSONObject ticket = new JSONObject(response);
-                            String body1 = ticket.getString("body");
-
-                            String footer = ticket.getString("footer");
-                            JSONObject footer1 = new JSONObject(footer);
-                            String mensaje = footer1.getString("Mensaje");
+                            JSONObject jsonObject = new JSONObject(response);
+                            String detalle = jsonObject.getString("Detalle");
+                            String pie = jsonObject.getString("Pie");
+                            JSONObject mensaje = new JSONObject(pie);
+                            JSONArray names = mensaje.getJSONArray("Mensaje");
 
 
-                            JSONObject partebody = new JSONObject(body1);
-                            String recibo = partebody.getString("NoRecibo");
-                            String transaccion = partebody.getString("NoTransaccion");
-                            String rastreo = partebody.getString("NoRastreo");
-                            String posicion = partebody.getString("PosCarga");
-                            String desp = partebody.getString("Desp");
-                            String vendedor = partebody.getString("Vend");
-                            //String mensaje = partebody.getString("footer");
 
-                            String subtotal = partebody.getString("Subtotal");
-                            String iva = partebody.getString("IVA");
-                            String total = partebody.getString("Total");
-                            String totaltexto = partebody.getString("TotalTexto");
 
-                            JSONObject person = new JSONObject(response);
+                            JSONObject det = new JSONObject(detalle);
+                            String numerorecibo = det.getString("NoRecibo");
+                            String numerotransaccion = det.getString("NoTransaccion");
+                            String numerorastreo = det.getString("NoRastreo");
+                            String poscarga = det.getString("PosCarga");
+                            String despachador = det.getString("Desp");
+                            String vendedor = det.getString("Vend");
+                            String prod = det.getString("Productos");
 
-                            String name = person.getString("body");
+                            JSONArray producto = det.getJSONArray("Productos");
 
-                            JSONObject product = new JSONObject(name);
-
-                            JSONArray producto = product.getJSONArray("producto");
-
-                            String cantidad = new String();
                             String protic = new String();
-                            String numero = new String();
-
-                            String descrip = new String();
-                            String impor = new String();
-                            String precio = new String();
 
                             for (int i = 0; i <producto.length() ; i++) {
                                 JSONObject p1 = producto.getJSONObject(i);
                                 String value = p1.getString("Cantidad");
-                                cantidad +=  value;
-
-                                String num = p1.getString("No");
-                                numero +=num ;
 
                                 String descripcion = p1.getString("Descripcion");
-                                descrip += descripcion;
 
                                 String importe = p1.getString("Importe");
-                                impor +=importe;
 
                                 String prec = p1.getString("Precio");
-                                precio += prec;
 
-                                protic += "   "+ value + "    " + num + "     " + descripcion + "  " + prec + "  " + importe+"\n";
+                                protic +=value + " | " + descripcion + " | " + prec + " | " + importe+"\n";
                             }
 
+                            String subtotal = det.getString("Subtotal");
+                            String iva = det.getString("IVA");
+                            String total = det.getString("Total");
+                            String totaltexto = det.getString("TotalTexto");
+                            String clave = det.getString("Clave");
 
-
-                            args.putString("norecibo", recibo);
-                            args.putString("norastreo", rastreo);
-                            args.putString("posicion", posicion);
-                            args.putString("cantidad", protic);
-                            args.putString("numero", numero);
-                            args.putString("descrip",descrip);
-                            args.putString("impor",impor);
-                            args.putString("precio",precio);
+                            String carga = getIntent().getStringExtra("car");
+                            String user = getIntent().getStringExtra("user");
+                            args.putString("numerorecibo", numerorecibo);
+                            args.putString("nombrepago", nombrepago);
+                            args.putString("numticket", numticket);
+                            args.putString("numerotransaccion", numerotransaccion);
+                            args.putString("numerorastreo", numerorastreo);
+                            args.putString("posicion", carga);
+                            args.putString("despachador",despachador);
+                            args.putString("vendedor",user);
+                            args.putString("productos",protic);
 
                             args.putString("subtotal",subtotal);
                             args.putString("iva",iva);
                             args.putString("total",total);
                             args.putString("totaltexto",totaltexto);
-                            args.putString("mensaje",mensaje);
-
+                            args.putString("mensaje",names.toString());
+                            PrintFragment cf = new PrintFragment();
+                            cf.setArguments(args);
+                            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+                                    addToBackStack(PrintFragment.class.getName()).
+                                    commit();
                         } catch (JSONException e) {
-                            //herramienta  para diagnostico de excepciones
                             e.printStackTrace();
                         }
+
+
+
                     }
-                    //funcion para capturar errores
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -306,131 +303,23 @@ public class formas_de_pago extends AppCompatActivity {
             protected Map<String, String> getParams() {
                 // Posting parameters to login url
                 Map<String, String> params = new HashMap<String, String>();
-                carga = getIntent().getExtras().getString("car");
-                nousuario = getIntent().getExtras().getString("user");
-                //pago = findViewById(R.id.pago);
-                String formapago = PagoSeleccionado; //pago.getText().toString();
-               // Toast.makeText(getApplicationContext(), formapago, Toast.LENGTH_SHORT).show();
-
-
-                    args.putString("numcopias", ncopias);
-                    args.putString("formadepago", PagoSeleccionado);
-                    params.put("IdFormaPago", formapago);
-                    params.put("Id_Usuario",nousuario);
-                    args.putString("idusuario", nousuario);
-                    params.put("PosCarga",carga);
-
+                String carga = getIntent().getStringExtra("car");
+                String user = getIntent().getStringExtra("user");
+                params.put("PosCarga", carga);
+                params.put("IdUsuario",user);
+                params.put("IdFormaPago", formapago);
+                params.put("SucursalId",data.getIdEstacion());
                 return params;
             }
         };
 
+
         // Añade la peticion a la cola
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(eventoReq);
-
-        //-------------------------------------------------------------------------------
-
     }
 
-    //Funcion para encabezado del Ticket
-    public void obtenerEncabezado(){
-        //Utilizamos el metodo Get para obtener el encabezado para los tickets
-        //hay que cambiar el volo 1 del fina po el numeo de la estacion que se encuentra
-        String url = "http://10.0.1.20/CorpogasService/api/tickets/cabecero/estacion/1";
-        //Se solicita peticion GET para obtener el encabezado
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
-                try {
-                    //se instancia la respuesta del JSON
-                    JSONObject encabezado = new JSONObject(response);
 
-                    String cabecero = encabezado.getString("Cabecero");
-                    JSONObject encabezado1 = new JSONObject(cabecero);
-                    String empresa = encabezado1.getString("Empresa");
-
-                    JSONObject empresa1 = new JSONObject(empresa);
-                    String rfc = empresa1.getString("Rfc");
-
-
-                    // si la respuesta del json contine informacion
-                    if (encabezado != null){
-                        //Asignacion a variables para encabezado
-
-                        String idestacion = encabezado.getString("IdEstacionInt");
-                        String nombre = encabezado.getString("Nombre");
-                        //String rfc = encabezado.getString("RFC");
-                        String siic = encabezado.getString("SIIC");
-                        String regimen = encabezado.getString("Regimen");
-
-                        JSONObject direccion = encabezado.getJSONObject("direccion");
-                        String calle = direccion.getString("Calle");
-                        String exterior = direccion.getString("NoExterior");
-                        String colonia = direccion.getString("Colonia");
-                        String localidad = direccion.getString("Localidad");
-                        String municipio = direccion.getString("Municipio");
-                        String estado = direccion.getString("Estado");
-                        String cp = direccion.getString("CodigoPostal");
-                        String pais = direccion.getString("Pais");
-
-
-
-
-                        args.putString("noestacion", idestacion);
-                        args.putString("nombreestacion", nombre);
-                        args.putString("razonsocial", rfc);
-                        args.putString("datos",siic);
-                        args.putString("regimenfiscal",regimen);
-                        args.putString("calle",calle);
-                        args.putString("exterior",exterior);
-                        args.putString("colonia",colonia);
-                        args.putString("localidad",localidad);
-                        args.putString("municipio",municipio);
-                        args.putString("estado",estado);
-                        args.putString("cp",cp);
-                        args.putString("pais",pais);
-
-
-//                        PrintFragment newFragment = new PrintFragment();
-//                        newFragment.setArguments(args);
-//
-//                        FragmentManager fm = getFragmentManager();
-//                        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-//                        fragmentTransaction.replace(R.id.tv1, newFragment); //donde fragmentContainer_id es el ID del FrameLayout donde tu Fragment está contenido.
-//                        fragmentTransaction.commit();
-
-                        //Se instancia el PrintFragment
-
-                            PrintFragment cf = new PrintFragment();
-                            cf.setArguments(args);
-                            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
-                                    addToBackStack(PrintFragment.class.getName()).
-                                    commit();
-
-
-                    }else{
-                        //Si el json no contiene informacion se envia mensahje
-                        Toast.makeText(getApplicationContext(),"No se obtuvo un venta", Toast.LENGTH_LONG).show();
-                    }
-
-
-                } catch (JSONException e) {
-                    //herramienta  para diagnostico de excepciones
-                    e.printStackTrace();
-                }
-            }
-            //funcion para capturar errores
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
-            }
-        });
-        RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
-        requestQueue.add(stringRequest);
-
-    }
 }
 
 

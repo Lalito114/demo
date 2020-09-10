@@ -15,6 +15,7 @@ import com.szzcs.smartpos.Puntada.Redimir.PosicionRedimir;
 import com.szzcs.smartpos.Puntada.Registrar.ClaveDespachadorPuntada;
 import com.szzcs.smartpos.Puntada.Registrar.ClaveRegistrarPuntada;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 public class SeccionTarjeta extends AppCompatActivity {
     ListView list;
@@ -30,8 +31,8 @@ public class SeccionTarjeta extends AppCompatActivity {
     };
 
     Integer[] imgid={
-            R.drawable.acumular,R.drawable.redimir,
-            R.drawable.registrar,
+            R.drawable.acumularpuntada,R.drawable.redimirpuntada,
+            R.drawable.registrarpuntada,
     };
 
     Button btnRegistrar, btnAcumular;
@@ -40,6 +41,8 @@ public class SeccionTarjeta extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seccion_tarjeta);
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEsatcion());
 
         Bundle bundle = getIntent().getExtras();
         final String track2 = bundle.getString("track");

@@ -92,7 +92,7 @@
         android:layout_marginEnd="197dp"
         android:layout_marginBottom="20dp"
         android:background="@drawable/b3"
-        android:text="Agregar Productos"
+        android:text="Imprimir Ticket"
         android:textColor="@color/a_normal" />
 
     <Button
@@ -113,9 +113,21 @@
         android:layout_height="43dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="125dp"
-        android:layout_marginBottom="80dp"
+        android:layout_marginEnd="44dp"
+        android:layout_marginBottom="84dp"
         android:background="@drawable/b3"
         android:text="Agregar combustible"
+        android:textColor="@color/a_normal" />
+
+    <Button
+        android:id="@+id/btnLipmpiarProducto"
+        android:layout_width="121dp"
+        android:layout_height="43dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="206dp"
+        android:layout_marginBottom="85dp"
+        android:background="@drawable/b3"
+        android:text="Limpiar"
         android:textColor="@color/a_normal" />
 </RelativeLayout>

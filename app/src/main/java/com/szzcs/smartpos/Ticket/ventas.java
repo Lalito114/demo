@@ -19,6 +19,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,6 +35,8 @@ public class ventas extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ventas);
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        this.setTitle(data.getNombreEsatcion());
         //Habilitamos la opcion de regresar en la parte superior izquierda
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         //Llamamos al metodo posiciones cargar
@@ -43,7 +46,8 @@ public class ventas extends AppCompatActivity {
     public void PosicionesCargar(){
 
         //Declaramos direccion URL de las posiciones de carga. Para acceder a los metodos de la API
-        String url = "http://10.0.1.20/CorpogasService/api/posicionCargas/estacion/1/maximo";
+        SQLiteBD db = new SQLiteBD(getApplicationContext());
+        String url = "http://"+db.getIpEstacion()+"/CorpogasService/api/posicionCargas/estacion/"+db.getIdEstacion()+"/maximo";
         //inicializamos el String reques que es el metodo de la funcion de Volley que no va a permir accder a la API
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -108,6 +112,7 @@ public class ventas extends AppCompatActivity {
                     //Enviamos el valor de la posicion
                     intente.putExtra("pos",positionfinal);
                     startActivity(intente);
+                    finish();
             }
         });
     }
