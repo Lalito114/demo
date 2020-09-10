@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Productos.terminaVenta">
+
+    <TextView
+        android:id="@+id/txtPendientes3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="132dp"
+        android:layout_marginBottom="240dp"
+        android:text="Termina Venta"
+        android:textSize="14dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/imgProducto"
+        android:layout_width="135dp"
+        android:layout_height="130dp"
+        android:layout_marginEnd="112dp"
+        android:layout_marginBottom="260dp"
+        android:background="@drawable/border"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/product" />
+</android.support.constraint.ConstraintLayout>
