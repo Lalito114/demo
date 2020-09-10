@@ -36,19 +36,19 @@ public class Munu_Principal extends AppCompatActivity {
     String[] maintitle ={
             "Tickets","Monederos Electronicos",
             "Productos","Cortes",
-            "Pendientes","Reportes","Facturas",
+            "Pendientes","Reportes", "Gasto","Facturas",
     };
 
     String[] subtitle ={
             "Emite tickets de venta","Registro, Acumular y Redimir",
             "Administra productos","Realiza cortes de turnos",
-            "Enlista pendientes","Muestra reportes", "Imprime tus Tickets",
+            "Enlista pendientes","Muestra reportes", "Reporta lo Egresos","Imprime tus Tickets",
     };
 
     Integer[] imgid={
             R.drawable.ventas,R.drawable.monedero,
             R.drawable.product,R.drawable.cortes,
-            R.drawable.pendientes, R.drawable.report,R.drawable.fact,
+            R.drawable.pendientes, R.drawable.report,R.drawable.gastos,R.drawable.fact,
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
