@@ -23,7 +23,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-<!--hola-->
+<!--hola hola -->
     <application
         android:name=".MyApp"
         android:allowBackup="true"
@@ -34,9 +34,9 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".Productos.formapagoProducto"></activity>
         <activity android:name=".Productos.claveProducto"></activity>
-        <activity android:name=".Productos.ListAdapterFProductos"></activity>
-        <activity android:name=".Productos.ListAdapterProd"></activity>
-        <activity android:name=".Productos.ListAdapterProductos"></activity>
+<!--        <activity android:name=".Productos.ListAdapterFProductos"></activity>-->
+<!--        <activity android:name=".Productos.ListAdapterProd"></activity>-->
+<!--        <activity android:name=".Productos.ListAdapterProductos"></activity>-->
         <activity android:name=".Productos.posicionProductos"></activity>
         <activity android:name=".Productos.terminaVenta"></activity>
         <activity android:name=".Productos.VentasProductos"></activity>
@@ -66,16 +66,10 @@
         <activity android:name=".Puntada.Registrar.ClaveRegistrarPuntada" />
         <activity android:name=".Puntada.SeccionTarjeta" />
         <activity android:name=".Productos.VentasProductos" />
-        <activity android:name=".Productos.claveUsuarioProducto" />
+
         <activity android:name=".Productos.posicionProductos" />
-        <activity android:name=".Puntada.posicionCargaAcumular" />
-        <activity android:name=".Puntada.PosicionCargaPuntada" />
-        <activity android:name=".Puntada.ClavePuntada" /> <!-- Gerarqui de puntada -->
-        <activity
-            android:name=".Puntada.leerTargeta"
-            android:parentActivityName=".Munu_Principal" /> <!-- Esto es la escala gerarquica de herncia entre ventanas -->
-        <!-- Este Activity es formas de pago -->
-        <activity
+        <!-- Gerarqui de puntada -->
+
             android:name=".Ticket.formas_de_pago"
             android:parentActivityName=".Ticket.claveUsuario">
             <meta-data
