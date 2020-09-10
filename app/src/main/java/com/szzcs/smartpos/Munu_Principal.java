@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.szzcs.smartpos.Encriptacion.EncriptarMAC;
 import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
+import com.szzcs.smartpos.Gastos.claveGastos;
 import com.szzcs.smartpos.Pendientes.claveUPendientes;
 import com.szzcs.smartpos.Productos.VentasProductos;
 import com.szzcs.smartpos.Productos.posicionProductos;
@@ -36,19 +37,19 @@ public class Munu_Principal extends AppCompatActivity {
     String[] maintitle ={
             "Tickets","Monederos Electronicos",
             "Productos","Cortes",
-            "Pendientes","Reportes", "Gasto","Facturas",
+            "Pendientes", "Gasto","Facturas",
     };
 
     String[] subtitle ={
             "Emite tickets de venta","Registro, Acumular y Redimir",
             "Administra productos","Realiza cortes de turnos",
-            "Enlista pendientes","Muestra reportes", "Reporta lo Egresos","Imprime tus Tickets",
+            "Enlista pendientes", "Reporta lo Egresos","Imprime tus Tickets",
     };
 
     Integer[] imgid={
             R.drawable.ventas,R.drawable.monedero,
             R.drawable.product,R.drawable.cortes,
-            R.drawable.pendientes, R.drawable.report,R.drawable.gastos,R.drawable.fact,
+            R.drawable.pendientes,R.drawable.gastos,R.drawable.fact,
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,10 +100,14 @@ public class Munu_Principal extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),macmd5,Toast.LENGTH_LONG).show();
                 }
                 else if(position == 4) {
-                    Intent intente = new Intent(getApplicationContext(), claveUPendientes.class);
-                    startActivity(intente);
+                    Intent inten = new Intent(getApplicationContext(), claveUPendientes.class);
+                    startActivity(inten);
+
+                }else if(position == 5) {
+                    Intent intent = new Intent (getApplicationContext(), claveGastos.class);
+                    startActivity(intent);
                 }
-                else if(position == 5) {
+                else if(position == 6) {
                     EncriptarObtenerIP encriptarObtenerIP = new EncriptarObtenerIP();
                     String ip = encriptarObtenerIP.getIP();
                     String ipmd5 = encriptarObtenerIP.getIPMD5(ip);
