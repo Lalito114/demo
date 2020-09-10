@@ -61,7 +61,7 @@ public class ConfiguracionServidor extends AppCompatActivity {
             Toast.makeText(getApplicationContext(),"La base de datos no existe",Toast.LENGTH_LONG).show();;
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_configuracion_servidor);
-            this.setTitle("Configuracion Inicial");
+            this.setTitle("Configuracion Inicial Servidor");
             btnenviar = findViewById(R.id.btnEnviar);
 
             btnenviar.setOnClickListener(new View.OnClickListener() {
@@ -84,6 +84,7 @@ public class ConfiguracionServidor extends AppCompatActivity {
 
                     if (oct1.isEmpty()){
                         Toast.makeText(getApplicationContext(),"Ingresa el campo 1",Toast.LENGTH_LONG).show();
+                        //happy
                     }else{
                         if (oct2.isEmpty()){
                             Toast.makeText(getApplicationContext(),"Ingresa este campo 2",Toast.LENGTH_LONG).show();
