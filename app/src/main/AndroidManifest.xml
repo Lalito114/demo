@@ -32,7 +32,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Gastos.cargavaleGasto"></activity>
+        <activity android:name=".Productos.formapagoProducto"></activity>
+        <activity android:name=".Gastos.cargavaleGasto" />
         <activity android:name=".Gastos.autizacionGastos" />
         <activity android:name=".SplashEmpresas.SplashPemex" />
         <activity android:name=".SplashEmpresas.SplashGulf" />
