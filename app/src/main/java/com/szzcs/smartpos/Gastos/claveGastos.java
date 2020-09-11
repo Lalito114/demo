@@ -28,8 +28,7 @@ import org.json.JSONObject;
 public class claveGastos extends AppCompatActivity {
     TextView usuario, carga;
     EditText password;
-    String idisla;
-    String idTurno;
+    String idisla, idTurno, proviene;
     final String sucursalid = "1";
 
     @Override
@@ -45,7 +44,7 @@ public class claveGastos extends AppCompatActivity {
         validaClave();
     }
 
-    public void obtenerIsla() {
+    public void obtenerIsla(final String proviene) {
         final String pass = password.getText().toString();
 
 
@@ -63,7 +62,7 @@ public class claveGastos extends AppCompatActivity {
                     //usuario.setText(idusuario);
                     //Se instancia y se llama a la clase formas de pago
                     Intent intent = new Intent(getApplicationContext(), autizacionGastos.class);
-                    //intent.putExtra("user", idusuario);
+                    intent.putExtra("tipoGasto", proviene);
                     intent.putExtra("isla", idisla);
                     intent.putExtra("turno", idTurno);
                     startActivity(intent);
@@ -83,6 +82,8 @@ public class claveGastos extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
+
+
     private void  validaClave(){
         //Crea Boton Enviar
         //Button btnenviar = (Button) findViewById(R.id.enviar);
@@ -98,13 +99,31 @@ public class claveGastos extends AppCompatActivity {
                 if (pass.isEmpty()){
                     Toast.makeText(getApplicationContext(),"Ingresa la contraseña",Toast.LENGTH_SHORT).show();
                 }else {
-                    ObtenerClave(pass);
+                    ObtenerClave(pass, "1");
                 }
 
             }
         });
+        ImageView btnenviarV = findViewById(R.id.imgvaleCaja);
+        //En espera a recibir el evento Onclick del boton Enviar
+        btnenviarV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Se lee el password del objeto y se asigna a variable
+                final String pass = password.getText().toString();
+                //Si no se terclea nada envia mensaje de teclear contraseña
+                if (pass.isEmpty()){
+                    Toast.makeText(getApplicationContext(),"Ingresa la contraseña",Toast.LENGTH_SHORT).show();
+                }else {
+
+                    ObtenerClave(pass,"2");
+                }
+
+            }
+        });
+
     }
-    private void ObtenerClave(final String pass){
+    private void ObtenerClave(final String pass, final String proviene){
         //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
 
         //Conexion con la base y ejecuta valida clave
@@ -123,7 +142,7 @@ public class claveGastos extends AppCompatActivity {
 
                             if (valido.equals("true") && idRoll.equals("3")){ // 1 es Jefe de ISla Autorizado por Gerente
                                 //Si es valido se asignan valores
-                                obtenerIsla();
+                                obtenerIsla(proviene);
                             }else{
                                 //Si no es valido se envia mensaje
                                 try {
