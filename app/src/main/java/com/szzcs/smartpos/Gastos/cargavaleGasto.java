@@ -55,11 +55,14 @@ public class cargavaleGasto extends AppCompatActivity {
         enviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (SubTotal.length()==0  )       //.length() >0)
+                if (SubTotal.length()==0 )       //.length() >0)
                 {
                     Toast.makeText(getApplicationContext(), "digite el importe", Toast.LENGTH_LONG).show();
-                } else {
-                    EnviarGastos();
+                } else { if (Descripcion.length()==0){
+                        Toast.makeText(getApplicationContext(), "digite la descripción", Toast.LENGTH_LONG).show();
+                        }else {
+                            EnviarGastos();
+                        }
                 }
             }
         });

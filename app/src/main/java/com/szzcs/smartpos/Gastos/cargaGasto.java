@@ -69,15 +69,27 @@ public class cargaGasto extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //se asignan valores
-                if (txtClave.length()==0  )       //.length() >0)
+                if (txtClave.length() == 0)       //.length() >0)
                 {
-                    Toast.makeText(getApplicationContext(), "Seleccione al menos uno de los Tipos de Gasto", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Seleccione al menos uno de los tipos de gasto", Toast.LENGTH_LONG).show();
                 } else {
-                    EnviarGastos();
+                    if (Descripcion.length() == 0) {
+                        Toast.makeText(getApplicationContext(), "Dijite una descripción", Toast.LENGTH_LONG).show();
+
+                    } else {
+                        if (SubTotal.length() == 0) {
+                            Toast.makeText(getApplicationContext(), "Digite el Subtotal", Toast.LENGTH_LONG).show();
+                        } else {
+                            if(Iva.length()==0){
+                                Toast.makeText(getApplicationContext(), "Digite el IVA", Toast.LENGTH_LONG).show();
+                            }else {
+                                EnviarGastos();
+                            }
+                        }
+                    }
                 }
             }
         });
-
         cargaTipoGastos();
     }
 
