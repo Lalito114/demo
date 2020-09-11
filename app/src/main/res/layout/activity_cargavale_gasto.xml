@@ -6,6 +6,45 @@
     android:layout_height="match_parent"
     tools:context=".Gastos.cargavaleGasto">
 
+    <EditText
+        android:id="@+id/descripcion"
+        android:layout_width="330dp"
+        android:layout_height="45dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="123dp"
+        android:ems="10"
+        android:gravity="left"
+        android:inputType="text"
+        android:textSize="20sp" />
+
+    <EditText
+        android:id="@+id/subTot"
+        android:layout_width="150dp"
+        android:layout_height="45dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="73dp"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:inputType="numberDecimal"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/Total"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="173dp"
+        android:layout_marginBottom="77dp"
+        android:text="Total $"
+        android:textColor="#070707"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
     <ImageView
         android:id="@+id/imgvaleCaja"
         android:layout_width="325dp"
@@ -26,50 +65,11 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="252dp"
-        android:layout_marginBottom="46dp"
+        android:layout_marginBottom="171dp"
         android:text="Descripción"
         android:textColor="#070707"
         android:textSize="16sp"
         android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/subTot"
-        android:layout_width="150dp"
-        android:layout_height="45dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="123dp"
-        android:ems="10"
-        android:gravity="center_horizontal"
-        android:inputType="numberDecimal"
-        android:textSize="20sp" />
-
-    <TextView
-        android:id="@+id/Total"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="172dp"
-        android:layout_marginBottom="122dp"
-        android:text="Total"
-        android:textColor="#070707"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/descripcion"
-        android:layout_width="330dp"
-        android:layout_height="45dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="73dp"
-        android:ems="10"
-        android:gravity="left"
-        android:inputType="text"
-        android:textSize="20sp" />
 
     <Button
         android:id="@+id/btnEnviar"

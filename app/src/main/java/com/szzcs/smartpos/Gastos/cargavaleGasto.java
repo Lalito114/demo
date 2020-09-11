@@ -17,10 +17,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,8 +45,9 @@ public class cargavaleGasto extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cargavale_gasto);
-         SubTotal =findViewById(R.id.SubTot);
-        Descripcion = findViewById(R.id.Descripcion);
+
+        SubTotal =findViewById(R.id.subTot);
+        Descripcion = findViewById(R.id.descripcion);
 
         String islaId = getIntent().getStringExtra("isla");
         String turnoId = getIntent().getStringExtra("turno");
@@ -54,7 +57,7 @@ public class cargavaleGasto extends AppCompatActivity {
             public void onClick(View v) {
                 if (SubTotal.length()==0  )       //.length() >0)
                 {
-                    Toast.makeText(getApplicationContext(), "Seleccione al menos uno de los Tipos de Gasto", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "digite el importe", Toast.LENGTH_LONG).show();
                 } else {
                     EnviarGastos();
                 }
@@ -62,67 +65,88 @@ public class cargavaleGasto extends AppCompatActivity {
         });
     }
     private void EnviarGastos() {
-        String islaId = getIntent().getStringExtra("isla");
-        String turnoId = getIntent().getStringExtra("turno");
-        Date date = new Date();
-        //Formato para el dia, mes y año
-        DateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        //Formato para la hora, minutos y segundos
-        DateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
-        String fechaTrabajo= (dateFormat.format(date)+ " " + hourFormat.format(date));
+        final String turnoId = getIntent().getStringExtra("turno");
 
-        //SQLiteBD data = new SQLiteBD(getApplicationContext());
-        //String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/tanqueLleno/EnviarProductos";
-        String URL = "http://10.2.251.58/CorpogasService/api/Gastos";
-        final JSONObject mjason = new JSONObject();
-        RequestQueue queue = Volley.newRequestQueue(this);
-        try {
-            mjason.put("EstacionId",EstacionId);
-            mjason.put("TurnoId", turnoId); //turno.getText().toString());
-            mjason.put("TurnoSucursalId",sucursalId); //turno.getText().toString());Sucursal
-            mjason.put("IslaId", islaId);
-            mjason.put("IslaEstacionId",EstacionId);
-            mjason.put("FechaTrabajo",fechaTrabajo);
-            mjason.put("Descripcion", Descripcion.getText().toString());
-            mjason.put("Importe", SubTotal.getText().toString());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, mjason, new Response.Listener<JSONObject>() {
+        String url = "http://10.2.251.58/CorpogasService/api/Turnos/fechaTrabajo/sucursal/"+sucursalId+"/turno/"+turnoId;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
-            public void onResponse(JSONObject response) {
-                Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
-                startActivity(intente);
-                Toast.makeText(getApplicationContext(),"Gasto Cargado Exitosamente",Toast.LENGTH_LONG).show();
-                //Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
+            public void onResponse(String response) {
+                try{
+                    JSONObject resultadorespuesta = new JSONObject(response);
+                    String valor = resultadorespuesta.getString("ObjetoRespuesta");
+                    GuardarGasto(valor, turnoId);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
             }
-        }){
-            public Map<String,String> getHeaders() throws AuthFailureError {
-                Map<String,String> headers = new HashMap<String, String>();
-                return headers;
-            }
-            protected  Response<JSONObject> parseNetwokResponse(NetworkResponse response){
-                if (response != null){
-
-                    try {
-                        String responseString;
-                        JSONObject datos = new JSONObject();
-                        responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
-                }
-                return Response.success(mjason, HttpHeaderParser.parseCacheHeaders(response));
-            }
-        };
-        queue.add(request_json);
-
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(stringRequest);
     }
+
+
+private void GuardarGasto(String fechatrabajo, String turnoId){
+
+    String islaId = getIntent().getStringExtra("isla");
+    Date date = new Date();
+    String fechaTrabajo= fechatrabajo;
+
+    //SQLiteBD data = new SQLiteBD(getApplicationContext());
+    //String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/tanqueLleno/EnviarProductos";
+    String URL = "http://10.2.251.58/CorpogasService/api/CajaChicas";
+    final JSONObject mjason = new JSONObject();
+    RequestQueue queue = Volley.newRequestQueue(this);
+    try {
+        mjason.put("EstacionId",EstacionId);
+        mjason.put("TurnoId", turnoId); //turno.getText().toString());
+        mjason.put("TurnoSucursalId",sucursalId); //turno.getText().toString());Sucursal
+        mjason.put("IslaId", islaId);
+        mjason.put("IslaEstacionId",EstacionId);
+        mjason.put("FechaTrabajo",fechaTrabajo);
+        mjason.put("Descripcion", Descripcion.getText().toString());
+        mjason.put("Importe", SubTotal.getText().toString());
+    } catch (JSONException e) {
+        e.printStackTrace();
+    }
+    JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, mjason, new Response.Listener<JSONObject>() {
+        @Override
+        public void onResponse(JSONObject response) {
+            Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
+            startActivity(intente);
+            Toast.makeText(getApplicationContext(),"Gasto Cargado Exitosamente",Toast.LENGTH_LONG).show();
+        }
+    }, new Response.ErrorListener() {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+
+        }
+    }){
+        public Map<String,String> getHeaders() throws AuthFailureError {
+            Map<String,String> headers = new HashMap<String, String>();
+            return headers;
+        }
+        protected  Response<JSONObject> parseNetwokResponse(NetworkResponse response){
+            if (response != null){
+
+                try {
+                    String responseString;
+                    JSONObject datos = new JSONObject();
+                    responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+            return Response.success(mjason, HttpHeaderParser.parseCacheHeaders(response));
+        }
+    };
+    queue.add(request_json);
+
+}
 
 }
