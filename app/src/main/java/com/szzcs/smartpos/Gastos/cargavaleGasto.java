@@ -48,7 +48,18 @@ public class cargavaleGasto extends AppCompatActivity {
 
         String islaId = getIntent().getStringExtra("isla");
         String turnoId = getIntent().getStringExtra("turno");
-        EnviarGastos();
+        Button enviar = findViewById(R.id.btnEnviar);
+        enviar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (SubTotal.length()==0  )       //.length() >0)
+                {
+                    Toast.makeText(getApplicationContext(), "Seleccione al menos uno de los Tipos de Gasto", Toast.LENGTH_LONG).show();
+                } else {
+                    EnviarGastos();
+                }
+            }
+        });
     }
     private void EnviarGastos() {
         String islaId = getIntent().getStringExtra("isla");
