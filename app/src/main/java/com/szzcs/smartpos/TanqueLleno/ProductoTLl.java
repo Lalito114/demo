@@ -36,17 +36,13 @@ import java.util.Map;
 public class ProductoTLl extends AppCompatActivity {
     ListView list;
     EditText litros, pesos;
-    Button agregarcombustible, agregarProductos, enviarProductos, limpiar;
+    Button agregarcombustible, imprimirTicket, enviarProductos, limpiar;
     String IdCombustible, cs,numneroInterno,  descripcion, precio, IdCombus, Costo;
     double  LitrosCoversion;
     final JSONObject datos = new JSONObject();
-
     JSONArray array1 = new JSONArray();
-
-    //Create json objects for two filter Ids
     JSONObject jsonParam = new JSONObject();
     String folio, transaccion;
-
     String NumeroInternoSucursal,SucursalEmpleadoId,PosicionDeCarga,NumeroDeTarjeta,ClaveTanqueLleno,TipoCliente;
 
     @Override
@@ -62,6 +58,7 @@ public class ProductoTLl extends AppCompatActivity {
         TipoCliente = getIntent().getStringExtra("Tipocliente");
 
         Combustibles();
+
         pesos = findViewById(R.id.edtPesos);
         litros = findViewById(R.id.edtLitros);
 
@@ -80,54 +77,7 @@ public class ProductoTLl extends AppCompatActivity {
         agregarcombustible.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String litro = pesos.getText().toString();
-
-                int pide2 = Integer.valueOf(litro);
-
-                double  pide = pide2;
-                if (pide >= 1){
-                    Double costocombustible = Double.valueOf(Costo);
-
-                    LitrosCoversion = pide/costocombustible;
-                    DecimalFormat df = new DecimalFormat();
-                    df.setMaximumFractionDigits(3);
-
-                    double importe = LitrosCoversion * costocombustible;
-
-                    try {
-                        //Add string params
-                        jsonParam.put("TipoProducto","1");
-                        jsonParam.put("ProductoId",IdCombustible);
-                        jsonParam.put("NumeroInterno",IdCombustible);
-                        jsonParam.put("Descripcion",descripcion);
-                        jsonParam.put("Cantidad",df.format(LitrosCoversion));
-                        jsonParam.put("Precio",df.format(importe));
-                        array1.put(jsonParam);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }else{
-                    try {
-                        //Add string params
-                        litros = findViewById(R.id.edtLitros);
-                        jsonParam.put("TipoProducto","1");
-                        jsonParam.put("ProductoId",IdCombustible);
-                        jsonParam.put("NumeroInterno",IdCombus);
-                        jsonParam.put("Descripcion",descripcion);
-                        jsonParam.put("Cantidad",litro);
-                        jsonParam.put("Precio",precio);
-                        array1.put(jsonParam);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                v.setVisibility(View.INVISIBLE);
-
-                enviarProductos.setVisibility(View.VISIBLE);
-                limpiar.setVisibility(View.VISIBLE);
-                agregarProductos.setVisibility(View.INVISIBLE);
+                pesos.setText("Hola mundo");
 
             }
         });
@@ -141,7 +91,7 @@ public class ProductoTLl extends AppCompatActivity {
                     EnviarProductos1();
                     v.setVisibility(View.INVISIBLE);
                     agregarcombustible.setVisibility(View.INVISIBLE);
-                    agregarProductos.setVisibility(View.VISIBLE);
+                    imprimirTicket.setVisibility(View.VISIBLE);
                 }else{
                     Toast.makeText(getApplicationContext(),"Ingresa el producto", Toast.LENGTH_LONG).show();
                 }
@@ -149,9 +99,9 @@ public class ProductoTLl extends AppCompatActivity {
             }
         });
 
-        agregarProductos = findViewById(R.id.btnagregarProductos);
-        agregarProductos.setVisibility(View.INVISIBLE);
-        agregarProductos.setOnClickListener(new View.OnClickListener() {
+        imprimirTicket = findViewById(R.id.btnagregarProductos);
+        imprimirTicket.setVisibility(View.INVISIBLE);
+        imprimirTicket.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 enviarDatosCuerpoTicket(folio, transaccion);
