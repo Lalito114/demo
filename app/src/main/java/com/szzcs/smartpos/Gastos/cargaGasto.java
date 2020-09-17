@@ -23,8 +23,11 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Munu_Principal;
+import com.szzcs.smartpos.PrintFragment;
+import com.szzcs.smartpos.PrintFragmentVale;
 import com.szzcs.smartpos.Productos.ListAdapterProductos;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,24 +43,27 @@ public class cargaGasto extends AppCompatActivity {
     //Declaracion de variables
     ListView list;
     TextView txtDescripcion, txtClave, isla, turno, usuario;
-    TextView SubTotal, Iva, total, Descripcion;
-    String EstacionId = "1";
-    String sucursalId = "1";
+    TextView subTotal, iva, total, Descripcion;
+    String EstacionId ;
+    String sucursalId ;
     String idisla, idTurno;
+    Bundle args = new Bundle();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carga_gasto);
 
-
+        SQLiteBD db = new SQLiteBD(getApplicationContext());
+        EstacionId = db.getIdEstacion();
+        sucursalId=db.getIdSucursal();
         txtDescripcion= findViewById(R.id.txtDescripcion);
         txtClave= findViewById(R.id.txtClave);
         isla=findViewById(R.id.isla);
         turno=findViewById(R.id.turno);
         usuario=findViewById(R.id.usuario);
-        SubTotal=findViewById(R.id.SubTot);
-        Iva=findViewById(R.id.Iva);
+        subTotal=findViewById(R.id.subTot);
+        iva=findViewById(R.id.iva);
         total=findViewById(R.id.total);
         Descripcion=findViewById(R.id.Descripcion);
 
@@ -77,10 +83,10 @@ public class cargaGasto extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "Dijite una descripción", Toast.LENGTH_LONG).show();
 
                     } else {
-                        if (SubTotal.length() == 0) {
+                        if (subTotal.length() == 0) {
                             Toast.makeText(getApplicationContext(), "Digite el Subtotal", Toast.LENGTH_LONG).show();
                         } else {
-                            if(Iva.length()==0){
+                            if(iva.length()==0){
                                 Toast.makeText(getApplicationContext(), "Digite el IVA", Toast.LENGTH_LONG).show();
                             }else {
                                 EnviarGastos();
@@ -94,13 +100,8 @@ public class cargaGasto extends AppCompatActivity {
     }
 
 
-
-
-
-
     public void obtenerIsla() {
         final String pass = isla.getText().toString();
-
 
         String url = "http://10.2.251.58/CorpogasService/api/estacionControles/estacion/"+ EstacionId  +"/ClaveEmpleado/" +pass;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -132,7 +133,7 @@ public class cargaGasto extends AppCompatActivity {
 
     private void EnviarGastos() {
         String islaId = isla.getText().toString(); //getIntent().getStringExtra("isla");
-        String turnoId = "1";//getIntent().getStringExtra("turno");
+        String turnoId = getIntent().getStringExtra("turno");
 
 
         //SQLiteBD data = new SQLiteBD(getApplicationContext());
@@ -148,8 +149,8 @@ public class cargaGasto extends AppCompatActivity {
             mjason.put("TurnoSucursalId",sucursalId); //turno.getText().toString());Sucursal
             mjason.put("ConceptoGastoId",txtClave.getText().toString());
             mjason.put("Descripcion", Descripcion.getText().toString());
-            mjason.put("Subtotal", SubTotal.getText().toString());
-            mjason.put("Iva", Iva.getText().toString());
+            mjason.put("Subtotal", subTotal.getText().toString());
+            mjason.put("Iva", iva.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -157,9 +158,15 @@ public class cargaGasto extends AppCompatActivity {
         JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, mjason, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
-                startActivity(intente);
                 Toast.makeText(getApplicationContext(),"Gasto Cargado Exitosamente",Toast.LENGTH_LONG).show();
+                String numeroticket = null;
+                try {
+                    numeroticket = response.getString("Id");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                ObtenerCuerpoTicket(subTotal.getText().toString(), iva.getText().toString(), Descripcion.getText().toString(), txtDescripcion.getText().toString(), numeroticket);
                 //Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
             }
         }, new Response.ErrorListener() {
@@ -203,8 +210,8 @@ public class cargaGasto extends AppCompatActivity {
             mjason.put("TurnoSucursalId", "1"); //turno.getText().toString());
             mjason.put("ConceptoGastoId",txtClave.getText().toString());
             mjason.put("Descripcion", Descripcion.getText().toString());
-            mjason.put("Subtotal", SubTotal.getText().toString());
-            mjason.put("Iva", Iva.getText().toString());
+            mjason.put("Subtotal", subTotal.getText().toString());
+            mjason.put("Iva", iva.getText().toString());
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -318,5 +325,30 @@ public class cargaGasto extends AppCompatActivity {
 
         }
     }
+
+    public void ObtenerCuerpoTicket(String subtotal, String iva, String descripcion, String tipogasto, String numeroticket) {
+        double sub = Double.parseDouble(subtotal);
+        double iv = Double.parseDouble(iva);
+        double tot = sub+iv;
+        String gastototal = Integer.toString((int) tot);
+        try{
+            args.putString("proviene", "1");
+            args.putString("descripcion", descripcion);
+            args.putString("subtotal", subtotal.toString());
+            args.putString("iva", iva.toString());
+            args.putString("total", gastototal);
+            args.putString("tipogasto", tipogasto);
+            args.putString("numeroticket", numeroticket);
+            PrintFragmentVale cf = new PrintFragmentVale();
+            cf.setArguments(args);
+            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+                    addToBackStack(PrintFragment.class.getName()).
+                    commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 }

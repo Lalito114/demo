@@ -20,8 +20,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Munu_Principal;
+import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.Productos.ListAdapterFProductos;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.bouncycastle.jce.exception.ExtCertPathValidatorException;
 import org.json.JSONArray;
@@ -44,12 +46,18 @@ public class ticketPendientes extends AppCompatActivity {
     ListView list;
     String carga;
     String nousuario;
+    String EstacionId ;
+    String sucursalId ;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_clave_u_pendientes);
+        setContentView(R.layout.activity_ticket_pendientes);
+        SQLiteBD db = new SQLiteBD(getApplicationContext());
+        EstacionId = db.getIdEstacion();
+        sucursalId=db.getIdSucursal();
+
 
         TextView txtMac = findViewById(R.id.txtmac);
         txtMac.setText(getMacAddr());
@@ -61,7 +69,7 @@ public class ticketPendientes extends AppCompatActivity {
 
     private void formapagoProductos(){
         //Declaramos direccion URL de las posiciones de carga. Para acceder a los metodos de la API
-        String url = "http://10.2.251.58/CorpogasService/api/sucursalformapagos/sucursal/1";
+        String url = "http://10.2.251.58/CorpogasService/api/sucursalformapagos/sucursal/"+sucursalId;
         //inicializamos el String reques que es el metodo de la funcion de Volley que no va a permir accder a la API
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -86,7 +94,7 @@ public class ticketPendientes extends AppCompatActivity {
 
     private void vax(final String response){
         try {
-            List<String> maintitle;
+            final List<String> maintitle;
             maintitle = new ArrayList<String>();
             final List<String> subtitle;
             subtitle = new ArrayList<String>();
@@ -96,13 +104,12 @@ public class ticketPendientes extends AppCompatActivity {
             final List<Integer> idcopias;
             idcopias = new ArrayList<>();
 
-            JSONObject jsonObject = new JSONObject(response);
-            String formapago = jsonObject.getString("SucursalFormapagos");
+            //JSONObject jsonObject = new JSONObject(response);
+            //String formapago = jsonObject.getString("SucursalFormapagos");
 
 
-            JSONArray nodo = new JSONArray(formapago);
+            JSONArray nodo = new JSONArray(response);
             for (int i = 0; i <nodo.length() ; i++) {
-
                 JSONObject nodo1 = nodo.getJSONObject(i);
                 String numero_pago = nodo1.getString("FormaPagoId");
                 String formapago1 = nodo1.getString("FormaPago");
@@ -114,26 +121,45 @@ public class ticketPendientes extends AppCompatActivity {
                 subtitle.add(numero_pago);
                 idcopias.add(Integer.parseInt(numero_ticket));
                 switch(numero_pago) {
+                    case "1":
+                        imgid.add(R.drawable.monedero);
+                        break;
                     case "2":
                         imgid.add(R.drawable.billete);
+                        break;
                     case "3":
                         imgid.add(R.drawable.vale);
+                        break;
                     case "4":
                         imgid.add(R.drawable.amex);
+                        break;
                     case "5":
                         imgid.add(R.drawable.gascard);
+                        break;
                     case "6":
                         imgid.add(R.drawable.visa);
+                        break;
                     case "7":
                         imgid.add(R.drawable.valeelectronico);
+                        break;
                     case "8":
                         imgid.add(R.drawable.corpogas);
+                        break;
                     case "9":
                         imgid.add(R.drawable.corpomobil);
+                        break;
+                    case "10":
+                        imgid.add(R.drawable.monedero);
+                        break;
+                    case "11":
+                        imgid.add(R.drawable.jarreo);
+                        break;
+                    case "12":
+                        imgid.add(R.drawable.monedero);
+                        break;
                     default:
                         imgid.add(R.drawable.camera);
-                }
-                //Inicializacion del listview con el adaptador
+                }  //Inicializacion del listview con el adaptador
 
                 ListAdapterFProductos adaptador = new ListAdapterFProductos(this, maintitle, subtitle, imgid);
                 list=(ListView)findViewById(R.id.list);
@@ -142,9 +168,9 @@ public class ticketPendientes extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
                         //Obtiene valor del numero de copias y la forma de pago
-                        String  FormaPagoId = subtitle.get(i).toString();
+                        String  FormaPagoId = maintitle.get(i).toString();
                         String  copias = idcopias.get(i).toString();
-                        EncabezadoTicket();
+                        //EncabezadoTicket();
                         TicketPendiente(FormaPagoId, copias);
                         //TicketPendiente();
 
@@ -162,12 +188,12 @@ public class ticketPendientes extends AppCompatActivity {
         EditText pasword = (EditText) findViewById(R.id.pasword);
         final String numeroTarjetero = pasword.getText().toString();
 
-        final String numeroRecibo = "";
-        final String numeroTransaccion = "";
-        final String numeroRastreo="";
+        final String numerorecibo = "";
+        final String numerotransaccion = "";
+        final String numerorastreo="";
         final String posicion="";
-        final String Despacho="";
-        final String Vendio="";
+        final String despachador="";
+        final String vendedor="";
         final String subtotal="";
         final String iva="";
         final String totaltotalTexto="";
@@ -185,38 +211,17 @@ public class ticketPendientes extends AppCompatActivity {
                             //Se asigna el resultado a String
                             String valido = validar.getString("Resultado");
                             if (valido.equals("null")) { //==null
-
-                                JSONObject algo = new JSONObject(valido);
-                                String desc = algo.getString("Descripcion");
-                                String errorenviado = algo.getString("Error");
-                                Toast.makeText(getApplicationContext(), errorenviado.toString(), Toast.LENGTH_SHORT).show();
-                                try {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(ticketPendientes.this);
-                                    builder.setTitle("Tickets Pendientes");
-                                    builder.setMessage(errorenviado)
-                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
-                                                    startActivity(intente);
-                                                }
-                                            }).show();
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
-
-                            }else{
                                 String detalle = validar.getString("Detalle");
                                 //Si el detalle es null es que ya se imprimiio
                                 //validar detalle con un if
                                 if (detalle.equals("null")) {
-                                    JSONObject mensaj = new JSONObject(valido);
-                                    String mensajes = mensaj.getString("Descripcion");
+                                    //JSONObject mensaj = new JSONObject(valido);
+                                    //String mensajes = mensaj.getString("Descripcion");
                                     //Toast.makeText(getApplicationContext(), mensajes, Toast.LENGTH_SHORT).show();
                                     try {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(ticketPendientes.this);
                                         builder.setTitle("Tickets Pendientes");
-                                        builder.setMessage(mensajes)
+                                        builder.setMessage("Sin datos")
                                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -230,13 +235,13 @@ public class ticketPendientes extends AppCompatActivity {
 
                                 }else {
                                     JSONObject detalleRespuesta = new JSONObject(detalle);
-
-                                    String numeroRecibo = detalleRespuesta.getString("NoRecibo");
-                                    String numeroTransaccion = detalleRespuesta.getString("NoTransaccion");
-                                    String numeroRastreo = detalleRespuesta.getString("NoRastreo");
+                                    String numeroticket = detalleRespuesta.getString("NoRecibo");
+                                    String numerorecibo = detalleRespuesta.getString("NoRecibo");
+                                    String numerotransaccion = detalleRespuesta.getString("NoTransaccion");
+                                    String numerorastreo = detalleRespuesta.getString("NoRastreo");
                                     String posicion = detalleRespuesta.getString("PosCarga");
-                                    String Despacho = detalleRespuesta.getString("Desp");
-                                    String Vendio = detalleRespuesta.getString("Vend");
+                                    String despachador = detalleRespuesta.getString("Desp"); //
+                                    String vendedor = detalleRespuesta.getString("Vend");//Vend
 
                                     String subtotal = detalleRespuesta.getString("Subtotal");
                                     String iva = detalleRespuesta.getString("IVA");
@@ -258,7 +263,7 @@ public class ticketPendientes extends AppCompatActivity {
 
                                     for (int i = 0; i < producto.length(); i++) {
                                         JSONObject p1 = producto.getJSONObject(i);
-                                        String value = p1.getString("Cantidad");
+                                        String value = p1.getString("Cantidad").trim();
                                         cantidad += value;
                                         String num = " ";// p1.getString("No");
                                         numero += num;
@@ -268,12 +273,17 @@ public class ticketPendientes extends AppCompatActivity {
                                         impor += importe;
                                         String prec = p1.getString("Precio");
                                         precio += prec;
-                                        protic += "   " + value + "    " + num + "     " + descripcion + "  " + prec + "  " + importe + "\n";
+                                        protic +=value + " | " + descripcion + " | " + prec + " | " + importe+"\n";
                                     }
-                                    args.putString("Norecibo", numeroRecibo);
-                                    args.putString("norastreo", numeroRastreo);
+                                    args.putString("numerorecibo", numerorecibo);
+                                    args.putString("nombrepago", FormaPagoId);
+                                    args.putString("numerotransaccion", numerotransaccion);
+                                    args.putString("numerorastreo", numerorastreo);
                                     args.putString("posicion", posicion);
-                                    args.putString("cantidad", protic);
+                                    args.putString("despachador", despachador);
+                                    args.putString("vendedor", vendedor);
+                                    args.putString("productos", protic);
+
                                     args.putString("numero", numero);
                                     args.putString("descrip",descrip);
                                     args.putString("impor",impor);
@@ -287,7 +297,7 @@ public class ticketPendientes extends AppCompatActivity {
                                     nousuario = getIntent().getStringExtra("user"); //usuarioid
                                     String formapago = FormaPagoId; //pago.getText().toString();
 
-                                    args.putString("numcopias", copias);
+                                    args.putString("numticket", copias);
                                     args.putString("idusuario", nousuario);
                                 }
 
@@ -295,6 +305,51 @@ public class ticketPendientes extends AppCompatActivity {
                                 JSONObject mensajeTicket = new JSONObject(pieTicket);
                                 String mensajePie = mensajeTicket.getString("Mensaje");
                                 args.putString("mensaje",mensajePie);
+
+
+                                //args.putString("numerorecibo", numerorecibo);
+                                //args.putString("nombrepago", nombrepago);
+                                //args.putString("numticket", numticket);
+                                //args.putString("numerotransaccion", numerotransaccion);
+                                //args.putString("numerorastreo", numerorastreo);
+                                //args.putString("posicion", carga);
+                                //args.putString("despachador",despachador);
+                                //args.putString("vendedor",user);
+                                //args.putString("productos",protic);
+
+                                //args.putString("subtotal",subtotal);
+                                //args.putString("iva",iva);
+                                //args.putString("total",total);
+                                //args.putString("totaltexto",totaltexto);
+                                //args.putString("mensaje",names.toString());
+                                try {
+                                    PrintFragment cf = new PrintFragment();
+                                    cf.setArguments(args);
+                                    getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+                                            addToBackStack(PrintFragment.class.getName()).
+                                            commit();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                            }else{
+                                JSONObject algo = new JSONObject(valido);
+                                String desc = algo.getString("Descripcion");
+                                String errorenviado = algo.getString("Error");
+                                Toast.makeText(getApplicationContext(), errorenviado.toString(), Toast.LENGTH_SHORT).show();
+                                try {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(ticketPendientes.this);
+                                    builder.setTitle("Tickets Pendientes");
+                                    builder.setMessage(errorenviado)
+                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
+                                                    startActivity(intente);
+                                                }
+                                            }).show();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
                             }
 
                         } catch (JSONException e) {
@@ -340,10 +395,6 @@ public class ticketPendientes extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(eventoReq);
             //-------------------------Aqui termina el volley --------------
-    }
-
-
-        private void EncabezadoTicket() {
     }
 
 

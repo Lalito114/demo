@@ -20,7 +20,10 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Munu_Principal;
+import com.szzcs.smartpos.PrintFragment;
+import com.szzcs.smartpos.PrintFragmentVale;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -37,14 +40,20 @@ public class cargavaleGasto extends AppCompatActivity {
     ListView list;
     TextView txtDescripcion, txtClave, isla, turno, usuario;
     TextView SubTotal, Descripcion;
-    String EstacionId = "1";
-    String sucursalId = "1";
+    String EstacionId ;
+    String sucursalId ;
     String idisla, idTurno;
+    Bundle args = new Bundle();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cargavale_gasto);
+
+        SQLiteBD db = new SQLiteBD(getApplicationContext());
+        EstacionId = db.getIdEstacion();
+        sucursalId=db.getIdSucursal();
 
         SubTotal =findViewById(R.id.subTot);
         Descripcion = findViewById(R.id.descripcion);
@@ -119,9 +128,16 @@ private void GuardarGasto(String fechatrabajo, String turnoId){
     JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, mjason, new Response.Listener<JSONObject>() {
         @Override
         public void onResponse(JSONObject response) {
-            Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
-            startActivity(intente);
             Toast.makeText(getApplicationContext(),"Gasto Cargado Exitosamente",Toast.LENGTH_LONG).show();
+            String numeroticket = null;
+            try {
+                numeroticket = response.getString("Id");
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            ObtenerCuerpoTicket(SubTotal.getText().toString(), Descripcion.getText().toString(), numeroticket);
+            //Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
+            //startActivity(intente);
         }
     }, new Response.ErrorListener() {
         @Override
@@ -151,5 +167,26 @@ private void GuardarGasto(String fechatrabajo, String turnoId){
     queue.add(request_json);
 
 }
+
+    public void ObtenerCuerpoTicket(String total, String descripcion, String numeroticket) {
+        try{
+            args.putString("proviene", "2");
+            args.putString("descripcion", descripcion);
+            args.putString("subtotal", "0");
+            args.putString("iva", "0");
+            args.putString("total", total);
+            args.putString("tipogasto", "");
+            args.putString("numeroticket", numeroticket);
+            PrintFragmentVale cf = new PrintFragmentVale();
+            cf.setArguments(args);
+            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+                    addToBackStack(PrintFragment.class.getName()).
+                    commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
 
 }

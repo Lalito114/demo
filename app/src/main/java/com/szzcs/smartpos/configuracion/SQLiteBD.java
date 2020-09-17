@@ -112,6 +112,14 @@ public class SQLiteBD  extends SQLiteOpenHelper {
         return tipo;
     }
 
+    public String getIdSucursal(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT sucursalid FROM configuracionestacion", null);
+        cursor.moveToFirst();
+        String idempresa = cursor.getString(0);
+        return idempresa;
+    }
+
 
 
 

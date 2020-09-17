@@ -12,21 +12,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.VolleyLog;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.R;
-import com.szzcs.smartpos.Ticket.Entidad;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;
@@ -38,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class formapagoProducto extends AppCompatActivity {
+public class productoFormapago extends AppCompatActivity {
     //Definicion de variables
     ListView list;
     TextView nose;
@@ -52,7 +46,7 @@ public class formapagoProducto extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_formapago_producto);
+        setContentView(R.layout.activity_producto_formapago);
         //instruccion para que aparezca la flecha de regreso
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         nose = findViewById(R.id.nose);
@@ -91,7 +85,7 @@ public class formapagoProducto extends AppCompatActivity {
     private void vax(final String response){
         try {
             //Se inicializan los arreglos  para el titulo, el subtitulo y la imagen
-            final List<String> maintitle;
+            List<String> maintitle;
             maintitle = new ArrayList<String>();
             final List<String> subtitle;
             subtitle = new ArrayList<String>();
@@ -102,7 +96,7 @@ public class formapagoProducto extends AppCompatActivity {
             idcopias = new ArrayList<>();
 
             //Se convierte el response a un json
-            JSONObject jsonObject = new JSONObject(response);
+            //JSONObject jsonObject = new JSONObject(response);
             //se convierte a estring SucursalFormaPagos
             //String formapago = jsonObject.getString("SucursalFormapagos");
 
@@ -169,7 +163,7 @@ public class formapagoProducto extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int i, long id) {
                         //Obtiene valor del numero de copias y la forma de pago
-                        String  FormaPagoId = maintitle.get(i).toString();
+                        String  FormaPagoId = subtitle.get(i).toString();
                         String  copias = idcopias.get(i).toString();
                         EnviarDatos(FormaPagoId, copias);
                     }
@@ -553,6 +547,9 @@ public class formapagoProducto extends AppCompatActivity {
                             JSONObject mensaje = new JSONObject(pie);
                             JSONArray names = mensaje.getJSONArray("Mensaje");
 
+
+
+
                             JSONObject det = new JSONObject(detalle);
                             String numerorecibo = det.getString("NoRecibo");
                             String numerotransaccion = det.getString("NoTransaccion");
@@ -639,6 +636,7 @@ public class formapagoProducto extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(eventoReq);
     }
+
 
 
 }

@@ -20,6 +20,7 @@ import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.Pendientes.ticketPendientes;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -29,12 +30,15 @@ public class claveGastos extends AppCompatActivity {
     TextView usuario, carga;
     EditText password;
     String idisla, idTurno, proviene;
-    final String sucursalid = "1";
+    String sucursalId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_gastos);
+
+        SQLiteBD db = new SQLiteBD(getApplicationContext());
+        sucursalId=db.getIdSucursal();
         //lee valores usuario y carga
         usuario= findViewById(R.id.usuario);
         carga = findViewById(R.id.carga);
@@ -48,7 +52,7 @@ public class claveGastos extends AppCompatActivity {
         final String pass = password.getText().toString();
 
 
-        String url = "http://10.2.251.58/CorpogasService/api/estacionControles/estacion/"+ sucursalid +"/ClaveEmpleado/" +pass;
+        String url = "http://10.2.251.58/CorpogasService/api/estacionControles/estacion/"+ sucursalId +"/ClaveEmpleado/" +pass;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -75,7 +79,7 @@ public class claveGastos extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"Contraseña inexistente "+error.toString(), Toast.LENGTH_LONG).show();
             }
         });
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
