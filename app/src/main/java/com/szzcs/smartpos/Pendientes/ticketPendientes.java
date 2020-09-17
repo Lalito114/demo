@@ -49,9 +49,7 @@ public class ticketPendientes extends AppCompatActivity {
     ListView list;
     String carga;
     String nousuario;
-    String EstacionId ;
-    String sucursalId ;
-
+    String EstacionId, sucursalId, ipEstacion ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +58,7 @@ public class ticketPendientes extends AppCompatActivity {
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId=db.getIdSucursal();
-
+        ipEstacion = db.getIdEstacion();
 
         TextView txtMac = findViewById(R.id.txtmac);
         txtMac.setText(getMacAddr());
@@ -72,7 +70,7 @@ public class ticketPendientes extends AppCompatActivity {
 
     private void formapagoProductos(){
         //Declaramos direccion URL de las posiciones de carga. Para acceder a los metodos de la API
-        String url = "http://10.2.251.58/CorpogasService/api/sucursalformapagos/sucursal/"+sucursalId;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/sucursalformapagos/sucursal/"+sucursalId;
         //inicializamos el String reques que es el metodo de la funcion de Volley que no va a permir accder a la API
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tv1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Pendientes.ticketPendientes">
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
+
+    <EditText
+        android:id="@+id/pasword"
+        android:layout_width="289dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="40dp"
+        android:layout_marginBottom="334dp"
+        android:drawableLeft="@drawable/key"
+        android:ems="10"
+        android:gravity="center|center_horizontal|center_vertical"
+        android:inputType="textPassword"
+        android:text="1"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/txtmac"
+        android:layout_width="250dp"
+        android:layout_height="61dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="332dp"
+        android:text="TextView"
+        android:textColor="@color/black"
+        android:textSize="20dp" />
+</RelativeLayout>

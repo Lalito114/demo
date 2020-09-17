@@ -30,7 +30,7 @@ public class claveGastos extends AppCompatActivity {
     TextView usuario, carga;
     EditText password;
     String idisla, idTurno, proviene;
-    String sucursalId;
+    String EstacionId, sucursalId, ipEstacion ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +39,9 @@ public class claveGastos extends AppCompatActivity {
 
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         sucursalId=db.getIdSucursal();
+        EstacionId = db.getIdEstacion();
+        ipEstacion = db.getIdEstacion();
+
         //lee valores usuario y carga
         usuario= findViewById(R.id.usuario);
         carga = findViewById(R.id.carga);
@@ -52,7 +55,7 @@ public class claveGastos extends AppCompatActivity {
         final String pass = password.getText().toString();
 
 
-        String url = "http://10.2.251.58/CorpogasService/api/estacionControles/estacion/"+ sucursalId +"/ClaveEmpleado/" +pass;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/estacionControles/estacion/"+ sucursalId +"/ClaveEmpleado/" +pass;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -131,7 +134,7 @@ public class claveGastos extends AppCompatActivity {
         //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
 
         //Conexion con la base y ejecuta valida clave
-        String url = "http://10.2.251.58/CorpogasService/api/SucursalEmpleados/clave/"+pass;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/SucursalEmpleados/clave/"+pass;
         // Utilizamos el metodo Post para validar la contraseña
         StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
                 new Response.Listener<String>() {

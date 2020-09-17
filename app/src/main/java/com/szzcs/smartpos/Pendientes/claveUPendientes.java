@@ -21,6 +21,7 @@ import com.szzcs.smartpos.Gastos.claveGastos;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.Productos.VentasProductos;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +29,7 @@ import org.json.JSONObject;
 public class claveUPendientes extends AppCompatActivity {
     TextView usuario, carga;
     EditText contrasena;
+    String EstacionId, sucursalId, ipEstacion ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +40,11 @@ public class claveUPendientes extends AppCompatActivity {
         //lee valores usuario y carga
         usuario= findViewById(R.id.usuario);
         carga = findViewById(R.id.carga);
+        SQLiteBD db = new SQLiteBD(getApplicationContext());
+        sucursalId=db.getIdSucursal();
+        EstacionId = db.getIdEstacion();
+        ipEstacion = db.getIdEstacion();
+
         validaClave();
 
     }
@@ -61,7 +68,7 @@ public class claveUPendientes extends AppCompatActivity {
                     //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
 
                     //Conexion con la base y ejecuta valida clave
-                    String url = "http://10.2.251.58/CorpogasService/api/SucursalEmpleados/clave/"+pass;
+                    String url = "http://"+ipEstacion+"/CorpogasService/api/SucursalEmpleados/clave/"+pass;
 
                     // Utilizamos el metodo Post para validar la contraseña
                     StringRequest eventoReq = new StringRequest(Request.Method.GET,url,

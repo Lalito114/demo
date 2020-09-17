@@ -40,8 +40,7 @@ public class cargavaleGasto extends AppCompatActivity {
     ListView list;
     TextView txtDescripcion, txtClave, isla, turno, usuario;
     TextView SubTotal, Descripcion;
-    String EstacionId ;
-    String sucursalId ;
+    String EstacionId, sucursalId, ipEstacion ;
     String idisla, idTurno;
     Bundle args = new Bundle();
 
@@ -54,7 +53,7 @@ public class cargavaleGasto extends AppCompatActivity {
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId=db.getIdSucursal();
-
+        ipEstacion = db.getIdEstacion();
         SubTotal =findViewById(R.id.subTot);
         Descripcion = findViewById(R.id.descripcion);
 
@@ -79,7 +78,7 @@ public class cargavaleGasto extends AppCompatActivity {
     private void EnviarGastos() {
         final String turnoId = getIntent().getStringExtra("turno");
 
-        String url = "http://10.2.251.58/CorpogasService/api/Turnos/fechaTrabajo/sucursal/"+sucursalId+"/turno/"+turnoId;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/Turnos/fechaTrabajo/sucursal/"+sucursalId+"/turno/"+turnoId;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -110,7 +109,7 @@ private void GuardarGasto(String fechatrabajo, String turnoId){
 
     //SQLiteBD data = new SQLiteBD(getApplicationContext());
     //String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/tanqueLleno/EnviarProductos";
-    String URL = "http://10.2.251.58/CorpogasService/api/CajaChicas";
+    String URL = "http://"+ipEstacion+"/CorpogasService/api/CajaChicas";
     final JSONObject mjason = new JSONObject();
     RequestQueue queue = Volley.newRequestQueue(this);
     try {
