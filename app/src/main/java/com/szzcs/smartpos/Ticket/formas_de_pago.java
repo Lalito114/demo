@@ -125,9 +125,9 @@ public class formas_de_pago extends AppCompatActivity {
         numerotickets = new ArrayList<String>();
 
         try {
-            JSONObject jsonObject = new JSONObject(response);
-            String formapago = jsonObject.getString("SucursalFormapagos");
-            JSONArray nodo = new JSONArray(formapago);
+            //JSONObject jsonObject = new JSONObject(response);
+            //String formapago = jsonObject.getString("SucursalFormapagos");
+            JSONArray nodo = new JSONArray(response);
             for (int i = 0; i <=nodo.length() ; i++) {
 
                 JSONObject nodo1 = nodo.getJSONObject(i);

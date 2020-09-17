@@ -23,7 +23,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
+    <!--hola-->
     <application
         android:name=".MyApp"
         android:allowBackup="true"
@@ -32,22 +32,23 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Gastos.codigoQr"></activity>
-        <activity android:name=".Productos.productoFormapago" />
-        <activity android:name=".Productos.formapagoProducto" />
-        <activity android:name=".Productos.claveProducto" />
-        <activity android:name=".Productos.ListAdapterFProductos" />
-        <activity android:name=".Productos.ListAdapterProd" />
-        <activity android:name=".Productos.ListAdapterProductos" />
-        <activity android:name=".Productos.posicionProductos" />
-        <activity android:name=".Productos.terminaVenta" />
-        <activity android:name=".Productos.VentasProductos" />
-        <activity android:name=".Pendientes.claveUPendientes" />
-        <activity android:name=".Pendientes.ticketPendientes" />
+        <activity android:name=".Productos.formapagoProducto"></activity>
+        <activity android:name=".Productos.claveProducto"></activity>
+        <activity android:name=".Productos.ListAdapterFProductos"></activity>
+        <activity android:name=".Productos.ListAdapterProd"></activity>
+        <activity android:name=".Productos.ListAdapterProductos"></activity>
+        <activity android:name=".Productos.posicionProductos"></activity>
+        <activity android:name=".Productos.terminaVenta"></activity>
+        <activity android:name=".Productos.VentasProductos"></activity>
+
+        <activity android:name=".Pendientes.claveUPendientes"></activity>
+        <activity android:name=".Pendientes.ticketPendientes"></activity>
+
         <activity android:name=".Gastos.cargavaleGasto" />
         <activity android:name=".Gastos.claveGastos" />
         <activity android:name=".Gastos.cargaGasto" />
         <activity android:name=".Gastos.autizacionGastos" />
+
         <activity android:name=".SplashEmpresas.SplashPemex" />
         <activity android:name=".SplashEmpresas.SplashGulf" />
         <activity android:name=".Puntada.Registrar.ClaveDespachadorPuntada" />
@@ -63,7 +64,8 @@
         <activity android:name=".TanqueLleno.PosicionCargaTLl" />
         <activity android:name=".Puntada.Registrar.PosicionCargasPuntada" />
         <activity android:name=".Puntada.Registrar.ClaveRegistrarPuntada" />
-        <activity android:name=".Puntada.SeccionTarjeta" /> <!-- Esto es la escala gerarquica de herncia entre ventanas -->
+        <activity android:name=".Puntada.SeccionTarjeta" />
+        <!-- Esto es la escala gerarquica de herncia entre ventanas -->
         <!-- Este Activity es formas de pago -->
         <activity
             android:name=".Ticket.formas_de_pago"

@@ -40,6 +40,9 @@ import java.util.Map;
 import static java.lang.Thread.sleep;
 
 public class ticketPendientes extends AppCompatActivity {
+
+
+
     String mac=null;
     TextView txtMac;
     Bundle args = new Bundle();

@@ -333,8 +333,8 @@ public class CardFragment extends PreferenceFragment {
         Log.d(TAG, "cardInfo.getResultcode():" + cardInfo.getResultcode());
         String tk1 = cardInfo.getTk1();
         String tk3 = cardInfo.getTk3();
-        String tk2 = cardInfo.getTk2();
-       // String tk2 = "4000004210100001";
+        //String tk2 = cardInfo.getTk2();
+        String tk2 = "3999999900100055";
         String mtk2 =tk2.substring(0,16);
         if(mtk2.isEmpty()){
            Toast.makeText(getActivity(), "No se ha leido correctamente la tarjeta", Toast.LENGTH_LONG).show();
@@ -360,7 +360,7 @@ public class CardFragment extends PreferenceFragment {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            String mascaraInicialTarjeta = mtk2.substring(0,5);
+
                             String mascaraIdentificador;
                             JSONArray identificado = new JSONArray(response);
                             for (int i = 0; i <identificado.length() ; i++) {
@@ -375,10 +375,11 @@ public class CardFragment extends PreferenceFragment {
                                         n += cadena_div[j];
                                     }
                                 }
+                                n.substring(0,5);
 
                                 switch (i){
                                     case 0:
-                                        if (mtk2.contains(n)){
+                                        if (mtk2 != null){
                                             Intent intent = new Intent(getActivity(),ClaveDespachadorTL.class);
                                             intent.putExtra("track",mtk2);
                                             startActivity(intent);
