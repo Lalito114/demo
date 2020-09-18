@@ -40,7 +40,7 @@ public class claveGastos extends AppCompatActivity {
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         sucursalId=db.getIdSucursal();
         EstacionId = db.getIdEstacion();
-        ipEstacion = db.getIdEstacion();
+        ipEstacion = db.getIpEstacion();
 
         //lee valores usuario y carga
         usuario= findViewById(R.id.usuario);

@@ -40,8 +40,7 @@ public class productoFormapago extends AppCompatActivity {
     String nousuario;
     Bundle args = new Bundle();
 
-    String EstacionId ;
-    String sucursalId ;
+    String EstacionId, sucursalId, ipEstacion ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,13 +52,14 @@ public class productoFormapago extends AppCompatActivity {
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId=db.getIdSucursal();
+        ipEstacion = db.getIpEstacion();
 
         //Carga las Posiciones de Carga
         formapagoProductos();
     }
     private void formapagoProductos(){
         //Declaramos direccion URL de las posiciones de carga. Para acceder a los metodos de la API
-        String url = "http://10.2.251.58/CorpogasService/api/sucursalformapagos/sucursal/"+sucursalId;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/sucursalformapagos/sucursal/"+sucursalId;
         //inicializamos el String reques que es el metodo de la funcion de Volley que no va a permir accder a la API
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -176,9 +176,9 @@ public class productoFormapago extends AppCompatActivity {
 
     private void EnviarDatos(final String FormaPagoId, final String Copias){
         final String posicion;
-        posicion = getIntent().getStringExtra("posicion");
-        final String usuarioid;
-        usuarioid = getIntent().getStringExtra("usuario");
+        posicion = "3";//getIntent().getStringExtra("posicion");
+        //final String usuarioid;
+        //usuarioid = getIntent().getStringExtra("usuario");
 
         //Se inicializa el control para solicitar confirmacion
         AlertDialog.Builder builder;
@@ -209,7 +209,7 @@ public class productoFormapago extends AppCompatActivity {
                     //intent.putExtra("user",usuarioid);
                     //startActivity(intent);
                     //Utilizamos el metodo POST para  finalizar la Venta
-                    String url = "http://10.2.251.58/CorpogasService/api/Transacciones/finalizaVenta/sucursal/"+sucursalId+"/posicionCarga/"+posicion;
+                    String url = "http://"+ipEstacion+"/CorpogasService/api/Transacciones/finalizaVenta/sucursal/"+sucursalId+"/posicionCarga/"+posicion;
                     StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                             new Response.Listener<String>() {
                                 @Override
@@ -258,7 +258,7 @@ public class productoFormapago extends AppCompatActivity {
     public void obtenerEncabezado(final String ncopias){
         //Utilizamos el metodo Get para obtener el encabezado para los tickets
         //hay que cambiar el volo 1 del fina po el numeo de la estacion que se encuentra
-        String url = "http://10.2.251.58/CorpogasService/api/tickets/cabecero/estacion/1";
+        String url = "http://"+ipEstacion+"/CorpogasService/api/tickets/cabecero/estacion/"+EstacionId;
         //Se solicita peticion GET para obtener el encabezado
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -351,7 +351,7 @@ public class productoFormapago extends AppCompatActivity {
 
     //Funcion para obtener los datos del ticket
     public void obtenerdatosticket(final String PagoSeleccionado, final String ncopias){
-        String url = "http://10.2.251.58/TransferenciaDatosAPI/api/tickets/getticket";
+        String url = "http://"+ipEstacion+"/TransferenciaDatosAPI/api/tickets/getticket";
         //Utilizamos el metodo Post para colocar los datos en el  ticket
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new Response.Listener<String>() {
@@ -498,7 +498,7 @@ public class productoFormapago extends AppCompatActivity {
         final JSONArray finalMjasonArray = mjasonArray;
 
         //Utilizamos el metodo POST para  enviar la transaccion y regrese el transaccionId
-        String url = "http://10.2.251.58/CorpogasService/api/ventaProductos/sucursal/1/procedencia/"+posicion+"/tipoTransaccion/1/empleado/"+usuarioid;  //api/tarjetas/sendtarjeta
+        String url = "http://"+ipEstacion+"/CorpogasService/api/ventaProductos/sucursal/"+sucursalId+"/procedencia/"+posicion+"/tipoTransaccion/1/empleado/"+usuarioid;  //api/tarjetas/sendtarjeta
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new Response.Listener<String>() {
                     @Override
@@ -534,7 +534,7 @@ public class productoFormapago extends AppCompatActivity {
 
     public void ObtenerCuerpoTicket(final String nombrepago, final String numticket) {
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/tickets/generar";
+        String url = "http://"+ipEstacion+"/CorpogasService/api/tickets/generar";
 
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new Response.Listener<String>() {

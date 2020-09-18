@@ -56,7 +56,7 @@ public class cargaGasto extends AppCompatActivity {
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId=db.getIdSucursal();
-        ipEstacion = db.getIdEstacion();
+        ipEstacion = db.getIpEstacion();
         txtDescripcion= findViewById(R.id.txtDescripcion);
         txtClave= findViewById(R.id.txtClave);
         isla=findViewById(R.id.isla);

@@ -8,6 +8,19 @@
     tools:context=".Productos.VentasProductos">
 
     <EditText
+        android:id="@+id/productoIdentificador"
+        android:layout_width="48dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="110dp"
+        android:layout_marginBottom="675dp"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:inputType="number"
+        android:visibility="visible" />
+
+    <EditText
         android:id="@+id/existencias"
         android:layout_width="48dp"
         android:layout_height="wrap_content"

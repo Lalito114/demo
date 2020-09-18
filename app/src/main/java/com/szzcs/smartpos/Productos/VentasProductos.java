@@ -34,6 +34,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -59,15 +60,15 @@ public class VentasProductos extends AppCompatActivity{
 
     //Declaracion de objetos
     Button btnAgregar,btnEnviar, incrementar, decrementar, comprar;
-    TextView cantidadProducto, txtDescripcion, NumeroProductos, precio, existencias;
+    TextView cantidadProducto, txtDescripcion, NumeroProductos, precio, existencias, productoIdentificador;
     EditText Producto;
     String cantidad;
     JSONObject mjason = new JSONObject();
     JSONArray myArray = new JSONArray();
-    String EstacionId, sucursalId;
+    String EstacionId, sucursalId, ipEstacion, tipoTransaccion ;
     ListView list;
     Integer ProductosAgregados = 0;
-    String posicion;
+    String posicion, usuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,12 +76,12 @@ public class VentasProductos extends AppCompatActivity{
         setContentView(R.layout.activity_ventas_productos);
         //instruccion para que aparezca la flecha de regreso
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        final String posicion;
-        posicion = getIntent().getStringExtra("car");
 
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId = db.getIdSucursal();
+        ipEstacion= db.getIpEstacion();
+        tipoTransaccion = "1"; //Transaccion Normal
 
         comprar=findViewById(R.id.comprar);
         comprar.setOnClickListener(new View.OnClickListener() {
@@ -95,8 +96,8 @@ public class VentasProductos extends AppCompatActivity{
                 {
                     Toast.makeText(getApplicationContext(), "Seleccione al menos uno de los Productos", Toast.LENGTH_LONG).show();
                 } else {
-                AgregarDespacho(posicion, usuarioid);
-                //EnviarProductos(posicion, usuarioid);
+                //AgregarDespacho(posicion, usuarioid);
+                EnviarProductos(posicion, usuarioid);
                 }
             }
         });
@@ -171,6 +172,7 @@ public class VentasProductos extends AppCompatActivity{
         txtDescripcion = findViewById(R.id.txtDescripcion);
         precio = findViewById(R.id.precio);
         existencias = findViewById(R.id.existencias);
+        productoIdentificador = findViewById(R.id.productoIdentificador);
     }
     private void Aumentar() {
         cantidad = cantidadProducto.getText().toString();
@@ -207,7 +209,8 @@ public class VentasProductos extends AppCompatActivity{
         TotalProducto = Integer.parseInt(cantidadProducto.getText().toString());
         String PrecioMonto = precio.getText().toString();
         Double precioUnitario =  Double.valueOf(PrecioMonto);
-        ProductoId = Producto.getText().toString();
+        //ProductoId = Producto.getText().toString();
+        ProductoId = productoIdentificador.getText().toString();
         ProductoIdEntero = Integer.parseInt(ProductoId);
         if (ProductoId.isEmpty())
         {
@@ -248,6 +251,7 @@ public class VentasProductos extends AppCompatActivity{
                 cantidadProducto.setText("1");
                 precio.setText("");
                 existencias.setText("");
+                productoIdentificador.setText("");
 
 
             } catch (JSONException error) {
@@ -258,7 +262,7 @@ public class VentasProductos extends AppCompatActivity{
     private void MostrarProductos() {
         final String posicion;
         posicion = getIntent().getStringExtra("car");
-        String url = "http://10.2.251.58/CorpogasService/api/islas/productos/estacion/"+EstacionId+"/posicionCargaId/"+posicion;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/islas/productos/estacion/"+EstacionId+"/posicionCargaId/"+posicion;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -296,6 +300,11 @@ public class VentasProductos extends AppCompatActivity{
         final List<String> ExistenciaProductos;
         ExistenciaProductos = new ArrayList();
 
+        final List<String> ProductosId;
+        ProductosId = new ArrayList<>();
+
+        //String IdProductos = null;
+
         //ArrayList<singleRow> singlerow = new ArrayList<>();
         try {
             JSONObject p1 = new JSONObject(response);
@@ -307,6 +316,7 @@ public class VentasProductos extends AppCompatActivity{
             JSONArray bodegaprod = new JSONArray(producto);
 
             for (int i = 0; i <bodegaprod.length() ; i++){
+                String IdProductos = null;
                 JSONObject pA = bodegaprod.getJSONObject(i);
                 String ExProductos=pA.getString("Existencias");
                 ExistenciaProductos.add(ExProductos);
@@ -319,11 +329,17 @@ public class VentasProductos extends AppCompatActivity{
                 for (int j = 0; j <PC.length() ; j++) {
                     JSONObject Control = PC.getJSONObject(j);
                     preciol  = Control.getString("Precio");
+                    IdProductos=Control.getString("Id");
                 }
-                NombreProducto.add("ID: " + idArticulo + "    |     $"+preciol);
+                //if (IdProductos.equals("null")){
+                //    ProductosId.add("0");
+                //    preciol  = "0";
+                //}
+                NombreProducto.add("ID: " + idArticulo + "    |     $"+preciol); // + "    |    " + IdProductos );
                 ID.add(DescLarga);
                 PrecioProducto.add(preciol);
                 ClaveProducto.add(idArticulo);
+                ProductosId.add(IdProductos);
             }
 
 
@@ -354,11 +370,14 @@ public class VentasProductos extends AppCompatActivity{
                 String precioUnitario = PrecioProducto.get(i).toString();
                 String paso= ClaveProducto.get(i).toString();
                 String existencia = ExistenciaProductos.get(i).toString();
+                String IProd = ProductosId.get(i).toString();
+
 
                 Producto.setText(paso);
                 txtDescripcion.setText(Descripcion);
                 precio.setText(precioUnitario);
                 existencias.setText(existencia);
+                productoIdentificador.setText(IProd);
             }
         });
 
@@ -421,7 +440,6 @@ public class VentasProductos extends AppCompatActivity{
                String  Descripcion = ID.get(i).toString();
                String precioUnitario = PrecioProducto.get(i).toString();
                String paso= ClaveProducto.get(i).toString();
-
                Producto.setText(paso);
                txtDescripcion.setText(Descripcion);
                precio.setText(precioUnitario);
@@ -429,10 +447,13 @@ public class VentasProductos extends AppCompatActivity{
         });
     }
 
+    private void enviarAFormasPago(final String posicionCarga, final String UsuarioVenta){
+
+    }
 
     private void EnviarProductos(final String posicionCarga, final String Usuarioid) {
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://10.2.251.58/CorpogasService/api/ventaProductos/sucursal/"+sucursalId+"/procedencia/"+posicionCarga+"/tipoTransaccion/1/empleado/"+Usuarioid; //TipoTransaccion 1 (NORMAL)
+        String url = "http://"+ipEstacion+"/CorpogasService/api/ventaProductos/sucursal/"+sucursalId+"/procedencia/"+posicionCarga+"/tipoTransaccion/"+tipoTransaccion+"/empleado/"+Usuarioid; //TipoTransaccion 1 (NORMAL)
         queue = Volley.newRequestQueue(this);
 
         JsonArrayRequest request_json = new JsonArrayRequest(Request.Method.POST, url, myArray,
@@ -440,21 +461,15 @@ public class VentasProductos extends AppCompatActivity{
                     @Override
                     public void onResponse(JSONArray response) {
                         //Get Final response
-                        ////Intent intent = new Intent(getApplicationContext(), formapagoProducto.class);
-                        //DAtos enviados a formaPago posicion de carga y usuario
-                        ////intent.putExtra("posicion",posicionCarga);
-                        ////intent.putExtra("usuario",Usuarioid);
-                        ////startActivity(intent);
+                        Intent intent = new Intent(getApplicationContext(), FPaga.class);
+                        intent.putExtra("posicion", posicionCarga);
+                        intent.putExtra("usuario", Usuarioid);
+                        startActivity(intent);
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
                 VolleyLog.e("Error: ", volleyError.getMessage());
-                Intent intent = new Intent(getApplicationContext(), productoFormapago.class);
-                intent.putExtra("posicion",posicionCarga);
-                intent.putExtra("usuario",Usuarioid);
-                startActivity(intent);
-
             }
         }) {
             @Override
@@ -474,20 +489,14 @@ public class VentasProductos extends AppCompatActivity{
                         responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
                         //JSONObject obj = new JSONObject(responseString);
                         //Si es valido se asignan valores
-                        Intent intent = new Intent(getApplicationContext(), productoFormapago.class);
+                        //Intent intent = new Intent(getApplicationContext(), productoFormapago.class);
                         //DAtos enviados a formaPago
-                        intent.putExtra("posicion",posicionCarga);
-                        intent.putExtra("usuario",Usuarioid);
-                        //SE envía json con los productos seleccionados
-                        //Gson gson = new Gson();
-                        //String myJson = myArray.toString();
-                        //intent.putExtra("myjson", myArray.toString());
-                        startActivity(intent);
+                        //intent.putExtra("posicion",posicionCarga);
+                        //intent.putExtra("usuario",Usuarioid);
+                        ////startActivity(intent);
                         //Toast.makeText(getApplicationContext(), "Venta realizada", Toast.LENGTH_LONG).show();
-                        //(array).put(obj);
-                    } catch (Exception ex) {
-                        Toast.makeText(getApplicationContext(), ex.toString(), Toast.LENGTH_LONG).show();
-                    }
+                    } catch (Exception e) {
+                        e.printStackTrace();                    }
                 }
                 //return array;
                 return Response.success(myArray, HttpHeaderParser.parseCacheHeaders(response));
@@ -498,7 +507,7 @@ public class VentasProductos extends AppCompatActivity{
 
 
     private void AgregarDespacho(final String posicionCarga, final String Usuarioid){
-        String url = "http://10.2.251.58/CorpogasService/api/despachos/sucursal/"+sucursalId+"/utlima/posicionCarga/"+posicionCarga;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/despachos/sucursal/"+sucursalId+"/utlima/posicionCarga/"+posicionCarga;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

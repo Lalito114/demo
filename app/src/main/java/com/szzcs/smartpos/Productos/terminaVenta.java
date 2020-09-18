@@ -16,6 +16,7 @@ import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,10 +26,17 @@ import java.util.Map;
 
 public class terminaVenta extends AppCompatActivity {
     ImageView terminaVenta;
+    String EstacionId, sucursalId, ipEstacion ;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_termina_venta);
+
+        SQLiteBD db = new SQLiteBD(getApplicationContext());
+        sucursalId=db.getIdSucursal();
+        EstacionId = db.getIdEstacion();
+        ipEstacion = db.getIpEstacion();
 
         ImageView terminaVenta = findViewById(R.id.imgProducto);
 
@@ -39,7 +47,7 @@ public class terminaVenta extends AppCompatActivity {
                 posicion = getIntent().getStringExtra("car");
 
                 //Utilizamos el metodo POST para  enviar la transaccion y regrese el numero de ticket
-                String url = "http://10.2.251.58/CorpogasService/api/Transacciones/finalizaVenta/sucursal/"+"1"+"/posicionCarga/"+posicion;
+                String url = "http://"+ipEstacion+"/CorpogasService/api/Transacciones/finalizaVenta/sucursal/"+sucursalId+"/posicionCarga/"+posicion;
                 StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                         new Response.Listener<String>() {
                             @Override

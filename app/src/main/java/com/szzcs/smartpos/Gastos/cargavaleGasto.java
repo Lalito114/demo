@@ -53,7 +53,7 @@ public class cargavaleGasto extends AppCompatActivity {
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId=db.getIdSucursal();
-        ipEstacion = db.getIdEstacion();
+        ipEstacion = db.getIpEstacion();
         SubTotal =findViewById(R.id.subTot);
         Descripcion = findViewById(R.id.descripcion);
 

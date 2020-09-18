@@ -58,7 +58,7 @@ public class ticketPendientes extends AppCompatActivity {
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId=db.getIdSucursal();
-        ipEstacion = db.getIdEstacion();
+        ipEstacion = db.getIpEstacion();
 
         TextView txtMac = findViewById(R.id.txtmac);
         txtMac.setText(getMacAddr());
@@ -200,7 +200,7 @@ public class ticketPendientes extends AppCompatActivity {
         final String totaltotalTexto="";
 
         //Conexion con la base y ejecuta consulta para saber si tiene tickets Pendientes
-        String url = "http://10.2.251.58/CorpogasService/api/tickets/pendiente/"+numeroTarjetero;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/tickets/pendiente/"+numeroTarjetero;
         // Utilizamos el metodo Post para validar la contraseña
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new Response.Listener<String>() {

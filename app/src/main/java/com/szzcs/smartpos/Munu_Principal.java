@@ -1,8 +1,6 @@
 package com.szzcs.smartpos;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -11,22 +9,15 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
+import com.szzcs.smartpos.Cortes.ventasTotales;
 import com.szzcs.smartpos.Encriptacion.EncriptarMAC;
 import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
 import com.szzcs.smartpos.Gastos.claveGastos;
 import com.szzcs.smartpos.Pendientes.claveUPendientes;
-import com.szzcs.smartpos.Productos.VentasProductos;
 import com.szzcs.smartpos.Productos.posicionProductos;
 import com.szzcs.smartpos.Ticket.ventas;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 import com.zcs.sdk.card.CardReaderTypeEnum;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
 import static com.zcs.sdk.card.CardReaderTypeEnum.MAG_CARD;
 
@@ -94,10 +85,12 @@ public class Munu_Principal extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 3) {
-                    EncriptarMAC mac = new EncriptarMAC();
-                    String mac2 = mac.getMacAddr();
-                    String macmd5 = mac.getMD5(mac2);
-                    Toast.makeText(getApplicationContext(),macmd5,Toast.LENGTH_LONG).show();
+                    //EncriptarMAC mac = new EncriptarMAC();
+                    //String mac2 = mac.getMacAddr();
+                    //String macmd5 = mac.getMD5(mac2);
+                    //Toast.makeText(getApplicationContext(),macmd5,Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getApplicationContext(), ventasTotales.class);
+                    startActivity(intent);
                 }
                 else if(position == 4) {
                     Intent inten = new Intent(getApplicationContext(), claveUPendientes.class);
