@@ -102,7 +102,7 @@ public class PosicionCargasPuntada extends AppCompatActivity {
                 final String ClaveDespachador = bundle.getString("ClaveDespachador");
                 final SQLiteBD data = new SQLiteBD(getApplicationContext());
 
-                String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/puntadas/Registrar/clave/"+ClaveDespachador;
+                String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/puntadas/actualizaPuntos/clave/"+ClaveDespachador;
 
                 StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                         new Response.Listener<String>() {

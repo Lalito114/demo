@@ -41,6 +41,7 @@ public class ClaveDespachadorPuntada extends AppCompatActivity {
                     bundle1.putString("PasswordDespachador",password2);
                     intent.putExtras(bundle1);
                    startActivity(intent);
+                   finish();
                 }
 
             }

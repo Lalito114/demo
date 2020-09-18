@@ -98,9 +98,6 @@ public class claveUsuario extends AppCompatActivity {
                     // Añade la peticion a la cola
                     RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
                     requestQueue.add(eventoReq);
-
-
-
                     //-------------------------Aqui termina el volley --------------
                 }
 

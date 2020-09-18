@@ -44,7 +44,8 @@ public class cargaGasto extends AppCompatActivity {
     ListView list;
     TextView txtDescripcion, txtClave, isla, turno, usuario;
     TextView subTotal, iva, total, Descripcion;
-    String EstacionId, sucursalId, ipEstacion ;
+    String EstacionId ;
+    String sucursalId ;
     String idisla, idTurno;
     Bundle args = new Bundle();
 
@@ -56,7 +57,6 @@ public class cargaGasto extends AppCompatActivity {
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId=db.getIdSucursal();
-        ipEstacion = db.getIdEstacion();
         txtDescripcion= findViewById(R.id.txtDescripcion);
         txtClave= findViewById(R.id.txtClave);
         isla=findViewById(R.id.isla);
@@ -103,7 +103,7 @@ public class cargaGasto extends AppCompatActivity {
     public void obtenerIsla() {
         final String pass = isla.getText().toString();
 
-        String url = "http://"+ipEstacion+"/CorpogasService/api/estacionControles/estacion/"+ EstacionId  +"/ClaveEmpleado/" +pass;
+        String url = "http://10.2.251.58/CorpogasService/api/estacionControles/estacion/"+ EstacionId  +"/ClaveEmpleado/" +pass;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -138,7 +138,7 @@ public class cargaGasto extends AppCompatActivity {
 
         //SQLiteBD data = new SQLiteBD(getApplicationContext());
         //String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/tanqueLleno/EnviarProductos";
-        String URL = "http://"+ipEstacion+"/CorpogasService/api/Gastos";
+        String URL = "http://10.2.251.58/CorpogasService/api/Gastos";
         final JSONObject mjason = new JSONObject();
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
@@ -216,7 +216,7 @@ public class cargaGasto extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = "http://"+ipEstacion+"/CorpogasService/api/Gastos";
+        String url = "http://10.2.251.58/CorpogasService/api/Gastos";
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new Response.Listener<String>() {
                     @Override
@@ -250,7 +250,7 @@ public class cargaGasto extends AppCompatActivity {
 
 
     private void cargaTipoGastos() {
-        String url = "http://"+ipEstacion+"/CorpogasService/api/ConceptoGastos";
+        String url = "http://10.2.251.58/CorpogasService/api/ConceptoGastos";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

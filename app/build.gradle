@@ -8,7 +8,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 124
-        versionName "1.2.4_R191017"
+        versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -42,7 +42,7 @@ android {
         variant.outputs.all { output ->
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                outputFileName = "SmartPosTest-${buildType.name}_V${defaultConfig.versionName}_${buildTime()}.apk"
+                outputFileName = "CorpoApp_V${defaultConfig.versionName}_${buildTime()}.apk"
 
 
             }
