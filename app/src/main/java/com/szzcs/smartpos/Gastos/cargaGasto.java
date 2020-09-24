@@ -1,7 +1,6 @@
 package com.szzcs.smartpos.Gastos;
 
 import android.content.Context;
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -22,7 +21,6 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.PrintFragmentVale;
 import com.szzcs.smartpos.Productos.ListAdapterProductos;
@@ -57,7 +55,7 @@ public class cargaGasto extends AppCompatActivity {
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId=db.getIdSucursal();
-        txtDescripcion= findViewById(R.id.txtDescripcion);
+        txtDescripcion= findViewById(R.id.tv1);
         txtClave= findViewById(R.id.txtClave);
         isla=findViewById(R.id.isla);
         turno=findViewById(R.id.turno);

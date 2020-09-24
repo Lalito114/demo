@@ -1,21 +1,15 @@
     package com.szzcs.smartpos.Productos;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.security.keystore.SecureKeyImportUnavailableException;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Filter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,9 +25,6 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -41,17 +32,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.StringBufferInputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.lang.Integer.parseInt;
-import org.json.JSONObject;
-import org.json.JSONException;
 
-public class VentasProductos extends AppCompatActivity{
+    public class VentasProductos extends AppCompatActivity{
     //Declaracion de Variables
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -168,7 +156,7 @@ public class VentasProductos extends AppCompatActivity{
         cantidadProducto = findViewById(R.id.cantidadProducto);
         Producto= findViewById(R.id.Producto);
         cantidad = cantidadProducto.toString();
-        txtDescripcion = findViewById(R.id.txtDescripcion);
+        txtDescripcion = findViewById(R.id.tv1);
         precio = findViewById(R.id.precio);
         existencias = findViewById(R.id.existencias);
     }
@@ -326,18 +314,6 @@ public class VentasProductos extends AppCompatActivity{
                 ClaveProducto.add(idArticulo);
             }
 
-
-            //JSONArray productos = new JSONArray(response);
-            //for (int i = 0; i <productos.length() ; i++) {
-            //    JSONObject p1 = productos.getJSONObject(i);
-            //    String idArticulo = p1.getString("IdArticulo");
-            //    String DesLarga = p1.getString("DescLarga");
-            //    String precio = p1.getString("Precio");
-            //    NombreProducto.add("ID: " + idArticulo + "    |     $"+precio);
-            //    ID.add(DesLarga);
-            //    PrecioProducto.add(precio);
-            //    ClaveProducto.add(idArticulo);
-            //}
         } catch (JSONException e) {
             e.printStackTrace();
         }

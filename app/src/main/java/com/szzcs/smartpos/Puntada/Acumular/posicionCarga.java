@@ -16,6 +16,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,12 +31,15 @@ public class posicionCarga extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
         setContentView(R.layout.activity_posicion_carga_acumular);
+        this.setTitle(data.getNombreEsatcion());
         posicionAcumular();
     }
 
     private void posicionAcumular() {
-        String url = "http://10.0.1.20/TransferenciaDatosAPI/api/PosCarga/GetMax";
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/posicionCargas/estacion/"+data.getIdEstacion()+"/maximo";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -72,7 +76,7 @@ public class posicionCarga extends AppCompatActivity {
 
         for (int i = 1; i <= Integer.parseInt(response); i++) {
             maintitle.add("PC" + String.valueOf(i));
-            subtitle.add("C");
+            subtitle.add("Magna  | Premium  |  Diesel");
             imgid.add(R.drawable.gas);
         }
 
@@ -89,10 +93,13 @@ public class posicionCarga extends AppCompatActivity {
                 // TODO Auto-generated method stub
                 int posicion = position +1;
                 String posi = String.valueOf(posicion);
+                String track = getIntent().getStringExtra("track");
 
-                Intent intente = new Intent(getApplicationContext(), productos.class);
+                Intent intente = new Intent(getApplicationContext(), ClaveDespachadorAcumular.class);
                 intente.putExtra("pos",posi);
+                intente.putExtra("track", track);
                 startActivity(intente);
+                finish();
             }
         });
     }

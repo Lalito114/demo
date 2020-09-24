@@ -229,9 +229,6 @@ public class formas_de_pago extends AppCompatActivity {
                             JSONObject mensaje = new JSONObject(pie);
                             final JSONArray names = mensaje.getJSONArray("Mensaje");
 
-
-
-
                             JSONObject det = new JSONObject(detalle);
                             final String numerorecibo = det.getString("NoRecibo");
                             final String numerotransaccion = det.getString("NoTransaccion");
@@ -263,14 +260,14 @@ public class formas_de_pago extends AppCompatActivity {
                             final String total = det.getString("Total");
                             final String totaltexto = det.getString("TotalTexto");
                             String clave = det.getString("Clave");
+                            try {
+                                AlertDialog.Builder builder;
 
-                            AlertDialog.Builder builder;
-
-                            builder = new AlertDialog.Builder(getApplicationContext());
+                                builder = new AlertDialog.Builder(formas_de_pago.this);
                                 builder.setMessage("Desea imprimir el ticket?");
                                 builder.setTitle("Venta de Productos");
-                            final String finalProtic = protic;
-                            builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                final String finalProtic = protic;
+                                builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         String carga = getIntent().getStringExtra("car");
@@ -304,7 +301,7 @@ public class formas_de_pago extends AppCompatActivity {
                                         //EnviaVenta;
                                         dialogInterface.cancel();
                                         //Utilizamos el metodo POST para  finalizar la Venta
-                                        SQLiteBD data = new SQLiteBD(getApplicationContext());
+                                        SQLiteBD data = new SQLiteBD(formas_de_pago.this);
                                         String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/Transacciones/finalizaVenta/sucursal/"+data.getIdEstacion()+"/posicionCarga/"+poscarga;
                                         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                                                 new Response.Listener<String>() {
@@ -341,6 +338,10 @@ public class formas_de_pago extends AppCompatActivity {
                                 });
                                 AlertDialog dialog = builder.create();
                                 dialog.show();
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();
