@@ -18,12 +18,20 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.szzcs.smartpos.Pendientes.ticketPendientes;
 import com.szzcs.smartpos.Puntada.Registrar.ClaveDespachadorPuntada;
 import com.szzcs.smartpos.Puntada.SeccionTarjeta;
 import com.szzcs.smartpos.TanqueLleno.ClaveDespachadorTL;
@@ -48,7 +56,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.support.v4.app.ActivityCompat.finishAffinity;
 import static android.support.v4.app.ActivityCompat.getPermissionCompatDelegate;
@@ -112,6 +123,8 @@ public class CardFragment extends PreferenceFragment {
     CardReaderManager mCardReadManager;
     CardReaderTypeEnum mCardType = CardReaderTypeEnum.MAG_IC_RF_CARD;
     private CardReaderTypeEnum mCardType2;
+
+    JSONArray datos = new JSONArray();
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -333,8 +346,8 @@ public class CardFragment extends PreferenceFragment {
         Log.d(TAG, "cardInfo.getResultcode():" + cardInfo.getResultcode());
         String tk1 = cardInfo.getTk1();
         String tk3 = cardInfo.getTk3();
-        //String tk2 = cardInfo.getTk2();
-        String tk2 = "3999999900100055";
+        String tk2 = cardInfo.getTk2();
+        //String tk2 = "3999999900100055";
         String mtk2 =tk2.substring(0,16);
         if(mtk2.isEmpty()){
            Toast.makeText(getActivity(), "No se ha leido correctamente la tarjeta", Toast.LENGTH_LONG).show();
@@ -345,88 +358,109 @@ public class CardFragment extends PreferenceFragment {
 
             String space = mtk2.substring(0,2);
 
-            CompararTarjetas(mtk2);
+            CompararTarjetas(tk1,tk2,tk3);
 
         }
 
     }
 
-    private void CompararTarjetas(final String mtk2) {
+    private void CompararTarjetas(final String tk1, final String tk2, final String tk3) {
         SQLiteBD data = new SQLiteBD(getActivity());
-        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/Bines";
+        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/bines/obtieneBinTarjeta?sucursalId=" + data.getIdSucursal();
+        RequestQueue queue = Volley.newRequestQueue(getActivity());
+        final JSONObject jsonObject = new JSONObject();
 
-        StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
+        try {
+            datos.put(tk1);
+            datos.put(tk2);
+            datos.put(tk3);
+            jsonObject.put("Pistas",datos);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
-                            String mascaraIdentificador;
-                            JSONArray identificado = new JSONArray(response);
-                            for (int i = 0; i <identificado.length() ; i++) {
-                                JSONObject identificador = identificado.getJSONObject(i);
-                                String mascara = identificador.getString("Mascara");
-                                mascaraIdentificador = mascara.substring(0,5);
+        JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, jsonObject, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String correcto = response.getString("Correcto");
+                    if (correcto.equals("true")){
+                        String mesanje = response.getString("Mensaje");
+                        String objetorespuesta = response.getString("ObjetoRespuesta");
+                        JSONObject ojjetores = new JSONObject(objetorespuesta);
+                        String tipomonedero = ojjetores.getString("TipoMonederoId");
+                        String monedero = ojjetores.getString("TipoMonedero");
 
-                                char[] cadena_div = mascara.toCharArray();
-                                String n = "";
-                                for (int j = 0; j <cadena_div.length ; j++) {
-                                    if (Character.isDigit(cadena_div[j])){
-                                        n += cadena_div[j];
-                                    }
-                                }
-                                n.substring(0,5);
+                        if (tipomonedero.equals("4")){
+                            Intent intent = new Intent(getActivity(),SeccionTarjeta.class);
+                            intent.putExtra("track",mesanje);
+                            startActivity(intent);
 
-                                switch (i){
-                                    case 0:
-                                        if (mtk2 != null){
-                                            Intent intent = new Intent(getActivity(),ClaveDespachadorTL.class);
-                                            intent.putExtra("track",mtk2);
-                                            startActivity(intent);
-
-                                        }
-                                        break;
-                                    case 1:
-                                        if (mtk2.contains(n)){
-                                            Toast.makeText(getActivity(),"Esta tarjeta es Tanque Lleno SurEste", Toast.LENGTH_LONG).show();
-                                        }
-                                        break;
-                                    case 2:
-                                        if (mtk2.contains(n)){
-                                            Intent intent = new Intent(getActivity(),SeccionTarjeta.class);
-                                            intent.putExtra("track",mtk2);
-                                            startActivity(intent);
-                                        }
-                                        break;
-                                    default:
-                                        Intent intent = new Intent(getActivity(),Munu_Principal.class);
-                                        startActivity(intent);
-                                        break;
-                                }
+                        }else{
+                            if (tipomonedero.equals("1")){
+                                Intent intent = new Intent(getActivity(),ClaveDespachadorTL.class);
+                                intent.putExtra("track",mesanje);
+                                startActivity(intent);
 
                             }
-                        } catch (JSONException e) {
+                        }
+                    }else{
+                        try {
+                            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                            builder.setTitle("Respuesta");
+                            builder.setMessage("Esta tarjeta no pertenece a ningun tipo de monedero electronico")
+                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            Intent intente = new Intent(getActivity(), Munu_Principal.class);
+                                            startActivity(intente);
+
+                                        }
+                                    }).show();
+                        }catch (Exception e){
                             e.printStackTrace();
                         }
 
                     }
-                    //funcion para capturar errores
-                }, new Response.ErrorListener() {
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+        }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getActivity(),error.toString(),Toast.LENGTH_SHORT).show();
+
             }
-        });
+        }){
+            public Map<String,String>getHeaders() throws AuthFailureError{
+                Map<String,String> headers = new HashMap<String, String>();
+                return headers;
+            }
+            protected  Response<JSONObject> parseNetwokResponse(NetworkResponse response){
+                if (response != null){
 
-        // Añade la peticion a la cola
-        RequestQueue requestQueue = Volley.newRequestQueue(getActivity());
-        requestQueue.add(eventoReq);
+                    try {
+                        String responseString;
+                        JSONObject datos = new JSONObject();
+                        responseString = new String(response.data,HttpHeaderParser.parseCharset(response.headers));
+
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return Response.success(jsonObject, HttpHeaderParser.parseCacheHeaders(response));
+            }
+        };
+        queue.add(request_json);
+
+
     }
 
-    private void IdentificarTarjeta(String response,String mtk2) {
 
-
-    }
 
 
 

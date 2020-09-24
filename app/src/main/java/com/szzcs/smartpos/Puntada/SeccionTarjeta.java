@@ -22,7 +22,7 @@ public class SeccionTarjeta extends AppCompatActivity {
 
     String[] maintitle ={
             "Puntada Acumular","Puntada Redimir",
-            "Registrar Puntada",
+            "Puntada Registrar",
     };
 
     String[] subtitle ={
@@ -61,6 +61,7 @@ public class SeccionTarjeta extends AppCompatActivity {
                         bundle.putString("track",track2);
                         intent.putExtras(bundle);
                         startActivity(intent);
+                        finish();
                         break;
                     case 1://Redimir
                         Intent intent2 = new Intent(getApplicationContext(), PosicionRedimir.class);
@@ -68,8 +69,6 @@ public class SeccionTarjeta extends AppCompatActivity {
                         bundle2.putString("track",track2);
                         intent2.putExtras(bundle2);
                         startActivity(intent2);
-                        finish();
-                        Toast.makeText(getApplicationContext(),"En construcción",Toast.LENGTH_SHORT).show();
                         break;
                     case 2://Registrar
                         Intent intent1 = new Intent(getApplicationContext(), ClaveDespachadorPuntada.class);

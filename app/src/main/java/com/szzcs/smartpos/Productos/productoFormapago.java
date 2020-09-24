@@ -312,11 +312,11 @@ public class productoFormapago extends AppCompatActivity {
                         args.putString("pais",pais);
 
                         //Se instancia el PrintFragment
-                        PrintFragment cf = new PrintFragment();
-                        cf.setArguments(args);
-                        getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
-                                addToBackStack(PrintFragment.class.getName()).  //Modificado
-                                commit();
+//                        PrintFragment cf = new PrintFragment();
+//                        cf.setArguments(args);
+//                        getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+//                                addToBackStack(PrintFragment.class.getName()).  //Modificado
+//                                commit();
                     }else{
                         //Si el json no contiene informacion se envia mensahje
                         Toast.makeText(getApplicationContext(),"No se obtuvo un venta", Toast.LENGTH_LONG).show();
@@ -599,11 +599,11 @@ public class productoFormapago extends AppCompatActivity {
                             args.putString("total",total);
                             args.putString("totaltexto",totaltexto);
                             args.putString("mensaje",names.toString());
-                            PrintFragment cf = new PrintFragment();
-                            cf.setArguments(args);
-                            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
-                                    addToBackStack(PrintFragment.class.getName()).
-                                    commit();
+//                            PrintFragment cf = new PrintFragment();
+//                            cf.setArguments(args);
+//                            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+//                                    addToBackStack(PrintFragment.class.getName()).
+//                                    commit();
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }

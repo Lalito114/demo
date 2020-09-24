@@ -77,7 +77,20 @@ public class ProductoTLl extends AppCompatActivity {
         agregarcombustible.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                pesos.setText("Hola mundo");
+                if (litros.getText().toString().isEmpty()){
+                    if (pesos.getText().toString().isEmpty()){
+                        Toast.makeText(ProductoTLl.this, "Ingresa uno de los dos campos que se requieren", Toast.LENGTH_SHORT).show();
+                    }else{
+                        int pideenpesos = Integer.parseInt(pesos.getText().toString());
+                        double litrospedidos = pideenpesos / Integer.parseInt(precio);
+                        litros.setText((int) litrospedidos);
+                    }
+
+                }else{
+                    double litrospedidos = Integer.parseInt(litros.getText().toString());
+                    double costofinal = litrospedidos * Integer.parseInt(precio);
+                    pesos.setText((int) costofinal);
+                }
 
             }
         });

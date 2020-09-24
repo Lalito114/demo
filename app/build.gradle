@@ -8,7 +8,7 @@ android {
         minSdkVersion 19
         targetSdkVersion 27
         versionCode 124
-        versionName "1.2.4_R191017"
+        versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     signingConfigs {
@@ -42,15 +42,19 @@ android {
         variant.outputs.all { output ->
             def outputFile = output.outputFile
             if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                outputFileName = "SmartPosTest-${buildType.name}_V${defaultConfig.versionName}_${buildTime()}.apk"
+                outputFileName = "CorpoApp_V${defaultConfig.versionName}_${buildTime()}.apk"
 
 
             }
         }
     }
 }
+repositories {
+    jcenter()
+}
 
 dependencies {
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
     implementation 'android.arch.navigation:navigation-fragment:1.0.0'
@@ -58,6 +62,15 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    implementation 'online.devliving:mvbarcodereader:1.0.9'
+
+    //Dependencia de la librería mvbarcodereader
+    implementation 'com.android.support:appcompat-v7:25.0.1'
+    implementation 'com.google.android.gms:play-services-basement:10.0.1'
+    implementation 'com.google.android.gms:play-services-vision:10.0.1'
+    implementation 'com.android.support:design:25.0.1'
+    implementation 'com.android.support:support-annotations:25.0.1'
 
     implementation project(':zxing')
     implementation 'com.android.support:appcompat-v7:26.1.0'

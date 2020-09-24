@@ -17,33 +17,30 @@ import java.util.List;
 public class ListAdapterSP  extends ArrayAdapter<String>{
     private final Activity context;
     private final String[] ID;
-    private final String[] NombreProducto;
+    private final String[] DescripcionProducto;
 
-
-
-
-    public ListAdapterSP(productos context, List<String> ID, List<String> NombreProducto) {
-        super((Context) context, R.layout.list, ID);
-        // TODO Auto-generated constructor stub
-
-        this.context= (Activity) context;
-        this.ID= ID.toArray(new String[0]);
-        this.NombreProducto= NombreProducto.toArray(new String[0]);
+    public ListAdapterSP(Activity context, List<String> ID, List<String> DescripcionProducto){
+        super((Context) context, R.layout.listaproductos, ID);
+        //            ,
+        this.context=(Activity) context;
+        this.ID = ID.toArray(new String[0]);
+        this.DescripcionProducto = DescripcionProducto.toArray(new String[0]);
     }
 
 
+
+
     public View getView(int position, View view, ViewGroup parent) {
-        LayoutInflater inflater=context.getLayoutInflater();
+        //LayoutInflater inflater=context.getLayoutInflater();
+        LayoutInflater inflater= (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
         View rowView=inflater.inflate(R.layout.listaproductos, null,true);
 
         TextView titleText = (TextView) rowView.findViewById(R.id.title);
         TextView subtitleText = (TextView) rowView.findViewById(R.id.subtitle);
 
         titleText.setText(ID[position]);
-        subtitleText.setText(NombreProducto[position]);
-
+        subtitleText.setText(DescripcionProducto[position]);
         return rowView;
-
     };
 
 }

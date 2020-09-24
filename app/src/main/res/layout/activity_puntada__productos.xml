@@ -87,7 +87,7 @@
         android:text="+" />
 
     <ImageButton
-        android:id="@+id/btnscanner"
+        android:id="@+id/btn_m_auto"
         android:layout_width="wrap_content"
         android:layout_height="42dp"
         android:layout_alignParentEnd="true"
@@ -110,7 +110,7 @@
         android:textStyle="bold" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/Producto"
         android:layout_width="158dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"

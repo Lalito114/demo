@@ -101,10 +101,16 @@ public class Munu_Principal extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 6) {
-                    EncriptarObtenerIP encriptarObtenerIP = new EncriptarObtenerIP();
-                    String ip = encriptarObtenerIP.getIP();
-                    String ipmd5 = encriptarObtenerIP.getIPMD5(ip);
-                    Toast.makeText(getApplicationContext(),ipmd5,Toast.LENGTH_SHORT).show();
+
+                    try{
+                        PrintFragment cf = new PrintFragment();
+                        getFragmentManager().beginTransaction().replace(R.id.menu, cf).
+                                addToBackStack(PrintFragment.class.getName()).
+                                commit();
+
+                    }catch (Exception e){
+
+                    }
                 }
 
             }

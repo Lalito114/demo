@@ -1,4 +1,4 @@
-package com.szzcs.smartpos.Puntada.Registrar;
+package com.szzcs.smartpos.Puntada.Acumular;
 
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
@@ -11,16 +11,17 @@ import android.widget.Toast;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
-public class ClaveDespachadorPuntada extends AppCompatActivity {
+public class ClaveDespachadorAcumular extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_clave_despachador_puntada);
+        setContentView(R.layout.activity_clave_despachador_acumular);
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEsatcion());
         Bundle bundle = getIntent().getExtras();
-        final String track2 = bundle.getString("track");
+        final String track = bundle.getString("track");
+        final String posicioncarga = bundle.getString("pos");
 
         Button btnsiguiente;
         btnsiguiente = findViewById(R.id.btnSiguientePuntada);
@@ -35,17 +36,17 @@ public class ClaveDespachadorPuntada extends AppCompatActivity {
                 if (password2.isEmpty()){
                     Toast.makeText(getApplicationContext(),"Ingresa la Contraseña", Toast.LENGTH_LONG).show();
                 }else{
-                   Intent intent = new Intent(getApplicationContext(),ClaveRegistrarPuntada.class);
+                    Intent intent = new Intent(getApplicationContext(),productos.class);
                     Bundle bundle1  = new Bundle();
-                    bundle1.putString("track",track2);
+                    bundle1.putString("track",track);
+                    bundle1.putString("pos",posicioncarga);
                     bundle1.putString("PasswordDespachador",password2);
                     intent.putExtras(bundle1);
-                   startActivity(intent);
-                   finish();
+                    startActivity(intent);
+                    finish();
                 }
 
             }
         });
-
     }
 }
