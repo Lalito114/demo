@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+
+    <TextView
+        android:id="@+id/idPosicion"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginLeft="11dp"
+        android:text="posicion"
+        android:textStyle="bold" />
+
+    <LinearLayout
+        android:layout_width="95dp"
+        android:layout_height="52dp"
+        android:layout_marginLeft="11dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/txtTipoCombustible"
+            android:layout_width="match_parent"
+            android:layout_height="37dp"
+            android:layout_marginTop="12dp"
+            android:text="TipoGasolina"
+            android:textSize="20dp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:layout_marginLeft="10dp"
+        android:orientation="vertical">
+
+<!--        <EditText-->
+<!--            android:id="@+id/edtLecturaMecanica"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_weight="1"-->
+<!--            android:ems="10"-->
+<!--            android:inputType="number"-->
+<!--            tools:text="10" />-->
+
+
+        <TextView
+            android:id="@+id/textLecturaMecanica"
+            android:layout_width="176dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="1"
+            android:ems="10"
+            android:hint="Lectura Mecanica"
+            android:textAlignment="center" />
+    </LinearLayout>
+
+
+
+</LinearLayout>
