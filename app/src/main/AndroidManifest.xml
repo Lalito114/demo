@@ -33,6 +33,16 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".Ticket.tipo_ticket"></activity>
+        <activity android:name=".Cortes2.TotalProductos"/>
+        <activity android:name=".Cortes2.SubOfiSiVale" />
+        <activity android:name=".Cortes2.SubOfiAccor" />
+        <activity android:name=".Cortes2.SubOfiEfectivale" />
+        <activity android:name=".Cortes2.SubOfiGasopass" />
+        <activity android:name=".Cortes2.SubOfiBilletes" />
+        <activity android:name=".Cortes2.FajillaMorralla" />
+        <activity android:name=".Cortes2.FajillasBilletes" />
+        <activity android:name=".Cortes2.Lecturas" />
+        <activity android:name=".Cortes2.Clave" />
         <activity android:name=".Puntada.Acumular.ClaveDespachadorAcumular" />
         <activity android:name=".Puntada.Acumular.ActivityEscanear" />
         <activity android:name=".Productos.formapagoProducto" />
