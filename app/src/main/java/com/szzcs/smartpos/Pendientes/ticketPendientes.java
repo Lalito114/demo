@@ -117,51 +117,53 @@ public class ticketPendientes extends AppCompatActivity {
                 JSONObject nodo2 = new JSONObject(formapago1);
                 String nombre_pago = nodo2.getString("DescripcionLarga");
                 String numero_ticket = nodo2.getString("NumeroTickets");
+                String VerTarjetero = nodo2.getString("VisibleTarjetero");
 
-                maintitle.add(nombre_pago);
-                subtitle.add(numero_pago);
-                idcopias.add(Integer.parseInt(numero_ticket));
-                switch(numero_pago) {
-                    case "1":
-                        imgid.add(R.drawable.monedero);
-                        break;
-                    case "2":
-                        imgid.add(R.drawable.billete);
-                        break;
-                    case "3":
-                        imgid.add(R.drawable.vale);
-                        break;
-                    case "4":
-                        imgid.add(R.drawable.amex);
-                        break;
-                    case "5":
-                        imgid.add(R.drawable.gascard);
-                        break;
-                    case "6":
-                        imgid.add(R.drawable.visa);
-                        break;
-                    case "7":
-                        imgid.add(R.drawable.valeelectronico);
-                        break;
-                    case "8":
-                        imgid.add(R.drawable.corpogas);
-                        break;
-                    case "9":
-                        imgid.add(R.drawable.corpomobil);
-                        break;
-                    case "10":
-                        imgid.add(R.drawable.monedero);
-                        break;
-                    case "11":
-                        imgid.add(R.drawable.jarreo);
-                        break;
-                    case "12":
-                        imgid.add(R.drawable.monedero);
-                        break;
-                    default:
-                        imgid.add(R.drawable.camera);
-                }  //Inicializacion del listview con el adaptador
-
+                if (VerTarjetero == "true") {
+                    maintitle.add(nombre_pago);
+                    subtitle.add(numero_pago);
+                    idcopias.add(Integer.parseInt(numero_ticket));
+                    switch (numero_pago) {
+                        case "1":
+                            imgid.add(R.drawable.monedero);
+                            break;
+                        case "2":
+                            imgid.add(R.drawable.billete);
+                            break;
+                        case "3":
+                            imgid.add(R.drawable.vale);
+                            break;
+                        case "4":
+                            imgid.add(R.drawable.amex);
+                            break;
+                        case "5":
+                            imgid.add(R.drawable.gascard);
+                            break;
+                        case "6":
+                            imgid.add(R.drawable.visa);
+                            break;
+                        case "7":
+                            imgid.add(R.drawable.valeelectronico);
+                            break;
+                        case "8":
+                            imgid.add(R.drawable.corpogas);
+                            break;
+                        case "9":
+                            imgid.add(R.drawable.corpomobil);
+                            break;
+                        case "10":
+                            imgid.add(R.drawable.monedero);
+                            break;
+                        case "11":
+                            imgid.add(R.drawable.jarreo);
+                            break;
+                        case "12":
+                            imgid.add(R.drawable.monedero);
+                            break;
+                        default:
+                            imgid.add(R.drawable.camera);
+                    }  //Inicializacion del listview con el adaptador
+                }
                 ListAdapterFProductos adaptador = new ListAdapterFProductos(this, maintitle, subtitle, imgid);
                 list=(ListView)findViewById(R.id.list);
                 list.setAdapter(adaptador);

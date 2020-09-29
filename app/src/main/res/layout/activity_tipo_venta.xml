@@ -29,8 +29,8 @@
         android:textColor="#070707"
         android:textSize="20sp"
         android:textStyle="bold"
-        tools:layout_editor_absoluteX="125dp"
-        tools:layout_editor_absoluteY="266dp" />
+        tools:layout_editor_absoluteX="150dp"
+        tools:layout_editor_absoluteY="269dp" />
 
     <ListView
         android:id="@+id/list"

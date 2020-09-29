@@ -32,7 +32,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Cortes.productosVendidos"></activity>
+        <activity android:name=".Cortes.ventaProductosFaltantes"></activity>
+        <activity android:name=".Cortes.productosVendidos" />
         <activity android:name=".Cortes.tipoVenta" />
         <activity android:name=".Cortes.ventasTotales" />
         <activity android:name=".Productos.FPaga" />

@@ -16,6 +16,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Filter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,10 +32,12 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.vision.barcode.Barcode;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.szzcs.smartpos.Munu_Principal;
+import com.szzcs.smartpos.Pendientes.ticketPendientes;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -52,7 +55,9 @@ import static java.lang.Integer.parseInt;
 import org.json.JSONObject;
 import org.json.JSONException;
 
-public class VentasProductos extends AppCompatActivity{
+import devliving.online.mvbarcodereader.MVBarcodeScanner;
+
+    public class VentasProductos extends AppCompatActivity implements View.OnClickListener {
     //Declaracion de Variables
     private RecyclerView mRecyclerView;
     private RecyclerView.Adapter mAdapter;
@@ -61,16 +66,32 @@ public class VentasProductos extends AppCompatActivity{
     //Declaracion de objetos
     Button btnAgregar,btnEnviar, incrementar, decrementar, comprar;
     TextView cantidadProducto, txtDescripcion, NumeroProductos, precio, existencias, productoIdentificador;
-    EditText Producto;
+    EditText Producto, tipoproductoid;
     String cantidad;
     JSONObject mjason = new JSONObject();
     JSONArray myArray = new JSONArray();
-    String EstacionId, sucursalId, ipEstacion, tipoTransaccion ;
+    String EstacionId, sucursalId, ipEstacion, tipoTransaccion, numerodispositivo ;
     ListView list;
     Integer ProductosAgregados = 0;
     String posicion, usuario;
 
-    @Override
+
+    private ImageButton b_auto, btnbuscar;
+    private MVBarcodeScanner.ScanningMode modo_Escaneo;
+    private TextView text_cod_escaneado;
+    private int CODE_SCAN = 1;
+
+    List<String> ID;
+    List<String> NombreProducto;
+    List<String> PrecioProducto;
+    List<String> ClaveProducto;
+    List<String> codigoBarras;
+    List<String> ExistenciaProductos;
+    List<String> ProductosId;
+    List<String> TipoProductoId;
+    List<String> DescripcionPr;
+
+        @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ventas_productos);
@@ -82,6 +103,8 @@ public class VentasProductos extends AppCompatActivity{
         sucursalId = db.getIdSucursal();
         ipEstacion= db.getIpEstacion();
         tipoTransaccion = "1"; //Transaccion Normal
+        numerodispositivo = "1";
+
 
         comprar=findViewById(R.id.comprar);
         comprar.setOnClickListener(new View.OnClickListener() {
@@ -96,8 +119,8 @@ public class VentasProductos extends AppCompatActivity{
                 {
                     Toast.makeText(getApplicationContext(), "Seleccione al menos uno de los Productos", Toast.LENGTH_LONG).show();
                 } else {
-                //AgregarDespacho(posicion, usuarioid);
-                EnviarProductos(posicion, usuarioid);
+                AgregarDespacho(posicion, usuarioid);
+                //EnviarProductos(posicion, usuarioid);
                 }
             }
         });
@@ -125,6 +148,7 @@ public class VentasProductos extends AppCompatActivity{
             }
         });
 
+
         incrementar = findViewById(R.id.incrementar);
         incrementar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,8 +167,113 @@ public class VentasProductos extends AppCompatActivity{
         CantidadProducto();
         //procedimiento que despliega la lista de productos
         MostrarProductos();
+        UI();
+
+        btnbuscar = findViewById(R.id.btnbuscar);
+        btnbuscar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                buscaCodigoInterno(Producto.getText().toString());
+            }
+        });
+
     }
-    private void EnviarDatos() {
+
+        private void UI() {
+            b_auto = findViewById(R.id.btnscanner);
+            b_auto.setOnClickListener(this);
+        }
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()){
+                case R.id.btnscanner:
+                    modo_Escaneo = MVBarcodeScanner.ScanningMode.SINGLE_AUTO;
+                    break;
+            }
+
+            new MVBarcodeScanner.Builder().setScanningMode(modo_Escaneo).setFormats(Barcode.ALL_FORMATS)
+                    .build()
+                    .launchScanner(this, CODE_SCAN);
+        }
+        @Override
+        protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == CODE_SCAN) {
+                if (resultCode == RESULT_OK && data != null
+                        && data.getExtras() != null) {
+
+                    if (data.getExtras().containsKey(MVBarcodeScanner.BarcodeObject)) {
+                        Barcode mBarcode = data.getParcelableExtra(MVBarcodeScanner.BarcodeObject);
+//                    Producto.setText(mBarcode.rawValue);
+                        buscarCodigoBarra(mBarcode.rawValue);
+                    } else if (data.getExtras().containsKey(MVBarcodeScanner.BarcodeObjects)) {
+                        List<Barcode> mBarcodes = data.getParcelableArrayListExtra(MVBarcodeScanner.BarcodeObjects);
+                        StringBuilder s = new StringBuilder();
+                        for (Barcode b:mBarcodes){
+                            s.append(b.rawValue + "\n");
+                        }
+//                    Producto.setText(s.toString());
+                        buscarCodigoBarra(s.toString());
+                    }
+                }
+            }
+        }
+
+        private void buscarCodigoBarra(String rawValue) {
+            int indicecodigo = codigoBarras.indexOf(rawValue);
+            if (indicecodigo > 0 ) {
+                String  Descripcion = ID.get(indicecodigo);
+                String precioUnitario = PrecioProducto.get(indicecodigo);
+                String paso= ClaveProducto.get(indicecodigo);
+                String existencia = ExistenciaProductos.get(indicecodigo);
+                String idproduc = ProductosId.get(indicecodigo);
+
+
+                Producto.setText(paso);
+                txtDescripcion.setText(Descripcion);
+                precio.setText(precioUnitario);
+                existencias.setText(existencia);
+                productoIdentificador.setText(idproduc);
+            }else{
+                Toast.makeText(getApplicationContext(), "Producto no encontrado en la lista", Toast.LENGTH_LONG).show();
+                Producto.setText("");
+                txtDescripcion.setText("");
+                precio.setText("");
+                //existencias.setText(existencia);
+                productoIdentificador.setText("");
+                cantidadProducto.setText("1");
+            }
+        }
+
+        private void buscaCodigoInterno(String valor){
+            int indicecodigo = ClaveProducto.indexOf(valor);
+            if (indicecodigo > 0 ) {
+                String Descripcion = ID.get(indicecodigo);
+                String precioUnitario = PrecioProducto.get(indicecodigo);
+                //String paso= ClaveProducto.get(indicecodigo);
+                String existencia = ExistenciaProductos.get(indicecodigo);
+                String idproduc = ProductosId.get(indicecodigo);
+                //String codigo = codigoBarras.get(indicecodigo);
+
+                //Producto.setText(paso);
+                txtDescripcion.setText(Descripcion);
+                precio.setText(precioUnitario);
+                existencias.setText(existencia);
+                productoIdentificador.setText(idproduc);
+            }else{
+                Toast.makeText(getApplicationContext(), "Producto no encontrado en la lista", Toast.LENGTH_LONG).show();
+                Producto.setText("");
+                txtDescripcion.setText("");
+                precio.setText("");
+                //existencias.setText(existencia);
+                productoIdentificador.setText("");
+                cantidadProducto.setText("1");
+            }
+        }
+
+
+        private void EnviarDatos() {
         //Si es valido se asignan valores
         final String posicion;
         posicion = getIntent().getStringExtra("car");
@@ -173,6 +302,7 @@ public class VentasProductos extends AppCompatActivity{
         precio = findViewById(R.id.precio);
         existencias = findViewById(R.id.existencias);
         productoIdentificador = findViewById(R.id.productoIdentificador);
+        tipoproductoid = findViewById(R.id.tipoproductoid);
     }
     private void Aumentar() {
         cantidad = cantidadProducto.getText().toString();
@@ -202,7 +332,10 @@ public class VentasProductos extends AppCompatActivity{
     private void AgregarProducto(){
         String resultado  = "";
         //EditText cantidadProducto = (EditText)getActivity().findViewById();
+        String  TipoProductoId;
         String  ProductoId;
+        String  numInterno;
+        String  descrProducto;
         int TotalProducto;
         int ProductoIdEntero;
 
@@ -212,6 +345,9 @@ public class VentasProductos extends AppCompatActivity{
         //ProductoId = Producto.getText().toString();
         ProductoId = productoIdentificador.getText().toString();
         ProductoIdEntero = Integer.parseInt(ProductoId);
+        numInterno = Producto.getText().toString();
+        descrProducto = txtDescripcion.getText().toString();
+        TipoProductoId = tipoproductoid.getText().toString();
         if (ProductoId.isEmpty())
         {
             Toast.makeText(getApplicationContext(), "Seleccione uno de los Productos", Toast.LENGTH_LONG).show();
@@ -238,7 +374,10 @@ public class VentasProductos extends AppCompatActivity{
                 }
                 if (bandera==true) {
                     JSONObject mjason = new JSONObject();
+                    mjason.put("TipoProducto", Integer.parseInt(TipoProductoId));
                     mjason.put("ProductoId", ProductoIdEntero);
+                    mjason.put("NumeroInterno", Integer.parseInt(numInterno));
+                    //mjason.put("Descripcion", descrProducto.toString());
                     mjason.put("Cantidad", TotalProducto);
                     mjason.put("Precio", precioUnitario);
                     myArray.put(mjason);
@@ -280,30 +419,23 @@ public class VentasProductos extends AppCompatActivity{
     }
 
     private void mostrarProductosExistencias(String response){
+        //Declaracion de variables
         String preciol = null;
         String DescLarga;
         String idArticulo;
+        String TProductoId;
 
-        //Declaracion de variables
-        final List<String> ID;
         ID = new ArrayList<String>();
 
-        final List<String> NombreProducto;
         NombreProducto = new ArrayList<String>();
-
-        final List<String> PrecioProducto;
         PrecioProducto = new ArrayList<>();
-
-        final List<String> ClaveProducto;
         ClaveProducto = new ArrayList();
-
-        final List<String> ExistenciaProductos;
+        codigoBarras = new ArrayList();
         ExistenciaProductos = new ArrayList();
+        ProductosId = new ArrayList();
+        TipoProductoId = new ArrayList();
+        DescripcionPr = new ArrayList();;
 
-        final List<String> ProductosId;
-        ProductosId = new ArrayList<>();
-
-        //String IdProductos = null;
 
         //ArrayList<singleRow> singlerow = new ArrayList<>();
         try {
@@ -322,8 +454,10 @@ public class VentasProductos extends AppCompatActivity{
                 ExistenciaProductos.add(ExProductos);
                 String productoclave = pA.getString("Producto");
                 JSONObject prod = new JSONObject(productoclave);
+                TProductoId="2";//prod.getString("TipoSatProductoId");
                 DescLarga=prod.getString("DescripcionLarga");
                 idArticulo=prod.getString("NumeroInterno");
+                String codigobarras=prod.getString("CodigoBarras");
                 String PControl=prod.getString("ProductoControles");
                 JSONArray PC = new JSONArray(PControl);
                 for (int j = 0; j <PC.length() ; j++) {
@@ -340,8 +474,10 @@ public class VentasProductos extends AppCompatActivity{
                 PrecioProducto.add(preciol);
                 ClaveProducto.add(idArticulo);
                 ProductosId.add(IdProductos);
+                codigoBarras.add(codigobarras);
+                TipoProductoId.add(TProductoId);
+                DescripcionPr.add(DescLarga);
             }
-
 
             //JSONArray productos = new JSONArray(response);
             //for (int i = 0; i <productos.length() ; i++) {
@@ -371,13 +507,14 @@ public class VentasProductos extends AppCompatActivity{
                 String paso= ClaveProducto.get(i).toString();
                 String existencia = ExistenciaProductos.get(i).toString();
                 String IProd = ProductosId.get(i).toString();
-
+                String TProd = TipoProductoId.get(i).toString();
 
                 Producto.setText(paso);
                 txtDescripcion.setText(Descripcion);
                 precio.setText(precioUnitario);
                 existencias.setText(existencia);
                 productoIdentificador.setText(IProd);
+                tipoproductoid.setText(TProd);
             }
         });
 
@@ -452,9 +589,10 @@ public class VentasProductos extends AppCompatActivity{
     }
 
     private void EnviarProductos(final String posicionCarga, final String Usuarioid) {
+        //RequestQueue queue = Volley.newRequestQueue(this);
+        //String url = "http://"+ipEstacion+"/CorpogasService/api/ventaProductos/sucursal/"+sucursalId+"/procedencia/"+posicionCarga+"/tipoTransaccion/"+tipoTransaccion+"/empleado/"+Usuarioid; //TipoTransaccion 1 (NORMAL)
+        String url = "http://"+ipEstacion+"/CorpogasService/api/ventaProductos/GuardaProductos/sucursal/"+sucursalId+"/origen/"+numerodispositivo+"/usuario/"+Usuarioid+"/posicionCarga/"+posicionCarga;
         RequestQueue queue = Volley.newRequestQueue(this);
-        String url = "http://"+ipEstacion+"/CorpogasService/api/ventaProductos/sucursal/"+sucursalId+"/procedencia/"+posicionCarga+"/tipoTransaccion/"+tipoTransaccion+"/empleado/"+Usuarioid; //TipoTransaccion 1 (NORMAL)
-        queue = Volley.newRequestQueue(this);
 
         JsonArrayRequest request_json = new JsonArrayRequest(Request.Method.POST, url, myArray,
                 new Response.Listener<JSONArray>() {
@@ -469,7 +607,31 @@ public class VentasProductos extends AppCompatActivity{
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError volleyError) {
-                VolleyLog.e("Error: ", volleyError.getMessage());
+                //VolleyLog.e("Error: ", volleyError.getMessage());
+                String algo = new String(volleyError.networkResponse.data) ;
+                try {
+                    //creamos un json Object del String algo
+                    JSONObject errorCaptado = new JSONObject(algo);
+                    //Obtenemos el elemento ExceptionMesage del errro enviado
+                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
+                    try {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(VentasProductos.this);
+                        builder.setTitle("Vemta Productos");
+                        builder.setMessage(errorMensaje)
+                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
+                                        startActivity(intente);
+                                    }
+                                }).show();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         }) {
             @Override
@@ -525,8 +687,16 @@ public class VentasProductos extends AppCompatActivity{
                         //Double PrecioUnitario = TotalProducto * Precio;
                         //String PrecioUnitario =  PrecioU.toString();
                         Double PrecioUnitario = Double.parseDouble(oRespuesta.getString("Importe"));
+                        JSONObject combustible = new JSONObject(objetoRespuesta);
+                        int  tProdId = 1; //Integer.parseInt(combustible.getString("TipoSatCombustibleId"));
+                        String numInterno = combustible.getString("CodigoFranquicia");
+                        //String descrProducto = combustible.getString("DescripcionLarga");
                         JSONObject mjason = new JSONObject();
+
+                        mjason.put("TipoProducto", tProdId);
                         mjason.put("ProductoId", ProductoIdEntero);
+                        mjason.put("NumeroInterno", numInterno);
+                        //mjason.put("Descripcion", descrProducto);
                         mjason.put("Cantidad", TotalProducto);
                         mjason.put("Precio", PrecioUnitario);
                         myArray.put(mjason);
@@ -548,29 +718,5 @@ public class VentasProductos extends AppCompatActivity{
     }
 
 
- //   private void CrearJSON() {
- //       btnAgregar = findViewById(R.id.btnAgregar);
- //       btnAgregar.setOnClickListener(new View.OnClickListener() {
- //           @Override
- //           public void onClick(View v) {
- //              String  ProductoId;
-    //              int TotalProducto = 0;
-//                TotalProducto = Integer.parseInt(cantidadProducto.getText().toString());
-//                ProductoId = Producto.getText().toString();
-//                if (ProductoId.isEmpty())
-//                {
-//                    Toast.makeText(getApplicationContext(), "Seleccione uno de los Productos", Toast.LENGTH_LONG).show();
-//                }
-//                else{
-//                    try {
-//                        mjason.put("cantidad", TotalProducto);
-//                        mjason.put("producto", ProductoId);
-//                        ProductosAgregados = ProductosAgregados +1;
-//                    } catch (JSONException error) {
-//                    }
-//                }
-//            }
-//        });
-//    }
 
 }
