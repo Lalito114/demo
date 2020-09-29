@@ -136,10 +136,12 @@ public class formas_de_pago extends AppCompatActivity {
                 JSONObject nodo2 = new JSONObject(formapago1);
                 String nombre_pago = nodo2.getString("DescripcionLarga");
                 String numero_ticket = nodo2.getString("NumeroTickets");
-
-                numerotickets.add(numero_ticket);
-                maintitle.add( nombre_pago);
-                subtitle.add("ID Forma de Pago:" + numero_pago);
+                String visible = nodo2.getString("VisibleTarjetero");
+                if (visible == "true"){
+                    numerotickets.add(numero_ticket);
+                    maintitle.add( nombre_pago);
+                    subtitle.add("ID Forma de Pago:" + numero_pago);
+                }
 
 
                     int idpago = Integer.parseInt(numero_pago);

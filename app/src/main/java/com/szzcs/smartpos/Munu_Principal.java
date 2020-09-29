@@ -15,6 +15,7 @@ import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
 import com.szzcs.smartpos.Gastos.claveGastos;
 import com.szzcs.smartpos.Pendientes.claveUPendientes;
 import com.szzcs.smartpos.Productos.posicionProductos;
+import com.szzcs.smartpos.Ticket.tipo_ticket;
 import com.szzcs.smartpos.Ticket.ventas;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 import com.zcs.sdk.card.CardReaderTypeEnum;
@@ -67,7 +68,7 @@ public class Munu_Principal extends AppCompatActivity {
                 if(position == 0) {
                     //code specific to first list item
                    // Toast.makeText(getApplicationContext(),"Place Your First Option Code",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent( getApplicationContext(), ventas.class);
+                    Intent intent = new Intent( getApplicationContext(), tipo_ticket.class);
                     startActivity(intent);
                 }
 

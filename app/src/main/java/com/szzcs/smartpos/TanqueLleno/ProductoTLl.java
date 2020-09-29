@@ -1,5 +1,8 @@
 package com.szzcs.smartpos.TanqueLleno;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +13,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -19,6 +23,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -81,16 +86,52 @@ public class ProductoTLl extends AppCompatActivity {
                     if (pesos.getText().toString().isEmpty()){
                         Toast.makeText(ProductoTLl.this, "Ingresa uno de los dos campos que se requieren", Toast.LENGTH_SHORT).show();
                     }else{
-                        int pideenpesos = Integer.parseInt(pesos.getText().toString());
-                        double litrospedidos = pideenpesos / Integer.parseInt(precio);
-                        litros.setText((int) litrospedidos);
+                        double pideenpesos = Double.valueOf(pesos.getText().toString());
+                        double litrospedidos = pideenpesos / Double.valueOf(precio);
+                        String valor = String.valueOf(litrospedidos);
+                        String valor1 = valor.substring(0,4);
+                        litros.setText(valor1);
+
+                        try {
+                            //Add string params
+                            jsonParam.put("TipoProducto","1");
+                            jsonParam.put("ProductoId",IdCombustible);
+                            jsonParam.put("NumeroInterno",IdCombustible);
+                            jsonParam.put("Descripcion",descripcion);
+                            jsonParam.put("Cantidad",valor1);
+                            jsonParam.put("Precio",pideenpesos);
+                            array1.put(jsonParam);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
 
                 }else{
-                    double litrospedidos = Integer.parseInt(litros.getText().toString());
-                    double costofinal = litrospedidos * Integer.parseInt(precio);
-                    pesos.setText((int) costofinal);
+                    double litrospedidos = Double.valueOf(litros.getText().toString());
+                    double costofinal = litrospedidos * Double.valueOf(precio);
+                    String valor = String.valueOf(costofinal);
+                    String valor1 = valor.substring(0,4);
+                    pesos.setText(valor1);
+
+                    try {
+                        //Add string params
+                        litros = findViewById(R.id.edtLitros);
+                        jsonParam.put("TipoProducto","1");
+                        jsonParam.put("ProductoId",IdCombustible);
+                        jsonParam.put("NumeroInterno",IdCombustible);
+                        jsonParam.put("Descripcion",descripcion);
+                        jsonParam.put("Cantidad",litrospedidos);
+                        jsonParam.put("Precio",valor1);
+                        array1.put(jsonParam);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 }
+                v.setVisibility(View.INVISIBLE);
+                enviarProductos.setVisibility(View.VISIBLE);
+                limpiar.setVisibility(View.VISIBLE);
+                imprimirTicket.setVisibility(View.INVISIBLE);
 
             }
         });
@@ -103,8 +144,7 @@ public class ProductoTLl extends AppCompatActivity {
                 if (array1!= null){
                     EnviarProductos1();
                     v.setVisibility(View.INVISIBLE);
-                    agregarcombustible.setVisibility(View.INVISIBLE);
-                    imprimirTicket.setVisibility(View.VISIBLE);
+
                 }else{
                     Toast.makeText(getApplicationContext(),"Ingresa el producto", Toast.LENGTH_LONG).show();
                 }
@@ -157,7 +197,29 @@ public class ProductoTLl extends AppCompatActivity {
                      transaccion = response.getString("TransaccionId");
                      folio = response.getString("Folio");
                     if (validacion == "true"){
+                        agregarcombustible.setVisibility(View.INVISIBLE);
+//                        imprimirTicket.setVisibility(View.VISIBLE);
+                        limpiar.setVisibility(View.INVISIBLE);
 
+                        String estado = response.getString("Mensaje");
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ProductoTLl.this);
+                        builder.setTitle("Tarjeta Tanque Lleno");
+                        builder.setMessage(estado);
+                        builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                        AlertDialog dialog= builder.create();
+                        dialog.show();
+
+                    }else{
+                        agregarcombustible.setVisibility(View.VISIBLE);
+//                        imprimirTicket.setVisibility(View.INVISIBLE);
+                        limpiar.setVisibility(View.VISIBLE);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -166,7 +228,8 @@ public class ProductoTLl extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-
+                String error1 = error.networkResponse.data.toString();
+                Toast.makeText(ProductoTLl.this, error1, Toast.LENGTH_SHORT).show();
             }
         }){
             public Map<String,String>getHeaders() throws AuthFailureError{
@@ -188,6 +251,10 @@ public class ProductoTLl extends AppCompatActivity {
                 return Response.success(datos, HttpHeaderParser.parseCacheHeaders(response));
             }
         };
+        request_json.setRetryPolicy(new DefaultRetryPolicy(
+                30000,
+                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request_json);
 
     }
@@ -196,12 +263,12 @@ public class ProductoTLl extends AppCompatActivity {
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/tickets/generar";
         //Utilizamos el metodo Post para colocar los datos en el  ticket
+
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
-
                     }
                     //funcion para capturar errores
                 }, new Response.ErrorListener() {
@@ -222,14 +289,11 @@ public class ProductoTLl extends AppCompatActivity {
                 params.put("SucursalId","1");
                 params.put("Folio",folio);
                 params.put("Clave",ClaveTanqueLleno);
-
                 return params;
             }
         };
-
-        // Añade la peticion a la cola
-        //eventoReq.setTag("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjZXJ0c2VyaWFsbnVtYmVyIjoiNTA6ODA6NEE6Njg6ODY6RTIiLCJuYmYiOjE1OTk1MjU4ODksImV4cCI6MTU5OTUyNjA2OSwiaWF0IjoxNTk5NTI1ODg5fQ.7xTkhvYvpXE5sg6W4cdbhu7KXlFL-DL1QDXXQv9aAAg");
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+
         requestQueue.add(eventoReq);
     }
 
@@ -258,6 +322,7 @@ public class ProductoTLl extends AppCompatActivity {
         requestQueue.add(stringRequest);
 
     }
+
     private void MetodoResponse(final String response) {
         List<String> maintitle;
         maintitle = new ArrayList<String>();
