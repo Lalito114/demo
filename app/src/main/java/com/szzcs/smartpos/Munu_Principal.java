@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
+import com.szzcs.smartpos.Cortes2.Clave;
 import com.szzcs.smartpos.Encriptacion.EncriptarMAC;
 import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
 import com.szzcs.smartpos.Gastos.claveGastos;
@@ -95,10 +96,8 @@ public class Munu_Principal extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 3) {
-                    EncriptarMAC mac = new EncriptarMAC();
-                    String mac2 = mac.getMacAddr();
-                    String macmd5 = mac.getMD5(mac2);
-                    Toast.makeText(getApplicationContext(),macmd5,Toast.LENGTH_LONG).show();
+                    Intent intent = new Intent(getApplicationContext(), Clave.class);
+                    startActivity(intent);
                 }
                 else if(position == 4) {
                     Intent inten = new Intent(getApplicationContext(), claveUPendientes.class);
