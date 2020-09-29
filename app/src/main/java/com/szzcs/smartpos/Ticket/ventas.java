@@ -107,10 +107,12 @@ public class ventas extends AppCompatActivity {
                 // TODO Auto-generated method stub
                   int posicion = position +1;
                   String positionfinal = String.valueOf(posicion);
+                  String tipo = getIntent().getStringExtra("tipo");
                     //cuando se haya seleccionado una posicion de carga desatara un evento de pasar a otra activity
                     Intent intente = new Intent(getApplicationContext(), claveUsuario.class);
                     //Enviamos el valor de la posicion
                     intente.putExtra("pos",positionfinal);
+                    intente.putExtra("tipo", tipo);
                     startActivity(intente);
                     finish();
             }
