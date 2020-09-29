@@ -72,6 +72,14 @@ dependencies {
     implementation 'com.android.support:design:25.0.1'
     implementation 'com.android.support:support-annotations:25.0.1'
 
+    implementation 'online.devliving:mvbarcodereader:1.0.9'
+
+    //Dependencia de la librería mvbarcodereader
+    implementation 'com.android.support:appcompat-v7:25.0.1'
+    implementation 'com.google.android.gms:play-services-basement:10.0.1'
+    implementation 'com.google.android.gms:play-services-vision:10.0.1'
+    implementation 'com.android.support:design:25.0.1'
+    implementation 'com.android.support:support-annotations:25.0.1'
     implementation project(':zxing')
     implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'com.android.support:design:26.1.0'

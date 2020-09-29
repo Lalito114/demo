@@ -1,6 +1,7 @@
 package com.szzcs.smartpos.Gastos;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -21,6 +22,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.PrintFragmentVale;
 import com.szzcs.smartpos.Productos.ListAdapterProductos;
@@ -42,8 +44,7 @@ public class cargaGasto extends AppCompatActivity {
     ListView list;
     TextView txtDescripcion, txtClave, isla, turno, usuario;
     TextView subTotal, iva, total, Descripcion;
-    String EstacionId ;
-    String sucursalId ;
+    String EstacionId, sucursalId, ipEstacion ;
     String idisla, idTurno;
     Bundle args = new Bundle();
 
@@ -55,7 +56,8 @@ public class cargaGasto extends AppCompatActivity {
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId=db.getIdSucursal();
-        txtDescripcion= findViewById(R.id.tv1);
+        ipEstacion = db.getIpEstacion();
+        txtDescripcion= findViewById(R.id.txtDescripcion);
         txtClave= findViewById(R.id.txtClave);
         isla=findViewById(R.id.isla);
         turno=findViewById(R.id.turno);
@@ -101,7 +103,7 @@ public class cargaGasto extends AppCompatActivity {
     public void obtenerIsla() {
         final String pass = isla.getText().toString();
 
-        String url = "http://10.2.251.58/CorpogasService/api/estacionControles/estacion/"+ EstacionId  +"/ClaveEmpleado/" +pass;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/estacionControles/estacion/"+ EstacionId  +"/ClaveEmpleado/" +pass;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -136,7 +138,7 @@ public class cargaGasto extends AppCompatActivity {
 
         //SQLiteBD data = new SQLiteBD(getApplicationContext());
         //String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/tanqueLleno/EnviarProductos";
-        String URL = "http://10.2.251.58/CorpogasService/api/Gastos";
+        String URL = "http://"+ipEstacion+"/CorpogasService/api/Gastos";
         final JSONObject mjason = new JSONObject();
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
@@ -214,7 +216,7 @@ public class cargaGasto extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        String url = "http://10.2.251.58/CorpogasService/api/Gastos";
+        String url = "http://"+ipEstacion+"/CorpogasService/api/Gastos";
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new Response.Listener<String>() {
                     @Override
@@ -248,7 +250,7 @@ public class cargaGasto extends AppCompatActivity {
 
 
     private void cargaTipoGastos() {
-        String url = "http://10.2.251.58/CorpogasService/api/ConceptoGastos";
+        String url = "http://"+ipEstacion+"/CorpogasService/api/ConceptoGastos";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

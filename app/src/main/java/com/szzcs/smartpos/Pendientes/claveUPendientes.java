@@ -43,7 +43,7 @@ public class claveUPendientes extends AppCompatActivity {
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         sucursalId=db.getIdSucursal();
         EstacionId = db.getIdEstacion();
-        ipEstacion = db.getIdEstacion();
+        ipEstacion = db.getIpEstacion();
 
         validaClave();
 

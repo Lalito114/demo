@@ -1,8 +1,6 @@
 package com.szzcs.smartpos;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -16,19 +14,11 @@ import com.szzcs.smartpos.Encriptacion.EncriptarMAC;
 import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
 import com.szzcs.smartpos.Gastos.claveGastos;
 import com.szzcs.smartpos.Pendientes.claveUPendientes;
-import com.szzcs.smartpos.Productos.VentasProductos;
 import com.szzcs.smartpos.Productos.posicionProductos;
 import com.szzcs.smartpos.Ticket.tipo_ticket;
 import com.szzcs.smartpos.Ticket.ventas;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 import com.zcs.sdk.card.CardReaderTypeEnum;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 
 import static com.zcs.sdk.card.CardReaderTypeEnum.MAG_CARD;
 

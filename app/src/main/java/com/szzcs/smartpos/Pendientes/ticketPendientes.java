@@ -58,7 +58,7 @@ public class ticketPendientes extends AppCompatActivity {
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId=db.getIdSucursal();
-        ipEstacion = db.getIdEstacion();
+        ipEstacion = db.getIpEstacion();
 
         TextView txtMac = findViewById(R.id.txtmac);
         txtMac.setText(getMacAddr());
@@ -117,51 +117,53 @@ public class ticketPendientes extends AppCompatActivity {
                 JSONObject nodo2 = new JSONObject(formapago1);
                 String nombre_pago = nodo2.getString("DescripcionLarga");
                 String numero_ticket = nodo2.getString("NumeroTickets");
+                String VerTarjetero = nodo2.getString("VisibleTarjetero");
 
-                maintitle.add(nombre_pago);
-                subtitle.add(numero_pago);
-                idcopias.add(Integer.parseInt(numero_ticket));
-                switch(numero_pago) {
-                    case "1":
-                        imgid.add(R.drawable.monedero);
-                        break;
-                    case "2":
-                        imgid.add(R.drawable.billete);
-                        break;
-                    case "3":
-                        imgid.add(R.drawable.vale);
-                        break;
-                    case "4":
-                        imgid.add(R.drawable.amex);
-                        break;
-                    case "5":
-                        imgid.add(R.drawable.gascard);
-                        break;
-                    case "6":
-                        imgid.add(R.drawable.visa);
-                        break;
-                    case "7":
-                        imgid.add(R.drawable.valeelectronico);
-                        break;
-                    case "8":
-                        imgid.add(R.drawable.corpogas);
-                        break;
-                    case "9":
-                        imgid.add(R.drawable.corpomobil);
-                        break;
-                    case "10":
-                        imgid.add(R.drawable.monedero);
-                        break;
-                    case "11":
-                        imgid.add(R.drawable.jarreo);
-                        break;
-                    case "12":
-                        imgid.add(R.drawable.monedero);
-                        break;
-                    default:
-                        imgid.add(R.drawable.camera);
-                }  //Inicializacion del listview con el adaptador
-
+                if (VerTarjetero == "true") {
+                    maintitle.add(nombre_pago);
+                    subtitle.add(numero_pago);
+                    idcopias.add(Integer.parseInt(numero_ticket));
+                    switch (numero_pago) {
+                        case "1":
+                            imgid.add(R.drawable.monedero);
+                            break;
+                        case "2":
+                            imgid.add(R.drawable.billete);
+                            break;
+                        case "3":
+                            imgid.add(R.drawable.vale);
+                            break;
+                        case "4":
+                            imgid.add(R.drawable.amex);
+                            break;
+                        case "5":
+                            imgid.add(R.drawable.gascard);
+                            break;
+                        case "6":
+                            imgid.add(R.drawable.visa);
+                            break;
+                        case "7":
+                            imgid.add(R.drawable.valeelectronico);
+                            break;
+                        case "8":
+                            imgid.add(R.drawable.corpogas);
+                            break;
+                        case "9":
+                            imgid.add(R.drawable.corpomobil);
+                            break;
+                        case "10":
+                            imgid.add(R.drawable.monedero);
+                            break;
+                        case "11":
+                            imgid.add(R.drawable.jarreo);
+                            break;
+                        case "12":
+                            imgid.add(R.drawable.monedero);
+                            break;
+                        default:
+                            imgid.add(R.drawable.camera);
+                    }  //Inicializacion del listview con el adaptador
+                }
                 ListAdapterFProductos adaptador = new ListAdapterFProductos(this, maintitle, subtitle, imgid);
                 list=(ListView)findViewById(R.id.list);
                 list.setAdapter(adaptador);
@@ -200,7 +202,7 @@ public class ticketPendientes extends AppCompatActivity {
         final String totaltotalTexto="";
 
         //Conexion con la base y ejecuta consulta para saber si tiene tickets Pendientes
-        String url = "http://10.2.251.58/CorpogasService/api/tickets/pendiente/"+numeroTarjetero;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/tickets/pendiente/"+numeroTarjetero;
         // Utilizamos el metodo Post para validar la contraseña
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new Response.Listener<String>() {

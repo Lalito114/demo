@@ -5,10 +5,11 @@
     android:id="@+id/tv1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Productos.productoFormapago">
+    tools:context=".Productos.FPaga">
 
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></ListView>
+
 </RelativeLayout>
