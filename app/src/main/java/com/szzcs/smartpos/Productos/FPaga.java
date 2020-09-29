@@ -183,7 +183,7 @@ public class FPaga extends AppCompatActivity {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     //Funcion para obtener los datos del ticker
-                    ObtenerCuerpoTicket(NombreFormapago, Copias, posicion, usuarioid);
+                    ObtenerCuerpoTicket(NombreFormapago, Copias, posicion, usuarioid, FormaPagoId);
                 }
             }).setNegativeButton("No", new DialogInterface.OnClickListener() {
                 @Override
@@ -197,7 +197,7 @@ public class FPaga extends AppCompatActivity {
             dialog.show();
         } else {
             //Funcion para obtener los datos del ticker
-            ObtenerCuerpoTicket(FormaPagoId, Copias, posicion, usuarioid);
+            ObtenerCuerpoTicket(FormaPagoId, Copias, posicion, usuarioid, FormaPagoId);
         }
     }
 
@@ -240,7 +240,7 @@ public class FPaga extends AppCompatActivity {
 
 
 
-    public void ObtenerCuerpoTicket(final String nombrepago, final String numticket, final String posicion, final String usuario) {
+    public void ObtenerCuerpoTicket(final String nombrepago, final String numticket, final String posicion, final String usuario, final String FormaPagoId) {
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
         String url = "http://"+ipEstacion+"/CorpogasService/api/tickets/generar";
 
@@ -321,8 +321,12 @@ public class FPaga extends AppCompatActivity {
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("PosCarga", posicion);
                 params.put("IdUsuario",usuario);
-                params.put("IdFormaPago", nombrepago);
+                params.put("IdFormaPago", FormaPagoId);
+                //"TipoMonedero": 4,
+                //"TransaccionId": 5,
                 params.put("SucursalId",data.getIdSucursal());
+                //"Folio": 7,
+                //"Clave": "sample string 8"
                 return params;
             }
         };

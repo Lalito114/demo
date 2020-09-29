@@ -74,6 +74,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
     ListView list;
     Integer ProductosAgregados = 0;
     String posicion, usuario;
+    String transaccionId;
 
 
     private ImageButton b_auto, btnbuscar;
@@ -649,7 +650,8 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
 
                     try {
                         responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                        //JSONObject obj = new JSONObject(responseString);
+                        //transaccionId =
+                        JSONObject obj = new JSONObject(responseString);
                         //Si es valido se asignan valores
                         //Intent intent = new Intent(getApplicationContext(), productoFormapago.class);
                         //DAtos enviados a formaPago
@@ -658,7 +660,8 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                         ////startActivity(intent);
                         //Toast.makeText(getApplicationContext(), "Venta realizada", Toast.LENGTH_LONG).show();
                     } catch (Exception e) {
-                        e.printStackTrace();                    }
+                        e.printStackTrace();
+                    }
                 }
                 //return array;
                 return Response.success(myArray, HttpHeaderParser.parseCacheHeaders(response));
