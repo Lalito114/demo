@@ -24,18 +24,16 @@ import java.util.List;
 
 public class TotalProductos extends AppCompatActivity {
 
-    ListView mListView;
+    // Se declaran las variables que se usaran en este Activity
+    TextView txtlitrosPiezas, txtImporteTotal;
+    double sumaLitrosPiezas, sumaTotalImporte;
+    String cantidad, total2, descripcion;
+    JSONArray totalLitros = new JSONArray();
+    JSONArray importe = new JSONArray();
     List<String> maintitle;
     List<String> subtitle;
     List<String> total;
-    String cantidad;
-    String total2;
-    String descripcion;
-    JSONArray totalLitros = new JSONArray();
-    JSONArray importe = new JSONArray();
-    TextView txtlitrosPiezas, txtImporteTotal;
-    double sumaLitrosPiezas;
-    double sumaTotalImporte;
+    ListView mListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,15 +41,18 @@ public class TotalProductos extends AppCompatActivity {
         setContentView(R.layout.activity_total_productos);
         obtenerTotales();
 
-
+        // Hacemos la relacion de las variables con los objetos del layout
         txtlitrosPiezas = (TextView) findViewById(R.id.textLitrosPiezas);
         txtImporteTotal = (TextView) findViewById(R.id.textImporteProd);
 
     }
-
+    // Se crea el metodo valorFajilla
     public void obtenerTotales(){
+        // Creamos la variable data para poder llamar a las variables que usaremos de la clase SQLiteBD
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        // Declaramos la URl que se ocupara para el metodo obtenerTotales
         String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/cierres/registrar/sucursal/"+data.getIdSucursal()+"/isla/2/usuario/1/origen/1";
+            // Utilizamos el metodo POST para obtener Cantidad, Total y ProductoDescripcion
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -71,7 +72,7 @@ public class TotalProductos extends AppCompatActivity {
                             totalLitros.put(cantidad);
                             importe.put(total2);
 
-
+                            // Se le asignan los valores obtenidos a cada lista creada.
                             maintitle.add(cantidad);
                             subtitle.add(descripcion);
                             total.add(total2);
@@ -80,17 +81,21 @@ public class TotalProductos extends AppCompatActivity {
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
+                    // Se crea el Adaptador para mostrar los datos de cantidad, descripcion y total
                     final ListAdapterBilletes adapter = new ListAdapterBilletes(TotalProductos.this,maintitle,subtitle,total);
                     mListView = (ListView) findViewById(R.id.list);
                     mListView.setAdapter(adapter);
+                    // Se le asigna una variable a cada metodo que calculara el total de litros e importe
                     sumaLitrosPiezas = calcularTotalLitros();
                     sumaTotalImporte = calcularTotalImporte();
+                    // Convertimos el valor obtenido de litros e importe
                     String stringSumaLitrosPiezas = Double.toString(sumaLitrosPiezas);
                     String stringSumaTotalImporte = Double.toString(sumaTotalImporte);
+                    // Se le asigna el resultado a el TextView correspondiente
                     txtlitrosPiezas.setText(stringSumaLitrosPiezas);
                     txtImporteTotal.setText(stringSumaTotalImporte);
 
-
+                    // Funcion para capturar errores
                 }
             }, new Response.ErrorListener() {
                 @Override
@@ -98,10 +103,11 @@ public class TotalProductos extends AppCompatActivity {
 
                 }
             });
-
+        // Añade la peticion a la cola
             RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
             requestQueue.add(stringRequest);
     }
+    // Se crea el metodo calcularTotalLitros para sumar los valores que tiene el arreglo totalLitros
     public double calcularTotalLitros (){
         double sumamax = 0;
         for (int i = 0; i < totalLitros.length() ; i++) {
@@ -116,7 +122,7 @@ public class TotalProductos extends AppCompatActivity {
         }
         return sumamax;
     }
-
+    // Se crea el metodo calcularTotalImporte para sumar los valores que tiene el arreglo importe
     public double calcularTotalImporte(){
         double sumamax = 0;
         for (int i = 0; i < importe.length() ; i++) {

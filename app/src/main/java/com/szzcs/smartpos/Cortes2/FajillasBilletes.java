@@ -63,6 +63,7 @@ public class FajillasBilletes extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
+                // Se obtienen los Folios que digita el Usuario
                 inicial = folioInicial.getText().toString();
                 foliof = folioFinal.getText().toString();
                 // Se valida que el Folio Inicial y el Folio final no esten vacios.
@@ -133,8 +134,9 @@ public class FajillasBilletes extends AppCompatActivity {
     public void valorFajilla(){
         // Creamos la variable data para poder llamar a las variables que usaremos de la clase SQLiteBD
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        // Declaramos la URl que se ocupara para el metodo valorFajilla
         String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/PrecioFajillas/Sucursal/1";
-
+        // Utilizamos el metodo Get para obtener TipoFajillaId y Precio
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -154,7 +156,7 @@ public class FajillasBilletes extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
+                // Funcion para capturar errores
             }
         }, new Response.ErrorListener() {
             @Override
@@ -162,17 +164,21 @@ public class FajillasBilletes extends AppCompatActivity {
 
             }
         });
+        // Añade la peticion a la cola
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(stringRequest);
     }
-
+    // Se crea el Metodo enviarFolios
     private void enviarFolios() {
-        // String islaId = isla.getText().toString(); //getIntent().getStringExtra("isla");
-        // String turnoId = "1";//getIntent().getStringExtra("turno");
+
+        // Creamos la variable data para poder llamar a las variables que usaremos de la clase SQLiteBD
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        // Declaramos la URl que se ocupara para el metodo enviarFolios
         String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/1";
         final JSONObject mjason = new JSONObject();
+        // Añade la peticion a la cola
         RequestQueue queue = Volley.newRequestQueue(this);
+        // Se declaran todos los datos que tiene que llevar el JSON
         try {
             mjason.put("CierreId",cierreId);
             mjason.put("CierreSucursalId", 1); //turno.getText().toString());
@@ -188,9 +194,10 @@ public class FajillasBilletes extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
+        // Utilizamos el metodo POST para enviar el Objeto mjason
         JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, mjason, new Response.Listener<JSONObject>() {
             @Override
+            // Si la respuesta a la base de datos es satisfactoria, se manipula el JSON obtenido.
             public void onResponse(JSONObject response) {
                 try {
                     String estado  = response.getString("Correcto");
@@ -214,6 +221,7 @@ public class FajillasBilletes extends AppCompatActivity {
                         dialog.show();
 
                     }else{
+                        // Si existe un error al recibir la respuesta de la API, mostraremos el mensaje de error.
                         String mensaje  = response.getString("Mensaje");
                         AlertDialog.Builder builder = new AlertDialog.Builder(FajillasBilletes.this);
                         builder.setTitle("Error");
