@@ -10,6 +10,8 @@ import android.widget.Toast;
 
 
 import com.szzcs.smartpos.Cortes2.Clave;
+import com.szzcs.smartpos.Cortes2.FajillasBilletes;
+import com.szzcs.smartpos.Cortes2.TotalProductos;
 import com.szzcs.smartpos.Encriptacion.EncriptarMAC;
 import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
 import com.szzcs.smartpos.Gastos.claveGastos;
@@ -86,7 +88,7 @@ public class Munu_Principal extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 3) {
-                    Intent intent = new Intent(getApplicationContext(), Clave.class);
+                    Intent intent = new Intent(getApplicationContext(), FajillasBilletes.class);
                     startActivity(intent);
                 }
                 else if(position == 4) {

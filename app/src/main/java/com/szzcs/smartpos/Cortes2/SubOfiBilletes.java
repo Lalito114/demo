@@ -15,10 +15,14 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
@@ -27,9 +31,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SubOfiBilletes extends AppCompatActivity {
     ListView mListView;
@@ -45,6 +52,7 @@ public class SubOfiBilletes extends AppCompatActivity {
     double sumainter;
     String precioFajilla;
     int fajillaBillete;
+    String denomi;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,13 +68,11 @@ public class SubOfiBilletes extends AppCompatActivity {
             public void onClick(View v) {
                 if(sumainter <= (fajillaBillete-10)){
                     Toast.makeText(SubOfiBilletes.this, "Se registro un Total de "+ sumainter + " pesos", Toast.LENGTH_LONG).show();
-                    Intent intent = new Intent(getApplicationContext(),SubOfiGasopass.class);
-                    startActivity(intent);
+                    enviarFolios();
 
                 }else{
                     Toast.makeText(SubOfiBilletes.this, "Existe un error", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
 
@@ -139,10 +145,21 @@ public class SubOfiBilletes extends AppCompatActivity {
                             .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    String denomi = input.getText().toString();
+                                    denomi = input.getText().toString();
                                     result = Double.parseDouble(denomi) * Double.parseDouble(ray);
                                     if (result > fajillaBillete) {
-                                        Toast.makeText(SubOfiBilletes.this, "No puedes superar el valor de 1 Fajilla", Toast.LENGTH_SHORT).show();
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
+                                        builder.setTitle("Error");
+                                        builder.setMessage("No puede superar el valor de 1 Fajilla");
+                                        builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dialogInterface.dismiss();
+                                            }
+                                        });
+                                        AlertDialog dialog= builder.create();
+                                        dialog.show();
+
                                     } else {
                                         maintitle.set(position, denomi);
                                         total.set(position, String.valueOf(result));
@@ -153,11 +170,23 @@ public class SubOfiBilletes extends AppCompatActivity {
                                         if ((totalBilletes()<= (fajillaBillete-10)) && (sumainter <= (fajillaBillete-10))){
                                             Toast.makeText(SubOfiBilletes.this, "Cantidad Agregada", Toast.LENGTH_SHORT).show();
                                             prueba2.put(ray2);
+                                            ListAdapterBilletes adapter = new ListAdapterBilletes(SubOfiBilletes.this, maintitle, subtitle, total);
+                                            mListView.setAdapter(adapter);
                                         }else{
-                                            Toast.makeText(SubOfiBilletes.this, "Los Valores que ingresaste pueden ser 1 fajilla", Toast.LENGTH_SHORT).show();
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
+                                            builder.setTitle("Error");
+                                            builder.setMessage("Los Valores que ingresaste pueden ser 1 Fajilla");
+                                            builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    dialogInterface.dismiss();
+                                                }
+                                            });
+                                            AlertDialog dialog= builder.create();
+                                            dialog.show();
+
                                         }
-                                        ListAdapterBilletes adapter = new ListAdapterBilletes(SubOfiBilletes.this, maintitle, subtitle, total);
-                                        mListView.setAdapter(adapter);
+
                                     }
                                 }
                             })
@@ -220,5 +249,102 @@ public class SubOfiBilletes extends AppCompatActivity {
         });
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(stringRequest);
+    }
+
+    private void enviarFolios() {
+        final String origenId = getIntent().getStringExtra("origenId");
+        final String cierreId = getIntent().getStringExtra("cierreId");
+        // String islaId = isla.getText().toString(); //getIntent().getStringExtra("isla");
+        // String turnoId = "1";//getIntent().getStringExtra("turno");
+
+        String URL = "http://10.2.251.58/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/1";
+        final JSONObject mjason = new JSONObject();
+        RequestQueue queue = Volley.newRequestQueue(this);
+        try {
+            mjason.put("CierreId",cierreId);
+            mjason.put("CierreSucursalId", 1); //turno.getText().toString());
+            JSONObject prueba = new JSONObject();
+            prueba.put("IslaId", "1");
+            mjason.put("Cierre",prueba);//turno.getText().toString());Sucursal
+            mjason.put("SucursalId", "1");
+            mjason.put("TipoFajillaId","3");
+            mjason.put("FolioInicial", "0");
+            mjason.put("FolioFinal", denomi);
+            mjason.put("Denominacion", totalBilletes());
+            mjason.put("OrigenId", origenId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, mjason, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    String estado  = response.getString("Correcto");
+                    if (estado == "true"){
+                        AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
+                        builder.setTitle("CorpoApp");
+                        builder.setMessage("Los datos se guardaron corretamente");
+                        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(getApplicationContext(),TotalProductos.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                        AlertDialog dialog= builder.create();
+                        dialog.show();
+
+                    }else{
+                        String mensaje  = response.getString("Mensaje");
+                        AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
+                        builder.setTitle("Error");
+                        builder.setMessage(mensaje);
+                        builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                            }
+                        });
+                        AlertDialog dialog= builder.create();
+                        dialog.show();
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+//                Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
+//                startActivity(intente);
+                Toast.makeText(getApplicationContext(),"Gasto Cargado Exitosamente",Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }){
+            public Map<String,String> getHeaders() throws AuthFailureError {
+                Map<String,String> headers = new HashMap<String, String>();
+                return headers;
+            }
+            protected  Response<JSONObject> parseNetwokResponse(NetworkResponse response){
+                if (response != null){
+
+                    try {
+                        String responseString;
+                        JSONObject datos = new JSONObject();
+                        responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return Response.success(mjason, HttpHeaderParser.parseCacheHeaders(response));
+            }
+        };
+        queue.add(request_json);
+
     }
 }

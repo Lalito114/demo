@@ -46,14 +46,10 @@ public class TotalProductos extends AppCompatActivity {
         txtlitrosPiezas = (TextView) findViewById(R.id.textLitrosPiezas);
         txtImporteTotal = (TextView) findViewById(R.id.textImporteProd);
 
-
-
-
-
     }
 
     public void obtenerTotales(){
-        String url = "http://10.2.251.58/CorpogasService/api/cierres/registrar/sucursal/1/isla/2/origen/1";
+        String url = "http://10.2.251.58/CorpogasService/api/cierres/registrar/sucursal/1/isla/2/usuario/1/origen/1";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {

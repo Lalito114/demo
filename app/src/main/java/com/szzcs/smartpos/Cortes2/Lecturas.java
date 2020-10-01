@@ -25,6 +25,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
 
 import org.json.JSONArray;
@@ -72,10 +73,49 @@ public class Lecturas extends AppCompatActivity {
         btnEnviarMecanicas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Lecturas Mecanicas finales Guardadas", Toast.LENGTH_LONG).show();
-                EnviaValidaMecanicas();
-                Intent intent = new Intent(getApplicationContext(),FajillasBilletes.class);
-                startActivity(intent);
+                if (litrosMecanico.isNull(0)){
+                    try{
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Lecturas.this);
+                        builder.setTitle("Error");
+                        builder.setMessage("Ingresa las Lectura Mecanicas");
+                        builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+
+                            }
+                        });
+                        AlertDialog dialog= builder.create();
+                        dialog.show();
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }else{
+                    if (litrosMecanico.length()==mecanicasInicales.length()){
+                        EnviaValidaMecanicas();
+                    }else{
+                        try{
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Lecturas.this);
+                            builder.setTitle("Error");
+                            builder.setMessage("Llena todo los campos de las lecturas");
+                            builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+
+                                }
+                            });
+                            AlertDialog dialog= builder.create();
+                            dialog.show();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+//                Toast.makeText(getApplicationContext(), "Lecturas Mecanicas finales Guardadas", Toast.LENGTH_LONG).show();
+
+
             }
         });
 
@@ -83,7 +123,7 @@ public class Lecturas extends AppCompatActivity {
 
     public void EnviaValidaMecanicas(){
         final String sucursalid = getIntent().getStringExtra("idsucursal");
-        String url = "http://10.2.251.58/CorpogasService/api/lecturaMangueras/sucursal/1/LecturaInicialMecanica/isla/"+sucursalid;
+        String url = "http://10.2.251.58/CorpogasService/api/lecturaMangueras/lecturasMecanicas";
         RequestQueue queue = Volley.newRequestQueue(this);
             try {
                 mj = new JSONObject();
@@ -107,9 +147,56 @@ public class Lecturas extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-        JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.GET, url, mj, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, url, mj, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                if (response != null){
+                    try{
+                        String correcto = response.getString("Correcto");
+                        if (correcto == "true"){
+                            String mensaje = response.getString("Mensaje");
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Lecturas.this);
+                            builder.setTitle("Tarjeta Puntada");
+                            builder.setMessage(mensaje);
+                            builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent intent = new Intent(getApplicationContext(),FajillasBilletes.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
+                            AlertDialog dialog= builder.create();
+                            dialog.show();
+                        }else{
+                            if (correcto == "false"){
+                                final String respuesta = response.getString("ObjetoRespuesta");
+                                String mensaje = response.getString("Mensaje");
+                                AlertDialog.Builder builder = new AlertDialog.Builder(Lecturas.this);
+                                builder.setTitle("Tarjeta Puntada");
+                                builder.setMessage(mensaje);
+                                builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        try {
+                                            JSONObject nopasan = new JSONObject(respuesta);
+                                            String idcombustible = nopasan.getString("CombustibleId");
+                                            String idmanguera = nopasan.getString("MangueraId");
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        dialogInterface.dismiss();
+                                    }
+                                });
+                                AlertDialog dialog= builder.create();
+                                dialog.show();
+                            }
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
 
             }
         }, new Response.ErrorListener() {
@@ -264,12 +351,13 @@ public class Lecturas extends AppCompatActivity {
                                             }
 
                                             double lecturaMecanica = Double.parseDouble(lectura);
+//                                            int mecanica2 = (int) Double.parseDouble(MecanicaApi);
                                             if (Double.parseDouble(MecanicaApi) <= lecturaMecanica) {
                                                 litrosMecanicos = lecturaMecanica - Double.parseDouble(MecanicaApi);
-                                                litrosMecanico.put(litrosMecanicos);
+
                                                 if (((resultado + Double.parseDouble(dfpLEM)) >= litrosMecanicos) && ((resultado - Double.parseDouble(dfpLEM)) <= litrosMecanicos)) {
 //                                                    Toast.makeText(Lecturas.this, "la lectura fue: " + lectura, Toast.LENGTH_SHORT).show();
-
+                                                    litrosMecanico.put(litrosMecanicos);
                                                     subtitle.set(position, lectura);
                                                     ListAdapter adapter = new ListAdapter(Lecturas.this, maintitle, subtitle, manguera);
                                                     list.setAdapter(adapter);
