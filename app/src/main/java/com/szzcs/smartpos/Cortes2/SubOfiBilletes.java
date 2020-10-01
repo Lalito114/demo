@@ -26,6 +26,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -54,6 +55,7 @@ public class SubOfiBilletes extends AppCompatActivity {
     int fajillaBillete;
     String denomi;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,7 +81,8 @@ public class SubOfiBilletes extends AppCompatActivity {
     }
 
     private void denominacionBilletes() {
-        String url = "http://10.2.251.58/CorpogasService/api/DineroDenominaciones";
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/DineroDenominaciones";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -218,8 +221,8 @@ public class SubOfiBilletes extends AppCompatActivity {
     }
 
     public void valorFajilla(){
-//        final String sucursalid = getIntent().getStringExtra("idsucursal");
-        String url = "http://10.2.251.58/CorpogasService/api/PrecioFajillas/Sucursal/1";
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/PrecioFajillas/Sucursal/"+data.getIdSucursal();
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -256,8 +259,8 @@ public class SubOfiBilletes extends AppCompatActivity {
         final String cierreId = getIntent().getStringExtra("cierreId");
         // String islaId = isla.getText().toString(); //getIntent().getStringExtra("isla");
         // String turnoId = "1";//getIntent().getStringExtra("turno");
-
-        String URL = "http://10.2.251.58/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/1";
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/1";
         final JSONObject mjason = new JSONObject();
         RequestQueue queue = Volley.newRequestQueue(this);
         try {

@@ -37,14 +37,12 @@ import java.util.Map;
 
 public class FajillasBilletes extends AppCompatActivity {
 
+    // Se declaran las variables que se usaran en este Activity
+    String precioFajilla, origenId, cierreId, inicial, foliof;
     EditText folioInicial, folioFinal;
-    Button btnValidaFajillas;
-    String precioFajilla;
     public int dineroBilletes;
+    Button btnValidaFajillas;
     int fajillaBillete;
-    String origenId, cierreId;
-    String inicial;
-    String foliof;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,26 +53,30 @@ public class FajillasBilletes extends AppCompatActivity {
         obtenerDatosOrigenCierre();
 
 
-
+        // Hacemos la relacion de las variables con los objetos del layout
         folioInicial = (EditText) findViewById(R.id.editFolioInicialBilletes);
         folioFinal = (EditText) findViewById(R.id.editFolioFinalBilletes);
         btnValidaFajillas = (Button) findViewById(R.id.btnFajillaBilletes);
 
+        // Este sera el comportamiento del boton cuando el Usuario le de click
         btnValidaFajillas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 inicial = folioInicial.getText().toString();
                 foliof = folioFinal.getText().toString();
-
+                // Se valida que el Folio Inicial y el Folio final no esten vacios.
                 if (inicial.isEmpty() || foliof.isEmpty()){
 
                     Toast.makeText(getApplicationContext(),"Error 301: Se requiere un Folio Inicial y Folio Final",Toast.LENGTH_LONG).show();
                 }else{
+                    // Se valida si el Folio Final es menor o igual que el Folio Inicial
                     if(Integer.parseInt(foliof) <= Integer.parseInt(inicial)){
                         Toast.makeText(getApplicationContext(),"Error 302: Verifica tus Numeros de Folio",Toast.LENGTH_LONG).show();
                     }else{
+                        // Restamos el Folio Final y el Folio Inicial. Al resultado de esta operacion le sumamos un 1
                         int folios = (Integer.parseInt(foliof) - Integer.parseInt(inicial)) + 1;
+                        // Se multiplica el resultado de la resta por el valor de la Fajilla
                         dineroBilletes = folios * fajillaBillete;
                         Toast.makeText(FajillasBilletes.this, "Fue un Total de " + dineroBilletes + " pesos", Toast.LENGTH_LONG).show();
                         enviarFolios();
@@ -86,14 +88,13 @@ public class FajillasBilletes extends AppCompatActivity {
         });
 
     }
-
-
+    // Se crea un metodo
     private void obtenerDatosOrigenCierre() {
-        //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
-        //Conexion con la base y ejecuta valida clave
+        // Creamos la variable data para poder llamar a las variables que usaremos de la clase SQLiteBD
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        // Declaramos la URl que se ocupara para el metodo obtenerDatosOrigenCierre
         String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/cierres/registrar/sucursal/"+data.getIdSucursal()+"/isla/1/usuario/1/origen/1";
-        // Utilizamos el metodo Post para validar la contraseña
+        // Utilizamos el metodo Post para obtener OrigenID y ID
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new Response.Listener<String>() {
                     @Override
@@ -108,7 +109,7 @@ public class FajillasBilletes extends AppCompatActivity {
                             e.printStackTrace();
                         }
                     }
-                    //funcion para capturar errores
+                    // Funcion para capturar errores
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
@@ -128,10 +129,11 @@ public class FajillasBilletes extends AppCompatActivity {
         requestQueue.add(eventoReq);
 
     }
-
+    // Se crea el metodo valorFajilla
     public void valorFajilla(){
-//        final String sucursalid = getIntent().getStringExtra("idsucursal");
-        String url = "http://10.2.251.58/CorpogasService/api/PrecioFajillas/Sucursal/1";
+        // Creamos la variable data para poder llamar a las variables que usaremos de la clase SQLiteBD
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/PrecioFajillas/Sucursal/1";
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -167,8 +169,8 @@ public class FajillasBilletes extends AppCompatActivity {
     private void enviarFolios() {
         // String islaId = isla.getText().toString(); //getIntent().getStringExtra("isla");
         // String turnoId = "1";//getIntent().getStringExtra("turno");
-
-        String URL = "http://10.2.251.58/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/1";
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/1";
         final JSONObject mjason = new JSONObject();
         RequestQueue queue = Volley.newRequestQueue(this);
         try {

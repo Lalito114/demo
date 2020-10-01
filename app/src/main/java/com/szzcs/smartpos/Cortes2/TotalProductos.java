@@ -13,6 +13,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,7 +50,8 @@ public class TotalProductos extends AppCompatActivity {
     }
 
     public void obtenerTotales(){
-        String url = "http://10.2.251.58/CorpogasService/api/cierres/registrar/sucursal/1/isla/2/usuario/1/origen/1";
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/cierres/registrar/sucursal/"+data.getIdSucursal()+"/isla/2/usuario/1/origen/1";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {

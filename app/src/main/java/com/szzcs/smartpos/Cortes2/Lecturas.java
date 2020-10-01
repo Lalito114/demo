@@ -27,6 +27,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -40,31 +41,24 @@ import java.util.Map;
 
 public class Lecturas extends AppCompatActivity {
 
-
-    JSONObject mangueras;
-    double txtlitrosElectronicos;
-    Double resultado;
-    String idManguera, idTurno, turnoAuxiliar, fechaTrabajo, dfpLEM, dfpLED, descripcombus;
-    Double litrosMecanicos;
-    ListView list;
+    String idManguera, idTurno, turnoAuxiliar, fechaTrabajo, dfpLEM, dfpLED, descripcombus, MecanicaApi;
+    JSONArray mecanicasInicales = new JSONArray();
+    JSONArray litrosMecanico = new JSONArray();
+    Double resultado, litrosMecanicos;
+    Button btnEnviarMecanicas;
     List<String> maintitle;
     List<String> subtitle;
     List<String> manguera;
-    JSONArray litrosMecanico = new JSONArray();
-    Button btnEnviarMecanicas;
+    JSONObject mangueras;
     JSONObject mj;
-    JSONArray mecanicasInicales = new JSONArray();
-    String MecanicaApi;
-
+    ListView list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecturas);
 
-
         ValidaLecturaMecanica();
-
         diferenciaPermitida();
         obtenerMecanicaInical(); ///////// CHECAR LA VARIABLE RESULTADO ////////
 
@@ -122,8 +116,10 @@ public class Lecturas extends AppCompatActivity {
     }
 
     public void EnviaValidaMecanicas(){
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
         final String sucursalid = getIntent().getStringExtra("idsucursal");
-        String url = "http://10.2.251.58/CorpogasService/api/lecturaMangueras/lecturasMecanicas";
+
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/lecturaMangueras/lecturasMecanicas";
         RequestQueue queue = Volley.newRequestQueue(this);
             try {
                 mj = new JSONObject();
@@ -228,9 +224,9 @@ public class Lecturas extends AppCompatActivity {
     }
 
     public void ValidaLecturaMecanica(){
-        final String sucursalid = getIntent().getStringExtra("idsucursal");
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
 
-        String url = "http://10.2.251.58/CorpogasService/api/Consolas/estacion/"+sucursalid;
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/Consolas/estacion/"+data.getIdEstacion();
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -260,9 +256,9 @@ public class Lecturas extends AppCompatActivity {
     }
 
      public void CortesIslas(String idisla, final String validarLecturaMecanica ){
-         final String sucursalid = getIntent().getStringExtra("idsucursal");
+         final SQLiteBD data = new SQLiteBD(getApplicationContext());
 
-         String url = "http://10.2.251.58/CorpogasService/api/lecturaMangueras/sucursal/" + sucursalid + "/CorteManguera/isla/" + idisla;
+         String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/lecturaMangueras/sucursal/"+data.getIdSucursal()+"/CorteManguera/isla/" + idisla;
 
          StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
              @Override
@@ -391,9 +387,8 @@ public class Lecturas extends AppCompatActivity {
     }
     public void obtenerIsla(final String validarLecturaMecanica) {
         final String pass = getIntent().getStringExtra("password");
-        final String sucursalid = getIntent().getStringExtra("idsucursal");
-
-        String url = "http://10.2.251.58/CorpogasService/api/estacionControles/estacion/"+ sucursalid +"/ClaveEmpleado/" +pass;
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/estacionControles/estacion/"+data.getIdEstacion()+"/ClaveEmpleado/" +pass;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -424,9 +419,9 @@ public class Lecturas extends AppCompatActivity {
     }
 
     public void diferenciaPermitida(){
-        final String sucursalid = getIntent().getStringExtra("idsucursal");
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
 
-        String url = "http://10.2.251.58/CorpogasService/api/diferenciapermitidas/estacion/" + sucursalid;
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/diferenciapermitidas/estacion/" + data.getIdEstacion();
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
                     @Override
@@ -452,8 +447,9 @@ public class Lecturas extends AppCompatActivity {
     }
 
     public void obtenerMecanicaInical(){
-        final String sucursalid = getIntent().getStringExtra("idsucursal");
-        String url = "http://10.2.251.58/CorpogasService/api/lecturaMangueras/sucursal/"+sucursalid+"/LecturaInicialMecanica/isla/1";
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/lecturaMangueras/sucursal/"+data.getIdSucursal()+"/LecturaInicialMecanica/isla/1";
 
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
