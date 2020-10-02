@@ -70,7 +70,17 @@ public class SubOfiBilletes extends AppCompatActivity {
             public void onClick(View v) {
                 if(sumainter <= (fajillaBillete-10)){
                     Toast.makeText(SubOfiBilletes.this, "Se registro un Total de "+ sumainter + " pesos", Toast.LENGTH_LONG).show();
-                    enviarFolios();
+
+                    for (int i = 0; i < maintitle.size(); i++) {
+                        if(!maintitle.get(i).equals("0")){
+
+                            enviarFolios(maintitle.get(i), String.valueOf(arrayMonto.get(i)));
+
+
+                        }
+
+
+                    }
 
                 }else{
                     Toast.makeText(SubOfiBilletes.this, "Existe un error", Toast.LENGTH_SHORT).show();
@@ -254,7 +264,7 @@ public class SubOfiBilletes extends AppCompatActivity {
         requestQueue.add(stringRequest);
     }
 
-    private void enviarFolios() {
+    private void enviarFolios(String folio, String valor) {
         final String origenId = getIntent().getStringExtra("origenId");
         final String cierreId = getIntent().getStringExtra("cierreId");
         // String islaId = isla.getText().toString(); //getIntent().getStringExtra("isla");
@@ -272,8 +282,8 @@ public class SubOfiBilletes extends AppCompatActivity {
             mjason.put("SucursalId", "1");
             mjason.put("TipoFajillaId","3");
             mjason.put("FolioInicial", "0");
-            mjason.put("FolioFinal", denomi);
-            mjason.put("Denominacion", totalBilletes());
+            mjason.put("FolioFinal", folio);
+            mjason.put("Denominacion", valor);
             mjason.put("OrigenId", origenId);
         } catch (JSONException e) {
             e.printStackTrace();
