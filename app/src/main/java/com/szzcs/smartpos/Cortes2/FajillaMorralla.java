@@ -22,6 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,6 +38,7 @@ public class FajillaMorralla extends AppCompatActivity {
     String precioFajilla;
     int fajillaMorralla;
     String morralla;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,9 +70,7 @@ public class FajillaMorralla extends AppCompatActivity {
 
     }
     public void valorFajilla(){
-//        final String sucursalid = getIntent().getStringExtra("idsucursal");
-        SQLiteBD data = new SQLiteBD(FajillaMorralla.this);
-
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
         String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/PrecioFajillas/Sucursal/"+data.getIdSucursal();
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -109,7 +109,7 @@ public class FajillaMorralla extends AppCompatActivity {
         final String cierreId = getIntent().getStringExtra("cierreId");
         // String islaId = isla.getText().toString(); //getIntent().getStringExtra("isla");
         // String turnoId = "1";//getIntent().getStringExtra("turno");
-        SQLiteBD data = new SQLiteBD(FajillaMorralla.this);
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
         String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/1";
         final JSONObject mjason = new JSONObject();
         RequestQueue queue = Volley.newRequestQueue(this);
