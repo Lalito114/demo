@@ -40,21 +40,17 @@ import java.util.List;
 import java.util.Map;
 
 public class SubOfiBilletes extends AppCompatActivity {
+    //variables globales para la clase de administracion
     ListView mListView;
-    List<String> maintitle;
-    List<String> subtitle;
-    List<String> total;
+    List<String> maintitle, subtitle, total;
     JSONObject denom;
-    String denominacion;
+    String denominacion, denomi, precioFajilla;
     ArrayList arrayMonto = new ArrayList();
     Double result;
     Button btnaceptar;
     JSONArray prueba2 = new JSONArray();
     double sumainter;
-    String precioFajilla;
     int fajillaBillete;
-    String denomi;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,11 +64,11 @@ public class SubOfiBilletes extends AppCompatActivity {
         btnaceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(sumainter <= (fajillaBillete-10)){
-                    Toast.makeText(SubOfiBilletes.this, "Se registro un Total de "+ sumainter + " pesos", Toast.LENGTH_LONG).show();
+                if (sumainter <= (fajillaBillete - 10)) {
+                    Toast.makeText(SubOfiBilletes.this, "Se registro un Total de " + sumainter + " pesos", Toast.LENGTH_LONG).show();
                     enviarFolios();
 
-                }else{
+                } else {
                     Toast.makeText(SubOfiBilletes.this, "Existe un error", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -81,7 +77,7 @@ public class SubOfiBilletes extends AppCompatActivity {
     }
 
     private void denominacionBilletes() {
-        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        SQLiteBD data = new SQLiteBD(SubOfiBilletes.this);
         String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/DineroDenominaciones";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -101,15 +97,11 @@ public class SubOfiBilletes extends AppCompatActivity {
     }
 
     private void subtotalOficinaBilletes(String response) {
-
         maintitle = new ArrayList<String>();
         subtitle = new ArrayList<String>();
         total = new ArrayList<String>();
-
         try {
-
             JSONArray stl = new JSONArray(response);
-
             for (int i = 0; i < stl.length(); i++) {
                 denom = stl.getJSONObject(i);
                 denominacion = denom.getString("Importe");
@@ -119,7 +111,6 @@ public class SubOfiBilletes extends AppCompatActivity {
                 maintitle.add("0");
                 subtitle.add(denominacion);
                 total.add("");
-
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -149,18 +140,26 @@ public class SubOfiBilletes extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     denomi = input.getText().toString();
-                                    result = Double.parseDouble(denomi) * Double.parseDouble(ray);
+                                    if (denomi.equals("0")) {
+                                        prueba2 = new JSONArray();
+                                        ListAdapterBilletes adapter = new ListAdapterBilletes(SubOfiBilletes.this, maintitle, subtitle, total);
+                                        maintitle.set(position, denomi);
+                                        total.set(position, String.valueOf(result));
+                                        mListView.setAdapter(adapter);
+                                        Toast.makeText(SubOfiBilletes.this, prueba2.toString(), Toast.LENGTH_SHORT).show();
+                                    } else{
+                                        result = Double.parseDouble(denomi) * Double.parseDouble(ray);
                                     if (result > fajillaBillete) {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
                                         builder.setTitle("Error");
-                                        builder.setMessage("No puede superar el valor de 1 Fajilla");
+                                        builder.setMessage("No puede surperar el valor de 1 Fajilla");
                                         builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
                                                 dialogInterface.dismiss();
                                             }
                                         });
-                                        AlertDialog dialog= builder.create();
+                                        AlertDialog dialog = builder.create();
                                         dialog.show();
 
                                     } else {
@@ -170,12 +169,12 @@ public class SubOfiBilletes extends AppCompatActivity {
 
                                         sumainter = totalBilletes() + Double.parseDouble(ray2);
 
-                                        if ((totalBilletes()<= (fajillaBillete-10)) && (sumainter <= (fajillaBillete-10))){
+                                        if ((totalBilletes() <= (fajillaBillete - 10)) && (sumainter <= (fajillaBillete - 10))) {
                                             Toast.makeText(SubOfiBilletes.this, "Cantidad Agregada", Toast.LENGTH_SHORT).show();
                                             prueba2.put(ray2);
                                             ListAdapterBilletes adapter = new ListAdapterBilletes(SubOfiBilletes.this, maintitle, subtitle, total);
                                             mListView.setAdapter(adapter);
-                                        }else{
+                                        } else {
                                             AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
                                             builder.setTitle("Error");
                                             builder.setMessage("Los Valores que ingresaste pueden ser 1 Fajilla");
@@ -185,12 +184,13 @@ public class SubOfiBilletes extends AppCompatActivity {
                                                     dialogInterface.dismiss();
                                                 }
                                             });
-                                            AlertDialog dialog= builder.create();
+                                            AlertDialog dialog = builder.create();
                                             dialog.show();
 
                                         }
 
                                     }
+                                }
                                 }
                             })
                             .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -208,7 +208,7 @@ public class SubOfiBilletes extends AppCompatActivity {
 
     public double totalBilletes() {
         double sumamax = 0;
-        for (int i = 0; i < prueba2.length() ; i++) {
+        for (int i = 0; i < prueba2.length(); i++) {
             double suma = 0;
             try {
                 suma = prueba2.getDouble(i);
@@ -220,8 +220,9 @@ public class SubOfiBilletes extends AppCompatActivity {
         return sumamax;
     }
 
-    public void valorFajilla(){
-        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+    public void valorFajilla() {
+//        final String sucursalid = getIntent().getStringExtra("idsucursal");
+        SQLiteBD data = new SQLiteBD(SubOfiBilletes.this);
         String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/PrecioFajillas/Sucursal/"+data.getIdSucursal();
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
@@ -230,11 +231,11 @@ public class SubOfiBilletes extends AppCompatActivity {
                 try {
                     JSONArray array = new JSONArray(response);
 
-                    for (int i = 0; i < array.length() ; i++) {
+                    for (int i = 0; i < array.length(); i++) {
                         JSONObject sl1 = array.getJSONObject(i);
                         String tipoFajilla = sl1.getString("TipoFajillaId");
                         precioFajilla = sl1.getString("Precio");
-                        if(tipoFajilla.equals("1")){
+                        if (tipoFajilla.equals("1")) {
                             fajillaBillete = Integer.parseInt(precioFajilla);
                         }
                     }
@@ -259,18 +260,18 @@ public class SubOfiBilletes extends AppCompatActivity {
         final String cierreId = getIntent().getStringExtra("cierreId");
         // String islaId = isla.getText().toString(); //getIntent().getStringExtra("isla");
         // String turnoId = "1";//getIntent().getStringExtra("turno");
-        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        SQLiteBD data = new SQLiteBD(SubOfiBilletes.this);
         String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/1";
         final JSONObject mjason = new JSONObject();
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
-            mjason.put("CierreId",cierreId);
+            mjason.put("CierreId", cierreId);
             mjason.put("CierreSucursalId", 1); //turno.getText().toString());
             JSONObject prueba = new JSONObject();
             prueba.put("IslaId", "1");
-            mjason.put("Cierre",prueba);//turno.getText().toString());Sucursal
+            mjason.put("Cierre", prueba);//turno.getText().toString());Sucursal
             mjason.put("SucursalId", "1");
-            mjason.put("TipoFajillaId","3");
+            mjason.put("TipoFajillaId", "3");
             mjason.put("FolioInicial", "0");
             mjason.put("FolioFinal", denomi);
             mjason.put("Denominacion", totalBilletes());
@@ -283,24 +284,24 @@ public class SubOfiBilletes extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    String estado  = response.getString("Correcto");
-                    if (estado == "true"){
+                    String estado = response.getString("Correcto");
+                    if (estado == "true") {
                         AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
                         builder.setTitle("CorpoApp");
                         builder.setMessage("Los datos se guardaron corretamente");
                         builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent intent = new Intent(getApplicationContext(),TotalProductos.class);
+                                Intent intent = new Intent(getApplicationContext(), TotalProductos.class);
                                 startActivity(intent);
                                 finish();
                             }
                         });
-                        AlertDialog dialog= builder.create();
+                        AlertDialog dialog = builder.create();
                         dialog.show();
 
-                    }else{
-                        String mensaje  = response.getString("Mensaje");
+                    } else {
+                        String mensaje = response.getString("Mensaje");
                         AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
                         builder.setTitle("Error");
                         builder.setMessage(mensaje);
@@ -310,30 +311,29 @@ public class SubOfiBilletes extends AppCompatActivity {
                                 dialogInterface.dismiss();
                             }
                         });
-                        AlertDialog dialog= builder.create();
+                        AlertDialog dialog = builder.create();
                         dialog.show();
 
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-//                Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
-//                startActivity(intente);
-                Toast.makeText(getApplicationContext(),"Gasto Cargado Exitosamente",Toast.LENGTH_LONG).show();
-                //Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
+
+                Toast.makeText(getApplicationContext(), "Gasto Cargado Exitosamente", Toast.LENGTH_LONG).show();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
 
             }
-        }){
-            public Map<String,String> getHeaders() throws AuthFailureError {
-                Map<String,String> headers = new HashMap<String, String>();
+        }) {
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
                 return headers;
             }
-            protected  Response<JSONObject> parseNetwokResponse(NetworkResponse response){
-                if (response != null){
+
+            protected Response<JSONObject> parseNetwokResponse(NetworkResponse response) {
+                if (response != null) {
 
                     try {
                         String responseString;

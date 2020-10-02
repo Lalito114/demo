@@ -366,7 +366,7 @@ public class CardFragment extends PreferenceFragment {
 
     private void CompararTarjetas(final String tk1, final String tk2, final String tk3) {
         SQLiteBD data = new SQLiteBD(getActivity());
-        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/bines/obtieneBinTarjeta?sucursalId=" + data.getIdSucursal();
+        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/bines/obtieneBinTarjeta/sucursalId/" + data.getIdSucursal();
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         final JSONObject jsonObject = new JSONObject();
 
