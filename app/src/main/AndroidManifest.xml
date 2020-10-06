@@ -27,13 +27,17 @@
     <application
         android:name=".MyApp"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/icon_corpoapp"
+        android:label="@string/app_name"
+        android:logo="@mipmap/icon_corpoapp"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Ticket.tipo_ticket"></activity>
-        <activity android:name=".Cortes2.TotalProductos"/>
+        <activity android:name=".Menus_Laterales.Close.Cerrar_Sesion"></activity>
+        <activity android:name=".Ticket.Definicion_Tarjeta" />
+        <activity android:name=".Ticket.tipo_ticket" />
+        <activity android:name=".Cortes2.TotalProductos" />
         <activity android:name=".Cortes2.SubOfiSiVale" />
         <activity android:name=".Cortes2.SubOfiAccor" />
         <activity android:name=".Cortes2.SubOfiEfectivale" />

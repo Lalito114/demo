@@ -574,10 +574,10 @@ public class PrintFragment extends PreferenceFragment {
                     //Datos obre el regimen y domicilio Fiscal
                     mPrinter.setPrintAppendString(data.getCalle() + ", " + data.getNumeroExterior()+ ", " + data.getNumeroInterno() +", " + data.getColonia() +
                             data.getLocalidad() +  ", " + data.getMunicipio() + ", " + data.getEstado() + ", " + data.getPais() + ", CP:" + data.getCP(), format);
-                    mPrinter.setPrintAppendString(" ",format);
-                    mPrinter.setPrintAppendString("RFC: "+data.getRFC()+" SIIC: " + data.getSIIC(),format);
-                    mPrinter.setPrintAppendString("" ,format);
-                    mPrinter.setPrintAppendString(data.getRegimenFiscal() ,format);
+                    //mPrinter.setPrintAppendString(" ",format);
+                   // mPrinter.setPrintAppendString("RFC: "+data.getRFC()+" SIIC: " + data.getSIIC(),format);
+                    //mPrinter.setPrintAppendString("" ,format);
+                    //mPrinter.setPrintAppendString(data.getRegimenFiscal() ,format);
 
                     mPrinter.setPrintAppendString("",format);
 
@@ -595,8 +595,8 @@ public class PrintFragment extends PreferenceFragment {
                     String numerotransaccion = getArguments().getString("numerotransaccion");
                     mPrinter.setPrintAppendString("No. Rec: " + numerorecibo + "  No. Trans: " + numerotransaccion,format);
 
-                    String numeroRastreo = getArguments().getString("numerorastreo");
-                    mPrinter.setPrintAppendString("No. Rastreo: " + numeroRastreo,format);
+//                    String numeroRastreo = getArguments().getString("numerorastreo");
+//                    mPrinter.setPrintAppendString("No. Rastreo: " + numeroRastreo,format);
 
                     String posicion = getArguments().getString("posicion");
                     String despachador = getArguments().getString("despachador");
@@ -616,12 +616,12 @@ public class PrintFragment extends PreferenceFragment {
                     mPrinter.setPrintAppendString(productos,format);
                     mPrinter.setPrintAppendString("- - - - - - - - - - - - - - - - -", format);
 
-                    String subtotal = getArguments().getString("subtotal");
-                    String iva = getArguments().getString("iva");
+                    //String subtotal = getArguments().getString("subtotal");
+                    //String iva = getArguments().getString("iva");
                     String total = getArguments().getString("total");
                     String totaltexto = getArguments().getString("totaltexto");
-                    mPrinter.setPrintAppendString("               SUBTOTAL:"+ subtotal, format);
-                    mPrinter.setPrintAppendString("                    IVA:"+ iva, format);
+                   // mPrinter.setPrintAppendString("               SUBTOTAL:"+ subtotal, format);
+                    //mPrinter.setPrintAppendString("                    IVA:"+ iva, format);
                     mPrinter.setPrintAppendString("                  TOTAL:"+ total, format);
                     mPrinter.setPrintAppendString("    ", format);
                     format.setAli(Layout.Alignment.ALIGN_OPPOSITE);
@@ -637,13 +637,13 @@ public class PrintFragment extends PreferenceFragment {
 
                     mPrinter.setPrintAppendString("$ " + total,format);
 
-                    mPrinter.setPrintAppendQRCode(numeroRastreo, 200, 200, Layout.Alignment.ALIGN_CENTER);
+//                    mPrinter.setPrintAppendQRCode(numeroRastreo, 200, 200, Layout.Alignment.ALIGN_CENTER);
 
                     format.setTextSize(23);
                     format.setStyle(PrnTextStyle.NORMAL);
                     format.setAli(Layout.Alignment.ALIGN_CENTER);
-                    String mensaje = getArguments().getString("mensaje");
-                    mPrinter.setPrintAppendString(mensaje ,format);
+                    //String mensaje = getArguments().getString("mensaje");
+                    //mPrinter.setPrintAppendString(mensaje ,format);
 
                     mPrinter.setPrintAppendString("" ,format);
                     mPrinter.setPrintAppendString("" ,format);
@@ -716,7 +716,4 @@ public class PrintFragment extends PreferenceFragment {
         }
     }
 
-    public void datosEncabezado(String response) {
-        Toast.makeText(getActivity(),response, Toast.LENGTH_LONG).show();
-    }
 }
