@@ -33,11 +33,12 @@ import java.util.Map;
 
 public class FajillaMorralla extends AppCompatActivity {
 
-    // Se declaran las variables que se usaran en este Activity
-    String precioFajilla, morralla;
     EditText fajillasMorralla;
     Button btnFajillasMorralla;
+    String precioFajilla;
     int fajillaMorralla;
+    String morralla;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,39 +46,33 @@ public class FajillaMorralla extends AppCompatActivity {
         setContentView(R.layout.activity_fajilla_morralla);
         valorFajilla();
 
-        // Hacemos la relacion de las variables con los objetos del layout
         fajillasMorralla = (EditText) findViewById(R.id.editFajillasMorralla);
         btnFajillasMorralla = (Button) findViewById(R.id.btnFajillasMorralla);
 
-        // Este sera el comportamiento del boton cuando el Usuario le de click
+
+
         btnFajillasMorralla.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                // Se obtiene el numero que digita el Usuario
                 morralla = fajillasMorralla.getText().toString();
 
-                // Se valida que el Campo no este vacio
                 if(morralla.isEmpty()){
 
                     Toast.makeText(getApplicationContext(),"ERROR 401: Ingresar Numero de Fajillas de Morralla",Toast.LENGTH_LONG).show();
                 }
-                    // Se multiplica el numero ingresado por el usuario con el valor de la Fajilla de Morralla
                     int dineroMorralla = Integer.parseInt(morralla) * fajillaMorralla;
                     Toast.makeText(getApplicationContext(),"Fue un Total de "+ dineroMorralla + " pesos",Toast.LENGTH_LONG).show();
-                    // Se ejecuta el metodo enviarFolios
                     enviarFolios();
             }
         });
 
+
+
     }
-    // Se crea el metodo valorFajilla
     public void valorFajilla(){
-        // Creamos la variable data para poder llamar a las variables que usaremos de la clase SQLiteBD
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
-        // Declaramos la URl que se ocupara para el metodo valorFajilla
         String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/PrecioFajillas/Sucursal/"+data.getIdSucursal();
-        // Utilizamos el metodo Get para obtener TipoFajillaId y Precio
+
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -97,7 +92,7 @@ public class FajillaMorralla extends AppCompatActivity {
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                // Funcion para capturar errores
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -105,24 +100,19 @@ public class FajillaMorralla extends AppCompatActivity {
 
             }
         });
-        // Añade la peticion a la cola
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(stringRequest);
     }
-    // Se crea el Metodo enviarFolios
+
     private void enviarFolios() {
-        // Llamamos a las variables obtenidas en el Activity FajillasBilletes
         final String origenId = getIntent().getStringExtra("origenId");
         final String cierreId = getIntent().getStringExtra("cierreId");
-
-        // Creamos la variable data para poder llamar a las variables que usaremos de la clase SQLiteBD
+        // String islaId = isla.getText().toString(); //getIntent().getStringExtra("isla");
+        // String turnoId = "1";//getIntent().getStringExtra("turno");
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
-        // Declaramos la URl que se ocupara para el metodo enviarFolios
         String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/1";
         final JSONObject mjason = new JSONObject();
-        // Añade la peticion a la cola
         RequestQueue queue = Volley.newRequestQueue(this);
-        // Se declaran todos los datos que tiene que llevar el JSON
         try {
             mjason.put("CierreId",cierreId);
             mjason.put("CierreSucursalId", 1); //turno.getText().toString());
@@ -138,10 +128,9 @@ public class FajillaMorralla extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        // Utilizamos el metodo POST para enviar el Objeto mjason
+
         JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, mjason, new Response.Listener<JSONObject>() {
             @Override
-            // Si la respuesta a la base de datos es satisfactoria, se manipula el JSON obtenido.
             public void onResponse(JSONObject response) {
                 try {
                     String estado  = response.getString("Correcto");
@@ -163,7 +152,6 @@ public class FajillaMorralla extends AppCompatActivity {
                         dialog.show();
 
                     }else{
-                        // Si existe un error al recibir la respuesta de la API, mostraremos el mensaje de error.
                         String mensaje  = response.getString("Mensaje");
                         AlertDialog.Builder builder = new AlertDialog.Builder(FajillaMorralla.this);
                         builder.setTitle("Error");

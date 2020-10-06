@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/menu_item_scan"
-        android:title="@string/menu_scan"/>
-
+        android:id="@+id/action_update"
+        android:icon="@drawable/update1"
+        android:orderInCategory="100"
+        android:title="Configuración" />
+    <item
+        android:id="@+id/action_graficos"
+        android:icon="@drawable/colores"
+        android:orderInCategory="100"
+        android:title="Graficos" />
+    <item
+        android:id="@+id/action_sesion"
+        android:icon="@android:drawable/ic_lock_power_off"
+        android:orderInCategory="100"
+        android:title="Cerrar Sesion" />
 </menu>
