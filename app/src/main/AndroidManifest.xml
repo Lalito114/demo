@@ -43,6 +43,8 @@
         <activity android:name=".Cortes2.FajillasBilletes" />
         <activity android:name=".Cortes2.Lecturas" />
         <activity android:name=".Cortes2.Clave" />
+        <activity android:name=".Facturas.obtenerToken"/>
+        <activity android:name=".Facturas.obtenerRFC"/>
         <activity android:name=".Puntada.Acumular.ClaveDespachadorAcumular" />
         <activity android:name=".Puntada.Acumular.ActivityEscanear" />
         <activity android:name=".Productos.formapagoProducto" />

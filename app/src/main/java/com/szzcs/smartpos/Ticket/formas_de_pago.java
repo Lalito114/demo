@@ -33,13 +33,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.szzcs.smartpos.MainActivity;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
-import com.szzcs.smartpos.configuracion.tipoempresa;
-import com.szzcs.smartpos.utils.Kits;
 
 import org.json.JSONArray;
 import org.json.JSONException;

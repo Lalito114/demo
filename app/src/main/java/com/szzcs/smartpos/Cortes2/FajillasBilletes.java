@@ -23,8 +23,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
-import com.szzcs.smartpos.TanqueLleno.PosicionCargaTLl;
-import com.szzcs.smartpos.TanqueLleno.ProductoTLl;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;

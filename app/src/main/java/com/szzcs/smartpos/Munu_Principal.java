@@ -12,8 +12,8 @@ import android.widget.Toast;
 import com.szzcs.smartpos.Cortes2.Clave;
 import com.szzcs.smartpos.Cortes2.FajillasBilletes;
 import com.szzcs.smartpos.Cortes2.TotalProductos;
-import com.szzcs.smartpos.Encriptacion.EncriptarMAC;
-import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
+
+import com.szzcs.smartpos.Facturas.obtenerToken;
 import com.szzcs.smartpos.Gastos.claveGastos;
 import com.szzcs.smartpos.Pendientes.claveUPendientes;
 import com.szzcs.smartpos.Productos.posicionProductos;
@@ -52,9 +52,9 @@ public class Munu_Principal extends AppCompatActivity {
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEsatcion());
 
-        EncriptarMAC mac = new EncriptarMAC();
-        String mac2 = mac.getMacAddr();
-        String macmd5 = mac.getMD5(mac2);
+//        EncriptarMAC mac = new EncriptarMAC();
+//        String mac2 = mac.getMacAddr();
+//        String macmd5 = mac.getMD5(mac2);
 
 
         MyListAdapter adapter=new MyListAdapter(this, maintitle, subtitle,imgid);
@@ -92,24 +92,16 @@ public class Munu_Principal extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 4) {
-                    Intent inten = new Intent(getApplicationContext(), claveUPendientes.class);
-                    startActivity(inten);
+                    Intent intent = new Intent(getApplicationContext(), claveUPendientes.class);
+                    startActivity(intent);
 
                 }else if(position == 5) {
                     Intent intent = new Intent (getApplicationContext(), claveGastos.class);
                     startActivity(intent);
                 }
                 else if(position == 6) {
-
-                    try{
-                        PrintFragment cf = new PrintFragment();
-                        getFragmentManager().beginTransaction().replace(R.id.menu, cf).
-                                addToBackStack(PrintFragment.class.getName()).
-                                commit();
-
-                    }catch (Exception e){
-
-                    }
+                    Intent intent = new Intent (getApplicationContext(), obtenerToken.class);
+                    startActivity(intent);
                 }
 
             }
