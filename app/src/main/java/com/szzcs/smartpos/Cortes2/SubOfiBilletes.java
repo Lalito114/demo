@@ -76,7 +76,6 @@ public class SubOfiBilletes extends AppCompatActivity {
 
                             enviarFolios(maintitle.get(i), String.valueOf(arrayMonto.get(i)));
 
-
                         }
 
 
