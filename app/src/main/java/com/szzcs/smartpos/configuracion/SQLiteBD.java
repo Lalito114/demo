@@ -82,7 +82,7 @@ public class SQLiteBD  extends SQLiteOpenHelper {
         return dato;
     }
 
-    public String getITarjtero(){
+    public String getIdTarjtero(){
         SQLiteDatabase base = getReadableDatabase();
         Cursor cursor = base.rawQuery("SELECT tblnumerotarjetero FROM id", null);
         cursor.moveToFirst();
