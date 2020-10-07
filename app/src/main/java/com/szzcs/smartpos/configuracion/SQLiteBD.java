@@ -23,12 +23,14 @@ public class SQLiteBD  extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(TBL_CONFIGURACION_ESTACION);
         db.execSQL(TBL_ENCABEZADO_ESTACION);
+        db.execSQL(TBL_DATOS_TARJETERO);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(SQL_DELETE_CONFIGURACION_ESTACION);
         db.execSQL(SQL_DELETE_ENCABEZADO);
+        db.execSQL(SQL_DELETE_DATOS_TARJETERO);
         onCreate(db);
 
     }
@@ -37,6 +39,60 @@ public class SQLiteBD  extends SQLiteOpenHelper {
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
+//--------------------------------------TABLA EDICION Y CONFIGURACION DE LO MTODOS DE LA TABLA NUMERO TARJETERO--------------------------
+    public static class DatosTarjetero implements BaseColumns{
+        public static final String NOMBRE_TABLA_TARJETERO = "tblnumerotarjetero";
+        public static final String DIRECCION_MAC = "direccionmac";
+        public static final String PROPIEDAD_CONEXION = "propiedadconexion";
+        public static final String ID_TARJETERO = "id";
+    }
+
+    private static final String TBL_DATOS_TARJETERO =
+            "CREATE TABLE " + DatosTarjetero.NOMBRE_TABLA_TARJETERO + " ("+
+                    DatosTarjetero._ID + " TEXT PRIMARY KEY," +
+                    DatosTarjetero.DIRECCION_MAC + " TEXT," +
+                    DatosTarjetero.PROPIEDAD_CONEXION + " TEXT, "  +
+                    DatosTarjetero.ID_TARJETERO + " TEXT )";
+
+    private static final String SQL_DELETE_DATOS_TARJETERO =
+            "DROP TABLE IF EXISTS " + DatosTarjetero.NOMBRE_TABLA_TARJETERO;
+
+    public void InsertarDatosNumeroTarjetero(String direccionmac, String propiedadconexion, String id){
+        SQLiteDatabase base = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatosTarjetero.DIRECCION_MAC, direccionmac);
+        values.put(DatosTarjetero.PROPIEDAD_CONEXION, propiedadconexion);
+        values.put(DatosTarjetero.ID_TARJETERO, id);
+
+        long newRowId = base.insert(DatosTarjetero.NOMBRE_TABLA_TARJETERO,null,values);
+    }
+
+    public String getDireccionMac(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT tblnumerotarjetero FROM direccionmac", null);
+        cursor.moveToFirst();
+        String dato = cursor.getString(0);
+        return dato;
+    }
+    public String getPropiedadConexion(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT tblnumerotarjetero FROM propiedadconexion", null);
+        cursor.moveToFirst();
+        String dato = cursor.getString(0);
+        return dato;
+    }
+
+    public String getITarjtero(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT tblnumerotarjetero FROM id", null);
+        cursor.moveToFirst();
+        String dato = cursor.getString(0);
+        return dato;
+    }
+
+
+//   -------------------------------TEMINAN LOS METODOS DE LA TABLA DEL NUMERO DEL TAJETERO ----------------------------------------------
+
 
     public boolean checkDataBase(String Database_path) {
         SQLiteDatabase checkDB = null;
@@ -87,7 +143,6 @@ public class SQLiteBD  extends SQLiteOpenHelper {
         String tipo = cursor.getString(0);
         return tipo;
     }
-
     public String getNombreEsatcion (){
         SQLiteDatabase base = getReadableDatabase();
         Cursor cursor = base.rawQuery("SELECT nombreestacion FROM configuracionestacion", null);
@@ -95,7 +150,6 @@ public class SQLiteBD  extends SQLiteOpenHelper {
         String nombreestacion = cursor.getString(0);
         return nombreestacion;
     }
-
     public String getIpEstacion(){
         SQLiteDatabase base = getReadableDatabase();
         Cursor cursor = base.rawQuery("SELECT ipestacion FROM configuracionestacion", null);
@@ -103,7 +157,6 @@ public class SQLiteBD  extends SQLiteOpenHelper {
         String ipestacion = cursor.getString(0);
         return ipestacion;
     }
-
     public String getTipoEstacion(){
         SQLiteDatabase base = getReadableDatabase();
         Cursor cursor = base.rawQuery("SELECT tipo FROM configuracionestacion", null);
@@ -111,7 +164,6 @@ public class SQLiteBD  extends SQLiteOpenHelper {
         String tipo = cursor.getString(0);
         return tipo;
     }
-
     public String getIdSucursal(){
         SQLiteDatabase base = getReadableDatabase();
         Cursor cursor = base.rawQuery("SELECT sucursalid FROM configuracionestacion", null);
@@ -119,10 +171,6 @@ public class SQLiteBD  extends SQLiteOpenHelper {
         String idempresa = cursor.getString(0);
         return idempresa;
     }
-
-
-
-
     public static class Datosempresa implements BaseColumns {
         public static final String NOMBRE_TABLA = "configuracionestacion";
         public static final String IDEMPRESA = "idempresa";
@@ -136,7 +184,6 @@ public class SQLiteBD  extends SQLiteOpenHelper {
         public static final String NUMEROINTERNO = "numerointerno";
         public static final String TIPO = "tipo";
     }
-
     private static final String TBL_CONFIGURACION_ESTACION =
             "CREATE TABLE " + Datosempresa.NOMBRE_TABLA + " (" +
                     Datosempresa._ID + " INTEGER PRIMARY KEY," +
@@ -190,6 +237,8 @@ public class SQLiteBD  extends SQLiteOpenHelper {
 
     private static final String SQL_DELETE_ENCABEZADO =
             "DROP TABLE IF EXISTS " + Datosencabezado.NOMBRE_TABLA_ENCABEZADO;
+
+
 
     public void InsertarDatosEncabezado(String empresaid, String razonsocial, String regimenfiscal, String calle, String numeroexterior, String numerointerior, String colonia, String localidad, String municipio, String estado, String pais, String cp, String rfc){
         SQLiteDatabase base = getWritableDatabase();

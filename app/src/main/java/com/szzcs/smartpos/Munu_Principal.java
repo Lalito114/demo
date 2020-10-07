@@ -153,7 +153,9 @@ public class Munu_Principal extends AppCompatActivity {
                 Toast.makeText(this, "Graficos", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.action_sesion:
-                CerrarSesion();
+                Intent intent = new Intent(getApplicationContext(), Cerrar_Sesion.class);
+                startActivity(intent);
+                finish();
                 return true;
 
             default:
