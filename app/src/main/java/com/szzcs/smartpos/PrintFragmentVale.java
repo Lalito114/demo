@@ -215,6 +215,8 @@ public class PrintFragmentVale extends PreferenceFragment {
                     String proviene = getArguments().getString("proviene");
                     String tipogasto = getArguments().getString("tipogasto");
                     String numeroticket = getArguments().getString("numeroticket");
+                    String autorizo = getArguments().getString("nombreautorizo");
+
                     if (proviene.equals("1")) { //1 es GASTO NORMAL
                         format.setTextSize(28);
                         format.setStyle(PrnTextStyle.BOLD);
@@ -235,6 +237,15 @@ public class PrintFragmentVale extends PreferenceFragment {
                         format.setStyle(PrnTextStyle.NORMAL);
                         format.setAli(Layout.Alignment.ALIGN_CENTER);
                         mPrinter.setPrintAppendString("$"+total, format);
+
+
+                        mPrinter.setPrintAppendString("" ,format);
+
+                        format.setTextSize(26);
+                        format.setStyle(PrnTextStyle.BOLD);
+                        format.setAli(Layout.Alignment.ALIGN_NORMAL);
+                        mPrinter.setPrintAppendString("Autorizó: "+autorizo,format);
+                        mPrinter.setPrintAppendString(" ", format);
 
                         format.setTextSize(23);
                         format.setStyle(PrnTextStyle.NORMAL);
@@ -269,7 +280,13 @@ public class PrintFragmentVale extends PreferenceFragment {
                         format.setStyle(PrnTextStyle.NORMAL);
                         format.setAli(Layout.Alignment.ALIGN_CENTER);
                         mPrinter.setPrintAppendString("$"+(total), format);
+                        mPrinter.setPrintAppendString("" ,format);
 
+                        format.setTextSize(26);
+                        format.setStyle(PrnTextStyle.BOLD);
+                        format.setAli(Layout.Alignment.ALIGN_NORMAL);
+                        mPrinter.setPrintAppendString("Autorizó: "+autorizo,format);
+                        mPrinter.setPrintAppendString(" ", format);
                         format.setTextSize(23);
                         format.setStyle(PrnTextStyle.NORMAL);
                         format.setAli(Layout.Alignment.ALIGN_CENTER);

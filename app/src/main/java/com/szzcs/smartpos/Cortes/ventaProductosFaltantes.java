@@ -23,13 +23,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.android.gms.vision.barcode.Barcode;
+import com.google.gson.JsonArray;
 import com.google.gson.internal.$Gson$Preconditions;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.Productos.FPaga;
 import com.szzcs.smartpos.Productos.ListAdapterProductos;
 import com.szzcs.smartpos.Productos.VentasProductos;
+import com.szzcs.smartpos.Puntada.Acumular.productos;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -37,6 +40,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,9 +54,11 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
     TextView txtdescripcion, txtproductoidentificador, txtcodigobarras, txtprecio;
     String EstacionId, sucursalId, ipEstacion, tipoTransaccion, numerodispositivo ;
     ListView list;
-    Button comprar;
-    JSONObject mjason = new JSONObject();
+    Button comprar, enviar;
+    JSONObject mjason;
     JSONArray myArray = new JSONArray();
+    JSONObject JOcompleto = new JSONObject();
+    String turnoId, islaId, fechatrabajo, cierreId;
 
     String posicion, usuario;
     int elementoSeleccionado;
@@ -62,7 +68,7 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
     boolean bandera;
 
     JSONArray myArrayArticulo = new JSONArray();
-    JSONArray jArrayv = new JSONArray();
+    JSONArray ArrayResultante = new JSONArray();
 
     JSONArray productosEntregados = new JSONArray();
     String productosaEntregar;
@@ -98,6 +104,15 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
         posicion = getIntent().getStringExtra("posicion");
         usuario = getIntent().getStringExtra("usuario");
         productosaEntregar= getIntent().getStringExtra("productosEntregados");
+        turnoId = getIntent().getStringExtra("turnoId");
+        islaId = getIntent().getStringExtra("islaId");
+        fechatrabajo = getIntent().getStringExtra("fechatrabajo");
+        cierreId = getIntent().getStringExtra("cierreId");
+        try {
+            ArrayResultante = new JSONArray(productosaEntregar);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
 
         cantidadProducto = findViewById(R.id.cantidadProducto);
         producto = findViewById(R.id.producto);
@@ -110,6 +125,29 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
         tipoproductoid = findViewById(R.id.tipoproductoid);
 
         mostrarProductosExistencias();
+        enviar = findViewById(R.id.enviar);
+        enviar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (myArrayArticulo.length()>0  ) {
+                    int TotalElementosLista = list.getCount();
+                    int TotalElementosArregloVendidos = myArrayArticulo.length();
+
+                    if (TotalElementosLista == TotalElementosArregloVendidos){
+                        //Envia a siguiente Activity
+                        try {
+                            ObtieneArrayResultanteparaGuardar();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }else{
+                        Toast.makeText(getApplicationContext(), "Aún existe productos que no se han capturado las ventas pendientes", Toast.LENGTH_LONG).show();
+                    }
+                }else{
+                    Toast.makeText(getApplicationContext(), "Aún existe productos que no se han capturado las ventas pendientes", Toast.LENGTH_LONG).show();
+                }
+            }
+        });
 
         comprar = findViewById(R.id.comprar);
         comprar.setOnClickListener(new View.OnClickListener() {
@@ -117,40 +155,40 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
             public void onClick(View view) {
                 try {
 
-                    String resultado = "";
-                    //EditText cantidadProducto = (EditText)getActivity().findViewById();
-                    String ProductoId;
-                    int TotalProducto;
-                    int ProductoIdEntero;
-                    int tProdId;
-                    TotalProducto = Integer.parseInt(cantidadProducto.getText().toString());
-                    String PrecioMonto = precio.getText().toString();
-                    Double precioUnitario = Double.valueOf(PrecioMonto);
-                    ProductoId = productoIdentificador.getText().toString();
-                    ProductoIdEntero = Integer.parseInt(ProductoId);
-                    tProdId = Integer.parseInt(tipoproductoid.getText().toString());
-                    int numerointerno = Integer.parseInt(producto.getText().toString());
+                    String validaProducto = producto.getText().toString();
+                    if (validaProducto.isEmpty()) {
+                        Toast.makeText(getApplicationContext(), "Seleccione uno de los Productos", Toast.LENGTH_LONG).show();
+                    }else {
+                        //EditText cantidadProducto = (EditText)getActivity().findViewById();
+                        String ProductoId;
+                        int TotalProducto;
+                        int ProductoIdEntero;
+                        int tProdId;
+                        String descripcion;
+                        TotalProducto = Integer.parseInt(cantidadProducto.getText().toString());
+                        String PrecioMonto = precio.getText().toString();
+                        Double precioUnitario = Double.valueOf(PrecioMonto);
+                        ProductoId = productoIdentificador.getText().toString();
+                        ProductoIdEntero = Integer.parseInt(ProductoId);
+                        tProdId = Integer.parseInt(tipoproductoid.getText().toString());
+                        int numerointerno = Integer.parseInt(producto.getText().toString());
+                        descripcion = txtdescripcion.getText().toString();
+                        mjason = new JSONObject();
 
-                    JSONObject mjason = new JSONObject();
+                        mjason.put("TipoProducto", tProdId);
+                        mjason.put("ProductoId", ProductoIdEntero);
+                        mjason.put("NumeroInterno", numerointerno);
+                        mjason.put("Descripcion", descripcion);
+                        mjason.put("Cantidad", TotalProducto);
+                        mjason.put("Precio", precioUnitario);
 
-                    mjason.put("TipoProducto", tProdId);
-                    mjason.put("ProductoId", ProductoIdEntero);
-                    mjason.put("NumeroInterno", numerointerno);
-                    mjason.put("Cantidad", TotalProducto);
-                    mjason.put("Precio", precioUnitario);
-                    myArray.put(mjason);
-                    //String cadenaVenta = myArray.toString();
-                    EnviarProductos(posicion, usuario);
+                        //String cadenaVenta = myArray.toString();
+                        EnviarProductos(posicion, usuario);
 
-                    JSONObject mjasonP = new JSONObject();
-                    mjasonP.put("ProductoId", ProductoIdEntero);
-                    myArrayArticulo.put(mjasonP);
-
-                    producto.setText("");
-                    txtdescripcion.setText("");
-                    precio.setText("");
-                    productoIdentificador.setText("");
-
+                        JSONObject mjasonP = new JSONObject();
+                        mjasonP.put("ProductoId", ProductoIdEntero);
+                        myArrayArticulo.put(mjasonP);
+                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -158,6 +196,75 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
         });
         UI();
     }
+
+    private void ObtieneArrayResultanteparaGuardar() throws JSONException {
+        JsonArray acierrecombustibledetalle= new JsonArray();
+        JsonArray acierreformapago= new JsonArray();
+        JsonArray accarretes= new JsonArray();
+        JsonArray acdetallecategoriaproducto= new JsonArray();
+        String url = "http://"+ipEstacion+"/CorpogasService/api/cierres/GuardaCierreDetalle/usuario/"+usuario;
+        RequestQueue queue = Volley.newRequestQueue(this);
+        try {
+            JOcompleto.put("SucursalId", Integer.parseInt(sucursalId));
+            JOcompleto.put("TurnoId", Integer.parseInt(turnoId));
+            JOcompleto.put("TurnoSucursalId", Integer.parseInt(sucursalId));
+            JOcompleto.put("Transacciones", 0);
+            JOcompleto.put("TotalVenta", 0);
+            JOcompleto.put("TotalIva", 0);
+            JOcompleto.put("TotalIeps", 0); //Entregada
+            JOcompleto.put("Completado", true);
+            JOcompleto.put("IslaId", Integer.parseInt(islaId));
+            JOcompleto.put("IslaEstacionId", Integer.parseInt(EstacionId));
+            JOcompleto.put("FechaTrabajo", fechatrabajo);
+            JOcompleto.put("CierreDetalles", ArrayResultante);
+            JOcompleto.put("CierreCombustibleDetalles", acierrecombustibledetalle);
+            JOcompleto.put("CierreFormaPagos", acierreformapago);
+            JOcompleto.put("CierreCarretes", accarretes);
+            JOcompleto.put("CierreDetalleCategoriaProducto", acdetallecategoriaproducto);
+            JOcompleto.put("Id", cierreId);
+            JOcompleto.put("OrigenId", Integer.parseInt(numerodispositivo));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, url, JOcompleto, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                //concluye guardado de corte perifericos
+                Toast.makeText(getApplicationContext(),"Perifericos Cargados Exitosamente",Toast.LENGTH_LONG).show();
+                //Enviar a la siguiente pantalla del CORTE
+                //Intent intent = new Intent(getApplicationContext(), productosVendidos.class);
+                //startActivity(intent);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+            }
+        }){
+            public Map<String,String> getHeaders() throws AuthFailureError {
+                Map<String,String> headers = new HashMap<String, String>();
+                return headers;
+            }
+            protected  Response<JSONObject> parseNetwokResponse(NetworkResponse response){
+                if (response != null){
+
+                    try {
+                        String responseString;
+                        JSONObject datos = new JSONObject();
+                        responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return Response.success(JOcompleto, HttpHeaderParser.parseCacheHeaders(response));
+            }
+        };
+        queue.add(request_json);
+    }
+
+
+
 
     private void UI() {
         btnscanner = findViewById(R.id.btnscanner);
@@ -359,77 +466,88 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
     }
 
     private void EnviarProductos(final String posicionCarga, final String Usuarioid) {
-        String url = "http://"+ipEstacion+"/CorpogasService/api/ventaProductos/GuardaProductos/sucursal/"+sucursalId+"/origen/"+numerodispositivo+"/usuario/"+Usuarioid+"/posicionCarga/"+posicionCarga;
+        //String url = "http://"+ipEstacion+"/CorpogasService/api/ventaProductos/GuardaProductos/sucursal/"+sucursalId+"/origen/"+numerodispositivo+"/usuario/"+Usuarioid+"/posicionCarga/"+posicionCarga;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/ventaProductos/GuardaProducto/sucursal/"+sucursalId+"/origen/"+numerodispositivo+"/usuario/"+Usuarioid+"/islaId/"+posicionCarga;
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        JsonArrayRequest request_json = new JsonArrayRequest(Request.Method.POST, url, myArray,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        //Get Final response
-                        Intent intent = new Intent(getApplicationContext(), FPaga.class);
-                        intent.putExtra("posicion", posicionCarga);
-                        intent.putExtra("usuario", Usuarioid);
-                        startActivity(intent);
-                    }
-                }, new Response.ErrorListener() {
+        JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, url, mjason, new Response.Listener<JSONObject>() {
             @Override
-            public void onErrorResponse(VolleyError volleyError) {
-                //VolleyLog.e("Error: ", volleyError.getMessage());
-                String algo = new String(volleyError.networkResponse.data) ;
-                try {
-                    //creamos un json Object del String algo
-                    JSONObject errorCaptado = new JSONObject(algo);
-                    //Obtenemos el elemento ExceptionMesage del errro enviado
-                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                    try {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(ventaProductosFaltantes.this);
-                        builder.setTitle("Vemta Productos");
-                        builder.setMessage(errorMensaje)
-                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
-                                        startActivity(intente);
-                                    }
-                                }).show();
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
+            public void onResponse(JSONObject response) {
 
+                String estado = null;
+                String mensaje = null;
+                try {
+                    estado = response.getString("Correcto");
+                    mensaje = response.getString("Mensaje");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+                if (estado.equals("true")){
+                    try {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ventaProductosFaltantes.this);
+                        builder.setTitle("Venta Productos");
+
+                        builder.setMessage(mensaje);
+                        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                producto.setText("");
+                                txtdescripcion.setText("");
+                                precio.setText("");
+                                productoIdentificador.setText("");
+                                cantidadProducto.setText("1");
+                            }
+                        });
+                        AlertDialog dialog= builder.create();
+                        dialog.show();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }else{
+                    try {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ventaProductosFaltantes.this);
+                        builder.setTitle("Venta Productos");
+                        builder.setMessage(mensaje);
+                        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.cancel();
+                            }
+                        });
+                        AlertDialog dialog= builder.create();
+                        dialog.show();
+                    }catch (Exception e){
+                        e.printStackTrace();
+
+                    }
+
+                }
+
             }
-        }) {
+        }, new Response.ErrorListener() {
             @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                Map<String, String> headers = new HashMap<String, String>();
-                // Add headers
+            public void onErrorResponse(VolleyError error) {
+
+
+            }
+        }){
+            public Map<String,String>getHeaders() throws AuthFailureError {
+                Map<String,String> headers = new HashMap<String, String>();
                 return headers;
             }
-            //Important part to convert response to JSON Array Again
-            @Override
-            protected Response<JSONArray> parseNetworkResponse(NetworkResponse response) {
-                String responseString;
-                JSONArray array = new JSONArray();
-                if (response != null) {
+            protected  Response<JSONObject> parseNetwokResponse(NetworkResponse response){
+                if (response != null){
 
                     try {
+                        String responseString;
+                        JSONObject datos = new JSONObject();
                         responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                        //JSONObject obj = new JSONObject(responseString);
-                        //Si es valido se asignan valores
-                        //Intent intent = new Intent(getApplicationContext(), productoFormapago.class);
-                        //DAtos enviados a formaPago
-                        //intent.putExtra("posicion",posicionCarga);
-                        //intent.putExtra("usuario",Usuarioid);
-                        ////startActivity(intent);
-                        //Toast.makeText(getApplicationContext(), "Venta realizada", Toast.LENGTH_LONG).show();
-                    } catch (Exception e) {
-                        e.printStackTrace();                    }
+
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
                 }
-                //return array;
-                return Response.success(myArray, HttpHeaderParser.parseCacheHeaders(response));
+                return Response.success(mjason, HttpHeaderParser.parseCacheHeaders(response));
             }
         };
         queue.add(request_json);
@@ -439,7 +557,7 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
         String preciol = null;
         String DescLarga;
         String idArticulo;
-
+        String TProducto;
         //Declaracion de variables
 
 
@@ -467,7 +585,7 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
                 preciol = desglose.getString("Precio");
                 DescLarga = desglose.getString("DescCorta");
                 String CBarra = desglose.getString("CodigoBarras");
-
+                TProducto = desglose.getString("TipoProducto");
                 NombreProducto.add("ID: " + numerointerno + "    |     $"+preciol); // + "    |    " + IdProductos );
                 ID.add(DescLarga);
                 PrecioProducto.add(preciol);
@@ -475,6 +593,7 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
                 ProductosId.add(idArticulo);
                 CodigoBarra.add(CBarra);
                 totalProductos.add(cantidad);
+                TipoProductoId.add(TProducto);
             }
         } catch (JSONException e) {
             e.printStackTrace();
@@ -493,6 +612,7 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
                 precio.setText("");
                 productoIdentificador.setText("");
                 cantidadProducto.setText("1");
+                tipoproductoid.setText("");
 
                 elementoSeleccionadoID= i;
                 bandera = true;
@@ -530,7 +650,7 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
                     String IProd = ProductosId.get(i).toString();
                     String CBarras = CodigoBarra.get(i).toString();
                     String CantidadVender = totalProductos.get(i);
-                    String tipoprod = TipoProductoId.get(i);
+                    String tipoprod = TipoProductoId.get(i).toString();
 
                     producto.setText(paso);
                     txtdescripcion.setText(descripcion);

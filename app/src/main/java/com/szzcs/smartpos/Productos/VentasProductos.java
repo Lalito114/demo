@@ -349,7 +349,8 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
         numInterno = Producto.getText().toString();
         descrProducto = txtDescripcion.getText().toString();
         TipoProductoId = tipoproductoid.getText().toString();
-        if (ProductoId.isEmpty())
+        //if (ProductoId.isEmpty())
+        if (txtDescripcion.length() == 0)
         {
             Toast.makeText(getApplicationContext(), "Seleccione uno de los Productos", Toast.LENGTH_LONG).show();
         }

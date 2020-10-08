@@ -135,8 +135,9 @@ public class cargaGasto extends AppCompatActivity {
         String islaId = isla.getText().toString(); //getIntent().getStringExtra("isla");
         String turnoId = getIntent().getStringExtra("turno");
 
+        String empleadoId = getIntent().getStringExtra("empleadoid");
+        final String empleado = getIntent().getStringExtra("empleado");
 
-        //SQLiteBD data = new SQLiteBD(getApplicationContext());
         //String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/tanqueLleno/EnviarProductos";
         String URL = "http://"+ipEstacion+"/CorpogasService/api/Gastos";
         final JSONObject mjason = new JSONObject();
@@ -151,6 +152,8 @@ public class cargaGasto extends AppCompatActivity {
             mjason.put("Descripcion", Descripcion.getText().toString());
             mjason.put("Subtotal", subTotal.getText().toString());
             mjason.put("Iva", iva.getText().toString());
+            mjason.put("SucursalEmpleadoId", empleadoId);
+            mjason.put("SucursalEmpleadoSucursalId", sucursalId);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -166,7 +169,7 @@ public class cargaGasto extends AppCompatActivity {
                     e.printStackTrace();
                 }
 
-                ObtenerCuerpoTicket(subTotal.getText().toString(), iva.getText().toString(), Descripcion.getText().toString(), txtDescripcion.getText().toString(), numeroticket);
+                ObtenerCuerpoTicket(subTotal.getText().toString(), iva.getText().toString(), Descripcion.getText().toString(), txtDescripcion.getText().toString(), numeroticket, empleado);
                 //Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
             }
         }, new Response.ErrorListener() {
@@ -212,6 +215,7 @@ public class cargaGasto extends AppCompatActivity {
             mjason.put("Descripcion", Descripcion.getText().toString());
             mjason.put("Subtotal", subTotal.getText().toString());
             mjason.put("Iva", iva.getText().toString());
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -326,7 +330,7 @@ public class cargaGasto extends AppCompatActivity {
         }
     }
 
-    public void ObtenerCuerpoTicket(String subtotal, String iva, String descripcion, String tipogasto, String numeroticket) {
+    public void ObtenerCuerpoTicket(String subtotal, String iva, String descripcion, String tipogasto, String numeroticket, String nombreautorizo) {
         double sub = Double.parseDouble(subtotal);
         double iv = Double.parseDouble(iva);
         double tot = sub+iv;
@@ -339,6 +343,7 @@ public class cargaGasto extends AppCompatActivity {
             args.putString("total", gastototal);
             args.putString("tipogasto", tipogasto);
             args.putString("numeroticket", numeroticket);
+            args.putString("nombreautorizo", nombreautorizo);
             PrintFragmentVale cf = new PrintFragmentVale();
             cf.setArguments(args);
             getFragmentManager().beginTransaction().replace(R.id.tv1, cf).

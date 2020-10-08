@@ -32,8 +32,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Ticket.tipo_ticket"></activity>
-        <activity android:name=".Cortes2.TotalProductos"/>
+        <activity android:name=".EmpleadoHuellas.capturaEmpleadoHuella"></activity>
+        <activity android:name=".Ticket.tipo_ticket" />
+        <activity android:name=".Cortes.ventasTotales" />
+        <activity android:name=".Cortes.ventaProductosFaltantes" />
+        <activity android:name=".Cortes2.TotalProductos" />
         <activity android:name=".Cortes2.SubOfiSiVale" />
         <activity android:name=".Cortes2.SubOfiAccor" />
         <activity android:name=".Cortes2.SubOfiEfectivale" />

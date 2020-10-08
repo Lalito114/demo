@@ -107,7 +107,9 @@ private void GuardarGasto(String fechatrabajo, String turnoId){
     Date date = new Date();
     String fechaTrabajo= fechatrabajo;
 
-    //SQLiteBD data = new SQLiteBD(getApplicationContext());
+    String empleadoId = getIntent().getStringExtra("empleadoid");
+    final String empleado = getIntent().getStringExtra("empleado");
+
     //String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/tanqueLleno/EnviarProductos";
     String URL = "http://"+ipEstacion+"/CorpogasService/api/CajaChicas";
     final JSONObject mjason = new JSONObject();
@@ -121,6 +123,8 @@ private void GuardarGasto(String fechatrabajo, String turnoId){
         mjason.put("FechaTrabajo",fechaTrabajo);
         mjason.put("Descripcion", Descripcion.getText().toString());
         mjason.put("Importe", SubTotal.getText().toString());
+        mjason.put("SucursalEmpleadoId", empleadoId);
+        mjason.put("SucursalEmpleadoSucursalId", sucursalId);
     } catch (JSONException e) {
         e.printStackTrace();
     }
@@ -134,14 +138,14 @@ private void GuardarGasto(String fechatrabajo, String turnoId){
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            ObtenerCuerpoTicket(SubTotal.getText().toString(), Descripcion.getText().toString(), numeroticket);
+            ObtenerCuerpoTicket(SubTotal.getText().toString(), Descripcion.getText().toString(), numeroticket, empleado);
             //Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
             //startActivity(intente);
         }
     }, new Response.ErrorListener() {
         @Override
         public void onErrorResponse(VolleyError error) {
-
+            Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
         }
     }){
         public Map<String,String> getHeaders() throws AuthFailureError {
@@ -167,7 +171,7 @@ private void GuardarGasto(String fechatrabajo, String turnoId){
 
 }
 
-    public void ObtenerCuerpoTicket(String total, String descripcion, String numeroticket) {
+    public void ObtenerCuerpoTicket(String total, String descripcion, String numeroticket, String nombreautorizo) {
         try{
             args.putString("proviene", "2");
             args.putString("descripcion", descripcion);
@@ -176,6 +180,7 @@ private void GuardarGasto(String fechatrabajo, String turnoId){
             args.putString("total", total);
             args.putString("tipogasto", "");
             args.putString("numeroticket", numeroticket);
+            args.putString("nombreautorizo", nombreautorizo);
             PrintFragmentVale cf = new PrintFragmentVale();
             cf.setArguments(args);
             getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
