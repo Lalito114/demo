@@ -51,7 +51,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="217dp"
         android:text="Obtener Huella ISO"
-        android:textAllCaps="false" />
+        android:textAllCaps="false"
+        android:textColorHint="@color/colorPrimary" />
 
     <ListView
         android:id="@+id/list"
