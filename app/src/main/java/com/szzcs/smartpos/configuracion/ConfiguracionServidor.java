@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,11 +28,18 @@ import com.szzcs.smartpos.SplashEmpresas.SplashGulf;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.NetworkInterface;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 public class ConfiguracionServidor extends AppCompatActivity {
 
     EditText edtOct1, edtOct2, edtOct3, edtOct4;
     Button btnenviar;
     String oct1, oct2,oct3,oct4, ip, ip2;
+    static String mac;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,10 +66,10 @@ public class ConfiguracionServidor extends AppCompatActivity {
                 }
             }
         }else{
-            Toast.makeText(getApplicationContext(),"La base de datos no existe",Toast.LENGTH_LONG).show();;
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_configuracion_servidor);
             this.setTitle("Configuracion Inicial Servidor");
+            getMacAddress();
             btnenviar = findViewById(R.id.btnEnviar);
 
             btnenviar.setOnClickListener(new View.OnClickListener() {
@@ -100,7 +108,10 @@ public class ConfiguracionServidor extends AppCompatActivity {
                             }
                         }
                     }
-
+                    edtOct1.setText("");
+                    edtOct2.setText("");
+                    edtOct3.setText("");
+                    edtOct4.setText("");
                 }
             });
         }
@@ -132,6 +143,34 @@ public class ConfiguracionServidor extends AppCompatActivity {
         requestQueue.add(eventoReq);
 
     }
+    public static String getMacAddress() {
+        try {
+            List<NetworkInterface> all = Collections.list(NetworkInterface.getNetworkInterfaces());
+            for (NetworkInterface nif : all) {
+                if (!nif.getName().equalsIgnoreCase("wlan0")) continue;
+
+                byte[] macBytes = nif.getHardwareAddress();
+                if (macBytes == null) {
+                    return "";
+                }
+
+                StringBuilder res1 = new StringBuilder();
+                for (byte b : macBytes) {
+                    mac = String.valueOf(res1.append(Integer.toHexString(b & 0xFF) + ":"));
+                }
+
+                if (res1.length() > 0) {
+                    mac = String.valueOf(res1.deleteCharAt(res1.length() - 1));
+
+                }
+
+                return res1.toString();
+            }
+        } catch (Exception ex) {
+            Log.e("Error", ex.getMessage());
+        }
+        return "";
+    }
 
     private void guardarDatosDBEmpresa(String response) {
         try {
@@ -160,6 +199,7 @@ public class ConfiguracionServidor extends AppCompatActivity {
             data.InsertarDatosEstacion(id,sucursalid,siic,correo,empresaid,ip,nombre,numerofranquicia,numinterno, descripcion);
             
             guardarDatosEncabezado(ip,empresaid);
+            obtenerNumeroTarjetero(sucursalid);
 
             if (descripcion.equals("CORPOGAS")){
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -170,6 +210,7 @@ public class ConfiguracionServidor extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Intent intent = new Intent(getApplicationContext(), Splash.class);
                         startActivity(intent);
+                        finish();
                     }
                 });
                 AlertDialog dialog= builder.create();
@@ -184,6 +225,7 @@ public class ConfiguracionServidor extends AppCompatActivity {
                         public void onClick(DialogInterface dialogInterface, int i) {
                             Intent intent = new Intent(getApplicationContext(), SplashGulf.class);
                             startActivity(intent);
+                            finish();
                         }
                     });
                     AlertDialog dialog= builder.create();
@@ -198,6 +240,7 @@ public class ConfiguracionServidor extends AppCompatActivity {
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 Intent intent = new Intent(getApplicationContext(), Splash.class);
                                 startActivity(intent);
+                                finish();
                             }
                         });
                         AlertDialog dialog= builder.create();
@@ -223,6 +266,58 @@ public class ConfiguracionServidor extends AppCompatActivity {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    private void obtenerNumeroTarjetero(final String sucursalid) {
+        String url = "http://"+ip2+"/CorpogasService/api/conexiones/ConfigurarConexion";
+
+        StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject respons = new JSONObject(response);
+                            String sucursalid = respons.getString("SucursalId");
+                            String sucursal = respons.getString("Sucursal");
+                            String tipoconexionid = respons.getString("TipoConexionId");
+                            String tipoconexion =  respons.getString("TipoConexion");
+                            String ip = respons.getString("Ip");
+                            String puerto = respons.getString("Puerto");
+                            String consecutivo = respons.getString("Consecutivo");
+                            String direccionmac = respons.getString("DireccionMac");
+                            String propiedadconexion = respons.getString("PropiedadConexion");
+                            String url = respons.getString("Url");
+                            String id = respons.getString("Id");
+
+                            SQLiteBD data = new SQLiteBD(ConfiguracionServidor.this);
+                            data.InsertarDatosNumeroTarjetero(direccionmac,propiedadconexion,id);
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("SucursalId", sucursalid);
+                params.put("TipoConexionId","7");
+                params.put("DireccionMac", mac);
+                return params;
+            }
+        };
+
+        // Añade la peticion a la cola
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(eventoReq);
     }
 
     private void guardarDatosEncabezado(String ip, String empresaid) {

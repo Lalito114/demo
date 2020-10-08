@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +32,7 @@ public class claveProducto extends AppCompatActivity {
     TextView usuario, carga;
     EditText contrasena;
     String EstacionId, sucursalId, ipEstacion ;
-
+    ImageButton btnhuella;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +52,13 @@ public class claveProducto extends AppCompatActivity {
         validaClave();
     }
     private void  validaClave(){
+        btnhuella  =  findViewById(R.id.btnhuella);
+        btnhuella.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         //Crea Boton Enviar
         //Button btnenviar = (Button) findViewById(R.id.enviar);
         ImageView btnenviar = findViewById(R.id.imgProducto);
@@ -114,7 +122,8 @@ public class claveProducto extends AppCompatActivity {
                                         }
                                     } catch (JSONException e) {
                                         //herramienta  para diagnostico de excepciones
-                                        e.printStackTrace();
+                                        //e.printStackTrace();
+                                        Toast.makeText(getApplicationContext(),"Clave inexistente ",Toast.LENGTH_SHORT).show();
                                     }
                                 }
                                 //funcion para capturar errores

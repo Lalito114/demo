@@ -177,20 +177,20 @@ public class FPaga extends AppCompatActivity {
         //Enviar datos de peoductos y posicion de carga para regresar Ticket
         builder = new AlertDialog.Builder(this);
         if (FormaPagoId == "2") { //Efectivo
-            builder.setMessage("Desea imprimir el ticket?");
+            builder.setMessage("Desea finalizar  la Venta?");
             builder.setTitle("Venta de Productos");
-            builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    //Funcion para obtener los datos del ticker
-                    ObtenerCuerpoTicket(NombreFormapago, Copias, posicion, usuarioid, FormaPagoId);
-                }
-            }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("Finalizar", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     //Finaliza Venta;
                     dialogInterface.cancel();
                     finalizaventa(posicion);
+                }
+            }).setNegativeButton("Imprimir", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    //Funcion para obtener los datos del ticker
+                    ObtenerCuerpoTicket(NombreFormapago, Copias, posicion, usuarioid, FormaPagoId);
                 }
             });
             AlertDialog dialog = builder.create();

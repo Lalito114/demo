@@ -107,7 +107,7 @@ public class claveUPendientes extends AppCompatActivity {
                                         }
                                     } catch (JSONException e) {
                                         //herramienta  para diagnostico de excepciones
-                                        e.printStackTrace();
+                                        Toast.makeText(getApplicationContext(),"Clave inexistente ",Toast.LENGTH_SHORT).show();
                                     }
                                 }
                                 //funcion para capturar errores

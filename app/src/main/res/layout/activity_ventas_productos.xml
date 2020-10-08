@@ -203,6 +203,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="19dp"
-        android:text="comprar" />
+        android:text="cobrar" />
 
 </RelativeLayout >

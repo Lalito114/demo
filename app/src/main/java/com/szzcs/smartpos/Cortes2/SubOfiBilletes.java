@@ -73,14 +73,9 @@ public class SubOfiBilletes extends AppCompatActivity {
 
                     for (int i = 0; i < maintitle.size(); i++) {
                         if(!maintitle.get(i).equals("0")){
-
                             enviarFolios(maintitle.get(i), String.valueOf(arrayMonto.get(i)));
-
                         }
-
-
                     }
-
                 }else{
                     Toast.makeText(SubOfiBilletes.this, "Existe un error", Toast.LENGTH_SHORT).show();
                 }

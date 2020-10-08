@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EmpleadoHuellas.capturaEmpleadoHuella">
+
+    <ImageView
+        android:id="@+id/iv_result"
+        android:layout_width="35dp"
+        android:layout_height="31dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginEnd="360dp"
+        android:layout_marginBottom="609dp"
+        android:src="@drawable/ic_launcher"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="167dp">
+
+        <TextView
+            android:id="@+id/text_status"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="" />
+    </ScrollView>
+
+    <TextView
+        android:id="@+id/txtempleado"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="518dp"
+        android:textColor="#070707"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/bt_iso"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="217dp"
+        android:text="Obtener Huella ISO"
+        android:textAllCaps="false"
+        android:textColorHint="@color/colorPrimary" />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="330dp"
+        android:layout_height="254dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="11dp"
+        android:layout_marginBottom="259dp"
+        android:background="@drawable/border" />
+
+    <TextView
+        android:id="@+id/txtidempleado"
+        android:layout_width="55dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="519dp"
+        android:textColor="#070707"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        tools:visibility="visible" />
+</RelativeLayout>
