@@ -25,7 +25,9 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,31 +41,24 @@ import java.util.Map;
 
 public class Lecturas extends AppCompatActivity {
 
-
-    JSONObject mangueras;
-    double txtlitrosElectronicos;
-    Double resultado;
-    String idManguera, idTurno, turnoAuxiliar, fechaTrabajo, dfpLEM, dfpLED, descripcombus;
-    Double litrosMecanicos;
-    ListView list;
+    String idManguera, idTurno, turnoAuxiliar, fechaTrabajo, dfpLEM, dfpLED, descripcombus, MecanicaApi;
+    JSONArray mecanicasInicales = new JSONArray();
+    JSONArray litrosMecanico = new JSONArray();
+    Double resultado, litrosMecanicos;
+    Button btnEnviarMecanicas;
     List<String> maintitle;
     List<String> subtitle;
     List<String> manguera;
-    JSONArray litrosMecanico = new JSONArray();
-    Button btnEnviarMecanicas;
+    JSONObject mangueras;
     JSONObject mj;
-    JSONArray mecanicasInicales = new JSONArray();
-    String MecanicaApi;
-
+    ListView list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lecturas);
 
-
         ValidaLecturaMecanica();
-
         diferenciaPermitida();
         obtenerMecanicaInical(); ///////// CHECAR LA VARIABLE RESULTADO ////////
 
@@ -72,18 +67,59 @@ public class Lecturas extends AppCompatActivity {
         btnEnviarMecanicas.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Lecturas Mecanicas finales Guardadas", Toast.LENGTH_LONG).show();
-                EnviaValidaMecanicas();
-                Intent intent = new Intent(getApplicationContext(),FajillasBilletes.class);
-                startActivity(intent);
+                if (litrosMecanico.isNull(0)){
+                    try{
+                        AlertDialog.Builder builder = new AlertDialog.Builder(Lecturas.this);
+                        builder.setTitle("Error");
+                        builder.setMessage("Ingresa las Lectura Mecanicas");
+                        builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+
+                            }
+                        });
+                        AlertDialog dialog= builder.create();
+                        dialog.show();
+
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }else{
+                    if (litrosMecanico.length()==mecanicasInicales.length()){
+                        EnviaValidaMecanicas();
+                    }else{
+                        try{
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Lecturas.this);
+                            builder.setTitle("Error");
+                            builder.setMessage("Llena todo los campos de las lecturas");
+                            builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    dialogInterface.dismiss();
+
+                                }
+                            });
+                            AlertDialog dialog= builder.create();
+                            dialog.show();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                    }
+                }
+//                Toast.makeText(getApplicationContext(), "Lecturas Mecanicas finales Guardadas", Toast.LENGTH_LONG).show();
+
+
             }
         });
 
     }
 
     public void EnviaValidaMecanicas(){
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
         final String sucursalid = getIntent().getStringExtra("idsucursal");
-        String url = "http://10.2.251.58/CorpogasService/api/lecturaMangueras/sucursal/1/LecturaInicialMecanica/isla/"+sucursalid;
+
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/lecturaMangueras/lecturasMecanicas";
         RequestQueue queue = Volley.newRequestQueue(this);
             try {
                 mj = new JSONObject();
@@ -107,9 +143,56 @@ public class Lecturas extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-        JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.GET, url, mj, new Response.Listener<JSONObject>() {
+        JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, url, mj, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                if (response != null){
+                    try{
+                        String correcto = response.getString("Correcto");
+                        if (correcto == "true"){
+                            String mensaje = response.getString("Mensaje");
+                            AlertDialog.Builder builder = new AlertDialog.Builder(Lecturas.this);
+                            builder.setTitle("Tarjeta Puntada");
+                            builder.setMessage(mensaje);
+                            builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent intent = new Intent(getApplicationContext(),FajillasBilletes.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            });
+                            AlertDialog dialog= builder.create();
+                            dialog.show();
+                        }else{
+                            if (correcto == "false"){
+                                final String respuesta = response.getString("ObjetoRespuesta");
+                                String mensaje = response.getString("Mensaje");
+                                AlertDialog.Builder builder = new AlertDialog.Builder(Lecturas.this);
+                                builder.setTitle("Tarjeta Puntada");
+                                builder.setMessage(mensaje);
+                                builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        try {
+                                            JSONObject nopasan = new JSONObject(respuesta);
+                                            String idcombustible = nopasan.getString("CombustibleId");
+                                            String idmanguera = nopasan.getString("MangueraId");
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
+                                        dialogInterface.dismiss();
+                                    }
+                                });
+                                AlertDialog dialog= builder.create();
+                                dialog.show();
+                            }
+                        }
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
 
             }
         }, new Response.ErrorListener() {
@@ -141,9 +224,9 @@ public class Lecturas extends AppCompatActivity {
     }
 
     public void ValidaLecturaMecanica(){
-        final String sucursalid = getIntent().getStringExtra("idsucursal");
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
 
-        String url = "http://10.2.251.58/CorpogasService/api/Consolas/estacion/"+sucursalid;
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/Consolas/estacion/"+data.getIdEstacion();
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -173,9 +256,9 @@ public class Lecturas extends AppCompatActivity {
     }
 
      public void CortesIslas(String idisla, final String validarLecturaMecanica ){
-         final String sucursalid = getIntent().getStringExtra("idsucursal");
+         final SQLiteBD data = new SQLiteBD(getApplicationContext());
 
-         String url = "http://10.2.251.58/CorpogasService/api/lecturaMangueras/sucursal/" + sucursalid + "/CorteManguera/isla/" + idisla;
+         String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/lecturaMangueras/sucursal/"+data.getIdSucursal()+"/CorteManguera/isla/" + idisla;
 
          StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
              @Override
@@ -264,12 +347,13 @@ public class Lecturas extends AppCompatActivity {
                                             }
 
                                             double lecturaMecanica = Double.parseDouble(lectura);
+//                                            int mecanica2 = (int) Double.parseDouble(MecanicaApi);
                                             if (Double.parseDouble(MecanicaApi) <= lecturaMecanica) {
                                                 litrosMecanicos = lecturaMecanica - Double.parseDouble(MecanicaApi);
-                                                litrosMecanico.put(litrosMecanicos);
+
                                                 if (((resultado + Double.parseDouble(dfpLEM)) >= litrosMecanicos) && ((resultado - Double.parseDouble(dfpLEM)) <= litrosMecanicos)) {
 //                                                    Toast.makeText(Lecturas.this, "la lectura fue: " + lectura, Toast.LENGTH_SHORT).show();
-
+                                                    litrosMecanico.put(litrosMecanicos);
                                                     subtitle.set(position, lectura);
                                                     ListAdapter adapter = new ListAdapter(Lecturas.this, maintitle, subtitle, manguera);
                                                     list.setAdapter(adapter);
@@ -303,9 +387,8 @@ public class Lecturas extends AppCompatActivity {
     }
     public void obtenerIsla(final String validarLecturaMecanica) {
         final String pass = getIntent().getStringExtra("password");
-        final String sucursalid = getIntent().getStringExtra("idsucursal");
-
-        String url = "http://10.2.251.58/CorpogasService/api/estacionControles/estacion/"+ sucursalid +"/ClaveEmpleado/" +pass;
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/estacionControles/estacion/"+data.getIdEstacion()+"/ClaveEmpleado/" +pass;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -336,9 +419,9 @@ public class Lecturas extends AppCompatActivity {
     }
 
     public void diferenciaPermitida(){
-        final String sucursalid = getIntent().getStringExtra("idsucursal");
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
 
-        String url = "http://10.2.251.58/CorpogasService/api/diferenciapermitidas/estacion/" + sucursalid;
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/diferenciapermitidas/estacion/" + data.getIdEstacion();
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {
                     @Override
@@ -364,8 +447,9 @@ public class Lecturas extends AppCompatActivity {
     }
 
     public void obtenerMecanicaInical(){
-        final String sucursalid = getIntent().getStringExtra("idsucursal");
-        String url = "http://10.2.251.58/CorpogasService/api/lecturaMangueras/sucursal/"+sucursalid+"/LecturaInicialMecanica/isla/1";
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/lecturaMangueras/sucursal/"+data.getIdSucursal()+"/LecturaInicialMecanica/isla/1";
 
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                     new Response.Listener<String>() {

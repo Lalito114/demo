@@ -18,6 +18,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Productos.VentasProductos;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -34,6 +35,7 @@ public class Clave extends AppCompatActivity {
     EditText password;
     TextView usuario;
     TextView estacion;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +62,9 @@ public class Clave extends AppCompatActivity {
                 if (pass.isEmpty()){
                     password.setError("Ingresa tu contraseña");
                 }else{
+                    final SQLiteBD data = new SQLiteBD(getApplicationContext());
                     //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
-                    String URL_LOGIN = "http://10.2.251.58/CorpogasService/api/SucursalEmpleados/clave/"+pass;
+                    String URL_LOGIN = "http://"+data.getIpEstacion()+"/CorpogasService/api/SucursalEmpleados/clave/"+pass;
                   // Utilizamos el metodo Post para validar la contraseña
                     StringRequest eventoReq = new StringRequest(Request.Method.GET,URL_LOGIN,
                             new Response.Listener<String>() {

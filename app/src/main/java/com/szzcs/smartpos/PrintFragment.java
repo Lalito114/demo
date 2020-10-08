@@ -292,6 +292,12 @@ public class PrintFragment extends PreferenceFragment {
                     format.setAli(Layout.Alignment.ALIGN_CENTER);
                     String mensaje = getArguments().getString("mensaje");
                     mPrinter.setPrintAppendString(mensaje ,format);
+
+                    mPrinter.setPrintAppendString("" ,format);
+                    mPrinter.setPrintAppendString("" ,format);
+                    mPrinter.setPrintAppendString("" ,format);
+                    mPrinter.setPrintAppendString("" ,format);
+
                     format.setStyle(PrnTextStyle.NORMAL);
                     printStatus = mPrinter.setPrintStart();
                     if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
@@ -317,171 +323,6 @@ public class PrintFragment extends PreferenceFragment {
 
 
                 }
-            }
-        }).start();
-
-
-    }
-
-    private void CopiaTicket() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                AssetManager asm = getActivity().getAssets();
-                InputStream inputStream = null;
-                try {
-                    inputStream = asm.open("copo.png");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                Drawable d = Drawable.createFromStream(inputStream, null);
-                Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
-
-                int printStatus = mPrinter.getPrinterStatus();
-                if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            DialogUtils.show(getActivity(), getString(R.string.printer_out_of_paper));
-
-                        }
-                    });
-                } else {
-                    mPrinter.setPrintAppendBitmap(bitmap, Layout.Alignment.ALIGN_CENTER);
-                    PrnStrFormat format = new PrnStrFormat();
-                    format.setTextSize(30);
-                    format.setAli(Layout.Alignment.ALIGN_CENTER);
-                    format.setStyle(PrnTextStyle.BOLD);
-                    if (fontsStyle == 0) {
-                        format.setFont(PrnTextFont.CUSTOM);
-                        format.setPath(Environment.getExternalStorageDirectory() + "/fonts/simsun.ttf");
-                    } else if (fontsStyle == 1) {
-                        format.setFont(PrnTextFont.DEFAULT);
-                        //  format.setPath(Environment.getExternalStorageDirectory()+"/fonts/heiti.ttf");
-                    } else {
-                        format.setFont(PrnTextFont.CUSTOM);
-                        format.setPath(Environment.getExternalStorageDirectory() + "/fonts/fangzhengyouyuan.ttf");
-                    }
-                    //------------------------------Encabezado Datos fiscales------------------------------
-                    SQLiteBD data = new SQLiteBD(getActivity());
-                    //Asignamos la hora y fecha de la impresion del ticket, alinenadolos del lado izquierdo del ticket
-                    format.setTextSize(23);
-                    //Tamaño del tipo de letra
-                    //Formato o tipo de letra de molde
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    //Alineacion del texto
-                    format.setAli(Layout.Alignment.ALIGN_OPPOSITE);
-                    //Asignamos dos saltos de linea
-                    mPrinter.setPrintAppendString("", format);
-                    //Asignamos la primera linea de texto que es para la fecha y hora de la impresion del ticket
-                    //Clase donde obtenemos el dia y lo hora del sistema
-                    Date date = new Date();
-                    //Formato para el dia, mes y año
-                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                    //Formato para la hora, minutos y segundos
-                    DateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
-                    mPrinter.setPrintAppendString(dateFormat.format(date)+ " " + hourFormat.format(date), format);
-
-                    // Nombre de la Estacion y Numero de la Estacion
-                    format.setTextSize(23);
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    format.setAli(Layout.Alignment.ALIGN_CENTER);
-                    mPrinter.setPrintAppendString("", format);
-                    mPrinter.setPrintAppendString("Est: "+data.getNumeroEstacion(), format);
-                    mPrinter.setPrintAppendString(data.getNombreEsatcion(), format);
-
-                    //Datos obre el regimen y domicilio Fiscal
-                    mPrinter.setPrintAppendString(data.getCalle() + ", " + data.getNumeroExterior()+ ", " + data.getNumeroInterno() +", " + data.getColonia() +
-                            data.getLocalidad() +  ", " + data.getMunicipio() + ", " + data.getEstado() + ", " + data.getPais() + ", CP:" + data.getCP(), format);
-                    mPrinter.setPrintAppendString(" ",format);
-                    mPrinter.setPrintAppendString("RFC: "+data.getRFC()+" SIIC: " + data.getSIIC(),format);
-                    mPrinter.setPrintAppendString("" ,format);
-                    mPrinter.setPrintAppendString(data.getRegimenFiscal() ,format);
-
-                    mPrinter.setPrintAppendString("",format);
-
-                    format.setTextSize(25);
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    format.setAli(Layout.Alignment.ALIGN_CENTER);
-                    mPrinter.setPrintAppendString("COPIA",format);
-
-                    format.setTextSize(23);
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    format.setAli(Layout.Alignment.ALIGN_CENTER);
-
-
-                    String numerorecibo = getArguments().getString("numerorecibo");
-                    String numerotransaccion = getArguments().getString("numerotransaccion");
-                    mPrinter.setPrintAppendString("No. Rec: " + numerorecibo + "  No. Trans: " + numerotransaccion,format);
-
-                    String numeroRastreo = getArguments().getString("numerorastreo");
-                    mPrinter.setPrintAppendString("No. Rastreo: " + numeroRastreo,format);
-
-                    String posicion = getArguments().getString("posicion");
-                    String despachador = getArguments().getString("despachador");
-                    String vendedor = getArguments().getString("vendedor");
-                    mPrinter.setPrintAppendString("PC: " + posicion + " Desp: " + despachador + " Vend: " + vendedor,format);
-                    String formapago = getArguments().getString("nombrepago");
-                    mPrinter.setPrintAppendString("PAGO: " + formapago ,format);
-                    format.setTextSize(23);
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    format.setAli(Layout.Alignment.ALIGN_NORMAL);
-                    mPrinter.setPrintAppendString(" CANT    DESC    PRECIO    IMPORTE", format);
-                    mPrinter.setPrintAppendString("- - - - - - - - - - - - - - - - -", format);
-                    format.setTextSize(23);
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    format.setAli(Layout.Alignment.ALIGN_CENTER);
-                    String productos = getArguments().getString("productos");
-                    mPrinter.setPrintAppendString(productos,format);
-                    mPrinter.setPrintAppendString("- - - - - - - - - - - - - - - - -", format);
-
-                    String subtotal = getArguments().getString("subtotal");
-                    String iva = getArguments().getString("iva");
-                    String total = getArguments().getString("total");
-                    String totaltexto = getArguments().getString("totaltexto");
-                    mPrinter.setPrintAppendString("               SUBTOTAL:"+ subtotal, format);
-                    mPrinter.setPrintAppendString("                    IVA:"+ iva, format);
-                    mPrinter.setPrintAppendString("                  TOTAL:"+ total, format);
-                    mPrinter.setPrintAppendString("    ", format);
-                    format.setAli(Layout.Alignment.ALIGN_OPPOSITE);
-                    format.setTextSize(23);
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    format.setAli(Layout.Alignment.ALIGN_CENTER);
-                    mPrinter.setPrintAppendString("("+totaltexto+")", format);
-
-
-                    format.setTextSize(80);
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    format.setAli(Layout.Alignment.ALIGN_CENTER);
-
-                    mPrinter.setPrintAppendString("$ " + total,format);
-
-                    mPrinter.setPrintAppendQRCode(numeroRastreo, 200, 200, Layout.Alignment.ALIGN_CENTER);
-
-                    format.setTextSize(23);
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    format.setAli(Layout.Alignment.ALIGN_CENTER);
-                    String mensaje = getArguments().getString("mensaje");
-                    mPrinter.setPrintAppendString(mensaje ,format);
-
-
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    printStatus = mPrinter.setPrintStart();
-                    if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                DialogUtils.show(getActivity(), getString(R.string.printer_out_of_paper));
-
-                            }
-                        });
-                    }
-//                    String numcopia = getArguments().getString("numticket");
-                    enviarPrincipal();
-
-
-                }
-
             }
         }).start();
 
@@ -628,6 +469,10 @@ public class PrintFragment extends PreferenceFragment {
                     format.setAli(Layout.Alignment.ALIGN_CENTER);
                     String mensaje = getArguments().getString("mensaje");
                     mPrinter.setPrintAppendString(mensaje ,format);
+                    mPrinter.setPrintAppendString("" ,format);
+                    mPrinter.setPrintAppendString("" ,format);
+                    mPrinter.setPrintAppendString("" ,format);
+                    mPrinter.setPrintAppendString("" ,format);
                     format.setStyle(PrnTextStyle.NORMAL);
                     printStatus = mPrinter.setPrintStart();
                     if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
@@ -653,6 +498,175 @@ public class PrintFragment extends PreferenceFragment {
 
 
                 }
+            }
+        }).start();
+
+
+    }
+
+    private void CopiaTicket() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                AssetManager asm = getActivity().getAssets();
+                InputStream inputStream = null;
+                try {
+                    inputStream = asm.open("copo.png");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                Drawable d = Drawable.createFromStream(inputStream, null);
+                Bitmap bitmap = ((BitmapDrawable) d).getBitmap();
+
+                int printStatus = mPrinter.getPrinterStatus();
+                if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            DialogUtils.show(getActivity(), getString(R.string.printer_out_of_paper));
+
+                        }
+                    });
+                } else {
+                    mPrinter.setPrintAppendBitmap(bitmap, Layout.Alignment.ALIGN_CENTER);
+                    PrnStrFormat format = new PrnStrFormat();
+                    format.setTextSize(30);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    format.setStyle(PrnTextStyle.BOLD);
+                    if (fontsStyle == 0) {
+                        format.setFont(PrnTextFont.CUSTOM);
+                        format.setPath(Environment.getExternalStorageDirectory() + "/fonts/simsun.ttf");
+                    } else if (fontsStyle == 1) {
+                        format.setFont(PrnTextFont.DEFAULT);
+                        //  format.setPath(Environment.getExternalStorageDirectory()+"/fonts/heiti.ttf");
+                    } else {
+                        format.setFont(PrnTextFont.CUSTOM);
+                        format.setPath(Environment.getExternalStorageDirectory() + "/fonts/fangzhengyouyuan.ttf");
+                    }
+                    //------------------------------Encabezado Datos fiscales------------------------------
+                    SQLiteBD data = new SQLiteBD(getActivity());
+                    //Asignamos la hora y fecha de la impresion del ticket, alinenadolos del lado izquierdo del ticket
+                    format.setTextSize(23);
+                    //Tamaño del tipo de letra
+                    //Formato o tipo de letra de molde
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    //Alineacion del texto
+                    format.setAli(Layout.Alignment.ALIGN_OPPOSITE);
+                    //Asignamos dos saltos de linea
+                    mPrinter.setPrintAppendString("", format);
+                    //Asignamos la primera linea de texto que es para la fecha y hora de la impresion del ticket
+                    //Clase donde obtenemos el dia y lo hora del sistema
+                    Date date = new Date();
+                    //Formato para el dia, mes y año
+                    DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                    //Formato para la hora, minutos y segundos
+                    DateFormat hourFormat = new SimpleDateFormat("HH:mm:ss");
+                    mPrinter.setPrintAppendString(dateFormat.format(date)+ " " + hourFormat.format(date), format);
+
+                    // Nombre de la Estacion y Numero de la Estacion
+                    format.setTextSize(23);
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    mPrinter.setPrintAppendString("", format);
+                    mPrinter.setPrintAppendString("Est: "+data.getNumeroEstacion(), format);
+                    mPrinter.setPrintAppendString(data.getNombreEsatcion(), format);
+
+                    //Datos obre el regimen y domicilio Fiscal
+                    mPrinter.setPrintAppendString(data.getCalle() + ", " + data.getNumeroExterior()+ ", " + data.getNumeroInterno() +", " + data.getColonia() +
+                            data.getLocalidad() +  ", " + data.getMunicipio() + ", " + data.getEstado() + ", " + data.getPais() + ", CP:" + data.getCP(), format);
+                    //mPrinter.setPrintAppendString(" ",format);
+                   // mPrinter.setPrintAppendString("RFC: "+data.getRFC()+" SIIC: " + data.getSIIC(),format);
+                    //mPrinter.setPrintAppendString("" ,format);
+                    //mPrinter.setPrintAppendString(data.getRegimenFiscal() ,format);
+
+                    mPrinter.setPrintAppendString("",format);
+
+                    format.setTextSize(25);
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    mPrinter.setPrintAppendString("COPIA",format);
+
+                    format.setTextSize(23);
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+
+
+                    String numerorecibo = getArguments().getString("numerorecibo");
+                    String numerotransaccion = getArguments().getString("numerotransaccion");
+                    mPrinter.setPrintAppendString("No. Rec: " + numerorecibo + "  No. Trans: " + numerotransaccion,format);
+
+//                    String numeroRastreo = getArguments().getString("numerorastreo");
+//                    mPrinter.setPrintAppendString("No. Rastreo: " + numeroRastreo,format);
+
+                    String posicion = getArguments().getString("posicion");
+                    String despachador = getArguments().getString("despachador");
+                    String vendedor = getArguments().getString("vendedor");
+                    mPrinter.setPrintAppendString("PC: " + posicion + " Desp: " + despachador + " Vend: " + vendedor,format);
+                    String formapago = getArguments().getString("nombrepago");
+                    mPrinter.setPrintAppendString("PAGO: " + formapago ,format);
+                    format.setTextSize(23);
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    format.setAli(Layout.Alignment.ALIGN_NORMAL);
+                    mPrinter.setPrintAppendString(" CANT    DESC    PRECIO    IMPORTE", format);
+                    mPrinter.setPrintAppendString("- - - - - - - - - - - - - - - - -", format);
+                    format.setTextSize(23);
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    String productos = getArguments().getString("productos");
+                    mPrinter.setPrintAppendString(productos,format);
+                    mPrinter.setPrintAppendString("- - - - - - - - - - - - - - - - -", format);
+
+                    //String subtotal = getArguments().getString("subtotal");
+                    //String iva = getArguments().getString("iva");
+                    String total = getArguments().getString("total");
+                    String totaltexto = getArguments().getString("totaltexto");
+                   // mPrinter.setPrintAppendString("               SUBTOTAL:"+ subtotal, format);
+                    //mPrinter.setPrintAppendString("                    IVA:"+ iva, format);
+                    mPrinter.setPrintAppendString("                  TOTAL:"+ total, format);
+                    mPrinter.setPrintAppendString("    ", format);
+                    format.setAli(Layout.Alignment.ALIGN_OPPOSITE);
+                    format.setTextSize(23);
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    mPrinter.setPrintAppendString("("+totaltexto+")", format);
+
+
+                    format.setTextSize(80);
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+
+                    mPrinter.setPrintAppendString("$ " + total,format);
+
+//                    mPrinter.setPrintAppendQRCode(numeroRastreo, 200, 200, Layout.Alignment.ALIGN_CENTER);
+
+                    format.setTextSize(23);
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    //String mensaje = getArguments().getString("mensaje");
+                    //mPrinter.setPrintAppendString(mensaje ,format);
+
+                    mPrinter.setPrintAppendString("" ,format);
+                    mPrinter.setPrintAppendString("" ,format);
+                    mPrinter.setPrintAppendString("" ,format);
+                    mPrinter.setPrintAppendString("" ,format);
+
+                    format.setStyle(PrnTextStyle.NORMAL);
+                    printStatus = mPrinter.setPrintStart();
+                    if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                DialogUtils.show(getActivity(), getString(R.string.printer_out_of_paper));
+
+                            }
+                        });
+                    }
+//                    String numcopia = getArguments().getString("numticket");
+                    enviarPrincipal();
+
+
+                }
+
             }
         }).start();
 
@@ -702,7 +716,4 @@ public class PrintFragment extends PreferenceFragment {
         }
     }
 
-    public void datosEncabezado(String response) {
-        Toast.makeText(getActivity(),response, Toast.LENGTH_LONG).show();
-    }
 }

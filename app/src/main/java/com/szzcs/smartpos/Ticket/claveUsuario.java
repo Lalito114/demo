@@ -36,6 +36,7 @@ public class claveUsuario extends AppCompatActivity {
     TextView usuario, carga;
     String iduser;
     Bundle args = new Bundle();
+    String formapago;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,7 +48,7 @@ public class claveUsuario extends AppCompatActivity {
         //lee valores usuario y carga
         usuario= findViewById(R.id.usuario);
         carga = findViewById(R.id.carga);
-        idUsuario();
+
         //Crea Boton Enviar
         Button btnenviar = (Button) findViewById(R.id.btnsiguiente);
         //En espera a recibir el evento Onclick del boton Enviar
@@ -58,7 +59,7 @@ public class claveUsuario extends AppCompatActivity {
                 if (tipo.equals("0")){
                     enviardatos();
                 }else{
-                    if (tipo.equals("1")){
+                    if (tipo.equals("1") || tipo.equals("2")){
                         idUsuario();
                     }
                 }
@@ -79,6 +80,7 @@ public class claveUsuario extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String detalle = jsonObject.getString("Detalle");
+
                             String pie = jsonObject.getString("Pie");
                             JSONObject mensaje = new JSONObject(pie);
                             final JSONArray names = mensaje.getJSONArray("Mensaje");
@@ -109,6 +111,7 @@ public class claveUsuario extends AppCompatActivity {
 
                                 protic +=value + " | " + descripcion + " | " + prec + " | " + importe+"\n";
                             }
+                            String formapago = det.getString("FormaPago");
 
                             final String subtotal = det.getString("Subtotal");
                             final String iva = det.getString("IVA");
@@ -118,7 +121,7 @@ public class claveUsuario extends AppCompatActivity {
                             String carga = getIntent().getStringExtra("car");
                             String user = getIntent().getStringExtra("user");
                             args.putString("numerorecibo", numerorecibo);
-                            //args.putString("nombrepago", nombrepago);
+                            args.putString("nombrepago", formapago);
                             args.putString("numticket", "2");
                             args.putString("numerotransaccion", numerotransaccion);
                             args.putString("numerorastreo", numerorastreo);
@@ -160,10 +163,17 @@ public class claveUsuario extends AppCompatActivity {
                 // Posting parameters to login url
                 Map<String, String> params = new HashMap<String, String>();
                 String carga = getIntent().getStringExtra("pos");
-                //String user = getIntent().getStringExtra("user");
+                String tipo = getIntent().getStringExtra("tipo");
+                if (tipo.equals("1")){
+                    formapago = "19";
+                }else{
+                    if (tipo.equals("2")){
+                        formapago ="18";
+                    }
+                }
                 params.put("PosCarga", carga);
                 params.put("IdUsuario",iduser);
-                params.put("IdFormaPago", "1");
+                params.put("IdFormaPago", formapago);
                 params.put("SucursalId",data.getIdEstacion());
                 return params;
             }
@@ -199,7 +209,7 @@ public class claveUsuario extends AppCompatActivity {
                                 //Se instancia la respuesta del json
                                 JSONObject validar = new JSONObject(response);
                                 String valido = validar.getString("Activo");
-                                String idusuario = validar.getString("Id");
+                                String idusuario = validar.getString("RolId");
                                 if (valido == "true"){
                                     //Si es valido se asignan valores
                                     usuario.setText(idusuario);
@@ -253,7 +263,7 @@ public class claveUsuario extends AppCompatActivity {
                             //Se instancia la respuesta del json
                             JSONObject validar = new JSONObject(response);
                             String valido = validar.getString("Activo");
-                            iduser = validar.getString("Id");
+                            iduser = validar.getString("RolId");
 //                            obteneridusuario(idusuario);
                             if (valido == "true"){
                                 imprimirticket();
@@ -278,12 +288,6 @@ public class claveUsuario extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(eventoReq);
 
-    }
-
-    private String obteneridusuario(String idusuario) {
-        iduser = idusuario.toString();
-
-        return idusuario;
     }
 
 

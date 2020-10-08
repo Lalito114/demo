@@ -32,7 +32,7 @@ import com.szzcs.smartpos.R;
 
 public class BalanceProductos extends AppCompatActivity {
     Button btnAgregar,btnEnviar, incrementar, decrementar;
-    TextView cantidadProducto;
+    TextView cantidadProducto, txtSaldo;
     EditText Producto;
     String cantidad;
     JSONObject mjason = new JSONObject();
@@ -41,32 +41,35 @@ public class BalanceProductos extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_balance_productos);
-        btnEnviar = findViewById(R.id.btnEnviar);
-        btnEnviar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EnviarDatos();
-            }
-        });
-        incrementar = findViewById(R.id.incrementar);
-        incrementar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Aumentar();
-            }
-        });
-        decrementar= findViewById(R.id.decrementar);
-        decrementar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Decrementar();
-            }
-        });
+        setContentView(R.layout.activity_balance_productos);
+        String saldos = getIntent().getStringExtra("saldo");
 
-        CantidadProducto();
-        MostrarProductos();
-        CrearJSON();
+        txtSaldo= findViewById(R.id.txtSaldos);
+        txtSaldo.setText(saldos);
+
+//        btnEnviar = findViewById(R.id.btnEnviar);
+//        btnEnviar.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                //EnviarDatos();
+//            }
+//        });
+//        incrementar = findViewById(R.id.incrementar);
+//        incrementar.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Aumentar();
+//            }
+//        });
+//        decrementar= findViewById(R.id.decrementar);
+//        decrementar.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Decrementar();
+//            }
+//        });
+
+
     }
     private void EnviarDatos() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

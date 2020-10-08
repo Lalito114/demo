@@ -15,15 +15,15 @@ import com.szzcs.smartpos.configuracion.SQLiteBD;
      ListView list;
 
      String[] maintitle ={
-             "Ticket","Monederos Electronicos",
+             "Ticket","Puntada","Tanque Lleno"
      };
 
      String[] subtitle ={
-             "Emite tickets de venta","Registro, Acumular y Redimir",
+             "Emite tickets de venta","Imprime tickets de Puntada","Imprime tickets de Tanque LLeno",
      };
 
      Integer[] imgid={
-             R.drawable.efectivo1,R.drawable.trajeta,
+             R.drawable.ventas,R.drawable.nuevapuntada,R.drawable.tanquelleno,
      };
 
     @Override
@@ -47,6 +47,11 @@ import com.szzcs.smartpos.configuracion.SQLiteBD;
                 else if(position == 1) {
                     Intent intent = new Intent( getApplicationContext(), ventas.class);
                     intent.putExtra("tipo" , "1");
+                    startActivity(intent);
+                }
+                else if (position == 2){
+                    Intent intent = new Intent(getApplicationContext(), ventas.class);
+                    intent.putExtra("tipo", "2");
                     startActivity(intent);
                 }
             }
