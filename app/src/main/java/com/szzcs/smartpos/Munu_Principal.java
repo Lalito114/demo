@@ -2,12 +2,10 @@ package com.szzcs.smartpos;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,29 +14,14 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.szzcs.smartpos.Cortes2.Clave;
 import com.szzcs.smartpos.Cortes2.FajillasBilletes;
-import com.szzcs.smartpos.Cortes2.TotalProductos;
-import com.szzcs.smartpos.Encriptacion.EncriptarMAC;
-import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
+import com.szzcs.smartpos.Facturas.ObtenerToken;
 import com.szzcs.smartpos.Gastos.claveGastos;
-import com.szzcs.smartpos.Menus_Laterales.Close.Cerrar_Sesion;
 import com.szzcs.smartpos.Pendientes.claveUPendientes;
 import com.szzcs.smartpos.Productos.posicionProductos;
-import com.szzcs.smartpos.Ticket.Definicion_Tarjeta;
 import com.szzcs.smartpos.Ticket.tipo_ticket;
-import com.szzcs.smartpos.Ticket.ventas;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 import com.zcs.sdk.card.CardReaderTypeEnum;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import static com.zcs.sdk.card.CardReaderTypeEnum.MAG_CARD;
 
@@ -74,9 +57,9 @@ public class Munu_Principal extends AppCompatActivity {
 //aplica color
         //toolbar.setBackgroundColor(Color.parseColor("#00FF00"));
 
-        EncriptarMAC mac = new EncriptarMAC();
-        String mac2 = mac.getMacAddr();
-        String macmd5 = mac.getMD5(mac2);
+//        EncriptarMAC mac = new EncriptarMAC();
+//        String mac2 = mac.getMacAddr();
+//        String macmd5 = mac.getMD5(mac2);
 
 
             MyListAdapter adapter=new MyListAdapter(this, maintitle, subtitle,imgid);
@@ -122,7 +105,7 @@ public class Munu_Principal extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 6) {
-                    Intent intent = new Intent(getApplicationContext(), Definicion_Tarjeta.class);
+                    Intent intent = new Intent(getApplicationContext(), ObtenerToken.class);
                     startActivity(intent);
                 }
 

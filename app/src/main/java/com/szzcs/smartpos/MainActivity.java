@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         MyListAdapter adapter=new MyListAdapter(this, maintitle, subtitle,imgid);
-        list=(ListView)findViewById(R.id.list);
+        list = findViewById(R.id.list);
         list.setAdapter(adapter);
 
 
