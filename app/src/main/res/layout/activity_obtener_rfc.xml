@@ -1,76 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/encode_view"
     tools:context=".Facturas.ObtenerRFC">
 
     <TextView
         android:id="@+id/textView31"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="189dp"
+        android:layout_height="36dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginTop="92dp"
+        android:layout_marginTop="164dp"
+        android:layout_marginEnd="89dp"
+        android:layout_marginBottom="361dp"
         android:fontFamily="monospace"
         android:lineSpacingExtra="10sp"
-        android:text="Ingresa tu RFC, código del despachador y código de la terminal"
+        android:text="FACTURACIÓN"
         android:textAlignment="center"
         android:textColor="#000000"
-        android:textSize="18sp"
+        android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/txtRFC"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_width="249dp"
+        android:layout_height="62dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="107dp"
+        android:layout_marginBottom="149dp"
+        android:background="@drawable/border"
         android:ems="10"
         android:hint="RFC"
-        android:inputType="text"
+        android:inputType="text|textCapCharacters"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView31" />
+        app:layout_constraintTop_toBottomOf="@+id/txtDespachador"
+        tools:layout_editor_absoluteX="16dp" />
 
     <EditText
         android:id="@+id/txtDespachador"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_width="146dp"
+        android:layout_height="67dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="193dp"
+        android:layout_marginBottom="252dp"
+        android:background="@drawable/border"
         android:ems="10"
-        android:hint="Código del despachador"
         android:inputType="number"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtRFC" />
+        app:layout_constraintTop_toBottomOf="@+id/textView31"
+        tools:layout_editor_absoluteX="16dp" />
 
     <EditText
         android:id="@+id/txtTerminal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_width="146dp"
+        android:layout_height="67dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="52dp"
+        android:layout_marginEnd="34dp"
+        android:layout_marginBottom="253dp"
+        android:background="@drawable/border"
         android:ems="10"
-        android:hint="Código de la terminal"
+        android:enabled="false"
         android:inputType="number"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtDespachador" />
+        android:textSize="24sp"
+        app:layout_constraintTop_toBottomOf="@+id/textView31"
+        tools:layout_editor_absoluteX="179dp" />
 
-    <ImageButton
+    <Button
         android:id="@+id/bntRFC"
+        android:layout_width="86dp"
+        android:layout_height="62dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="19dp"
+        android:layout_marginBottom="149dp"
+        android:background="@drawable/b3"
+        android:text="BUSCAR"
+        android:textColor="#FBF6F6"
+        app:layout_constraintTop_toBottomOf="@+id/txtTerminal"
+        tools:layout_editor_absoluteX="265dp" />
+
+    <ImageView
+        android:id="@+id/imageView4"
+        android:layout_width="180dp"
+        android:layout_height="106dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="95dp"
+        android:layout_marginBottom="415dp"
+        app:srcCompat="@drawable/fact"
+        tools:layout_editor_absoluteX="87dp"
+        tools:layout_editor_absoluteY="41dp" />
+
+    <TextView
+        android:id="@+id/textView40"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtTerminal"
-        app:srcCompat="@drawable/fact" />
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="207dp"
+        android:layout_marginBottom="325dp"
+        android:text="DESPACHADOR ID"
+        android:textColor="#131313" />
 
-</android.support.constraint.ConstraintLayout>
+    <TextView
+        android:id="@+id/textView41"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="56dp"
+        android:layout_marginBottom="323dp"
+        android:text="No. TARJETERO"
+        android:textColor="#121111" />
+
+    <TextView
+        android:id="@+id/textView42"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="220dp"
+        android:layout_marginBottom="214dp"
+        android:text="RFC"
+        android:textColor="#0B0A0A" />
+
+</RelativeLayout>

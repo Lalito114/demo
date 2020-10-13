@@ -1,9 +1,11 @@
 package com.szzcs.smartpos.Facturas;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -16,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -28,7 +31,7 @@ import java.util.Map;
 public class ObtenerRFC extends AppCompatActivity {
 
     EditText rfc, despachador, terminal;
-    String token;
+    String token, iduser;
     String baseurl = "https://facturasgas.com/apifac/obtenerRfc";
     RequestQueue queue;
 
@@ -37,14 +40,28 @@ public class ObtenerRFC extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_obtener_rfc);
+        SQLiteBD data = new SQLiteBD(this);
 
         token = getIntent().getStringExtra("Token");
+        iduser = getIntent().getStringExtra("IdUser");
         rfc = findViewById(R.id.txtRFC);
-        despachador = findViewById(R.id.txtDespachador);
+
         terminal = findViewById(R.id.txtTerminal);
+        terminal.setText(data.getIdTarjtero());
+        terminal.setEnabled(false);
+
+        despachador = findViewById(R.id.txtDespachador);
+        despachador.setText(iduser);
+        despachador.setEnabled(false);
+
+
+
         queue = Volley.newRequestQueue(ObtenerRFC.this);
 
-        ImageButton bntRFC = findViewById(R.id.bntRFC);
+
+
+
+        Button bntRFC = findViewById(R.id.bntRFC);
         bntRFC.setOnClickListener(new View.OnClickListener() {
 
             @Override

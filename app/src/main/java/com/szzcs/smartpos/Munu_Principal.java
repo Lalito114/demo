@@ -27,6 +27,7 @@ import com.szzcs.smartpos.Cortes2.FajillasBilletes;
 import com.szzcs.smartpos.Cortes2.TotalProductos;
 import com.szzcs.smartpos.Encriptacion.EncriptarMAC;
 import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
+import com.szzcs.smartpos.Facturas.ObtenerToken;
 import com.szzcs.smartpos.Gastos.claveGastos;
 import com.szzcs.smartpos.Menus_Laterales.Close.Cerrar_Sesion;
 import com.szzcs.smartpos.Pendientes.claveUPendientes;
@@ -122,7 +123,7 @@ public class Munu_Principal extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 6) {
-                    Intent intent = new Intent(getApplicationContext(), Definicion_Tarjeta.class);
+                    Intent intent = new Intent(getApplicationContext(), ObtenerToken.class);
                     startActivity(intent);
                 }
 

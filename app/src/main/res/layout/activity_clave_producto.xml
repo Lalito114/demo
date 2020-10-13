@@ -14,7 +14,9 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="137dp"
         android:layout_marginBottom="259dp"
-        app:srcCompat="?android:attr/fingerprintAuthDrawable" />
+        android:visibility="invisible"
+        app:srcCompat="?android:attr/fingerprintAuthDrawable"
+        tools:visibility="invisible" />
 
     <TextView
         android:id="@+id/textView29"
