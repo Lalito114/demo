@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -64,18 +65,20 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
     private RecyclerView.LayoutManager mLayoutManager;
 
     //Declaracion de objetos
-    Button btnAgregar,btnEnviar, incrementar, decrementar, comprar;
+    Button btnAgregar,btnEnviar, incrementar, decrementar, comprar, btnsolicitadespacho;
     TextView cantidadProducto, txtDescripcion, NumeroProductos, precio, existencias, productoIdentificador;
-    EditText Producto, tipoproductoid;
+    EditText Producto, tipoproductoid, empleado;
     String cantidad;
     JSONObject mjason = new JSONObject();
     JSONArray myArray = new JSONArray();
+    JSONArray myArrayVer = new JSONArray();
+
     String EstacionId, sucursalId, ipEstacion, tipoTransaccion, numerodispositivo ;
     ListView list;
     Integer ProductosAgregados = 0;
     String posicion, usuario;
     String transaccionId;
-
+    TextView txtproductos;
 
     private ImageButton b_auto, btnbuscar;
     private MVBarcodeScanner.ScanningMode modo_Escaneo;
@@ -106,7 +109,16 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
         tipoTransaccion = "1"; //Transaccion Normal
         numerodispositivo = "1";
 
+        empleado=findViewById(R.id.empleado);
+        empleado.setText(getIntent().getStringExtra("user"));
 
+        btnsolicitadespacho = findViewById(R.id.btnsolicitadespacho);
+        btnsolicitadespacho.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Autorizadespacho();
+            }
+        });
         comprar=findViewById(R.id.comprar);
         comprar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +128,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                 posicion = getIntent().getStringExtra("car");
                 final String usuarioid;
                 usuarioid = getIntent().getStringExtra("user");
+
                 if (myArray.length()==0  )       //.length() >0)
                 {
                     Toast.makeText(getApplicationContext(), "Seleccione al menos uno de los Productos", Toast.LENGTH_LONG).show();
@@ -179,6 +192,43 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
         });
 
     }
+
+        private void Autorizadespacho(){
+            final String posicion;
+            posicion = getIntent().getStringExtra("car");
+            final String usuarioid;
+            usuarioid = getIntent().getStringExtra("user");
+
+
+            String url = "http://"+ipEstacion+"/CorpogasService/api/despachos/autorizaDespacho/posicionCargaId/"+posicion+"/usuarioId/"+usuarioid;
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONObject respuesta = new JSONObject(response);
+                        String correctoautoriza = respuesta.getString("Correcto");
+                        String mensajeautoriza = respuesta.getString("Mensaje");
+                        String objetoRespuesta = respuesta.getString("ObjetoRespuesta");
+                        if (correctoautoriza.equals("true")) {
+                            Toast.makeText(getApplicationContext(),mensajeautoriza, Toast.LENGTH_LONG).show();
+                        }else{
+                            Toast.makeText(getApplicationContext(),mensajeautoriza, Toast.LENGTH_LONG).show();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+                }
+            });
+            RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
+            stringRequest.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(stringRequest);
+
+        }
 
         private void UI() {
             b_auto = findViewById(R.id.btnscanner);
@@ -304,6 +354,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
         existencias = findViewById(R.id.existencias);
         productoIdentificador = findViewById(R.id.productoIdentificador);
         tipoproductoid = findViewById(R.id.tipoproductoid);
+        txtproductos = findViewById(R.id.txtproductos);
     }
     private void Aumentar() {
         cantidad = cantidadProducto.getText().toString();
@@ -340,21 +391,22 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
         int TotalProducto;
         int ProductoIdEntero;
 
-        TotalProducto = Integer.parseInt(cantidadProducto.getText().toString());
-        String PrecioMonto = precio.getText().toString();
-        Double precioUnitario =  Double.valueOf(PrecioMonto);
-        //ProductoId = Producto.getText().toString();
-        ProductoId = productoIdentificador.getText().toString();
-        ProductoIdEntero = Integer.parseInt(ProductoId);
-        numInterno = Producto.getText().toString();
-        descrProducto = txtDescripcion.getText().toString();
-        TipoProductoId = tipoproductoid.getText().toString();
         //if (ProductoId.isEmpty())
         if (txtDescripcion.length() == 0)
         {
             Toast.makeText(getApplicationContext(), "Seleccione uno de los Productos", Toast.LENGTH_LONG).show();
         }
         else{
+            TotalProducto = Integer.parseInt(cantidadProducto.getText().toString());
+            String PrecioMonto = precio.getText().toString();
+            Double precioUnitario =  Double.valueOf(PrecioMonto);
+            //ProductoId = Producto.getText().toString();
+            ProductoId = productoIdentificador.getText().toString();
+            ProductoIdEntero = Integer.parseInt(ProductoId);
+            numInterno = Producto.getText().toString();
+            descrProducto = txtDescripcion.getText().toString();
+            TipoProductoId = tipoproductoid.getText().toString();
+
             try {
                 boolean bandera=true;
                 if (myArray.length()>0  ) {
@@ -376,6 +428,8 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                 }
                 if (bandera==true) {
                     JSONObject mjason = new JSONObject();
+                    JSONObject mjasonver = new JSONObject();
+
                     mjason.put("TipoProducto", Integer.parseInt(TipoProductoId));
                     mjason.put("ProductoId", ProductoIdEntero);
                     mjason.put("NumeroInterno", Integer.parseInt(numInterno));
@@ -383,6 +437,13 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                     mjason.put("Cantidad", TotalProducto);
                     mjason.put("Precio", precioUnitario);
                     myArray.put(mjason);
+
+                    mjasonver.put("Producto:", Integer.parseInt(numInterno));
+                    mjasonver.put("Cantidad:", TotalProducto);
+                    mjasonver.put("Precio:", precioUnitario);
+
+                    myArrayVer.put(mjasonver);
+                    txtproductos.setText(myArrayVer.toString());
                     ProductosAgregados = +ProductosAgregados;
                 }else{
                     Toast.makeText(getApplicationContext(), "Producto: "+ ProductoId+" cargado anteriormente"  , Toast.LENGTH_LONG).show();
@@ -592,7 +653,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
 
     private void EnviarProductos(final String posicionCarga, final String Usuarioid) {
         //RequestQueue queue = Volley.newRequestQueue(this);
-        //String url = "http://"+ipEstacion+"/CorpogasService/api/ventaProductos/sucursal/"+sucursalId+"/procedencia/"+posicionCarga+"/tipoTransaccion/"+tipoTransaccion+"/empleado/"+Usuarioid; //TipoTransaccion 1 (NORMAL)
+        //String url = "http://"+ipEstacion+"/CorpogasService/api/ventaProductos/sucursal/"+sucursalId+"/procedencia/"+posicionCarga+"/tipoTransaccion/"+tipoTransaccion+"/empleado/"+Usuarioid+"/usuario/"+Usuarioid+"/origen/"+numerodispositivo; //TipoTransaccion 1 (NORMAL)
         String url = "http://"+ipEstacion+"/CorpogasService/api/ventaProductos/GuardaProductos/sucursal/"+sucursalId+"/origen/"+numerodispositivo+"/usuario/"+Usuarioid+"/posicionCarga/"+posicionCarga;
         RequestQueue queue = Volley.newRequestQueue(this);
 
@@ -691,15 +752,18 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                         //Double PrecioUnitario = TotalProducto * Precio;
                         //String PrecioUnitario =  PrecioU.toString();
                         Double PrecioUnitario = Double.parseDouble(oRespuesta.getString("Importe"));
-                        JSONObject combustible = new JSONObject(objetoRespuesta);
+
+                        String combustible = oRespuesta.getString("Combustible");
+                        JSONObject combustibleF = new JSONObject(combustible);
+
                         int  tProdId = 1; //Integer.parseInt(combustible.getString("TipoSatCombustibleId"));
-                        String numInterno = combustible.getString("CodigoFranquicia");
+                        String numInterno = combustibleF.getString("CodigoFranquicia");
                         //String descrProducto = combustible.getString("DescripcionLarga");
                         JSONObject mjason = new JSONObject();
 
                         mjason.put("TipoProducto", tProdId);
                         mjason.put("ProductoId", ProductoIdEntero);
-                        mjason.put("NumeroInterno", numInterno);
+                        mjason.put("NumeroInterno", Integer.parseInt(numInterno));
                         //mjason.put("Descripcion", descrProducto);
                         mjason.put("Cantidad", TotalProducto);
                         mjason.put("Precio", PrecioUnitario);

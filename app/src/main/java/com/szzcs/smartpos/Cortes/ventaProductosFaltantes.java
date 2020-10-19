@@ -89,6 +89,9 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
     List<String> TipoProductoId;
     List<String> DescripcionPr;
 
+    Double VentaTotalProductos;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -108,6 +111,9 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
         islaId = getIntent().getStringExtra("islaId");
         fechatrabajo = getIntent().getStringExtra("fechatrabajo");
         cierreId = getIntent().getStringExtra("cierreId");
+
+        VentaTotalProductos = Double.parseDouble(getIntent().getStringExtra("ventaproductos"));
+
         try {
             ArrayResultante = new JSONArray(productosaEntregar);
         } catch (JSONException e) {

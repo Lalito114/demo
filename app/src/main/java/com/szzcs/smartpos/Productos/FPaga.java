@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -179,14 +180,14 @@ public class FPaga extends AppCompatActivity {
         if (FormaPagoId == "2") { //Efectivo
             builder.setMessage("Desea finalizar  la Venta?");
             builder.setTitle("Venta de Productos");
-            builder.setPositiveButton("Finalizar", new DialogInterface.OnClickListener() {
+            builder.setPositiveButton("FINALIZAR", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     //Finaliza Venta;
                     dialogInterface.cancel();
-                    finalizaventa(posicion);
+                    finalizaventa(posicion, usuarioid);
                 }
-            }).setNegativeButton("Imprimir", new DialogInterface.OnClickListener() {
+            }).setNegativeButton("imprimir", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     //Funcion para obtener los datos del ticker
@@ -201,9 +202,9 @@ public class FPaga extends AppCompatActivity {
         }
     }
 
-    private void finalizaventa(final String posicion){
+    private void finalizaventa(final String posicion, final String idUsuario){
         //Utilizamos el metodo POST para  finalizar la Venta
-        String url = "http://"+ipEstacion+"/CorpogasService/api/Transacciones/finalizaVenta/sucursal/"+sucursalId+"/posicionCarga/"+posicion;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/Transacciones/finalizaVenta/sucursal/"+sucursalId+"/posicionCarga/"+posicion+"/usuario/"+idUsuario;
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new Response.Listener<String>() {
                     @Override
@@ -232,9 +233,13 @@ public class FPaga extends AppCompatActivity {
             }
         };
 
+
         // Añade la peticion a la cola
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        eventoReq.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(eventoReq);
+
+
 
     }
 

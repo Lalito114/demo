@@ -6,15 +6,31 @@
     android:layout_height="match_parent"
     tools:context=".Productos.claveProducto">
 
-    <ImageButton
-        android:id="@+id/btnhuella"
-        android:layout_width="91dp"
-        android:layout_height="64dp"
+    <TextView
+        android:id="@+id/textresultado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="137dp"
-        android:layout_marginBottom="259dp"
-        app:srcCompat="?android:attr/fingerprintAuthDrawable" />
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="80dp"
+        android:fontFamily="monospace"
+        android:lineSpacingExtra="10sp"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnhuella"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="140dp"
+        android:text="Valida Huella"
+        android:textAllCaps="false"
+        android:textColorHint="@color/colorPrimary" />
 
     <TextView
         android:id="@+id/textView29"
@@ -22,8 +38,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="152dp"
-        android:layout_marginBottom="107dp"
+        android:layout_marginEnd="129dp"
+        android:layout_marginBottom="224dp"
         android:text="Productos"
         android:textColor="@color/black"
         android:textStyle="bold" />
@@ -34,8 +50,8 @@
         android:layout_height="60dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="138dp"
-        android:layout_marginBottom="130dp"
+        android:layout_marginEnd="116dp"
+        android:layout_marginBottom="250dp"
         android:background="@drawable/border"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -84,8 +100,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="68dp"
-        android:layout_marginBottom="436dp"
+        android:layout_marginEnd="58dp"
+        android:layout_marginBottom="500dp"
         android:fontFamily="monospace"
         android:lineSpacingExtra="10sp"
         android:text="Ingresa tu contraseña"
@@ -96,12 +112,12 @@
 
     <EditText
         android:id="@+id/pasword"
-        android:layout_width="289dp"
+        android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="339dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="350dp"
         android:drawableLeft="@drawable/key"
         android:ems="10"
         android:gravity="center|center_horizontal|center_vertical"

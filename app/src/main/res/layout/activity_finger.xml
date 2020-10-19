@@ -33,98 +33,98 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Capture"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/bt_get_feature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Get feature"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/bt_iso"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Get ISO feature"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/bt_enroll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Enroll"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/bt_verify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Verify"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/bt_identify"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Identify"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/bt_verify_feature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="VerifyWithFeature"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/bt_verify_ISO_feature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="VerifyWithISOFeature"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/bt_search_feature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SearchFeature"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/bt_search_ISO_feature"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="SearchISOFeature"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/bt_get_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Get count"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/bt_get_enrolled_list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Get enrolled list"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/bt_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Delete"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
 
         <Button
             android:id="@+id/bt_delete_all"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Delete all"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false" />
     </com.google.android.flexbox.FlexboxLayout>
 
     <ScrollView
@@ -146,5 +146,11 @@
         android:layout_gravity="center_horizontal"
         android:src="@drawable/ic_launcher"
         android:visibility="gone" />
+
+    <Button
+        android:id="@+id/btpruebahuella"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Button" />
 
 </LinearLayout>

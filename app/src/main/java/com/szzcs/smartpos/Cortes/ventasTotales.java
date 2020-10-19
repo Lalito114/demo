@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -82,7 +83,7 @@ public class ventasTotales extends AppCompatActivity {
     List<String> DescripcionPr;
 
     boolean banderaValidaBotonVentasFaltantes;
-
+    double VentaProductos = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,10 +97,8 @@ public class ventasTotales extends AppCompatActivity {
         usuario  = "1"; //getIntent().getStringExtra("usuarioid");
         posicion = "1"; //getIntent().getStringExtra("car");
         numerodispositivo = "1";
-        cierreID = 133; //getIntent().getStringExtra("islaId")
+        cierreID = 166; //getIntent().getStringExtra("cierreId")
         turnoId = "1"; //getIntent().getStringExtra("turno");
-
-
 
         MostrarProductos();
         CargaProductosFaltantes();
@@ -202,6 +201,7 @@ public class ventasTotales extends AppCompatActivity {
                     intent.putExtra("islaId", islaId);
                     intent.putExtra("fechatrabajo", fechaTrabajo);
                     intent.putExtra("cierreId", cierreID);
+                    intent.putExtra("ventaproductos", VentaProductos);
                     startActivity(intent);
 
                 }else{
@@ -296,8 +296,8 @@ public class ventasTotales extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                mostrarProductosExistencias(response, posicion, usuario);
-                //mostrarProductosCierre(response, posicion, usuario);
+                //mostrarProductosExistencias(response, posicion, usuario);
+                mostrarProductosCierre(response, posicion, usuario);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -323,15 +323,13 @@ public class ventasTotales extends AppCompatActivity {
                     }catch (Exception e){
                         e.printStackTrace();
                     }
-                    //MostrarDialogoSimple(errorMensaje);
-                    //Toast.makeText(getApplicationContext(),errorMensaje,Toast.LENGTH_SHORT).show();
-
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
             }
         });
         RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(stringRequest);
     }
 
@@ -407,7 +405,7 @@ public class ventasTotales extends AppCompatActivity {
                     mjasonF.put("CierreSucursalId", Integer.parseInt(sucursalId));
                     mjasonF.put("CategoriaProductoId", Integer.parseInt(TProductoId));
                     mjasonF.put("RecursoId", Integer.parseInt(IdProductos));
-                    mjasonF.put("Precio", Integer.parseInt(preciounitario));
+                    mjasonF.put("Precio", Double.parseDouble(preciounitario));
                     mjasonF.put("Cantidad", Integer.parseInt(cantidadvendida));
                     mjasonF.put("Total", Integer.parseInt(preciounitario)*Integer.parseInt(cantidadvendida));
                     mjasonF.put("Iva", 0);
@@ -419,8 +417,9 @@ public class ventasTotales extends AppCompatActivity {
                     mjasonF.put("PrecioUnitarioRecibido", Integer.parseInt(preciounitario));
                     mjasonF.put("BodegaNumeroInterno", Integer.parseInt(IdProductos));
                     mjasonF.put("OrigenId", Integer.parseInt(numerodispositivo));
-
                     ArrayResultante.put(mjasonF);
+
+                    VentaProductos = VentaProductos + (Integer.parseInt(cantidadvendida) * Double.parseDouble(preciounitario));
                 }
 
             }
@@ -472,19 +471,21 @@ public class ventasTotales extends AppCompatActivity {
                                         if (totalEntregados < resultado){
                                             Toast.makeText(ventasTotales.this, "La cantidad vendida no puede ser mayor que la que se recibió", Toast.LENGTH_SHORT).show();
                                         }else {
-                                            if (resultado < (totalEntregados - totalVendidos)) {
+                                            if (resultado > (totalEntregados - totalVendidos)) {
                                                 btnsiguiente.setVisibility(View.VISIBLE);
                                                 String prod = ClaveProducto.get(position);
                                                 int diferencia = ((totalEntregados - totalVendidos) - resultado);
                                                 generaArreglo(prod, diferencia, preciou, subtitle.get(position), numerointerno, codbarras, IProd, TProd);
                                                 //valido si hay diferencias
                                                 banderaValidaBotonVentasFaltantes= true;
+                                                Boolean banderaNoCargada = true;
                                                 for (int g= 0; g< mList.getCount(); g++)
                                                 {
                                                     String valorCapturado;
                                                     valorCapturado = maintitle.get(g);
                                                     if (valorCapturado == "-"){
                                                         banderaValidaBotonVentasFaltantes = false;
+                                                        banderaNoCargada = false;
                                                         break;
                                                     }else {
 
@@ -497,10 +498,14 @@ public class ventasTotales extends AppCompatActivity {
                                                         }
                                                     }
                                                 }
-                                                if  (banderaValidaBotonVentasFaltantes == false){
-                                                    btnsiguiente.setVisibility(View.VISIBLE);
-                                                }else{
+                                                if (banderaNoCargada == false){
                                                     btnsiguiente.setVisibility(View.INVISIBLE);
+                                                }else {
+                                                    if (banderaValidaBotonVentasFaltantes == false) {
+                                                        btnsiguiente.setVisibility(View.VISIBLE);
+                                                    } else {
+                                                        btnsiguiente.setVisibility(View.INVISIBLE);
+                                                    }
                                                 }
                                                 ListAdapterBilletes adapter = new ListAdapterBilletes(ventasTotales.this, maintitle, subtitle, calculo);
                                                 mList.setAdapter(adapter);
@@ -557,7 +562,7 @@ public class ventasTotales extends AppCompatActivity {
             String producto = ps.getString("BodegaProductos");
             JSONArray bodegaprod = new JSONArray(producto);
 
-            for (int i = 21; i <25 ; i++){ //bodegaprod.length()
+            for (int i = 1; i <5 ; i++){ //bodegaprod.length()
                 String IdProductos = null;
                 JSONObject pA = bodegaprod.getJSONObject(i);
                 String ExProductos=pA.getString("Existencias");
@@ -617,6 +622,8 @@ public class ventasTotales extends AppCompatActivity {
                 mjasonF.put("OrigenId", Integer.parseInt(numerodispositivo));
 
                 ArrayResultante.put(mjasonF);
+                VentaProductos = VentaProductos + (Integer.parseInt(cantidadvendida) * Double.parseDouble(preciou));
+
 
             }
         } catch (JSONException e) {
@@ -670,12 +677,14 @@ public class ventasTotales extends AppCompatActivity {
                                     }
                                     //valido si hay diferencias
                                     banderaValidaBotonVentasFaltantes= true;
+                                    Boolean banderaNoCargada = true;
                                     for (int g= 0; g< mList.getCount(); g++)
                                     {
                                         String valorCapturado;
                                         valorCapturado = maintitle.get(g);
                                         if (valorCapturado == "-"){
                                             banderaValidaBotonVentasFaltantes = false;
+                                            banderaNoCargada = false;
                                             break;
                                         }else {
 
@@ -688,12 +697,15 @@ public class ventasTotales extends AppCompatActivity {
                                             }
                                         }
                                     }
-                                    if  (banderaValidaBotonVentasFaltantes == false){
-                                        btnsiguiente.setVisibility(View.VISIBLE);
-                                    }else{
+                                    if (banderaNoCargada == false){
                                         btnsiguiente.setVisibility(View.INVISIBLE);
+                                    }else{
+                                        if  (banderaValidaBotonVentasFaltantes == false){
+                                            btnsiguiente.setVisibility(View.VISIBLE);
+                                        }else{
+                                            btnsiguiente.setVisibility(View.INVISIBLE);
                                     }
-
+}
                                     ListAdapterBilletes adapter = new ListAdapterBilletes(ventasTotales.this, maintitle, subtitle, calculo);
                                     mList.setAdapter(adapter);
                                 }
@@ -712,145 +724,22 @@ public class ventasTotales extends AppCompatActivity {
         });
     }
 
-private void generaArreglo(String numeroproducto, int cantidad, String preciounitario, String descCorta, String internonumero, String codBarras, String IProducto, String TProducto){
+    private void generaArreglo(String numeroproducto, int cantidad, String preciounitario, String descCorta, String internonumero, String codBarras, String IProducto, String TProducto){
         JSONObject mjason = new JSONObject();
-    try {
-        mjason.put("TipoProducto",TProducto);
-        mjason.put("ProductoId", numeroproducto);
-        //ventaRestante.put("CodigoBarras", codigobarras);
-        mjason.put("NumeroInterno", internonumero);
-        mjason.put("Cantidad", cantidad);
-        mjason.put("Precio", preciounitario);
-        mjason.put ("DescCorta", descCorta);
-        mjason.put("CodigoBarras", codBarras);
-
-        ArrayventasFaltantes.put(mjason);
-
-        //valido si hay
-
-
-
-
-    } catch (JSONException e) {
-        e.printStackTrace();
-    }
-
-}
-
-
-
-
-    private void denominacionBilletes() {
-        String url = "http://10.2.251.58/CorpogasService/api/Denominaciones";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                subtotalOficinaBilletes(response);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
-
-            }
-        });
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        requestQueue.add(stringRequest);
-
-    }
-    private void subtotalOficinaBilletes(String response) {
-        maintitle = new ArrayList<String>();
-        subtitle = new ArrayList<String>();
-        calculo = new ArrayList<String>();
         try {
+            mjason.put("TipoProducto",TProducto);
+            mjason.put("ProductoId", numeroproducto);
+            //ventaRestante.put("CodigoBarras", codigobarras);
+            mjason.put("NumeroInterno", internonumero);
+            mjason.put("Cantidad", cantidad);
+            mjason.put("Precio", preciounitario);
+            mjason.put ("DescCorta", descCorta);
+            mjason.put("CodigoBarras", codBarras);
+            ArrayventasFaltantes.put(mjason);
 
-            JSONArray stl = new JSONArray(response);
-
-            for (int i = 0; i < stl.length(); i++) {
-                denom = stl.getJSONObject(i);
-                denominacion = denom.getString("Importe");
-                double monto = Double.parseDouble(denominacion);
-                arrayMonto.add(monto);
-
-                maintitle.add("0");
-                subtitle.add(denominacion);
-                calculo.add("");
-
-            }
-        } catch (Exception e) {
+            //valido si hay
+        } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        final ListAdapterBilletes adapter = new ListAdapterBilletes(this, maintitle, subtitle, calculo);
-        mList = (ListView) findViewById(R.id.list);
-        mList.setAdapter(adapter);
-
-        mList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, final int position, long id) {
-
-                final String ray = arrayMonto.get(position).toString();
-
-                try {
-                    final EditText input = new EditText(getApplicationContext());
-                    input.setTextColor(Color.BLACK);
-                    input.setGravity(Gravity.CENTER);
-                    input.setTextSize(22);
-                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
-
-                    AlertDialog.Builder builder = new AlertDialog.Builder(ventasTotales.this);
-                    builder.setTitle("Ingresa Cantidad \n");
-                    builder.setView(input)
-
-                            .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    String denomi = input.getText().toString();
-                                    result = Double.parseDouble(denomi) * Double.parseDouble(ray);
-                                    if (result > fajillaBillete) {
-                                        Toast.makeText(ventasTotales.this, "No puedes superar el valor de 1 Fajilla", Toast.LENGTH_SHORT).show();
-                                    } else {
-                                        maintitle.set(position, denomi);
-                                        calculo.set(position, String.valueOf(result));
-                                        final String ray2 = result.toString();
-
-                                        sumainter = totalBilletes() + Double.parseDouble(ray2);
-
-                                        if ((totalBilletes()<= (fajillaBillete-10)) && (sumainter <= (fajillaBillete-10))){
-                                            Toast.makeText(ventasTotales.this, "Cantidad Agregada", Toast.LENGTH_SHORT).show();
-                                            prueba2.put(ray2);
-                                        }else{
-                                            Toast.makeText(ventasTotales.this, "Los Valores que ingresaste pueden ser 1 fajilla", Toast.LENGTH_SHORT).show();
-                                        }
-                                        ListAdapterBilletes adapter = new ListAdapterBilletes(ventasTotales.this, maintitle, subtitle, calculo);
-                                        mList.setAdapter(adapter);
-                                    }
-                                }
-                            })
-                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            }).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
     }
-    public double totalBilletes() {
-        double sumamax = 0;
-        for (int i = 0; i < prueba2.length() ; i++) {
-            double suma = 0;
-            try {
-                suma = prueba2.getDouble(i);
-                sumamax += suma;
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-        return sumamax;
-    }
-
 }

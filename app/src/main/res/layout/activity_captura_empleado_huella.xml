@@ -6,6 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".EmpleadoHuellas.capturaEmpleadoHuella">
 
+    <Button
+        android:id="@+id/bt_enviahuella"
+        android:layout_width="match_parent"
+        android:layout_height="36dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="171dp"
+        android:text="Enviar Huella ISO"
+        android:textAllCaps="false"
+        android:textColorHint="@color/colorPrimary"
+        android:visibility="invisible" />
+
     <ImageView
         android:id="@+id/iv_result"
         android:layout_width="35dp"
@@ -22,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="167dp">
+        android:layout_marginBottom="-10dp">
 
         <TextView
             android:id="@+id/text_status"
@@ -38,8 +49,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="518dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="530dp"
         android:textColor="#070707"
         android:textSize="15sp"
         android:textStyle="bold" />
@@ -49,7 +60,7 @@
         android:layout_width="match_parent"
         android:layout_height="36dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="217dp"
+        android:layout_marginBottom="228dp"
         android:text="Obtener Huella ISO"
         android:textAllCaps="false"
         android:textColorHint="@color/colorPrimary" />
@@ -60,8 +71,8 @@
         android:layout_height="254dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="11dp"
-        android:layout_marginBottom="259dp"
+        android:layout_marginEnd="15dp"
+        android:layout_marginBottom="268dp"
         android:background="@drawable/border" />
 
     <TextView
@@ -70,8 +81,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="519dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="528dp"
         android:textColor="#070707"
         android:textSize="15sp"
         android:textStyle="bold"

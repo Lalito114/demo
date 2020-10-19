@@ -49,7 +49,7 @@ public class ticketPendientes extends AppCompatActivity {
     ListView list;
     String carga;
     String nousuario;
-    String EstacionId, sucursalId, ipEstacion ;
+    String EstacionId, sucursalId, ipEstacion, numeroTarjetero ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +59,8 @@ public class ticketPendientes extends AppCompatActivity {
         EstacionId = db.getIdEstacion();
         sucursalId=db.getIdSucursal();
         ipEstacion = db.getIpEstacion();
+        numeroTarjetero = db.getNumeroInterno();
+        numeroTarjetero ="1";
 
         TextView txtMac = findViewById(R.id.txtmac);
         txtMac.setText(getMacAddr());
@@ -189,7 +191,7 @@ public class ticketPendientes extends AppCompatActivity {
 
     private void TicketPendiente(final String FormaPagoId, final String copias){
         EditText pasword = (EditText) findViewById(R.id.pasword);
-        final String numeroTarjetero = pasword.getText().toString();
+        //final String numeroTarjetero = pasword.getText().toString();
 
         final String numerorecibo = "";
         final String numerotransaccion = "";
@@ -202,147 +204,18 @@ public class ticketPendientes extends AppCompatActivity {
         final String totaltotalTexto="";
 
         //Conexion con la base y ejecuta consulta para saber si tiene tickets Pendientes
-        String url = "http://"+ipEstacion+"/CorpogasService/api/tickets/pendiente/"+numeroTarjetero;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/tickets/pendiente/estacionId/"+EstacionId+"/numeroTarjetero/"+numeroTarjetero;
         // Utilizamos el metodo Post para validar la contraseña
         StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
-                            //Se instancia la respuesta del json
-                            JSONObject validar = new JSONObject(response);
-                            //Se asigna el resultado a String
-                            String valido = validar.getString("Resultado");
-                            if (valido.equals("null")) { //==null
-                                String detalle = validar.getString("Detalle");
-                                //Si el detalle es null es que ya se imprimiio
-                                //validar detalle con un if
-                                if (detalle.equals("null")) {
-                                    //JSONObject mensaj = new JSONObject(valido);
-                                    //String mensajes = mensaj.getString("Descripcion");
-                                    //Toast.makeText(getApplicationContext(), mensajes, Toast.LENGTH_SHORT).show();
-                                    try {
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(ticketPendientes.this);
-                                        builder.setTitle("Tickets Pendientes");
-                                        builder.setMessage("Sin datos")
-                                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                                        Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
-                                                        startActivity(intente);
-                                                    }
-                                                }).show();
-                                    }catch (Exception e){
-                                        e.printStackTrace();
-                                    }
-
-                                }else {
-                                    JSONObject detalleRespuesta = new JSONObject(detalle);
-                                    String numeroticket = detalleRespuesta.getString("NoRecibo");
-                                    String numerorecibo = detalleRespuesta.getString("NoRecibo");
-                                    String numerotransaccion = detalleRespuesta.getString("NoTransaccion");
-                                    String numerorastreo = detalleRespuesta.getString("NoRastreo");
-                                    String posicion = detalleRespuesta.getString("PosCarga");
-                                    String despachador = detalleRespuesta.getString("Desp"); //
-                                    String vendedor = detalleRespuesta.getString("Vend");//Vend
-
-                                    String subtotal = detalleRespuesta.getString("Subtotal");
-                                    String iva = detalleRespuesta.getString("IVA");
-                                    String total = detalleRespuesta.getString("Total");
-                                    String totalTexto = detalleRespuesta.getString("TotalTexto");
-
-                                    //Convertir a strig Productos
-                                    String ProductosEncontrados = detalleRespuesta.getString("Productos");
-                                    //Generar el jsonArray del string anterior
-                                    JSONArray producto = new JSONArray(ProductosEncontrados);
-
-                                    String cantidad = new String();
-                                    String protic = new String();
-                                    String numero = new String();
-
-                                    String descrip = new String();
-                                    String impor = new String();
-                                    String precio = new String();
-
-                                    for (int i = 0; i < producto.length(); i++) {
-                                        JSONObject p1 = producto.getJSONObject(i);
-                                        String value = p1.getString("Cantidad").trim();
-                                        cantidad += value;
-                                        String num = " ";// p1.getString("No");
-                                        numero += num;
-                                        String descripcion = p1.getString("Descripcion");
-                                        descrip += descripcion;
-                                        String importe = p1.getString("Importe");
-                                        impor += importe;
-                                        String prec = p1.getString("Precio");
-                                        precio += prec;
-                                        protic +=value + " | " + descripcion + " | " + prec + " | " + importe+"\n";
-                                    }
-                                    args.putString("numerorecibo", numerorecibo);
-                                    args.putString("nombrepago", FormaPagoId);
-                                    args.putString("numerotransaccion", numerotransaccion);
-                                    args.putString("numerorastreo", numerorastreo);
-                                    args.putString("posicion", posicion);
-                                    args.putString("despachador", despachador);
-                                    args.putString("vendedor", vendedor);
-                                    args.putString("productos", protic);
-
-                                    args.putString("numero", numero);
-                                    args.putString("descrip",descrip);
-                                    args.putString("impor",impor);
-                                    args.putString("precio",precio);
-
-                                    args.putString("subtotal",subtotal);
-                                    args.putString("iva",iva);
-                                    args.putString("total",total);
-                                    args.putString("totaltexto",totalTexto);
-
-                                    nousuario = getIntent().getStringExtra("user"); //usuarioid
-                                    String formapago = FormaPagoId; //pago.getText().toString();
-
-                                    args.putString("numticket", copias);
-                                    args.putString("idusuario", nousuario);
-                                }
-
-                                String pieTicket = validar.getString("Pie");
-                                JSONObject mensajeTicket = new JSONObject(pieTicket);
-                                String mensajePie = mensajeTicket.getString("Mensaje");
-                                args.putString("mensaje",mensajePie);
-
-
-                                //args.putString("numerorecibo", numerorecibo);
-                                //args.putString("nombrepago", nombrepago);
-                                //args.putString("numticket", numticket);
-                                //args.putString("numerotransaccion", numerotransaccion);
-                                //args.putString("numerorastreo", numerorastreo);
-                                //args.putString("posicion", carga);
-                                //args.putString("despachador",despachador);
-                                //args.putString("vendedor",user);
-                                //args.putString("productos",protic);
-
-                                //args.putString("subtotal",subtotal);
-                                //args.putString("iva",iva);
-                                //args.putString("total",total);
-                                //args.putString("totaltexto",totaltexto);
-                                //args.putString("mensaje",names.toString());
-                                try {
-                                    PrintFragment cf = new PrintFragment();
-                                    cf.setArguments(args);
-                                    getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
-                                            addToBackStack(PrintFragment.class.getName()).
-                                            commit();
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }else{
-                                JSONObject algo = new JSONObject(valido);
-                                String desc = algo.getString("Descripcion");
-                                String errorenviado = algo.getString("Error");
-                                Toast.makeText(getApplicationContext(), errorenviado.toString(), Toast.LENGTH_SHORT).show();
+                            if (response.equals("null")){
                                 try {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(ticketPendientes.this);
                                     builder.setTitle("Tickets Pendientes");
-                                    builder.setMessage(errorenviado)
+                                    builder.setMessage("El tarjetero No tiene ningún ticlet pendiente")
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -350,11 +223,156 @@ public class ticketPendientes extends AppCompatActivity {
                                                     startActivity(intente);
                                                 }
                                             }).show();
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
-                            }
+                            }else {
+                                //Se instancia la respuesta del json
+                                JSONObject validar = new JSONObject(response);
+                                //Se asigna el resultado a String
+                                String valido = validar.getString("Resultado");
+                                if (valido.equals("null")) { //==null
+                                    String detalle = validar.getString("Detalle");
+                                    //Si el detalle es null es que ya se imprimiio
+                                    //validar detalle con un if
+                                    if (detalle.equals("null")) {
+                                        //JSONObject mensaj = new JSONObject(valido);
+                                        //String mensajes = mensaj.getString("Descripcion");
+                                        //Toast.makeText(getApplicationContext(), mensajes, Toast.LENGTH_SHORT).show();
+                                        try {
+                                            AlertDialog.Builder builder = new AlertDialog.Builder(ticketPendientes.this);
+                                            builder.setTitle("Tickets Pendientes");
+                                            builder.setMessage("Sin datos")
+                                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                                            Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
+                                                            startActivity(intente);
+                                                        }
+                                                    }).show();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                        }
 
+                                    } else {
+                                        JSONObject detalleRespuesta = new JSONObject(detalle);
+                                        String numeroticket = detalleRespuesta.getString("NoRecibo");
+                                        String numerorecibo = detalleRespuesta.getString("NoRecibo");
+                                        String numerotransaccion = detalleRespuesta.getString("NoTransaccion");
+                                        String numerorastreo = detalleRespuesta.getString("NoRastreo");
+                                        String posicion = detalleRespuesta.getString("PosCarga");
+                                        String despachador = detalleRespuesta.getString("Desp"); //
+                                        String vendedor = detalleRespuesta.getString("Vend");//Vend
+
+                                        String subtotal = detalleRespuesta.getString("Subtotal");
+                                        String iva = detalleRespuesta.getString("IVA");
+                                        String total = detalleRespuesta.getString("Total");
+                                        String totalTexto = detalleRespuesta.getString("TotalTexto");
+
+                                        //Convertir a strig Productos
+                                        String ProductosEncontrados = detalleRespuesta.getString("Productos");
+                                        //Generar el jsonArray del string anterior
+                                        JSONArray producto = new JSONArray(ProductosEncontrados);
+
+                                        String cantidad = new String();
+                                        String protic = new String();
+                                        String numero = new String();
+
+                                        String descrip = new String();
+                                        String impor = new String();
+                                        String precio = new String();
+
+                                        for (int i = 0; i < producto.length(); i++) {
+                                            JSONObject p1 = producto.getJSONObject(i);
+                                            String value = p1.getString("Cantidad").trim();
+                                            cantidad += value;
+                                            String num = " ";// p1.getString("No");
+                                            numero += num;
+                                            String descripcion = p1.getString("Descripcion");
+                                            descrip += descripcion;
+                                            String importe = p1.getString("Importe");
+                                            impor += importe;
+                                            String prec = p1.getString("Precio");
+                                            precio += prec;
+                                            protic += value + " | " + descripcion + " | " + prec + " | " + importe + "\n";
+                                        }
+                                        args.putString("numerorecibo", numerorecibo);
+                                        args.putString("nombrepago", FormaPagoId);
+                                        args.putString("numerotransaccion", numerotransaccion);
+                                        args.putString("numerorastreo", numerorastreo);
+                                        args.putString("posicion", posicion);
+                                        args.putString("despachador", despachador);
+                                        args.putString("vendedor", vendedor);
+                                        args.putString("productos", protic);
+
+                                        args.putString("numero", numero);
+                                        args.putString("descrip", descrip);
+                                        args.putString("impor", impor);
+                                        args.putString("precio", precio);
+
+                                        args.putString("subtotal", subtotal);
+                                        args.putString("iva", iva);
+                                        args.putString("total", total);
+                                        args.putString("totaltexto", totalTexto);
+
+                                        nousuario = getIntent().getStringExtra("user"); //usuarioid
+                                        String formapago = FormaPagoId; //pago.getText().toString();
+
+                                        args.putString("numticket", copias);
+                                        args.putString("idusuario", nousuario);
+                                    }
+
+                                    String pieTicket = validar.getString("Pie");
+                                    JSONObject mensajeTicket = new JSONObject(pieTicket);
+                                    String mensajePie = mensajeTicket.getString("Mensaje");
+                                    args.putString("mensaje", mensajePie);
+
+
+                                    //args.putString("numerorecibo", numerorecibo);
+                                    //args.putString("nombrepago", nombrepago);
+                                    //args.putString("numticket", numticket);
+                                    //args.putString("numerotransaccion", numerotransaccion);
+                                    //args.putString("numerorastreo", numerorastreo);
+                                    //args.putString("posicion", carga);
+                                    //args.putString("despachador",despachador);
+                                    //args.putString("vendedor",user);
+                                    //args.putString("productos",protic);
+
+                                    //args.putString("subtotal",subtotal);
+                                    //args.putString("iva",iva);
+                                    //args.putString("total",total);
+                                    //args.putString("totaltexto",totaltexto);
+                                    //args.putString("mensaje",names.toString());
+                                    try {
+                                        PrintFragment cf = new PrintFragment();
+                                        cf.setArguments(args);
+                                        getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+                                                addToBackStack(PrintFragment.class.getName()).
+                                                commit();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                } else {
+                                    JSONObject algo = new JSONObject(valido);
+                                    String desc = algo.getString("Descripcion");
+                                    String errorenviado = algo.getString("Error");
+                                    Toast.makeText(getApplicationContext(), errorenviado.toString(), Toast.LENGTH_SHORT).show();
+                                    try {
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(ticketPendientes.this);
+                                        builder.setTitle("Tickets Pendientes");
+                                        builder.setMessage(errorenviado)
+                                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
+                                                        startActivity(intente);
+                                                    }
+                                                }).show();
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
                         } catch (JSONException e) {
                             //herramienta  para diagnostico de excepciones
                             e.printStackTrace();

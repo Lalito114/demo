@@ -1,5 +1,6 @@
 package com.szzcs.smartpos;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,6 +15,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.szzcs.smartpos.Cortes.tipoVenta;
+import com.szzcs.smartpos.Gastos.autizacionGastos;
 import com.szzcs.smartpos.base.BaseActivity;
 import com.zcs.sdk.SdkResult;
 import com.zcs.sdk.fingerprint.FingerprintListener;
@@ -48,6 +51,11 @@ public class FingerprintActivity extends BaseActivity implements FingerprintList
     protected Button mBtSearchFeature;
     protected Button mBtSearchISOFeature;
     protected Button mBtIdentify;
+
+
+    protected Button mBtPrueba;
+    protected Button mPruebaHuella;
+
     private String files = "/sdcard/";
     private long lastClick = 0;
     private Handler mHandler;
@@ -56,6 +64,7 @@ public class FingerprintActivity extends BaseActivity implements FingerprintList
     private int mTimeout = 3;
     private byte[] featureTmp;
     private byte[] isoFeatureTmp;
+    private byte [] features;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -149,6 +158,7 @@ public class FingerprintActivity extends BaseActivity implements FingerprintList
     @Override
     public void onAuthenticationSucceeded(int fingerId, Object obj) {
         showLog("Fingerprint auth successfully:  fingerId = " + fingerId + "  score = " + obj);
+
     }
 
     @Override
@@ -234,8 +244,14 @@ public class FingerprintActivity extends BaseActivity implements FingerprintList
     @Override
     public void onGetImageISOFeature(int result, byte[] feature) {
         showLog("onGetImageISOFeature: ret =  " + result + (result == SdkResult.SDK_OK ? "\tISO feature = " + StringUtils.convertBytesToHex(feature) : null));
+        //showLog(StringUtils.convertBytesToHex(feature));
+
         if (result == SdkResult.SDK_OK) {
             isoFeatureTmp = feature;
+            features = StringUtils.convertHexToBytes(StringUtils.convertBytesToHex(feature));
+            isoFeatureTmp = features;
+            //String text = mTextStatus.getText().toString();
+            //isoFeatureTmp = StringUtils.convertHexToBytes(text);
         }
     }
 
@@ -313,5 +329,7 @@ public class FingerprintActivity extends BaseActivity implements FingerprintList
         mBtSearchISOFeature.setOnClickListener(FingerprintActivity.this);
         mBtIdentify = (Button) findViewById(R.id.bt_identify);
         mBtIdentify.setOnClickListener(FingerprintActivity.this);
+        //mPruebaHuella = findViewById(R.id.btpruebahuella);
+        //mPruebaHuella.setOnClickListener(FingerprintActivity.this);
     }
 }
