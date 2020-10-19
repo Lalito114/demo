@@ -105,7 +105,9 @@ public class ClaveTarjeta extends AppCompatActivity {
                                         builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
                                             @Override
                                             public void onClick(DialogInterface dialogInterface, int i) {
+                                                String carga = getIntent().getStringExtra("pos");
                                                 Intent intent = new Intent(getApplicationContext(),BalanceProductos.class);
+                                                intent.putExtra("pos",carga);
                                                 intent.putExtra("saldo",saldo);
                                                 startActivity(intent);
                                                 finish();

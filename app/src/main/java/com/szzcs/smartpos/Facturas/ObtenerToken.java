@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
@@ -12,8 +13,11 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 import java.security.KeyManagementException;
@@ -30,7 +34,7 @@ import javax.net.ssl.X509TrustManager;
 public class ObtenerToken extends AppCompatActivity {
 
     EditText usuario, password;
-    String token;
+    String iduser, pwd;
     String baseurl = "https://facturasgas.com/apifac/autenticacion";
     RequestQueue queue;
 
@@ -43,28 +47,68 @@ public class ObtenerToken extends AppCompatActivity {
         password = findViewById(R.id.password);
         queue = Volley.newRequestQueue(ObtenerToken.this);
 
-        ImageButton btnFact = findViewById(R.id.btnFact);
+        Button btnFact = findViewById(R.id.btnFact);
         btnFact.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
 
-                final String pwd = password.getText().toString();
+                 pwd = password.getText().toString();
 
                 //Validaciones para campos vacíos
-//                if(pwd.equals("")) {
-//                    Toast.makeText(getApplicationContext(), "Ingrese un password válido.", Toast.LENGTH_SHORT).show();
-//                }else  {
-//                    //Si ambos campos contienen información se ejecuta el método para obtener el token
-                    getToken(pwd);
-//                }
+                if(pwd.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Ingrese un password válido.", Toast.LENGTH_SHORT).show();
+                }else  {
+                    //Si ambos campos contienen información se ejecuta el método para obtener el token
+                    ValidarUsuario(pwd);
+                }
 
 
             }
         });
     }
 
-    private void getToken(final String password){
+    private void ValidarUsuario(String password) {
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/SucursalEmpleados/clave/"+password;
+
+        // Utilizamos el metodo Post para validar la contraseña
+        StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            //Se instancia la respuesta del json
+                            JSONObject validar = new JSONObject(response);
+                            String valido = validar.getString("Activo");
+                            iduser = validar.getString("Id");
+//                            obteneridusuario(idusuario);
+                            if (valido == "true"){
+                                getToken(pwd, iduser);
+                            }else{
+                                //Si no es valido se envia mensaje
+                                Toast.makeText(getApplicationContext(),"La contraseña es incorecta",Toast.LENGTH_SHORT).show();
+                            }
+                        } catch (JSONException e) {
+                            //herramienta  para diagnostico de excepciones
+                            e.printStackTrace();
+                        }
+                    }
+                    //funcion para capturar errores
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Añade la peticion a la cola
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(eventoReq);
+
+    }
+
+    private void getToken(final String password, final String iduser1){
 
         //Clase que permite hacer request post a url con certificado ssl
         //HttpsTrustManager.allowAllSSL();
@@ -89,12 +133,13 @@ public class ObtenerToken extends AppCompatActivity {
                         JSONObject datos = new JSONObject();
                         datos = response.getJSONObject("datos");
 
-                        token = datos.getString("token");
+                        String token = datos.getString("token");
 
                         Toast.makeText(getApplicationContext(), "Credenciales correctas.", Toast.LENGTH_SHORT).show();
                         //Enviamos el token al siguiente activity y lo inicializamos
                         Intent intent = new Intent(ObtenerToken.this, ObtenerRFC.class);
                         intent.putExtra("Token", token);
+                        intent.putExtra("IdUser", iduser1);
                         startActivity(intent);
 
                         } catch (JSONException e) {
@@ -133,66 +178,4 @@ public class ObtenerToken extends AppCompatActivity {
 
     }
 
-//    public static class HttpsTrustManager implements X509TrustManager {
-//
-//        private static TrustManager[] trustManagers;
-//        private static final X509Certificate[] _AcceptedIssuers = new X509Certificate[]{};
-//
-//        @Override
-//        public void checkClientTrusted(
-//
-//                java.security.cert.X509Certificate[] x509Certificates, String s)
-//                throws java.security.cert.CertificateException {
-//
-//        }
-//
-//        @Override
-//        public void checkServerTrusted(
-//                java.security.cert.X509Certificate[] x509Certificates, String s)
-//                throws java.security.cert.CertificateException {
-//
-//        }
-//
-//        public boolean isClientTrusted(X509Certificate[] chain) {
-//            return true;
-//        }
-//
-//        public boolean isServerTrusted(X509Certificate[] chain) {
-//            return true;
-//        }
-//
-//        @Override
-//        public X509Certificate[] getAcceptedIssuers() {
-//            return _AcceptedIssuers;
-//        }
-//
-//        public static void allowAllSSL() {
-//            HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-//
-//                @Override
-//                public boolean verify(String arg0, SSLSession arg1) {
-//                    return true;
-//                }
-//
-//            });
-//
-//            SSLContext context = null;
-//            if (trustManagers == null) {
-//                trustManagers = new TrustManager[]{new HttpsTrustManager()};
-//            }
-//
-//            try {
-//                context = SSLContext.getInstance("TLS");
-//                context.init(null, trustManagers, new SecureRandom());
-//            } catch (NoSuchAlgorithmException e) {
-//                e.printStackTrace();
-//            } catch (KeyManagementException e) {
-//                e.printStackTrace();
-//            }
-//
-//            HttpsURLConnection.setDefaultSSLSocketFactory(context
-//                    .getSocketFactory());
-//        }
-//
-//    }
 }

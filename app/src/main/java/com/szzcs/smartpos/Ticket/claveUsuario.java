@@ -263,7 +263,7 @@ public class claveUsuario extends AppCompatActivity {
                             //Se instancia la respuesta del json
                             JSONObject validar = new JSONObject(response);
                             String valido = validar.getString("Activo");
-                            iduser = validar.getString("RolId");
+                            iduser = validar.getString("Id");
 //                            obteneridusuario(idusuario);
                             if (valido == "true"){
                                 imprimirticket();

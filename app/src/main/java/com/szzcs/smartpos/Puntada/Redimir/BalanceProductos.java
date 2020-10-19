@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -19,6 +20,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Productos.ListAdapterProductos;
+import com.szzcs.smartpos.Puntada.Acumular.ListAdapterSP;
 import com.szzcs.smartpos.R;
 
 import org.json.JSONArray;
@@ -26,140 +28,185 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import com.szzcs.smartpos.R;
+import java.util.Map;
+import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 public class BalanceProductos extends AppCompatActivity {
-    Button btnAgregar,btnEnviar, incrementar, decrementar;
+    Button btnAgregar,btnEnviar, incrementar, decrementar, btnMostrarCombustibles, btnMostrarProductos;
     TextView cantidadProducto, txtSaldo;
     EditText Producto;
     String cantidad;
     JSONObject mjason = new JSONObject();
     ListView list;
+    EditText litros, pesos;
+    Button agregarcombustible, imprimirTicket, enviarProductos, limpiar;
+    String IdCombustible, cs,numneroInterno,  descripcion, precio, IdCombus, Costo;
+    double  LitrosCoversion;
+    final JSONObject datos = new JSONObject();
+    JSONArray array1 = new JSONArray();
+    JSONObject jsonParam = new JSONObject();
+    String folio, transaccion;
+    List<String> ID;
+    List<String> NombreProducto;
+    List<String> PrecioProducto;
+    List<String> ClaveProducto;
+    List<String> CodigoBarras;
+    List<String> ExistenciaProductos;
+    List<String> ProductoId;
+    String NumeroInternoSucursal,SucursalEmpleadoId,PosicionDeCarga,NumeroDeTarjeta,ClaveTanqueLleno,TipoCliente;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_balance_productos);
         String saldos = getIntent().getStringExtra("saldo");
-
+//      enviamos el saldo disponible para poder visualizar
         txtSaldo= findViewById(R.id.txtSaldos);
         txtSaldo.setText(saldos);
 
-//        btnEnviar = findViewById(R.id.btnEnviar);
-//        btnEnviar.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                //EnviarDatos();
-//            }
-//        });
-//        incrementar = findViewById(R.id.incrementar);
-//        incrementar.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Aumentar();
-//            }
-//        });
-//        decrementar= findViewById(R.id.decrementar);
-//        decrementar.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Decrementar();
-//            }
-//        });
+//      Los elementos anteriores son los primero que se mostraran en el activity al iniciar
 
-
-    }
-    private void EnviarDatos() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Desea imprimir el ticket?");
-        builder.setTitle("Venta de Productos");
-        builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+        btnMostrarCombustibles = findViewById(R.id.btnCombustibles);
+        btnMostrarCombustibles.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-//                String url = "http://10.0.1.20/TransferenciaDatosAPI/api/tarjetas/sendtarjeta";
-//
-//                StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
-//                        new Response.Listener<String>() {
-//                            @Override
-                //                           public void onResponse(String response) {
-//                                Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
-//                                try {
-//                                    JSONObject jsonObject = new JSONObject(response);
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-
-//                            }
-//                        }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
-//                    }
-//                }){
-//                    @Override
-//                    protected Map<String, String> getParams() {
-//                        // Posting parameters to login url
-//                        Map<String, String> params = new HashMap<String, String>();
-//                        params.put("RequestId", "33");
-//                        params.put("PosCarga","1");
-//                        params.put("Tarjeta","4000004210500001");
-//                        params.put("Productos",mjason.toString());
-
-//                        return params;
-//                    }
-//                };
-
-//                // Añade la peticion a la cola
-//                RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-//                requestQueue.add(eventoReq);
-//
+            public void onClick(View v) {
+                MostrarCombustibles();
             }
         });
-        builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+        btnMostrarProductos = findViewById(R.id.btnAceites);
+        btnMostrarProductos.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                dialogInterface.cancel();
+            public void onClick(View v) {
+                MostrarProductos();
             }
         });
-        AlertDialog dialog= builder.create();
-        dialog.show();
     }
-
-    private void CantidadProducto() {
-        cantidadProducto = findViewById(R.id.cantidadProducto);
-        Producto= findViewById(R.id.Producto);
-        cantidad = cantidadProducto.toString();
-    }
-    private void Aumentar() {
-        cantidad = cantidadProducto.getText().toString();
-        int numero = Integer.parseInt(cantidad);
-        int total = numero + 1;
-        String resultado = String.valueOf(total);
-        cantidadProducto.setText(resultado);
-
-    }
-
-    private void Decrementar() {
-        cantidad = cantidadProducto.getText().toString();
-        int numero = Integer.parseInt(cantidad);
-        if (numero > 1) {
-            int total = numero - 1;
-            String resultado = String.valueOf(total);
-            cantidadProducto.setText(resultado);
-        }else{
-            Toast.makeText(getApplicationContext(), "el valor minimo debe ser 1", Toast.LENGTH_LONG).show();
-        }
-    };
-
-
-    private void MostrarProductos() {
-        String url = "http://10.0.1.20/TransferenciaDatosAPI/api/catarticulos/getall";
+    private void MostrarCombustibles() {
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/precioCombustibles/estacion/"+data.getIdEstacion()+"/actuales";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                mostarProductor(response);
+                MetodoResponsecombustibles(response);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String,String> parametros = new HashMap<String, String>();
+
+                return parametros;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
+        requestQueue.add(stringRequest);
+
+    }
+
+    private void MetodoResponsecombustibles(final String response) {
+        List<String> maintitle;
+        maintitle = new ArrayList<String>();
+
+        List<String> subtitle;
+        subtitle = new ArrayList<String>();
+
+        List<Integer> imgid;
+        imgid = new ArrayList<>();
+
+        final List<String> IdProducto;
+        IdProducto = new ArrayList<String>();
+
+        final List<String> IdCombustible1;
+        IdCombustible1 = new ArrayList<String>();
+
+        final List<String> Precio;
+        Precio = new ArrayList<String>();
+
+        try {
+            JSONArray combusti = new JSONArray(response);
+            for (int i = 0; i <combusti.length() ; i++) {
+
+                JSONObject conbustibles = combusti.getJSONObject(i);
+                String activo = conbustibles.getString("Aplicado");
+                if (activo == "true"){
+                    cs = conbustibles.getString("EstacionCombustibleId");
+                    IdCombustible1.add(cs);
+
+
+                    precio = conbustibles.getString("Importe");
+                    Precio.add(precio);
+
+                    String combus = conbustibles.getString("EstacionCombustible");
+                    JSONObject combustib = new JSONObject(combus);
+
+                    numneroInterno = combustib.getString("NumeroInterno");
+                    String combustible = combustib.getString("Combustible");
+                    IdProducto.add(numneroInterno);
+
+
+                    JSONObject nombre = new JSONObject(combustible);
+                    descripcion = nombre.getString("DescripcionLarga");
+                }
+
+
+
+
+                maintitle.add(descripcion);
+                subtitle.add("Precio: $"+precio);
+                if (cs == "1"){
+                    imgid.add(R.drawable.premium);
+                }else{
+                    if (cs == "2"){
+                        imgid.add(R.drawable.magna);
+                    }else{
+                        if (cs == "3"){
+                            imgid.add(R.drawable.diesel);
+                        }
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        //ListAdapterP adapterP=new ListAdapterP(this, maintitle, subtitle,imgid);
+        ListAdapterProductosRedimir adapterP = new ListAdapterProductosRedimir(this, maintitle, subtitle, imgid);
+        list=(ListView)findViewById(R.id.list);
+        list.setAdapter(adapterP);
+
+
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // TODO Auto-generated method stub
+
+                String identificadorCombustible = IdProducto.get(position);
+                IdCombustible = identificadorCombustible;
+
+                String interno = IdCombustible1.get(position);
+                IdCombus = interno;
+
+                String cuesta = Precio.get(position);
+                Costo = cuesta;
+            }
+        });
+    }
+
+    private void MostrarProductos() {
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String posicion = getIntent().getStringExtra("pos");
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/islas/productos/estacion/"+data.getIdEstacion()+"/posicionCargaId/"+posicion;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                //mostarProductor(response);
+                mostrarProductor(response);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -170,71 +217,92 @@ public class BalanceProductos extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
         requestQueue.add(stringRequest);
     }
+    private void mostrarProductor(String response) {
 
+        String preciol = null;
+        String DescLarga;
+        String idArticulo;
 
-    private void mostarProductor(String response) {
+        //Declaracion de variables
 
-        final List<String> ID;
         ID = new ArrayList<String>();
 
-        final List<String> NombreProducto;
         NombreProducto = new ArrayList<String>();
 
-        final List<String> PrecioProducto;
         PrecioProducto = new ArrayList<>();
 
-        final List<String> ClaveProducto;
         ClaveProducto = new ArrayList();
 
+        CodigoBarras = new ArrayList();
+
+        ExistenciaProductos = new ArrayList();
+
+        ProductoId = new ArrayList();
+
+        //ArrayList<singleRow> singlerow = new ArrayList<>();
         try {
-            JSONArray productos = new JSONArray(response);
-            for (int i = 0; i <productos.length() ; i++) {
-                JSONObject p1 = productos.getJSONObject(i);
-                String idArticulo = p1.getString("IdArticulo");
-                String DesLarga = p1.getString("DescLarga");
-                String precio = p1.getString("Precio");
-                NombreProducto.add("ID: " + idArticulo + "    |     $"+precio);
-                ID.add(DesLarga);
-                PrecioProducto.add(precio);
+            JSONObject p1 = new JSONObject(response);
+
+            String ni = p1.getString("NumeroInterno");
+            String bodega = p1.getString("Bodega");
+            JSONObject ps = new JSONObject(bodega);
+            String producto = ps.getString("BodegaProductos");
+            JSONArray bodegaprod = new JSONArray(producto);
+
+            for (int i = 0; i <bodegaprod.length() ; i++){
+                String idproductos = null;
+                JSONObject pA = bodegaprod.getJSONObject(i);
+                String ExProductos=pA.getString("Existencias");
+                ExistenciaProductos.add(ExProductos);
+                String productoclave = pA.getString("Producto");
+                JSONObject prod = new JSONObject(productoclave);
+                DescLarga=prod.getString("DescripcionLarga");
+                String codigobarra = prod.getString("CodigoBarras");
+                idArticulo=prod.getString("NumeroInterno");
+                String PControl=prod.getString("ProductoControles");
+                JSONArray PC = new JSONArray(PControl);
+                for (int j = 0; j <PC.length() ; j++) {
+                    JSONObject Control = PC.getJSONObject(j);
+                    preciol  = Control.getString("Precio");
+                    idproductos = Control.getString("Id");
+
+                }
+                NombreProducto.add("ID: " + idArticulo + "    |     $"+preciol);
+                ID.add(DescLarga);
+                PrecioProducto.add(preciol);
                 ClaveProducto.add(idArticulo);
+                CodigoBarras.add(codigobarra);
+                ProductoId.add(idproductos);
             }
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
-        ListAdapterProductosRedimir adapterP = new ListAdapterProductosRedimir(this, ID, NombreProducto);
+        final ListAdapterAceitesRedimir adapterP = new ListAdapterAceitesRedimir(this,  ID, NombreProducto);
         list=(ListView)findViewById(R.id.list);
+        list.setTextFilterEnabled(true);
         list.setAdapter(adapterP);
-//        Agregado Mikel
+//        Agregado  click en la lista
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                //String  a = PrecioProducto.get(i).toString();
-                //String b = NombreProducto.get(i).toString();
+                String  Descripcion = ID.get(i).toString();
+                String precioUnitario = PrecioProducto.get(i).toString();
                 String paso= ClaveProducto.get(i).toString();
-                Producto.setText(paso);
-            }
-        });
-    }
+                String existencia = ExistenciaProductos.get(i).toString();
+                String idproduc = ProductoId.get(i);
 
-
-    private void CrearJSON() {
-        btnAgregar = findViewById(R.id.btnAgregar);
-        btnAgregar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                try {
-                    for (int i = 0; i <1; i++) {
-                        mjason.put("Cantidad",cantidad);
-                        mjason.put("IdProducto","35");
-                    }
-                    Toast.makeText(getApplicationContext(),mjason.toString(),Toast.LENGTH_LONG).show();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+//                Producto.setText(paso);
+//                txtDescripcion.setText(Descripcion);
+//                precio.setText(precioUnitario);
+//                existencias.setText(existencia);
+//                idproducto.setText(idproduc);
 
             }
         });
 
     }
+
+
 }

@@ -39,59 +39,7 @@ public class SQLiteBD  extends SQLiteOpenHelper {
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
-//--------------------------------------TABLA EDICION Y CONFIGURACION DE LO MTODOS DE LA TABLA NUMERO TARJETERO--------------------------
-    public static class DatosTarjetero implements BaseColumns{
-        public static final String NOMBRE_TABLA_TARJETERO = "tblnumerotarjetero";
-        public static final String DIRECCION_MAC = "direccionmac";
-        public static final String PROPIEDAD_CONEXION = "propiedadconexion";
-        public static final String ID_TARJETERO = "id";
-    }
 
-    private static final String TBL_DATOS_TARJETERO =
-            "CREATE TABLE " + DatosTarjetero.NOMBRE_TABLA_TARJETERO + " ("+
-                    DatosTarjetero._ID + " TEXT PRIMARY KEY," +
-                    DatosTarjetero.DIRECCION_MAC + " TEXT," +
-                    DatosTarjetero.PROPIEDAD_CONEXION + " TEXT, "  +
-                    DatosTarjetero.ID_TARJETERO + " TEXT )";
-
-    private static final String SQL_DELETE_DATOS_TARJETERO =
-            "DROP TABLE IF EXISTS " + DatosTarjetero.NOMBRE_TABLA_TARJETERO;
-
-    public void InsertarDatosNumeroTarjetero(String direccionmac, String propiedadconexion, String id){
-        SQLiteDatabase base = getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(DatosTarjetero.DIRECCION_MAC, direccionmac);
-        values.put(DatosTarjetero.PROPIEDAD_CONEXION, propiedadconexion);
-        values.put(DatosTarjetero.ID_TARJETERO, id);
-
-        long newRowId = base.insert(DatosTarjetero.NOMBRE_TABLA_TARJETERO,null,values);
-    }
-
-    public String getDireccionMac(){
-        SQLiteDatabase base = getReadableDatabase();
-        Cursor cursor = base.rawQuery("SELECT tblnumerotarjetero FROM direccionmac", null);
-        cursor.moveToFirst();
-        String dato = cursor.getString(0);
-        return dato;
-    }
-    public String getPropiedadConexion(){
-        SQLiteDatabase base = getReadableDatabase();
-        Cursor cursor = base.rawQuery("SELECT tblnumerotarjetero FROM propiedadconexion", null);
-        cursor.moveToFirst();
-        String dato = cursor.getString(0);
-        return dato;
-    }
-
-    public String getIdTarjtero(){
-        SQLiteDatabase base = getReadableDatabase();
-        Cursor cursor = base.rawQuery("SELECT tblnumerotarjetero FROM id", null);
-        cursor.moveToFirst();
-        String dato = cursor.getString(0);
-        return dato;
-    }
-
-
-//   -------------------------------TEMINAN LOS METODOS DE LA TABLA DEL NUMERO DEL TAJETERO ----------------------------------------------
 
 
     public boolean checkDataBase(String Database_path) {
@@ -352,4 +300,61 @@ public class SQLiteBD  extends SQLiteOpenHelper {
         String tipo = cursor.getString(0);
         return tipo;
     }
+
+
+    //--------------------------------------TABLA EDICION Y CONFIGURACION DE LO MTODOS DE LA TABLA NUMERO TARJETERO--------------------------
+    public static class DatosTarjetero implements BaseColumns{
+        public static final String NOMBRE_TABLA_TARJETERO = "tblnumerotarjetero";
+        public static final String DIRECCION_MAC = "direccionmac";
+        public static final String PROPIEDAD_CONEXION = "propiedadconexion";
+        public static final String ID_TARJETERO = "idtarjetero";
+    }
+
+    private static final String TBL_DATOS_TARJETERO =
+            "CREATE TABLE " + DatosTarjetero.NOMBRE_TABLA_TARJETERO + " ("+
+                    DatosTarjetero._ID + " TEXT PRIMARY KEY," +
+                    DatosTarjetero.DIRECCION_MAC + " TEXT," +
+                    DatosTarjetero.PROPIEDAD_CONEXION + " TEXT, "  +
+                    DatosTarjetero.ID_TARJETERO + " TEXT )";
+
+    private static final String SQL_DELETE_DATOS_TARJETERO =
+            "DROP TABLE IF EXISTS " + DatosTarjetero.NOMBRE_TABLA_TARJETERO;
+
+    public void InsertarDatosNumeroTarjetero(String direccionmac, String propiedadconexion, String idtarjetero){
+        SQLiteDatabase base = getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DatosTarjetero.DIRECCION_MAC, direccionmac);
+        values.put(DatosTarjetero.PROPIEDAD_CONEXION, propiedadconexion);
+        values.put(DatosTarjetero.ID_TARJETERO, idtarjetero);
+
+        long newRowId = base.insert(DatosTarjetero.NOMBRE_TABLA_TARJETERO,null,values);
+    }
+
+    public String getDireccionMac(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT tblnumerotarjetero FROM direccionmac", null);
+        cursor.moveToFirst();
+        String dato = cursor.getString(0);
+        return dato;
+    }
+    public String getPropiedadConexion(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT tblnumerotarjetero FROM propiedadconexion", null);
+        cursor.moveToFirst();
+        String dato = cursor.getString(0);
+        return dato;
+    }
+
+    public String getIdTarjtero(){
+        SQLiteDatabase base = getReadableDatabase();
+        Cursor cursor = base.rawQuery("SELECT idtarjetero FROM tblnumerotarjetero", null);
+        cursor.moveToFirst();
+        String dato = cursor.getString(0);
+        return dato;
+    }
+
+
+//   -------------------------------TEMINAN LOS METODOS DE LA TABLA DEL NUMERO DEL TAJETERO ----------------------------------------------
 }
+
+
