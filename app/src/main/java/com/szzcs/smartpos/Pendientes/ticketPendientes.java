@@ -50,7 +50,7 @@ public class ticketPendientes extends AppCompatActivity {
     String carga;
     String nousuario;
     String EstacionId, sucursalId, ipEstacion, numeroTarjetero ;
-
+    String usuarioId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,12 +60,13 @@ public class ticketPendientes extends AppCompatActivity {
         sucursalId=db.getIdSucursal();
         ipEstacion = db.getIpEstacion();
         numeroTarjetero = db.getNumeroInterno();
-        numeroTarjetero ="1";
+        numeroTarjetero ="57";
 
         TextView txtMac = findViewById(R.id.txtmac);
         txtMac.setText(getMacAddr());
         txtMac.setText("");
         formapagoProductos();
+        usuarioId =getIntent().getStringExtra("user");
     }
 
 
@@ -204,9 +205,11 @@ public class ticketPendientes extends AppCompatActivity {
         final String totaltotalTexto="";
 
         //Conexion con la base y ejecuta consulta para saber si tiene tickets Pendientes
-        String url = "http://"+ipEstacion+"/CorpogasService/api/tickets/pendiente/estacionId/"+EstacionId+"/numeroTarjetero/"+numeroTarjetero;
+        //String url = "http://"+ipEstacion+"/CorpogasService/api/tickets/pendiente/estacionId/"+EstacionId+"/numeroTarjetero/"+numeroTarjetero;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/tickets/pendiente/estacionId/"+EstacionId+"/numeroTarjetero/"+numeroTarjetero+"/usuarioId/"+usuarioId;
+
         // Utilizamos el metodo Post para validar la contraseña
-        StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
+        StringRequest eventoReq = new StringRequest(Request.Method.POST,url,  //POST
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -231,11 +234,11 @@ public class ticketPendientes extends AppCompatActivity {
                                 JSONObject validar = new JSONObject(response);
                                 //Se asigna el resultado a String
                                 String valido = validar.getString("Resultado");
-                                if (valido.equals("null")) { //==null
+                                if (valido=="null") { //==null
                                     String detalle = validar.getString("Detalle");
                                     //Si el detalle es null es que ya se imprimiio
                                     //validar detalle con un if
-                                    if (detalle.equals("null")) {
+                                    if (detalle=="null") { //.equals("null")
                                         //JSONObject mensaj = new JSONObject(valido);
                                         //String mensajes = mensaj.getString("Descripcion");
                                         //Toast.makeText(getApplicationContext(), mensajes, Toast.LENGTH_SHORT).show();
@@ -248,6 +251,7 @@ public class ticketPendientes extends AppCompatActivity {
                                                         public void onClick(DialogInterface dialogInterface, int i) {
                                                             Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
                                                             startActivity(intente);
+                                                            finish();
                                                         }
                                                     }).show();
                                         } catch (Exception e) {
@@ -360,7 +364,7 @@ public class ticketPendientes extends AppCompatActivity {
                                     try {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(ticketPendientes.this);
                                         builder.setTitle("Tickets Pendientes");
-                                        builder.setMessage(errorenviado)
+                                        builder.setMessage(desc)
                                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -457,4 +461,12 @@ public class ticketPendientes extends AppCompatActivity {
         }
         return "";
     }
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), claveUPendientes.class);
+        startActivity(intent);
+        //finish();
+    }
+
 }

@@ -349,11 +349,17 @@ public class cargaGasto extends AppCompatActivity {
             getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
                     addToBackStack(PrintFragment.class.getName()).
                     commit();
+            finish();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-
-
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), claveGastos.class);
+        startActivity(intent);
+        //finish();
+    }
 }

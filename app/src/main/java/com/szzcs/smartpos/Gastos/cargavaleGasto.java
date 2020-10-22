@@ -22,6 +22,7 @@ import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.PrintFragmentVale;
+import com.szzcs.smartpos.Productos.posicionProductos;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -186,10 +187,18 @@ private void GuardarGasto(String fechatrabajo, String turnoId){
             getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
                     addToBackStack(PrintFragment.class.getName()).
                     commit();
+            finish();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), claveGastos.class);
+        startActivity(intent);
+        //finish();
     }
 
 

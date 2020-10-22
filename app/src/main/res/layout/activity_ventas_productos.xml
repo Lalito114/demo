@@ -9,12 +9,12 @@
 
     <Button
         android:id="@+id/btnsolicitadespacho"
-        android:layout_width="330dp"
-        android:layout_height="30dp"
+        android:layout_width="368dp"
+        android:layout_height="28dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="70dp"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="531dp"
         android:background="@drawable/b3"
         android:enabled="true"
         android:saveEnabled="true"
@@ -24,27 +24,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <EditText
-        android:id="@+id/empleado"
-        android:layout_width="48dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="139dp"
-        android:layout_marginBottom="508dp"
-        android:ems="10"
-        android:gravity="center_horizontal"
-        android:inputType="number"
-        android:visibility="invisible" />
-
     <TextView
         android:id="@+id/txtproductos"
         android:layout_width="330dp"
-        android:layout_height="30dp"
+        android:layout_height="42dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="15dp"
-        android:layout_marginBottom="111dp"
+        android:layout_marginBottom="69dp"
         android:textColor="#070707"
         android:textSize="15sp"
         android:textStyle="bold" />
@@ -108,7 +95,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="15dp"
-        android:layout_marginBottom="439dp"
+        android:layout_marginBottom="410dp"
         android:textColor="#070707"
         android:textSize="15sp"
         android:textStyle="bold" />
@@ -119,36 +106,9 @@
         android:layout_height="42dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="75dp"
-        android:layout_marginBottom="472dp"
+        android:layout_marginEnd="84dp"
+        android:layout_marginBottom="439dp"
         app:srcCompat="@android:drawable/ic_menu_search" />
-
-    <EditText
-        android:id="@+id/Producto"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="140dp"
-        android:layout_marginBottom="467dp"
-        android:ems="10"
-        android:gravity="left"
-        android:hint="Clave producto"
-        android:inputType="number"
-        android:textSize="14sp" />
-
-    <TextView
-        android:id="@+id/textView13"
-        android:layout_width="95dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="238dp"
-        android:layout_marginBottom="473dp"
-        android:text="Producto"
-        android:textColor="#070707"
-        android:textSize="20sp"
-        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textView12"
@@ -156,8 +116,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="240dp"
-        android:layout_marginBottom="510dp"
+        android:layout_marginEnd="249dp"
+        android:layout_marginBottom="478dp"
         android:text="Cantidad"
         android:textColor="#070707"
         android:textSize="20sp"
@@ -169,12 +129,25 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="192dp"
-        android:layout_marginBottom="504dp"
+        android:layout_marginEnd="201dp"
+        android:layout_marginBottom="472dp"
         android:ems="10"
         android:gravity="center_horizontal"
         android:inputType="number"
         android:text="1" />
+
+    <EditText
+        android:id="@+id/empleado"
+        android:layout_width="48dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="148dp"
+        android:layout_marginBottom="476dp"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:inputType="number"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/decrementar"
@@ -182,8 +155,8 @@
         android:layout_height="42dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="75dp"
-        android:layout_marginBottom="512dp"
+        android:layout_marginEnd="84dp"
+        android:layout_marginBottom="479dp"
         android:text="-" />
 
     <Button
@@ -192,8 +165,8 @@
         android:layout_height="42dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="7dp"
-        android:layout_marginBottom="511dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="478dp"
         android:text="+" />
 
     <ImageButton
@@ -202,9 +175,36 @@
         android:layout_height="42dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="7dp"
-        android:layout_marginBottom="470dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="438dp"
         app:srcCompat="@android:drawable/ic_menu_camera" />
+
+    <TextView
+        android:id="@+id/textView13"
+        android:layout_width="95dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="247dp"
+        android:layout_marginBottom="441dp"
+        android:text="Producto"
+        android:textColor="#070707"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/Producto"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="149dp"
+        android:layout_marginBottom="435dp"
+        android:ems="10"
+        android:gravity="left"
+        android:hint="Clave producto"
+        android:inputType="number"
+        android:textSize="14sp" />
 
     <ListView
         android:id="@+id/list"
@@ -213,7 +213,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="15dp"
-        android:layout_marginBottom="148dp"
+        android:layout_marginBottom="120dp"
         android:background="@drawable/border" />
 
     <Button

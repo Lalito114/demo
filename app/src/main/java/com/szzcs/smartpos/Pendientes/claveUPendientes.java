@@ -92,7 +92,7 @@ public class claveUPendientes extends BaseActivity implements FingerprintListene
 
 
         // URL para obtener los empleados  y huellas de la posición de carga X
-        String url = "http://"+ipEstacion+"/CorpogasService/api/estacionControles/empleadosPorIsla/estacionId/"+EstacionId+"/tipoBiometricoId/3/posicionCargaId/"+carga.getText().toString();
+        String url = "http://"+ipEstacion+"/CorpogasService/api/estacionControles/empleadosTipoBiometrico/estacionId/"+EstacionId+"/tipoBiometricoId/3";
         // Utilizamos el metodo Post para validar la contraseña
         StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
                 new Response.Listener<String>() {
@@ -153,7 +153,7 @@ public class claveUPendientes extends BaseActivity implements FingerprintListene
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        Intent intente = new Intent(getApplicationContext(), posicionProductos.class);
+                                        Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
                                         startActivity(intente);
                                     }
                                 }).show();
@@ -225,6 +225,7 @@ public class claveUPendientes extends BaseActivity implements FingerprintListene
                                                 Intent intent = new Intent(getApplicationContext(), ticketPendientes.class); //formaPago
                                                 intent.putExtra("user", idusuario);
                                                 startActivity(intent);
+                                                finish();
                                             } else {
                                                 //Si no es valido se envia mensaje
                                                 try {
@@ -330,6 +331,7 @@ public class claveUPendientes extends BaseActivity implements FingerprintListene
                                     intent.putExtra("user",EmpleadoId);
                                     //inicia el activity
                                     startActivity(intent);
+                                    finish();
                                 }else {
                                     //Si no es valido se envia mensaje de conteaseña incorrecta
                                     try {
@@ -372,7 +374,7 @@ public class claveUPendientes extends BaseActivity implements FingerprintListene
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        Intent intente = new Intent(getApplicationContext(), posicionProductos.class);
+                                        Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
                                         startActivity(intente);
                                     }
                                 }).show();
@@ -405,6 +407,7 @@ public class claveUPendientes extends BaseActivity implements FingerprintListene
                 //mFingerprintManager.authenticate(3); ES PARA HUELLAS CARGADAS EN LA HANDHELD
                 banderaIdentificado = true;
                 for (int q = 0; q < AEmpleadoId.size(); q++) { //
+                    empleadoIdentificado="";
                     if (banderaIdentificado == true) {
                         isoFeatureTmp = AHuella.get(q);
                         empleadoIdentificado = AEmpleadoId.get(q);
@@ -438,7 +441,9 @@ public class claveUPendientes extends BaseActivity implements FingerprintListene
     public void onAuthenticationSucceeded(int i, Object o) {
         banderaIdentificado =Boolean.FALSE;
         showLog("Identificación Correcta :  Usuario = " + empleadoIdentificado); // + "  score = " + obj);
-        validaId(empleadoIdentificado);
+        if (empleadoIdentificado.length() > 0) {
+            validaId(empleadoIdentificado);
+        }
     }
 
     @Override
@@ -482,5 +487,11 @@ public class claveUPendientes extends BaseActivity implements FingerprintListene
 
         });
     }
-
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+        startActivity(intent);
+        //finish();
+    }
 }
