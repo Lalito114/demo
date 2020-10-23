@@ -80,77 +80,95 @@ public class claveUsuario extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String detalle = jsonObject.getString("Detalle");
+                            if (detalle.equals("null")){
+                                try{
+                                    String resul = jsonObject.getString("Resultado");
+                                    JSONObject resultado = new JSONObject(resul);
+                                    String descripcion = resultado.getString("Descripcion");
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(claveUsuario.this);
+                                    builder.setTitle("Tanque Lleno");
+                                    builder.setMessage(descripcion);
+                                    builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            Intent intent = new Intent(getApplicationContext(),Munu_Principal.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+                                    AlertDialog dialog= builder.create();
+                                    dialog.show();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
 
-                            String pie = jsonObject.getString("Pie");
-                            JSONObject mensaje = new JSONObject(pie);
-                            final JSONArray names = mensaje.getJSONArray("Mensaje");
+                            }else{
+                                String pie = jsonObject.getString("Pie");
+                                JSONObject mensaje = new JSONObject(pie);
+                                final JSONArray names = mensaje.getJSONArray("Mensaje");
 
-                            JSONObject det = new JSONObject(detalle);
-                            final String numerorecibo = det.getString("NoRecibo");
-                            final String numerotransaccion = det.getString("NoTransaccion");
-                            final String numerorastreo = det.getString("NoRastreo");
-                            final String poscarga = det.getString("PosCarga");
-                            final String despachador = det.getString("Desp");
-                            String vendedor = det.getString("Vend");
-                            String prod = det.getString("Productos");
+                                JSONObject det = new JSONObject(detalle);
+                                final String numerorecibo = det.getString("NoRecibo");
+                                final String numerotransaccion = det.getString("NoTransaccion");
+                                final String numerorastreo = det.getString("NoRastreo");
+                                final String poscarga = det.getString("PosCarga");
+                                final String despachador = det.getString("Desp");
+                                String vendedor = det.getString("Vend");
+                                String prod = det.getString("Productos");
 
-                            JSONArray producto = det.getJSONArray("Productos");
+                                JSONArray producto = det.getJSONArray("Productos");
 
-                            String protic = new String();
-                            final String finalProtic = protic;
+                                String protic = new String();
+                                final String finalProtic = protic;
 
-                            for (int i = 0; i <producto.length() ; i++) {
-                                JSONObject p1 = producto.getJSONObject(i);
-                                String value = p1.getString("Cantidad");
+                                for (int i = 0; i <producto.length() ; i++) {
+                                    JSONObject p1 = producto.getJSONObject(i);
+                                    String value = p1.getString("Cantidad");
 
-                                String descripcion = p1.getString("Descripcion");
+                                    String descripcion = p1.getString("Descripcion");
 
-                                String importe = p1.getString("Importe");
+                                    String importe = p1.getString("Importe");
 
-                                String prec = p1.getString("Precio");
+                                    String prec = p1.getString("Precio");
 
-                                protic +=value + " | " + descripcion + " | " + prec + " | " + importe+"\n";
+                                    protic +=value + " | " + descripcion + " | " + prec + " | " + importe+"\n";
+                                }
+                                String formapago = det.getString("FormaPago");
+
+                                final String subtotal = det.getString("Subtotal");
+                                final String iva = det.getString("IVA");
+                                final String total = det.getString("Total");
+                                final String totaltexto = det.getString("TotalTexto");
+                                String clave = det.getString("Clave");
+                                String carga = getIntent().getStringExtra("car");
+                                String user = getIntent().getStringExtra("user");
+                                args.putString("numerorecibo", numerorecibo);
+                                args.putString("nombrepago", formapago);
+                                args.putString("numticket", "2");
+                                args.putString("numerotransaccion", numerotransaccion);
+                                args.putString("numerorastreo", numerorastreo);
+                                args.putString("posicion", carga);
+                                args.putString("despachador",despachador);
+                                args.putString("vendedor",user);
+                                args.putString("productos", protic);
+
+                                args.putString("subtotal",subtotal);
+                                args.putString("iva",iva);
+                                args.putString("total",total);
+                                args.putString("totaltexto",totaltexto);
+                                args.putString("mensaje",names.toString());
+                                String tipo = getIntent().getStringExtra("tipo");
+                                args.putString("tipo",tipo);
+
+                                PrintFragment cf = new PrintFragment();
+                                cf.setArguments(args);
+                                getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+                                        addToBackStack(PrintFragment.class.getName()).
+                                        commit();
                             }
-                            String formapago = det.getString("FormaPago");
-
-                            final String subtotal = det.getString("Subtotal");
-                            final String iva = det.getString("IVA");
-                            final String total = det.getString("Total");
-                            final String totaltexto = det.getString("TotalTexto");
-                            String clave = det.getString("Clave");
-                            String carga = getIntent().getStringExtra("car");
-                            String user = getIntent().getStringExtra("user");
-                            args.putString("numerorecibo", numerorecibo);
-                            args.putString("nombrepago", formapago);
-                            args.putString("numticket", "2");
-                            args.putString("numerotransaccion", numerotransaccion);
-                            args.putString("numerorastreo", numerorastreo);
-                            args.putString("posicion", carga);
-                            args.putString("despachador",despachador);
-                            args.putString("vendedor",user);
-                            args.putString("productos", finalProtic);
-
-                            args.putString("subtotal",subtotal);
-                            args.putString("iva",iva);
-                            args.putString("total",total);
-                            args.putString("totaltexto",totaltexto);
-                            args.putString("mensaje",names.toString());
-                            String tipo = getIntent().getStringExtra("tipo");
-                            args.putString("tipo",tipo);
-
-                            PrintFragment cf = new PrintFragment();
-                            cf.setArguments(args);
-                            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
-                                    addToBackStack(PrintFragment.class.getName()).
-                                    commit();
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
-
-
                     }
                 }, new Response.ErrorListener() {
             @Override
