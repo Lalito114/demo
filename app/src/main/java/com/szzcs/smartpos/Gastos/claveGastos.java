@@ -375,6 +375,9 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
         //-------------------------Aqui termina el volley --------------
     }
 
+    private void colocaId(){
+        password.setText( claveEmpleadoIdentificado);
+    }
     private void  validaId(final String EmpleadoId){
         //Crea Boton Enviar
         //Button btnenviar = (Button) findViewById(R.id.enviar);
@@ -510,8 +513,9 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
     @Override
     public void onAuthenticationSucceeded(int fingerId, Object obj) {
         banderaIdentificado =Boolean.FALSE;
-        showLog("Identificación Correcta :  Usuario = " + empleadoIdentificado); // + "  score = " + obj);
 
+        showLog("Identificación Correcta :  Usuario = " + empleadoIdentificado); // + "  score = " + obj);
+        colocaId() ;
         //validaId(empleadoIdentificado);
     }
 
