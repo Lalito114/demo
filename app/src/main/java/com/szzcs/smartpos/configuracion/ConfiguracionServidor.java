@@ -43,6 +43,10 @@ public class ConfiguracionServidor extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_configuracion_servidor);
+        this.setTitle("Configuracion Inicial Servidor");
+        getMacAddress();
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         boolean verdad = data.checkDataBase("/data/data/com.szzcs.smartpos/databases/ConfiguracionEstacion.db");
         if(verdad == true){
@@ -66,10 +70,7 @@ public class ConfiguracionServidor extends AppCompatActivity {
                 }
             }
         }else{
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_configuracion_servidor);
-            this.setTitle("Configuracion Inicial Servidor");
-            getMacAddress();
+
             btnenviar = findViewById(R.id.btnEnviar);
 
             btnenviar.setOnClickListener(new View.OnClickListener() {

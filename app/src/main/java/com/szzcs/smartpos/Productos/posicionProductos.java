@@ -15,6 +15,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -108,6 +109,13 @@ public class posicionProductos extends AppCompatActivity {
                 startActivity(intente);
             }
         });
+    }
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+        startActivity(intent);
+        //finish();
     }
 
 

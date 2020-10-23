@@ -56,7 +56,7 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
 
     Button btnhuella;
     private byte[] isoFeatureTmp;
-    String empleadoIdentificado;
+    String empleadoIdentificado, claveEmpleadoIdentificado;
     private FingerprintManager mFingerprintManager;
     private Handler mHandler;
     TextView textResultado;
@@ -64,6 +64,7 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
 
     List<String> AEmpleadoId;
     List<byte[]> AHuella;
+    List<String> AClaveEmpleado;
 
 
     @Override
@@ -71,6 +72,8 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_gastos);
 
+        empleadoIdentificado="0";
+        claveEmpleadoIdentificado = "";
         btnhuella  =  findViewById(R.id.btnhuella);
         btnhuella.setOnClickListener(claveGastos.this);
         mHandler = new Handler(Looper.getMainLooper());
@@ -87,6 +90,8 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
         carga = findViewById(R.id.carga);
         //carga.setText(getIntent().getStringExtra("posicion"));
         password = (EditText) findViewById(R.id.pasword);
+        password.setText(claveEmpleadoIdentificado);
+
 
         proviene = "0";
         validaClave();
@@ -98,10 +103,10 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
     private void ObtieneHuellas(){
         AEmpleadoId = new ArrayList<String>();
         AHuella = new ArrayList<byte []>();
-
+        AClaveEmpleado = new ArrayList<String>();
 
         // URL para obtener los empleados  y huellas de la posición de carga X
-        String url = "http://"+ipEstacion+"/CorpogasService/api/estacionControles/empleadosPorIsla/estacionId/"+EstacionId+"/tipoBiometricoId/3/posicionCargaId/"+carga.getText().toString();
+        String url = "http://"+ipEstacion+"/CorpogasService/api/estacionControles/empleadosTipoBiometrico/estacionId/"+EstacionId+"/tipoBiometricoId/3";
         // Utilizamos el metodo Post para validar la contraseña
         StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
                 new Response.Listener<String>() {
@@ -119,6 +124,8 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                                     JSONObject pA = or.getJSONObject(b);
                                     String sucEmpleado=pA.getString("SucursalEmpleado");
                                     JSONObject empHuella = new JSONObject(sucEmpleado);
+                                    String claveEmpleado=empHuella.getString("Clave");
+
                                     String empleadohuellaEmpleado=empHuella.getString("EmpleadoHuellas");
                                     JSONArray huellas = new JSONArray(empleadohuellaEmpleado);
                                     for (int c = 0; c <huellas.length() ; c++) {
@@ -130,6 +137,7 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                                             AEmpleadoId.add(empleadoId);
                                             byte [] huella = StringUtils.convertHexToBytes(huellaDerecha);
                                             AHuella.add(huella);
+                                            AClaveEmpleado.add(claveEmpleado);
                                         }
                                     }
                                 }
@@ -162,8 +170,9 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        Intent intente = new Intent(getApplicationContext(), posicionProductos.class);
+                                        Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
                                         startActivity(intente);
+                                        finish();
                                     }
                                 }).show();
                     }catch (Exception e){
@@ -191,6 +200,9 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
     }
 
     public void obtenerIsla(final String proviene) {
+        if (claveEmpleadoIdentificado.length() >0){
+            password.setText(claveEmpleadoIdentificado);
+        }
         final String pass = password.getText().toString();
 
 
@@ -212,7 +224,7 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                     intent.putExtra("isla", idisla);
                     intent.putExtra("turno", idTurno);
                     startActivity(intent);
-
+                    finish();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -246,7 +258,7 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                 if (pass.isEmpty()){
                     Toast.makeText(getApplicationContext(),"Ingresa la contraseña",Toast.LENGTH_SHORT).show();
                 }else {
-                    if (empleadoIdentificado != "0") {
+                    if (empleadoIdentificado == "0") {
                         ObtenerClave(pass, "1");
                     }else{
                         proviene = "1";
@@ -266,7 +278,7 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                 if (pass.isEmpty()){
                     Toast.makeText(getApplicationContext(),"Ingresa la contraseña",Toast.LENGTH_SHORT).show();
                 }else {
-                    if (empleadoIdentificado != "0") {
+                    if (empleadoIdentificado == "0") {
                         ObtenerClave(pass,"2");
                     }else{
                         proviene = "2";
@@ -363,6 +375,9 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
         //-------------------------Aqui termina el volley --------------
     }
 
+    private void colocaId(){
+        password.setText( claveEmpleadoIdentificado);
+    }
     private void  validaId(final String EmpleadoId){
         //Crea Boton Enviar
         //Button btnenviar = (Button) findViewById(R.id.enviar);
@@ -434,8 +449,9 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        Intent intente = new Intent(getApplicationContext(), posicionProductos.class);
+                                        Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
                                         startActivity(intente);
+                                        finish();
                                     }
                                 }).show();
                     }catch (Exception e){
@@ -468,6 +484,7 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                     if (banderaIdentificado == true) {
                         isoFeatureTmp = AHuella.get(q);
                         empleadoIdentificado = AEmpleadoId.get(q);
+                        claveEmpleadoIdentificado = AClaveEmpleado.get(q);
                         mFingerprintManager.verifyWithISOFeature(isoFeatureTmp);
                         try {
                             Thread.sleep(1000);
@@ -496,7 +513,9 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
     @Override
     public void onAuthenticationSucceeded(int fingerId, Object obj) {
         banderaIdentificado =Boolean.FALSE;
+
         showLog("Identificación Correcta :  Usuario = " + empleadoIdentificado); // + "  score = " + obj);
+        colocaId() ;
         //validaId(empleadoIdentificado);
     }
 
@@ -540,6 +559,14 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
             }
 
         });
+    }
+
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+        startActivity(intent);
+        //finish();
     }
 
 }

@@ -24,9 +24,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.szzcs.smartpos.Cortes.ventasTotales;
-import com.szzcs.smartpos.EmpleadoHuellas.capturaEmpleadoHuella;
-import com.szzcs.smartpos.Munu_Principal;
+
 import com.szzcs.smartpos.MyApp;
 import com.szzcs.smartpos.Pendientes.claveUPendientes;
 import com.szzcs.smartpos.R;
@@ -48,10 +46,14 @@ import java.util.Date;
 import java.util.List;
 
 public class claveProducto extends BaseActivity implements FingerprintListener, View.OnClickListener  {
+    //datos para huella
     private static final String TAG = "FingerprintActivity";
+
     TextView usuario, carga;
     EditText contrasena;
     String EstacionId, sucursalId, ipEstacion ;
+
+    //Variables para huella
     Button btnhuella;
     private byte[] isoFeatureTmp;
     String empleadoIdentificado;
@@ -59,7 +61,6 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
     private Handler mHandler;
     TextView textResultado;
     Boolean banderaIdentificado;
-
     List<String> AEmpleadoId;
     List<byte[]> AHuella;
 
@@ -86,6 +87,7 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
         carga.setText(getIntent().getStringExtra("posicion"));
         //procedimiento para validar la contraseña
         validaClave();
+       //Inicializacion y carga de huella
         initFinger();
         ObtieneHuellas();
     }
@@ -229,6 +231,7 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
                                             intent.putExtra("user",idusuario);
                                             //inicia el activity
                                             startActivity(intent);
+                                            finish();
                                         }else{
                                             //Si no es valido se envia mensaje de conteaseña incorrecta
                                             try {
@@ -400,33 +403,31 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
 
 
 
-@Override
+    @Override
     public void onClick(View view) {
-
-
-    if (view.getId() == R.id.btnhuella) {
-        //mFingerprintManager.authenticate(3); ES PARA HUELLAS CARGADAS EN LA HANDHELD
-        if  (AEmpleadoId.size() == 0){
-            Toast.makeText(getApplicationContext(),"Ningún empleado con huellas capturadas",Toast.LENGTH_SHORT).show();
-        }else {
-            banderaIdentificado = true;
-            for (int q = 0; q < AEmpleadoId.size(); q++) { //
-                if (banderaIdentificado == true) {
-                    isoFeatureTmp = AHuella.get(q);
-                    empleadoIdentificado = AEmpleadoId.get(q);
-                    mFingerprintManager.verifyWithISOFeature(isoFeatureTmp);
-                    try {
-                        Thread.sleep(1000);
-                    } catch (Exception e) {
-                        e.printStackTrace();
+        if (view.getId() == R.id.btnhuella) {
+            //mFingerprintManager.authenticate(3); ES PARA HUELLAS CARGADAS EN LA HANDHELD
+            if  (AEmpleadoId.size() == 0){
+                Toast.makeText(getApplicationContext(),"Ningún empleado con huellas capturadas",Toast.LENGTH_SHORT).show();
+            }else {
+                banderaIdentificado = true;
+                for (int q = 0; q < AEmpleadoId.size(); q++) { //
+                    if (banderaIdentificado == true) {
+                        isoFeatureTmp = AHuella.get(q);
+                        empleadoIdentificado = AEmpleadoId.get(q);
+                        mFingerprintManager.verifyWithISOFeature(isoFeatureTmp);
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        break;
                     }
-                } else {
-                    break;
                 }
             }
         }
     }
-}
 
     @Override
     public void onEnrollmentProgress(int i, int i1, int i2) {
@@ -487,6 +488,13 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
             }
 
         });
+    }
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), posicionProductos.class);
+        startActivity(intent);
+        //finish();
     }
 
 }

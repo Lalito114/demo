@@ -16,7 +16,8 @@
         android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:textStyle="italic|bold"/>
 
     <TextView
         android:id="@+id/textFajillasMorralla"
@@ -27,7 +28,8 @@
         android:textSize="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textFajillaMorralla" />
+        app:layout_constraintTop_toBottomOf="@+id/textFajillaMorralla"
+        />
 
     <EditText
         android:id="@+id/editFajillasMorralla"
@@ -39,14 +41,19 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textFajillasMorralla" />
+        app:layout_constraintTop_toBottomOf="@+id/textFajillasMorralla"
+        android:drawableLeft="@drawable/folio_edittext"
+        android:maxLength="5"/>
 
     <Button
         android:id="@+id/btnFajillasMorralla"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="80dp"
+        android:layout_width="216dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="150dp"
+        android:layout_marginBottom="120dp"
+        android:background="@drawable/b3"
         android:text="ACEPTAR"
+        android:textColor="@color/colorWhite"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

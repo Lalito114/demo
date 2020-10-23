@@ -17,7 +17,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textFolioFinalBilletes" />
+        app:layout_constraintTop_toBottomOf="@+id/textFolioFinalBilletes"
+        android:drawableLeft="@drawable/folio_edittext"
+        android:maxLength="10"/>
 
     <TextView
         android:id="@+id/textFajillaBillete"
@@ -29,7 +31,9 @@
         android:textSize="25dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:textStyle="italic|bold"
+        />
 
     <TextView
         android:id="@+id/textFolioInicial"
@@ -66,16 +70,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textFolioInicial" />
+        app:layout_constraintTop_toBottomOf="@+id/textFolioInicial"
+        android:drawableLeft="@drawable/folio_edittext"
+        android:maxLength="10"
+        />
 
     <Button
         android:id="@+id/btnFajillaBilletes"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
-        android:layout_marginBottom="252dp"
-
+        android:layout_width="216dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="120dp"
+        android:layout_marginBottom="120dp"
+        android:background="@drawable/b3"
         android:text="ACEPTAR"
+        android:textColor="@color/colorWhite"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"

@@ -14,7 +14,7 @@
         android:layout_marginBottom="140dp"
         android:text="Valida Huella"
         android:textAllCaps="false"
-        android:textColorHint="@color/colorPrimary" />
+        android:textColorHint="@color/colorWhite" />
 
     <TextView
         android:id="@+id/textresultado"

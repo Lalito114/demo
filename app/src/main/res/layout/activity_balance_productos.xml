@@ -8,12 +8,12 @@
 
     <ListView
         android:id="@+id/list"
-        android:layout_width="278dp"
-        android:layout_height="251dp"
+        android:layout_width="280dp"
+        android:layout_height="264dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="43dp"
-        android:layout_marginBottom="104dp"
+        android:layout_marginEnd="45dp"
+        android:layout_marginBottom="67dp"
         android:background="@drawable/cajadetextopuntada" />
 
     <Button
@@ -22,65 +22,11 @@
         android:layout_height="41dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="175dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="166dp"
+        android:layout_marginBottom="20dp"
         android:background="@drawable/fondoazulpuntada"
         android:text=" agregar producto"
         android:textColor="@color/a_normal" />
-
-    <EditText
-        android:id="@+id/edtPesos"
-        android:layout_width="98dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="28dp"
-        android:layout_marginBottom="55dp"
-        android:background="@drawable/cajadetextopuntada"
-        android:ems="10"
-        android:gravity="center_horizontal"
-        android:hint="0.00"
-        android:inputType="numberDecimal" />
-
-    <TextView
-        android:id="@+id/txtLitros"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="291dp"
-        android:layout_marginBottom="67dp"
-        android:text="Litros: "
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold" />
-
-    <EditText
-        android:id="@+id/edtLitros"
-        android:layout_width="99dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="194dp"
-        android:layout_marginBottom="57dp"
-        android:background="@drawable/cajadetextopuntada"
-        android:ems="10"
-        android:gravity="center_horizontal"
-        android:hint="0.00"
-        android:inputType="numberDecimal" />
-
-    <TextView
-        android:id="@+id/txtPesos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="127dp"
-        android:layout_marginBottom="65dp"
-        android:text="Pesos: "
-        android:textColor="@color/black"
-        android:textSize="18sp"
-        android:textStyle="bold" />
 
     <Button
         android:id="@+id/btnEnviarProducto"
@@ -89,35 +35,10 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="39dp"
-        android:layout_marginBottom="9dp"
+        android:layout_marginBottom="21dp"
         android:background="@drawable/fondoazulpuntada"
         android:text="Enviar"
         android:textColor="@color/a_normal" />
-
-    <TextView
-        android:id="@+id/textView18"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="67dp"
-        android:layout_marginBottom="537dp"
-        android:text="PUNTOS DISPOBLES EN TARJETA"
-        android:textColor="#000000"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/txtSaldos"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="138dp"
-        android:layout_marginBottom="504dp"
-        android:text="TextView"
-        android:textColor="@color/black"
-        android:textSize="24sp"
-        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textView17"
@@ -125,12 +46,25 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="265dp"
-        android:layout_marginBottom="466dp"
+        android:layout_marginEnd="267dp"
+        android:layout_marginBottom="456dp"
         android:text="Cantidad"
         android:textColor="#070707"
         android:textSize="20sp"
         android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/btnDecrementar"
+        android:layout_width="52dp"
+        android:layout_height="42dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="77dp"
+        android:layout_marginBottom="452dp"
+        android:background="@drawable/fondoazulpuntada"
+        android:text="-"
+        android:textColor="@color/a_normal"
+        android:textSize="24sp" />
 
     <Button
         android:id="@+id/btnIncrementar"
@@ -138,8 +72,8 @@
         android:layout_height="42dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="462dp"
+        android:layout_marginEnd="17dp"
+        android:layout_marginBottom="452dp"
         android:background="@drawable/fondoazulpuntada"
         android:text="+"
         android:textColor="#FFFFFF" />
@@ -150,50 +84,13 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="133dp"
-        android:layout_marginBottom="460dp"
+        android:layout_marginEnd="135dp"
+        android:layout_marginBottom="450dp"
         android:background="@drawable/cajadetextopuntada"
         android:ems="10"
         android:gravity="center_horizontal"
         android:inputType="number"
         android:text="1" />
-
-    <Button
-        android:id="@+id/btnDecrementar"
-        android:layout_width="52dp"
-        android:layout_height="42dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="75dp"
-        android:layout_marginBottom="462dp"
-        android:background="@drawable/fondoazulpuntada"
-        android:text="-"
-        android:textColor="@color/a_normal"
-        android:textSize="24sp" />
-
-    <TextView
-        android:id="@+id/textView16"
-        android:layout_width="96dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="265dp"
-        android:layout_marginBottom="420dp"
-        android:text="Producto"
-        android:textColor="#070707"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
-    <ImageButton
-        android:id="@+id/btnBuscar"
-        android:layout_width="52dp"
-        android:layout_height="42dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="65dp"
-        android:layout_marginBottom="415dp"
-        android:background="@drawable/cajadetextopuntada"
-        app:srcCompat="@android:drawable/ic_menu_search" />
 
     <EditText
         android:id="@+id/edtProductoId"
@@ -201,12 +98,37 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="120dp"
-        android:layout_marginBottom="414dp"
+        android:layout_marginEnd="122dp"
+        android:layout_marginBottom="397dp"
         android:background="@drawable/cajadetextopuntada"
         android:ems="10"
         android:gravity="center_horizontal"
         android:inputType="number" />
+
+    <TextView
+        android:id="@+id/textView16"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="267dp"
+        android:layout_marginBottom="403dp"
+        android:text="Producto"
+        android:textColor="#070707"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/textView18"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="67dp"
+        android:layout_marginBottom="528dp"
+        android:text="PUNTOS DISPOBLES EN TARJETA"
+        android:textColor="#000000"
+        android:textStyle="bold" />
 
     <ImageButton
         android:id="@+id/btnScanner"
@@ -214,33 +136,56 @@
         android:layout_height="42dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="415dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="398dp"
         android:background="@drawable/cajadetextopuntada"
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
-    <Button
-        android:id="@+id/btnCombustibles"
-        android:layout_width="wrap_content"
-        android:layout_height="36dp"
+    <ImageButton
+        android:id="@+id/btnBuscar"
+        android:layout_width="52dp"
+        android:layout_height="42dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="197dp"
-        android:layout_marginBottom="362dp"
+        android:layout_marginEnd="67dp"
+        android:layout_marginBottom="398dp"
+        android:background="@drawable/cajadetextopuntada"
+        app:srcCompat="@android:drawable/ic_menu_search" />
+
+    <Button
+        android:id="@+id/btnCombustibles"
+        android:layout_width="163dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="180dp"
+        android:layout_marginBottom="345dp"
         android:background="@drawable/fondoazulpuntada"
         android:text="COMBUSTIBLES"
         android:textColor="#FFFFFF" />
 
     <Button
         android:id="@+id/btnAceites"
-        android:layout_width="131dp"
-        android:layout_height="35dp"
+        android:layout_width="153dp"
+        android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="37dp"
-        android:layout_marginBottom="362dp"
+        android:layout_marginEnd="21dp"
+        android:layout_marginBottom="344dp"
         android:background="@drawable/fondoazulpuntada"
         android:text="ACEITES"
         android:textColor="#FFFFFF" />
 
+    <TextView
+        android:id="@+id/txtSaldos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="137dp"
+        android:layout_marginBottom="495dp"
+        android:text="TextView"
+        android:textColor="@color/black"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 </RelativeLayout>

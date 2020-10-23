@@ -39,8 +39,14 @@
         <activity android:name=".Ticket.Definicion_Tarjeta" />
         <activity android:name=".EmpleadoHuellas.capturaEmpleadoHuella" />
         <activity android:name=".Ticket.tipo_ticket" />
-        <activity android:name=".Cortes.ventasTotales" />
-        <activity android:name=".Cortes.ventaProductosFaltantes" />
+
+        <activity android:name=".Cortes2.IslasEstacion"></activity>
+        <activity android:name=".Cortes2.VentaProductosFaltantes" />
+        <activity android:name=".Cortes2.VentasTotales" />
+        <activity android:name=".Cortes2.GranTotal" />
+        <activity android:name=".Cortes2.CierreFormaPago" />
+
+        <activity android:name=".Cortes2.DesgloseValesM" />
         <activity android:name=".Cortes2.TotalProductos" />
         <activity android:name=".Cortes2.SubOfiSiVale" />
         <activity android:name=".Cortes2.SubOfiAccor" />
@@ -51,8 +57,8 @@
         <activity android:name=".Cortes2.FajillasBilletes" />
         <activity android:name=".Cortes2.Lecturas" />
         <activity android:name=".Cortes2.Clave" />
-        <activity android:name=".Facturas.obtenerToken" />
-        <activity android:name=".Facturas.obtenerRFC" />
+
+
         <activity android:name=".Puntada.Acumular.ClaveDespachadorAcumular" />
         <activity android:name=".Puntada.Acumular.ActivityEscanear" />
         <activity android:name=".Productos.FPaga" />
@@ -140,6 +146,7 @@
         <activity android:name=".SLE4442Activity" />
         <activity android:name=".SLE4428Activity" />
         <activity android:name=".EmvActivity" />
+
     </application>
 
 </manifest>

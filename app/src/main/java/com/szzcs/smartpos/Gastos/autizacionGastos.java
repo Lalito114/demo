@@ -66,6 +66,7 @@ public class autizacionGastos extends AppCompatActivity {
                         intent.putExtra("empleadoid", txtclaveusuario.getText().toString());
                         intent.putExtra("empleado", txtusuario.getText().toString());
                         startActivity(intent);
+                        finish();
                     } else {
                         Intent intent = new Intent(getApplicationContext(), cargavaleGasto.class);
                         intent.putExtra("isla", islaId);
@@ -73,6 +74,7 @@ public class autizacionGastos extends AppCompatActivity {
                         intent.putExtra("empleadoid", txtclaveusuario.getText().toString());
                         intent.putExtra("empleado", txtusuario.getText().toString());
                         startActivity(intent);
+                        finish();
                     }
                 }else{
                     Toast.makeText(getApplicationContext(),"Seleccione un empleado de la lista", Toast.LENGTH_LONG).show();
@@ -144,4 +146,12 @@ public class autizacionGastos extends AppCompatActivity {
             }
         });
     }
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), claveGastos.class);
+        startActivity(intent);
+        //finish();
+    }
+
 }

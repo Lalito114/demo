@@ -133,8 +133,8 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                 {
                     Toast.makeText(getApplicationContext(), "Seleccione al menos uno de los Productos", Toast.LENGTH_LONG).show();
                 } else {
-                AgregarDespacho(posicion, usuarioid);
-                //EnviarProductos(posicion, usuarioid);
+                ////AgregarDespacho(posicion, usuarioid);
+                EnviarProductos(posicion, usuarioid);
                 }
             }
         });
@@ -345,7 +345,51 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
         startActivity(intent);
     }
 
-    private void CantidadProducto() {
+
+        private void finalizaventa(final String posicion, final String idUsuario){
+            //Utilizamos el metodo POST para  finalizar la Venta
+            String url = "http://"+ipEstacion+"/CorpogasService/api/Transacciones/finalizaVenta/sucursal/"+sucursalId+"/posicionCarga/"+posicion+"/usuario/"+idUsuario;
+            StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            //Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
+                            Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                            startActivity(intent);
+                            try {
+                                JSONObject jsonObject = new JSONObject(response);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                }
+            }){
+                @Override
+                protected Map<String, String> getParams() {
+                    // Colocar parametros para ingresar la  url
+                    Map<String, String> params = new HashMap<String, String>();
+                    return params;
+                }
+            };
+
+
+            // Añade la peticion a la cola
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            eventoReq.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+            requestQueue.add(eventoReq);
+
+
+
+        }
+
+
+
+        private void CantidadProducto() {
         cantidadProducto = findViewById(R.id.cantidadProducto);
         Producto= findViewById(R.id.Producto);
         cantidad = cantidadProducto.toString();
@@ -666,6 +710,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                         intent.putExtra("posicion", posicionCarga);
                         intent.putExtra("usuario", Usuarioid);
                         startActivity(intent);
+                        finish();
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -785,6 +830,12 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
 
     }
 
-
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), posicionProductos.class);
+        startActivity(intent);
+        //finish();
+    }
 
 }

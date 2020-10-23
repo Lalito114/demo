@@ -212,6 +212,7 @@ public class FPaga extends AppCompatActivity {
                         //Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
                         startActivity(intent);
+                        finish();
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                         } catch (JSONException e) {
@@ -339,4 +340,19 @@ public class FPaga extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(eventoReq);
     }
+
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        final String posicion;
+        posicion = getIntent().getStringExtra("posicion");
+        final String usuarioid;
+        usuarioid = getIntent().getStringExtra("usuario");
+
+        finalizaventa(posicion, usuarioid);
+        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+        startActivity(intent);
+        //finish();
+    }
+
 }
