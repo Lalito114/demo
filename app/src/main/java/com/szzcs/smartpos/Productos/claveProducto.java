@@ -225,7 +225,7 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
                                             usuario.setText(idusuario);
                                             carga.setText(posicion);
                                             //Se instancia y se llama a la clase Venta de Productos
-                                            Intent intent = new Intent(getApplicationContext(), VentasProductos.class); //formaPago
+                                            Intent intent = new Intent(getApplicationContext(), tipoproducto.class); //formaPago
                                             //Se envian los parametros de posicion y usuario
                                             intent.putExtra("car",posicion);
                                             intent.putExtra("user",idusuario);
@@ -330,12 +330,13 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
                                             usuario.setText(idusuario);
                                             carga.setText(posicion);
                                             //Se instancia y se llama a la clase Venta de Productos
-                                            Intent intent = new Intent(getApplicationContext(), VentasProductos.class); //formaPago
+                                            Intent intent = new Intent(getApplicationContext(), tipoproducto.class); //formaPago
                                             //Se envian los parametros de posicion y usuario
                                             intent.putExtra("car",posicion);
                                             intent.putExtra("user",EmpleadoId);
                                             //inicia el activity
                                             startActivity(intent);
+                                            finish();
                                         }else{
                                             //Si no es valido se envia mensaje de conteaseña incorrecta
                                             try {

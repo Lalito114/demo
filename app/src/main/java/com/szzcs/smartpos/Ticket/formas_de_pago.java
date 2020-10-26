@@ -33,10 +33,13 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.szzcs.smartpos.MainActivity;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
+import com.szzcs.smartpos.configuracion.tipoempresa;
+import com.szzcs.smartpos.utils.Kits;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -240,7 +243,6 @@ public class formas_de_pago extends AppCompatActivity {
                             JSONArray producto = det.getJSONArray("Productos");
 
                             String protic = new String();
-                            final String finalProtic = protic;
 
                             for (int i = 0; i <producto.length() ; i++) {
                                 JSONObject p1 = producto.getJSONObject(i);
@@ -260,120 +262,95 @@ public class formas_de_pago extends AppCompatActivity {
                             final String total = det.getString("Total");
                             final String totaltexto = det.getString("TotalTexto");
                             String clave = det.getString("Clave");
-                            if (numticket == "1"){
-                                try {
-                                    AlertDialog.Builder builder;
+                            try {
+                                AlertDialog.Builder builder;
 
-                                    builder = new AlertDialog.Builder(formas_de_pago.this);
-                                    builder.setMessage("Desea finalizar la venta?");
-                                    builder.setTitle("FINALIZAR VENTA");
-                                    builder.setPositiveButton("Imprimir", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            String carga = getIntent().getStringExtra("car");
-                                            String user = getIntent().getStringExtra("user");
-                                            args.putString("numerorecibo", numerorecibo);
-                                            args.putString("nombrepago", nombrepago);
-                                            args.putString("numticket", numticket);
-                                            args.putString("numerotransaccion", numerotransaccion);
-                                            args.putString("numerorastreo", numerorastreo);
-                                            args.putString("posicion", carga);
-                                            args.putString("despachador",despachador);
-                                            args.putString("vendedor",user);
-                                            args.putString("productos", finalProtic);
+                                builder = new AlertDialog.Builder(formas_de_pago.this);
+                                builder.setMessage("Desea imprimir el ticket?");
+                                builder.setTitle("Venta de Productos");
+                                final String finalProtic = protic;
+                                builder.setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        String carga = getIntent().getStringExtra("car");
+                                        String user = getIntent().getStringExtra("user");
+                                        args.putString("numerorecibo", numerorecibo);
+                                        args.putString("nombrepago", nombrepago);
+                                        args.putString("numticket", numticket);
+                                        args.putString("numerotransaccion", numerotransaccion);
+                                        args.putString("numerorastreo", numerorastreo);
+                                        args.putString("posicion", carga);
+                                        args.putString("despachador",despachador);
+                                        args.putString("vendedor",user);
+                                        args.putString("productos", finalProtic);
 
-                                            args.putString("subtotal",subtotal);
-                                            args.putString("iva",iva);
-                                            args.putString("total",total);
-                                            args.putString("totaltexto",totaltexto);
-                                            args.putString("mensaje",names.toString());
+                                        args.putString("subtotal",subtotal);
+                                        args.putString("iva",iva);
+                                        args.putString("total",total);
+                                        args.putString("totaltexto",totaltexto);
+                                        args.putString("mensaje",names.toString());
 
-                                            PrintFragment cf = new PrintFragment();
-                                            cf.setArguments(args);
-                                            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
-                                                    addToBackStack(PrintFragment.class.getName()).
-                                                    commit();
+                                        PrintFragment cf = new PrintFragment();
+                                        cf.setArguments(args);
+                                        getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+                                                addToBackStack(PrintFragment.class.getName()).
+                                                commit();
 
-                                        }
-                                    }).setNegativeButton("Finalizar", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            //EnviaVenta;
-                                            dialogInterface.cancel();
-                                            //Utilizamos el metodo POST para  finalizar la Venta
-                                            SQLiteBD data = new SQLiteBD(formas_de_pago.this);
-                                            String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/Transacciones/finalizaVenta/sucursal/"+data.getIdEstacion()+"/posicionCarga/"+poscarga;
-                                            StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
-                                                    new Response.Listener<String>() {
-                                                        @Override
-                                                        public void onResponse(String response) {
-                                                            if(response == "-1"){
-                                                                Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
-                                                                Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
-                                                                startActivity(intent);
-                                                            }else{
-                                                                Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
-                                                            }
+                                    }
+                                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        //EnviaVenta;
+                                        dialogInterface.cancel();
+                                        //Utilizamos el metodo POST para  finalizar la Venta
+                                        SQLiteBD data = new SQLiteBD(formas_de_pago.this);
+                                        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/Transacciones/finalizaVenta/sucursal/"+data.getIdEstacion()+"/posicionCarga/"+poscarga;
+                                        StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
+                                                new Response.Listener<String>() {
+                                                    @Override
+                                                    public void onResponse(String response) {
+                                                        Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
+                                                        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                                        startActivity(intent);
+                                                        try {
+                                                            JSONObject jsonObject = new JSONObject(response);
+                                                        } catch (JSONException e) {
+                                                            e.printStackTrace();
                                                         }
-                                                    }, new Response.ErrorListener() {
-                                                @Override
-                                                public void onErrorResponse(VolleyError error) {
-                                                    Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
-                                                }
-                                            }){
-                                                @Override
-                                                protected Map<String, String> getParams() {
-                                                    // Colocar parametros para ingresar la  url
-                                                    Map<String, String> params = new HashMap<String, String>();
-                                                    return params;
-                                                }
-                                            };
 
-                                            // Añade la peticion a la cola
-                                            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                                            requestQueue.add(eventoReq);
-                                        }
-                                    });
-                                    AlertDialog dialog = builder.create();
-                                    dialog.show();
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
+                                                    }
+                                                }, new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                                            }
+                                        }){
+                                            @Override
+                                            protected Map<String, String> getParams() {
+                                                // Colocar parametros para ingresar la  url
+                                                Map<String, String> params = new HashMap<String, String>();
+                                                return params;
+                                            }
+                                        };
 
-
-                            }else{
-                                if (numticket == "2"){
-                                    String carga = getIntent().getStringExtra("car");
-                                    String user = getIntent().getStringExtra("user");
-                                    args.putString("numerorecibo", numerorecibo);
-                                    args.putString("nombrepago", nombrepago);
-                                    args.putString("numticket", numticket);
-                                    args.putString("numerotransaccion", numerotransaccion);
-                                    args.putString("numerorastreo", numerorastreo);
-                                    args.putString("posicion", carga);
-                                    args.putString("despachador",despachador);
-                                    args.putString("vendedor",user);
-                                    args.putString("productos", finalProtic);
-
-                                    args.putString("subtotal",subtotal);
-                                    args.putString("iva",iva);
-                                    args.putString("total",total);
-                                    args.putString("totaltexto",totaltexto);
-                                    args.putString("mensaje",names.toString());
-
-                                    PrintFragment cf = new PrintFragment();
-                                    cf.setArguments(args);
-                                    getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
-                                            addToBackStack(PrintFragment.class.getName()).
-                                            commit();
-
-                                }
+                                        // Añade la peticion a la cola
+                                        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                                        requestQueue.add(eventoReq);
+                                    }
+                                });
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
+                            }catch (Exception e){
+                                e.printStackTrace();
                             }
 
 
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
+
+
+
                     }
                 }, new Response.ErrorListener() {
             @Override

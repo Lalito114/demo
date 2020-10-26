@@ -343,6 +343,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
         String myJson = myArray.toString();
         intent.putExtra("myjson", myArray.toString());
         startActivity(intent);
+        finish();
     }
 
 

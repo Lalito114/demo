@@ -459,6 +459,7 @@ public class claveUsuario extends BaseActivity implements FingerprintListener, V
                                 //Si es valido se asignan valores
                                 usuario.setText(idusuario);
                                 carga.setText(posicion);
+                                finalizaventa(posicion,  idusuario);
                                 //Se instancia y se llama a la clase formas de pago
                                 Intent intent = new Intent(getApplicationContext(), formas_de_pago.class);
                                 intent.putExtra("car",posicion);
@@ -528,6 +529,50 @@ public class claveUsuario extends BaseActivity implements FingerprintListener, V
         eventoReq.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(eventoReq);
     }
+
+    private void finalizaventa(final String posicion, final String idUsuario){
+        //Utilizamos el metodo POST para  finalizar la Venta
+        String url = "http://"+ipEstacion+"/CorpogasService/api/Transacciones/finalizaVenta/sucursal/"+sucursalId+"/posicionCarga/"+posicion+"/usuario/"+idUsuario;
+        StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                        startActivity(intent);
+                        finish();
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                // Colocar parametros para ingresar la  url
+                Map<String, String> params = new HashMap<String, String>();
+                return params;
+            }
+        };
+
+
+        // Añade la peticion a la cola
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        eventoReq.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(eventoReq);
+
+
+
+    }
+
+
 
 
     @Override

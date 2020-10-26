@@ -22,13 +22,14 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.szzcs.smartpos.Cortes.ventasTotales;
+
 import com.szzcs.smartpos.Cortes2.Clave;
 import com.szzcs.smartpos.Cortes2.FajillasBilletes;
 import com.szzcs.smartpos.Cortes2.TotalProductos;
 import com.szzcs.smartpos.EmpleadoHuellas.capturaEmpleadoHuella;
 import com.szzcs.smartpos.Encriptacion.EncriptarMAC;
 import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
+import com.szzcs.smartpos.FinalizaVenta.posicionFinaliza;
 import com.szzcs.smartpos.Gastos.claveGastos;
 import com.szzcs.smartpos.Menus_Laterales.Close.Cerrar_Sesion;
 import com.szzcs.smartpos.Pendientes.claveUPendientes;
@@ -49,22 +50,22 @@ public class Munu_Principal extends AppCompatActivity {
     ListView list;
 
     String[] maintitle ={
-            "Tickets","Monederos Electronicos",
+            "Finaliza Venta","Monederos Electronicos",
             "Productos","Cortes",
-            "Pendientes", "Gasto","Facturas", "Captura Huellas",
+            "Pendientes", "Gasto","Facturas", "Captura Huellas", "Tickets",
     };
 
     String[] subtitle ={
-            "Emite tickets de venta","Registro, Acumular y Redimir",
+            "Finaliza proceso Venta","Registro, Acumular y Redimir",
             "Administra productos","Realiza cortes de turnos",
             "Enlista pendientes", "Reporta lo Egresos","Imprime tus Tickets",
-            "Captura Huellas Empleados"
+            "Captura Huellas Empleados", "Emite tickets de venta"
     };
 
     Integer[] imgid={
-            R.drawable.ventas,R.drawable.monedero,
+            R.drawable.finaliza,R.drawable.monedero,
             R.drawable.product,R.drawable.cortes,
-            R.drawable.pendientes,R.drawable.gastos,R.drawable.fact, R.drawable.huella,
+            R.drawable.pendientes,R.drawable.gastos,R.drawable.fact, R.drawable.huella, R.drawable.ventas
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,7 +96,7 @@ public class Munu_Principal extends AppCompatActivity {
                 if(position == 0) {
                     //code specific to first list item
                    // Toast.makeText(getApplicationContext(),"Place Your First Option Code",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent( getApplicationContext(), tipo_ticket.class);
+                    Intent intent = new Intent( getApplicationContext(), posicionFinaliza.class);
                     startActivity(intent);
                 }
 
@@ -113,7 +114,7 @@ public class Munu_Principal extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 3) {
-                    Intent intent = new Intent(getApplicationContext(), ventasTotales.class);
+                    Intent intent = new Intent(getApplicationContext(), Clave.class);
                     startActivity(intent);
                 }
                 else if(position == 4) {
@@ -130,6 +131,9 @@ public class Munu_Principal extends AppCompatActivity {
                 }
                 else if(position == 7) {
                     Intent intent = new Intent(getApplicationContext(), capturaEmpleadoHuella.class);
+                    startActivity(intent);
+                }else if(position == 8) {
+                    Intent intent = new Intent( getApplicationContext(), tipo_ticket.class);
                     startActivity(intent);
                 }
             }

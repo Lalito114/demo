@@ -20,7 +20,7 @@
         android:saveEnabled="true"
         android:text="Solicitud de despacho"
         android:textColor="@color/a_normal"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

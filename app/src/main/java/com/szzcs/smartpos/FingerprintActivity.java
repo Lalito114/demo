@@ -15,8 +15,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.szzcs.smartpos.Cortes.tipoVenta;
-import com.szzcs.smartpos.Gastos.autizacionGastos;
+
 import com.szzcs.smartpos.base.BaseActivity;
 import com.zcs.sdk.SdkResult;
 import com.zcs.sdk.fingerprint.FingerprintListener;
