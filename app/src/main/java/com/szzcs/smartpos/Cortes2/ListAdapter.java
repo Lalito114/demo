@@ -2,6 +2,7 @@ package com.szzcs.smartpos.Cortes2;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,13 +39,28 @@ public class ListAdapter extends ArrayAdapter<String> {
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView=inflater.inflate(R.layout.mylist1, null,true);
 
+
         TextView titleText = (TextView) rowView.findViewById(R.id.title);
         TextView manguera = (TextView) rowView.findViewById(R.id.manguera);
         TextView subtitleText = (TextView) rowView.findViewById(R.id.subtitle);
 
-        titleText.setText(maintitle[position]);
-        manguera.setText(nomanguera[position]);
+        titleText.setText("Tipo Combustible: "+maintitle[position]);
+        manguera.setText(" \n"+ nomanguera[position]);
         subtitleText.setText(subtitle[position]);
+
+        if (maintitle[position].equals("PREMIUM")){
+            rowView.setBackgroundColor(Color.parseColor("#FF1D1D")); //B82022
+
+        }
+        if (maintitle[position].equals("MAGNA")){
+            rowView.setBackgroundColor(Color.parseColor("#189C42")); //07AF04
+            titleText.setTextColor(Color.BLACK);
+            manguera.setTextColor(Color.BLACK);
+            subtitleText.setTextColor(Color.BLACK);
+        }
+        if (maintitle[position].equals("DIESEL")){
+            rowView.setBackgroundColor(Color.parseColor("#919B94"));
+        }
 
         return rowView;
 

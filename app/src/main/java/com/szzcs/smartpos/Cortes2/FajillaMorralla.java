@@ -38,16 +38,34 @@ public class FajillaMorralla extends AppCompatActivity {
     String precioFajilla;
     int fajillaMorralla;
     String morralla;
+    int dineroMorralla;
+    String islaId;
+    String usuarioId;
+    String dineroBilletes;
+    String VentaProductos;
+    String cantidadAceites;
+
+    RespuestaApi<Cierre> cierreRespuestaApi;
+    long cierreId;
+    long turnoId;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fajilla_morralla);
-        valorFajilla();
 
         fajillasMorralla = (EditText) findViewById(R.id.editFajillasMorralla);
         btnFajillasMorralla = (Button) findViewById(R.id.btnFajillasMorralla);
+
+        islaId = getIntent().getStringExtra("islaId");
+        usuarioId =getIntent().getStringExtra("idusuario");
+        dineroBilletes = getIntent().getStringExtra("dinero");
+        VentaProductos = getIntent().getStringExtra("VentaProductos");
+        cantidadAceites = getIntent().getStringExtra("cantidadAceites");
+        cierreRespuestaApi = (RespuestaApi<Cierre>) getIntent().getSerializableExtra( "lcierreRespuestaApi");
+        turnoId = cierreRespuestaApi.getObjetoRespuesta().getTurnoId();
+        cierreId = cierreRespuestaApi.getObjetoRespuesta().getId();
 
 
 
@@ -56,75 +74,55 @@ public class FajillaMorralla extends AppCompatActivity {
             public void onClick(View v) {
                 morralla = fajillasMorralla.getText().toString();
 
+                for(PrecioFajilla item : cierreRespuestaApi.getObjetoRespuesta().Variables.getPrecioFajillas())
+                {
+                    if(item.getTipoFajillaId() == 2)
+                        fajillaMorralla = item.getPrecio();
+                }
+
                 if(morralla.isEmpty()){
-
-                    Toast.makeText(getApplicationContext(),"ERROR 401: Ingresar Numero de Fajillas de Morralla",Toast.LENGTH_LONG).show();
-                }
-                    int dineroMorralla = Integer.parseInt(morralla) * fajillaMorralla;
-                    Toast.makeText(getApplicationContext(),"Fue un Total de "+ dineroMorralla + " pesos",Toast.LENGTH_LONG).show();
-                    enviarFolios();
-            }
-        });
-
-
-
-    }
-    public void valorFajilla(){
-        final SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/PrecioFajillas/Sucursal/"+data.getIdSucursal();
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONArray array = new JSONArray(response);
-
-                    for (int i = 0; i < array.length() ; i++) {
-                        JSONObject sl1 = array.getJSONObject(i);
-                        String tipoFajilla = sl1.getString("TipoFajillaId");
-                        precioFajilla = sl1.getString("Precio");
-                        if(tipoFajilla.equals("2")){
-                            fajillaMorralla = Integer.parseInt(precioFajilla);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(FajillaMorralla.this);
+                    builder.setTitle("ERROR 401");
+                    builder.setMessage("Ingresar Numero de Fajillas de Morralla");
+                    builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            dialogInterface.dismiss();
                         }
-
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
+                    });
+                    AlertDialog dialog= builder.create();
+                    dialog.show();
                 }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
+                dineroMorralla = Integer.parseInt(morralla) * fajillaMorralla;
+                Toast.makeText(getApplicationContext(),"Fue un Total de "+ dineroMorralla + " pesos",Toast.LENGTH_LONG).show();
+                enviarFolios();
             }
         });
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        requestQueue.add(stringRequest);
+
+
+
     }
+
 
     private void enviarFolios() {
-        final String origenId = getIntent().getStringExtra("origenId");
-        final String cierreId = getIntent().getStringExtra("cierreId");
+
         // String islaId = isla.getText().toString(); //getIntent().getStringExtra("isla");
         // String turnoId = "1";//getIntent().getStringExtra("turno");
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/1";
+        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/" +usuarioId;
         final JSONObject mjason = new JSONObject();
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
             mjason.put("CierreId",cierreId);
             mjason.put("CierreSucursalId", 1); //turno.getText().toString());
             JSONObject prueba = new JSONObject();
-            prueba.put("IslaId", "1");
+            prueba.put("IslaId", islaId);
             mjason.put("Cierre",prueba);//turno.getText().toString());Sucursal
-            mjason.put("SucursalId", "1");
+            mjason.put("SucursalId", data.getIdSucursal());
             mjason.put("TipoFajillaId","2");
-            mjason.put("FolioInicial", '0');
             mjason.put("FolioFinal", morralla);
             mjason.put("Denominacion", fajillaMorralla);
-            mjason.put("OrigenId", origenId);
+            mjason.put("OrigenId", 1);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -142,8 +140,14 @@ public class FajillaMorralla extends AppCompatActivity {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
                                 Intent intent = new Intent(getApplicationContext(),SubOfiBilletes.class);
-                                intent.putExtra("origenId",origenId);
-                                intent.putExtra("cierreId",cierreId);
+                                intent.putExtra("origenId",1);
+                                intent.putExtra("dineroBilletes",dineroBilletes);
+                                intent.putExtra("dineroMorralla",String.valueOf(dineroMorralla));
+                                intent.putExtra("islaId",islaId);
+                                intent.putExtra("idusuario", usuarioId);
+                                intent.putExtra("VentaProductos", VentaProductos);
+                                intent.putExtra("cantidadAceites", cantidadAceites);
+                                intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
                                 startActivity(intent);
                                 finish();
                             }
@@ -202,4 +206,11 @@ public class FajillaMorralla extends AppCompatActivity {
         queue.add(request_json);
 
     }
+//    @Override
+//    public void onBackPressed() {
+//        Intent intent = new Intent(getApplicationContext(), SubOfiBilletes.class);
+//
+//        startActivity(intent);
+//        // finish();
+//    }
 }

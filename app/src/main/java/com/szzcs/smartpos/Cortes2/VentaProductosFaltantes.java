@@ -1,4 +1,4 @@
-package com.szzcs.smartpos.Cortes;
+package com.szzcs.smartpos.Cortes2;
 
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -48,7 +48,7 @@ import java.util.Map;
 
 import devliving.online.mvbarcodereader.MVBarcodeScanner;
 
-public class ventaProductosFaltantes extends AppCompatActivity implements View.OnClickListener {
+public class VentaProductosFaltantes extends AppCompatActivity implements View.OnClickListener {
     ImageButton btnscanner;
     EditText cantidadProducto, producto, productoIdentificador, precio, tipoproductoid;
     TextView txtdescripcion, txtproductoidentificador, txtcodigobarras, txtprecio;
@@ -490,7 +490,7 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
                 }
                 if (estado.equals("true")){
                     try {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(ventaProductosFaltantes.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(VentaProductosFaltantes.this);
                         builder.setTitle("Venta Productos");
 
                         builder.setMessage(mensaje);
@@ -511,7 +511,7 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
                     }
                 }else{
                     try {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(ventaProductosFaltantes.this);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(VentaProductosFaltantes.this);
                         builder.setTitle("Venta Productos");
                         builder.setMessage(mensaje);
                         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -624,26 +624,26 @@ public class ventaProductosFaltantes extends AppCompatActivity implements View.O
                 bandera = true;
                 if (myArrayArticulo.length()>0  ) {
                     //for (i = 0; i < myArrayArticulo.length(); i++) {
-                        try {
-                            //jArrayv = new JSONArray(myArrayArticulo);
-                            for (int m= 0; m <myArrayArticulo.length(); m++) {
-                                    JSONObject jsonObject = myArrayArticulo.getJSONObject(m);
-                                    if (jsonObject.has("ProductoId")) {
-                                        String valor = jsonObject.getString("ProductoId");
-                                        int res = Integer.parseInt(valor);
-                                        int productoSeleccionado = Integer.parseInt(ProductosId.get(i).toString());
-                                        if (res == productoSeleccionado) {
-                                            Toast.makeText(getApplicationContext(), "Venta ya fue capturada", Toast.LENGTH_LONG).show();
-                                            bandera = false;
-                                            break;
-                                        } else {
-                                            elementoSeleccionado = productoSeleccionado;
-                                        }
-                                    }
+                    try {
+                        //jArrayv = new JSONArray(myArrayArticulo);
+                        for (int m= 0; m <myArrayArticulo.length(); m++) {
+                            JSONObject jsonObject = myArrayArticulo.getJSONObject(m);
+                            if (jsonObject.has("ProductoId")) {
+                                String valor = jsonObject.getString("ProductoId");
+                                int res = Integer.parseInt(valor);
+                                int productoSeleccionado = Integer.parseInt(ProductosId.get(i).toString());
+                                if (res == productoSeleccionado) {
+                                    Toast.makeText(getApplicationContext(), "Venta ya fue capturada", Toast.LENGTH_LONG).show();
+                                    bandera = false;
+                                    break;
+                                } else {
+                                    elementoSeleccionado = productoSeleccionado;
                                 }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                            }
                         }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     //}
                 }else{
                     elementoSeleccionado = Integer.parseInt(ProductosId.get(i).toString());

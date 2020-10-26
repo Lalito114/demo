@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tv1Corte"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginStart="10dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginEnd="10dp"
+    tools:context=".Cortes2.GranTotal">
+
+    <TableLayout
+        android:id="@+id/tableLayout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TableRow
+
+            android:layout_gravity="center"
+            android:background="@color/black"
+
+            android:padding="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="TOTALES"
+                android:textColor="@color/white"
+                android:textSize="19dp"
+                android:textStyle="bold" />
+        </TableRow>
+
+        <TableRow
+            android:background="#B1B3B3"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/txtSubtotalFajillaBilletes"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="SUBTOTAL FAJILLAS DE BILLETES"
+                android:textColor="@color/black"
+                android:textSize="16dp" />
+
+
+        </TableRow>
+
+        <TableRow
+            android:background="#B1B3B3"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/txtSubtotalFajillaMoralla"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="SUBTOTAL FAJILLAS DE MORRALLA"
+                android:textColor="@color/black"
+                android:textSize="16dp" />
+
+
+        </TableRow>
+
+        <TableRow
+            android:background="#B1B3B3"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/txtSubtotalOficina2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="SUBTOTAL OFICINA"
+                android:textColor="@color/black"
+                android:textSize="16dp" />
+
+
+        </TableRow>
+
+        <TableRow
+            android:background="#B1B3B3"
+            android:padding="5dp">
+
+            <TextView
+                android:id="@+id/txtGranTotal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="GRAN TOTAL"
+                android:textColor="@color/black"
+                android:textSize="16dp" />
+
+
+        </TableRow>
+
+    </TableLayout>
+
+    <TextView
+        android:id="@+id/textTotalVendido"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:text="TOTAL VENDIDO:"
+        android:textColor="@color/black"
+        android:textSize="18dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+
+    <TextView
+        android:id="@+id/textMensaje"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:textAlignment="center"
+        android:textSize="16dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textTotalVendido" />
+
+    <Button
+        android:id="@+id/btnFinalizarCierre"
+        android:layout_width="216dp"
+        android:layout_height="41dp"
+        android:layout_marginTop="100dp"
+        android:background="@drawable/b3"
+        android:text="FINALIZAR"
+        android:textColor="@color/colorWhite"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textMensaje" />
+</android.support.constraint.ConstraintLayout>
