@@ -21,6 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.zxing.client.android.Contents;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -93,7 +94,6 @@ public class PosicionCargaTLl extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
                         try {
                             JSONObject datos = new JSONObject(response);
                             String correcto = datos.getString("Correcto");
@@ -115,6 +115,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
                                     try {
                                         final EditText input = new EditText(getApplicationContext());
                                         input.setTextColor(Color.BLACK);
+                                        input.setInputType(InputType.TYPE_CLASS_NUMBER);
                                         input.setGravity(Gravity.CENTER);
                                         input.setTextSize(22);
                                         AlertDialog.Builder builder = new AlertDialog.Builder(PosicionCargaTLl.this);
@@ -126,7 +127,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
                                                         String odometro = input.getText().toString();
                                                         if (odometro != null){
                                                            IngresarPlacas(placa,odometro,numerointernosucursal,sucursalempleados,posi,track,clave,tipocliente,transaccionId,folio);
-                                                        }else{
+                                                         }else{
                                                             Toast.makeText(PosicionCargaTLl.this, "Ingresa el odometro", Toast.LENGTH_SHORT).show();
                                                         }
                                                     }
@@ -224,6 +225,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
             try {
                 final EditText input = new EditText(getApplicationContext());
                 input.setTextColor(Color.BLACK);
+                input.setInputType(InputType. TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_CHARACTERS);
                 input.setGravity(Gravity.CENTER);
                 input.setTextSize(22);
                 AlertDialog.Builder builder = new AlertDialog.Builder(PosicionCargaTLl.this);

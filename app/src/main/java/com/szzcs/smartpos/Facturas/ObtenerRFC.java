@@ -44,6 +44,7 @@ public class ObtenerRFC extends AppCompatActivity {
 
         token = getIntent().getStringExtra("Token");
         iduser = getIntent().getStringExtra("IdUser");
+
         rfc = findViewById(R.id.txtRFC);
 
         terminal = findViewById(R.id.txtTerminal);
@@ -74,15 +75,19 @@ public class ObtenerRFC extends AppCompatActivity {
                 //Validaciones para campos vacíos
 //                if(RFC.equals("") && desp.equals("") && term.equals("")){
 //                    Toast.makeText(getApplicationContext(),"Ingrese su RFC, el código de despachador y de terminal.",Toast.LENGTH_SHORT).show();
-//                } else if(RFC.equals("")) {
-//                    Toast.makeText(getApplicationContext(), "Ingrese su RFC.", Toast.LENGTH_SHORT).show();
-//                }else if(desp.equals("")){
+//                } else
+                if(RFC.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Ingrese su RFC.", Toast.LENGTH_SHORT).show();
+                }else{
+                    getRFC(RFC, desp, term, token);
+                }
+//                else if(desp.equals("")){
 //                    Toast.makeText(getApplicationContext(), "Ingrese el código de despachador.", Toast.LENGTH_SHORT).show();
 //                }else if(term.equals("")){
 //                    Toast.makeText(getApplicationContext(), "Ingrese el código de terminal.", Toast.LENGTH_SHORT).show();
 //                }  else{
                     //Si ambos campos contienen información se ejecuta el método para obtener el RFC
-                    getRFC(RFC, desp, term, token);
+
 //                }
             }
         });
@@ -98,9 +103,9 @@ public class ObtenerRFC extends AppCompatActivity {
             RequestQueue requestQueue = Volley.newRequestQueue(this);
             //Se forma el JSON que irá en el body del request
             JSONObject jsonBody = new JSONObject();
-            jsonBody.put("rfc", "XAXX010101000");
-            jsonBody.put("despachador", "123");
-            jsonBody.put("terminal", "89");
+            jsonBody.put("rfc", RFC);
+            jsonBody.put("despachador", despachador);
+            jsonBody.put("terminal", terminal);
 
             //Se envían los parámetros y url para la obtención de la respuesta del API
             JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, baseurl, jsonBody, new Response.Listener<JSONObject>() {

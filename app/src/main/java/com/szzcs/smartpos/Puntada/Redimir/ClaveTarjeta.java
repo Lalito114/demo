@@ -49,9 +49,9 @@ public class ClaveTarjeta extends AppCompatActivity {
 
                     final EditText input = new EditText(getApplicationContext());
                     input.setTextColor(Color.BLACK);
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
                     input.setGravity(Gravity.CENTER);
                     input.setTextSize(22);
-                    input.setInputType(InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(ClaveTarjeta.this);
                     builder.setTitle("Ingresa Contraseña Despachador \n");
@@ -60,12 +60,12 @@ public class ClaveTarjeta extends AppCompatActivity {
                             .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                     clave = input.getText().toString();
-                                     if (clave.isEmpty()){
-                                         Toast.makeText(ClaveTarjeta.this, "Ingresa la Contraseña", Toast.LENGTH_SHORT).show();
-                                     }else{
-                                         solicitarBalanceTarjeta();
-                                     }
+                                    clave = input.getText().toString();
+                                    if (clave.isEmpty()){
+                                        Toast.makeText(ClaveTarjeta.this, "Ingresa la Contraseña", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        solicitarBalanceTarjeta();
+                                    }
                                 }
                             })
                             .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
@@ -96,47 +96,50 @@ public class ClaveTarjeta extends AppCompatActivity {
                             String estado = resultado.getString("Estado");
                             String mensaje = resultado.getString("Mensaje");
                             final String saldo = resultado.getString("Saldo");
-                                if (estado == "true"){
-                                    try{
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(ClaveTarjeta.this);
-                                        builder.setTitle("Tarjeta Puntada");
-                                        builder.setMessage(mensaje);
-                                        builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                String carga = getIntent().getStringExtra("pos");
-                                                Intent intent = new Intent(getApplicationContext(),BalanceProductos.class);
-                                                intent.putExtra("pos",carga);
-                                                intent.putExtra("saldo",saldo);
-                                                startActivity(intent);
-                                                finish();
-                                            }
-                                        });
-                                        AlertDialog dialog= builder.create();
-                                        dialog.show();
+                            if (estado == "true"){
+                                try{
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(ClaveTarjeta.this);
+                                    builder.setTitle("Tarjeta Puntada");
+                                    builder.setMessage(mensaje);
+                                    builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            String carga = getIntent().getStringExtra("pos");
+                                            String track = getIntent().getStringExtra("track");
+                                            Intent intent = new Intent(getApplicationContext(),BalanceProductos.class);
+                                            intent.putExtra("pos",carga);
+                                            intent.putExtra("saldo",saldo);
+                                            intent.putExtra("clave", clave);
+                                            intent.putExtra("track", track);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+                                    AlertDialog dialog= builder.create();
+                                    dialog.show();
 
-                                    }catch (Exception e){
-                                        e.printStackTrace();
-                                    }
-                                }else{
-                                    try{
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(ClaveTarjeta.this);
-                                        builder.setTitle("Tarjeta Puntada");
-                                        builder.setMessage(mensaje);
-                                        builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                dialogInterface.dismiss();
-                                            }
-                                        });
-                                        AlertDialog dialog= builder.create();
-                                        dialog.show();
-
-                                    }catch (Exception e){
-                                        e.printStackTrace();
-                                    }
-
+                                }catch (Exception e){
+                                    e.printStackTrace();
                                 }
+                            }else{
+                                try{
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(ClaveTarjeta.this);
+                                    builder.setTitle("Tarjeta Puntada");
+                                    builder.setMessage(mensaje);
+                                    builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            dialogInterface.dismiss();
+                                        }
+                                    });
+                                    AlertDialog dialog= builder.create();
+                                    dialog.show();
+
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -169,4 +172,6 @@ public class ClaveTarjeta extends AppCompatActivity {
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
         requestQueue.add(eventoReq);
     }
+
+
 }

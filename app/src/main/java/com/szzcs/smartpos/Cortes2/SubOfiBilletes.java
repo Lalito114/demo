@@ -295,9 +295,9 @@ public class SubOfiBilletes extends AppCompatActivity {
                         builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent intent = new Intent(getApplicationContext(),TotalProductos.class);
-                                startActivity(intent);
-                                finish();
+//                                Intent intent = new Intent(getApplicationContext(),TotalProductos.class);
+//                                startActivity(intent);
+//                                finish();
                             }
                         });
                         AlertDialog dialog= builder.create();

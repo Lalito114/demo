@@ -86,10 +86,10 @@ public class productosVendidos extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         //Get Final response
-                        Intent intent = new Intent(getApplicationContext(), tipoVenta.class);
+                       // Intent intent = new Intent(getApplicationContext(), tipoVenta.class);
                         //intent.putExtra("posicion", posicionCarga);
                         //intent.putExtra("usuario", Usuarioid);
-                        startActivity(intent);
+                      //  startActivity(intent);
                     }
                 }, new Response.ErrorListener() {
             @Override

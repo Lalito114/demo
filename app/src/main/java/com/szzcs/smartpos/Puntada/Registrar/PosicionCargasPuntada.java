@@ -126,7 +126,7 @@ public class PosicionCargasPuntada extends AppCompatActivity {
                         params.put("RequestID","39");
                         params.put("PosicionCarga", posi);
                         params.put("Tarjeta",track2);
-                        params.put("NuTarjetero","1");
+                        params.put("NuTarjetero",data.getIdTarjtero());
                         params.put("NIP", nip);
                         return params;
                     }

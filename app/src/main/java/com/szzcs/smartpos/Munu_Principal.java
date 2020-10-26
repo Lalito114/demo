@@ -25,7 +25,7 @@ import com.android.volley.toolbox.Volley;
 
 import com.szzcs.smartpos.Cortes2.Clave;
 import com.szzcs.smartpos.Cortes2.FajillasBilletes;
-import com.szzcs.smartpos.Cortes2.TotalProductos;
+//import com.szzcs.smartpos.Cortes2.TotalProductos;
 import com.szzcs.smartpos.EmpleadoHuellas.capturaEmpleadoHuella;
 import com.szzcs.smartpos.Encriptacion.EncriptarMAC;
 import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
@@ -179,7 +179,9 @@ public class Munu_Principal extends AppCompatActivity {
             builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
-//                    ValidarUsuario();
+                Intent intent = new Intent(getApplicationContext(), Cerrar_Sesion.class);
+                startActivity(intent);
+                finish();
                 }
             });
             AlertDialog dialog= builder.create();

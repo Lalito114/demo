@@ -191,7 +191,7 @@ public class ProductoTLl extends AppCompatActivity {
             @Override
             public void onResponse(JSONObject response) {
 
-            Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
                 try {
                     String validacion = response.getString("Correcto");
                      transaccion = response.getString("TransaccionId");
@@ -201,6 +201,22 @@ public class ProductoTLl extends AppCompatActivity {
 //                        imprimirTicket.setVisibility(View.VISIBLE);
                         limpiar.setVisibility(View.INVISIBLE);
 
+                        String estado = response.getString("Mensaje");
+                        AlertDialog.Builder builder = new AlertDialog.Builder(ProductoTLl.this);
+                        builder.setTitle("Tarjeta Tanque Lleno");
+                        builder.setMessage("La peticion se ha completado corectamente");
+                        builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                        AlertDialog dialog= builder.create();
+                        dialog.show();
+
+                    }else{
                         String estado = response.getString("Mensaje");
                         AlertDialog.Builder builder = new AlertDialog.Builder(ProductoTLl.this);
                         builder.setTitle("Tarjeta Tanque Lleno");
@@ -215,11 +231,6 @@ public class ProductoTLl extends AppCompatActivity {
                         });
                         AlertDialog dialog= builder.create();
                         dialog.show();
-
-                    }else{
-                        agregarcombustible.setVisibility(View.VISIBLE);
-//                        imprimirTicket.setVisibility(View.INVISIBLE);
-                        limpiar.setVisibility(View.VISIBLE);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -252,7 +263,7 @@ public class ProductoTLl extends AppCompatActivity {
             }
         };
         request_json.setRetryPolicy(new DefaultRetryPolicy(
-                30000,
+                12000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request_json);
