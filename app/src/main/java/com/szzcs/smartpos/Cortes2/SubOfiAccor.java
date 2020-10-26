@@ -52,7 +52,7 @@ public class SubOfiAccor extends AppCompatActivity {
         btnaceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), SubOfiSiVale.class);
+                Intent intent = new Intent(getApplicationContext(),SubOfiSiVale.class);
                 startActivity(intent);
             }
         });

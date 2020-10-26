@@ -54,6 +54,16 @@ public class SubOfiBilletes extends AppCompatActivity {
     String precioFajilla;
     int fajillaBillete;
     String denomi;
+    String islaId;
+    String usuarioId;
+    String dineroBilletes;
+    String dineroMorralla;
+    String VentaProductos;
+    String cantidadAceites;
+
+    RespuestaApi<Cierre> cierreRespuestaApi;
+    long cierreId;
+    long turnoId;
 
 
     @Override
@@ -64,6 +74,16 @@ public class SubOfiBilletes extends AppCompatActivity {
         denominacionBilletes();
         valorFajilla();
         btnaceptar = findViewById(R.id.aceptarBilletes);
+
+        islaId = getIntent().getStringExtra("islaId");
+        usuarioId =getIntent().getStringExtra("idusuario");
+        dineroBilletes = getIntent().getStringExtra("dineroBilletes");
+        dineroMorralla = getIntent().getStringExtra("dineroMorralla");
+        VentaProductos = getIntent().getStringExtra("VentaProductos");
+        cantidadAceites = getIntent().getStringExtra("cantidadAceites");
+        cierreRespuestaApi = (RespuestaApi<Cierre>) getIntent().getSerializableExtra( "lcierreRespuestaApi");
+        turnoId = cierreRespuestaApi.getObjetoRespuesta().getTurnoId();
+        cierreId = cierreRespuestaApi.getObjetoRespuesta().getId();
 
         btnaceptar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,36 +173,15 @@ public class SubOfiBilletes extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
                                     denomi = input.getText().toString();
-                                    result = Double.parseDouble(denomi) * Double.parseDouble(ray);
-                                    if (result > fajillaBillete) {
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
-                                        builder.setTitle("Error");
-                                        builder.setMessage("No puede superar el valor de 1 Fajilla");
-                                        builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                dialogInterface.dismiss();
-                                            }
-                                        });
-                                        AlertDialog dialog= builder.create();
-                                        dialog.show();
+//                                    if(denom.isNull("")){
+                                        Toast.makeText(SubOfiBilletes.this, "No ingresaste un Valor", Toast.LENGTH_LONG).show();
+//                                    }else{
+                                        result = Double.parseDouble(denomi) * Double.parseDouble(ray);
 
-                                    } else {
-                                        maintitle.set(position, denomi);
-                                        total.set(position, String.valueOf(result));
-                                        final String ray2 = result.toString();
-
-                                        sumainter = totalBilletes() + Double.parseDouble(ray2);
-
-                                        if ((totalBilletes()<= (fajillaBillete-10)) && (sumainter <= (fajillaBillete-10))){
-                                            Toast.makeText(SubOfiBilletes.this, "Cantidad Agregada", Toast.LENGTH_SHORT).show();
-                                            prueba2.put(ray2);
-                                            ListAdapterBilletes adapter = new ListAdapterBilletes(SubOfiBilletes.this, maintitle, subtitle, total);
-                                            mListView.setAdapter(adapter);
-                                        }else{
+                                        if (result > fajillaBillete) {
                                             AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
                                             builder.setTitle("Error");
-                                            builder.setMessage("Los Valores que ingresaste pueden ser 1 Fajilla");
+                                            builder.setMessage("No puede superar el valor de 1 Fajilla");
                                             builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -192,10 +191,35 @@ public class SubOfiBilletes extends AppCompatActivity {
                                             AlertDialog dialog= builder.create();
                                             dialog.show();
 
-                                        }
+                                        } else {
+                                            maintitle.set(position, denomi);
+                                            total.set(position, String.valueOf(result));
+                                            final String ray2 = result.toString();
 
+                                            sumainter = totalBilletes() + Double.parseDouble(ray2);
+
+                                            if ((totalBilletes() <= (fajillaBillete - 10)) && (sumainter <= (fajillaBillete - 10))) {
+                                                Toast.makeText(SubOfiBilletes.this, "Cantidad Agregada", Toast.LENGTH_SHORT).show();
+                                                prueba2.put(ray2);
+                                                ListAdapterBilletes adapter = new ListAdapterBilletes(SubOfiBilletes.this, maintitle, subtitle, total);
+                                                mListView.setAdapter(adapter);
+                                            } else {
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
+                                                builder.setTitle("Error");
+                                                builder.setMessage("Los Valores que ingresaste pueden ser 1 Fajilla");
+                                                builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                                        dialogInterface.dismiss();
+                                                    }
+                                                });
+                                                AlertDialog dialog = builder.create();
+                                                dialog.show();
+
+                                            }
+                                        }
                                     }
-                                }
+//                                }
                             })
                             .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
                                 @Override
@@ -259,26 +283,24 @@ public class SubOfiBilletes extends AppCompatActivity {
     }
 
     private void enviarFolios(String folio, String valor) {
-        final String origenId = getIntent().getStringExtra("origenId");
-        final String cierreId = getIntent().getStringExtra("cierreId");
         // String islaId = isla.getText().toString(); //getIntent().getStringExtra("isla");
         // String turnoId = "1";//getIntent().getStringExtra("turno");
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/1";
+        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/" +usuarioId;
         final JSONObject mjason = new JSONObject();
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
             mjason.put("CierreId",cierreId);
-            mjason.put("CierreSucursalId", 1); //turno.getText().toString());
+            mjason.put("CierreSucursalId", "1"); //turno.getText().toString());
             JSONObject prueba = new JSONObject();
-            prueba.put("IslaId", "1");
+            prueba.put("IslaId", islaId);
             mjason.put("Cierre",prueba);//turno.getText().toString());Sucursal
-            mjason.put("SucursalId", "1");
+            mjason.put("SucursalId", data.getIdSucursal());
             mjason.put("TipoFajillaId","3");
-            mjason.put("FolioInicial", "0");
+//            mjason.put("FolioInicial", "1");
             mjason.put("FolioFinal", folio);
             mjason.put("Denominacion", valor);
-            mjason.put("OrigenId", origenId);
+            mjason.put("OrigenId", "1");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -295,9 +317,18 @@ public class SubOfiBilletes extends AppCompatActivity {
                         builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent intent = new Intent(getApplicationContext(),TotalProductos.class);
+                                Intent intent = new Intent(getApplicationContext(),SubOfiGasopass.class);
+                                intent.putExtra("picoBilletes",String.valueOf(sumainter));
+                                intent.putExtra("origenId",1);
+                                intent.putExtra("islaId",islaId);
+                                intent.putExtra("dineroBilletes",dineroBilletes);
+                                intent.putExtra("dineroMorralla",dineroMorralla);
+                                intent.putExtra("idusuario", usuarioId);
+                                intent.putExtra("VentaProductos", VentaProductos);
+                                intent.putExtra("cantidadAceites", cantidadAceites);
+                                intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
                                 startActivity(intent);
-                                finish();
+                                dialogInterface.dismiss();
                             }
                         });
                         AlertDialog dialog= builder.create();
@@ -321,8 +352,7 @@ public class SubOfiBilletes extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-//                Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
-//                startActivity(intente);
+
                 Toast.makeText(getApplicationContext(),"Gasto Cargado Exitosamente",Toast.LENGTH_LONG).show();
                 //Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
             }
@@ -354,4 +384,12 @@ public class SubOfiBilletes extends AppCompatActivity {
         queue.add(request_json);
 
     }
+
+//    @Override
+//    public void onBackPressed() {
+//        Intent intent = new Intent(getApplicationContext(), FajillaMorralla.class);
+//
+//        startActivity(intent);
+//        // finish();
+//    }
 }

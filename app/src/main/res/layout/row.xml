@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="10dp"
+    app:cardUseCompatPadding="true">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/linear_layout"
+        android:orientation="vertical"
+        >
+
+        <TextView
+            android:id="@+id/descripcionTipoVale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="Descripcion TipoVale"
+            android:textColor="@color/black"
+            android:textSize="22sp" />
+        <RelativeLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/expandable_layout">
+
+            <TextView
+                android:id="@+id/cantidadVales"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Cantidad vales"
+                android:textColor="@color/purple"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/importeVales"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Cantidad vales"
+                android:textColor="@color/purple"
+                android:layout_marginTop="50dp"
+                android:layout_marginRight="15dp"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:layout_alignParentRight="true"/>
+
+            <TextView
+                android:id="@+id/descripcion"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="16dp"
+                android:text="Descripcion"
+                android:textColor="@color/purple"
+                android:textSize="18sp"
+                android:layout_below="@+id/cantidadVales"/>
+
+
+        </RelativeLayout>
+    </LinearLayout>
+
+        
+
+</android.support.v7.widget.CardView>

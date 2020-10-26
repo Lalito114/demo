@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Cortes2.DesgloseVales"
+    android:orientation="vertical"
+    android:padding="8dp">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="372dp"
+        android:layout_above="@+id/totalValesDetalle"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="5dp"
+        app:layoutManager="android.support.v7.widget.LinearLayoutManager" />
+
+    <Button
+        android:id="@+id/regresaValesPapel"
+        android:layout_width="134dp"
+        android:layout_height="41dp"
+
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="42dp"
+        android:layout_marginEnd="228dp"
+        android:layout_marginBottom="47dp"
+        android:background="@drawable/b3"
+        android:text="Regresar"
+        android:textColor="@color/colorWhite"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/guardarValesDetalles"
+        android:layout_width="120dp"
+        android:layout_height="39dp"
+
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="206dp"
+        android:layout_marginEnd="42dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/b3"
+        android:text="Guardar"
+        android:textColor="@color/colorWhite" />
+
+    <TextView
+        android:id="@+id/totalValesDetalle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/guardarValesDetalles"
+        android:layout_alignParentEnd="true"
+        android:layout_marginEnd="66dp"
+        android:layout_marginBottom="14dp"
+        android:text="$0.00"
+        android:textColor="@color/black"
+        android:textSize="24sp" />
+</RelativeLayout>

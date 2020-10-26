@@ -53,14 +53,14 @@ public class SubOfiEfectivale extends AppCompatActivity {
         btnaceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(),SubOfiAccor.class);
+                Intent intent = new Intent(getApplicationContext(),DesgloseVales.class);
                 startActivity(intent);
             }
         });
     }
 
     private void denominacionBilletes() {
-        String url = "http://10.2.251.58/CorpogasService/api/ValePapelDenominaciones";
+        String url = "http://10.0.1.20/CorpogasService/api/ValePapelDenominaciones";
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
