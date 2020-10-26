@@ -22,7 +22,7 @@
         tools:layout_editor_absoluteY="28dp" />
 
     <EditText
-        android:id="@+id/editText3"
+        android:id="@+id/txtclave"
         android:layout_width="300dp"
         android:layout_height="59dp"
         android:layout_alignParentEnd="true"
@@ -31,7 +31,7 @@
         android:layout_marginBottom="264dp"
         android:ems="10"
         android:gravity="center_horizontal|center_vertical"
-        android:inputType="number" />
+        android:inputType="number|numberPassword" />
 
     <Button
         android:id="@+id/btnEnviar"

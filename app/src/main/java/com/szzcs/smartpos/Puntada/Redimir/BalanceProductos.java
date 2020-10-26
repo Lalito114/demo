@@ -1,9 +1,13 @@
 package com.szzcs.smartpos.Puntada.Redimir;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -13,20 +17,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.Productos.ListAdapterProductos;
 import com.szzcs.smartpos.Puntada.Acumular.ListAdapterSP;
+import com.szzcs.smartpos.Puntada.Acumular.productos;
 import com.szzcs.smartpos.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,12 +54,13 @@ public class BalanceProductos extends AppCompatActivity {
     ListView list;
     EditText litros, pesos;
     Button agregarcombustible, imprimirTicket, enviarProductos, limpiar;
-    String IdCombustible, cs,numneroInterno,  descripcion, precio, IdCombus, Costo;
+    String IdCombustible, cs,numneroInterno,  descripcion, precio, IdCombus, Costo, NIP;
     double  LitrosCoversion;
     final JSONObject datos = new JSONObject();
-    JSONObject jsonParam = new JSONObject();
+
     String folio, transaccion;
     List<String> ID;
+    JSONArray array1 = new JSONArray();
     List<String> NombreProducto;
     List<String> PrecioProducto;
     List<String> ClaveProducto;
@@ -74,8 +85,11 @@ public class BalanceProductos extends AppCompatActivity {
         agregarcombustible = findViewById(R.id.btnAgregarProducto);
         agregarcombustible.setOnClickListener(new View.OnClickListener() {
             JSONArray array1 = new JSONArray();
+            JSONObject jsonParam = new JSONObject();
+
             @Override
             public void onClick(View v) {
+
 
                 if (litros.getText().toString().isEmpty()){
                     if (pesos.getText().toString().isEmpty()){
@@ -166,6 +180,151 @@ public class BalanceProductos extends AppCompatActivity {
                 MostrarProductos();
             }
         });
+
+        enviarProductos = findViewById(R.id.btnEnviarProducto);
+        enviarProductos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try{
+                    final EditText input = new EditText(getApplicationContext());
+                    input.setTextColor(Color.BLACK);
+                    input.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                    input.setGravity(Gravity.CENTER);
+                    input.setTextSize(22);
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(BalanceProductos.this);
+                    builder.setTitle("Ingresa NIP \n");
+                    builder.setView(input)
+
+                            .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    NIP = input.getText().toString();
+                                    if (NIP.isEmpty()){
+                                        Toast.makeText(BalanceProductos.this, "Ingresa la Contraseña", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        enviarProductosServer(array1, NIP);
+                                    }
+                                }
+                            })
+                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            }).show();
+
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        });
+    }
+
+    private void enviarProductosServer(JSONArray array2, String NIP) {
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String clave = getIntent().getStringExtra("clave");
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/puntadas/actualizaPuntos/clave/"+clave;
+
+        RequestQueue queue = Volley.newRequestQueue(this);
+
+        try {
+
+            datos.put("EstacionId", data.getIdEstacion());
+            datos.put("RequestID",37);
+            String PosicionDeCarga = getIntent().getStringExtra("pos");
+            datos.put("PosicionCarga",PosicionDeCarga);
+            String NumeroDeTarjeta = getIntent().getStringExtra("track");
+            datos.put("Tarjeta", NumeroDeTarjeta);
+            datos.put("NuTarjetero", data.getIdTarjtero());
+            datos.put("NIP", NIP);
+            datos.put("Productos", array1);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, url, datos, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                String estado = null;
+                String mensaje = null;
+                try {
+                    estado = response.getString("Estado");
+                    mensaje = response.getString("Mensaje");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                if (estado.equals("true")){
+                    try {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(BalanceProductos.this);
+                        builder.setTitle("Tarjeta Puntada");
+
+                        builder.setMessage(mensaje);
+                        builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(BalanceProductos.this, Munu_Principal.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                        AlertDialog dialog= builder.create();
+                        dialog.show();
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+                }else{
+                    try {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(BalanceProductos.this);
+                        builder.setTitle("Tarjeta Puntada");
+                        builder.setMessage(mensaje);
+                        builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(BalanceProductos.this, Munu_Principal.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
+                        AlertDialog dialog= builder.create();
+                        dialog.show();
+                    }catch (Exception e){
+                        e.printStackTrace();
+
+                    }
+
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+
+            }
+        }){
+            public Map<String,String>getHeaders() throws AuthFailureError {
+                Map<String,String> headers = new HashMap<String, String>();
+                return headers;
+            }
+            protected  Response<JSONObject> parseNetwokResponse(NetworkResponse response){
+                if (response != null){
+
+                    try {
+                        String responseString;
+                        JSONObject datos = new JSONObject();
+                        responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+                }
+                return Response.success(datos, HttpHeaderParser.parseCacheHeaders(response));
+            }
+        };
+        queue.add(request_json);
     }
 
     private void MostrarCombustibles() {
