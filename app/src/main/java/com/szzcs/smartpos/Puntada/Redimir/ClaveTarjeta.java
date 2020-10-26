@@ -97,7 +97,6 @@ public class ClaveTarjeta extends AppCompatActivity {
                             String mensaje = resultado.getString("Mensaje");
                             final String saldo = resultado.getString("Saldo");
                                 if (estado == "true"){
-
                                     try{
                                         AlertDialog.Builder builder = new AlertDialog.Builder(ClaveTarjeta.this);
                                         builder.setTitle("Tarjeta Puntada");
@@ -119,6 +118,24 @@ public class ClaveTarjeta extends AppCompatActivity {
                                     }catch (Exception e){
                                         e.printStackTrace();
                                     }
+                                }else{
+                                    try{
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(ClaveTarjeta.this);
+                                        builder.setTitle("Tarjeta Puntada");
+                                        builder.setMessage(mensaje);
+                                        builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                dialogInterface.dismiss();
+                                            }
+                                        });
+                                        AlertDialog dialog= builder.create();
+                                        dialog.show();
+
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+
                                 }
                         } catch (JSONException e) {
                             e.printStackTrace();

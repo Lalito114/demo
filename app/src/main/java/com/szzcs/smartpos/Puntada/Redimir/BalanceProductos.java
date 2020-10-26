@@ -31,6 +31,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.szzcs.smartpos.TanqueLleno.ProductoTLl;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 public class BalanceProductos extends AppCompatActivity {
@@ -45,7 +47,6 @@ public class BalanceProductos extends AppCompatActivity {
     String IdCombustible, cs,numneroInterno,  descripcion, precio, IdCombus, Costo;
     double  LitrosCoversion;
     final JSONObject datos = new JSONObject();
-    JSONArray array1 = new JSONArray();
     JSONObject jsonParam = new JSONObject();
     String folio, transaccion;
     List<String> ID;
@@ -54,8 +55,8 @@ public class BalanceProductos extends AppCompatActivity {
     List<String> ClaveProducto;
     List<String> CodigoBarras;
     List<String> ExistenciaProductos;
-    List<String> ProductoId;
-    String NumeroInternoSucursal,SucursalEmpleadoId,PosicionDeCarga,NumeroDeTarjeta,ClaveTanqueLleno,TipoCliente;
+    List<String> ProductoId, CategoriaId, tipoprod;
+    String tipoproductofinal, productoIdfinal, numeroInternofinal, Descripcionfinal, cantidadfinal, preciofinal, precio1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +66,90 @@ public class BalanceProductos extends AppCompatActivity {
 //      enviamos el saldo disponible para poder visualizar
         txtSaldo= findViewById(R.id.txtSaldos);
         txtSaldo.setText(saldos);
+        litros = findViewById(R.id.edtLitros);
+        litros.setEnabled(false);
+        pesos=findViewById(R.id.edtPesos);
+        pesos.setEnabled(false);
+
+        agregarcombustible = findViewById(R.id.btnAgregarProducto);
+        agregarcombustible.setOnClickListener(new View.OnClickListener() {
+            JSONArray array1 = new JSONArray();
+            @Override
+            public void onClick(View v) {
+
+                if (litros.getText().toString().isEmpty()){
+                    if (pesos.getText().toString().isEmpty()){
+                        if (litros.getText().toString().isEmpty() || pesos.getText().toString().isEmpty()){
+                            try {
+                                jsonParam.put("TipoProducto",tipoproductofinal);
+                                jsonParam.put("ProductoId",productoIdfinal);
+                                jsonParam.put("NumeroInterno",numeroInternofinal);
+                                jsonParam.put("Descripcion",descripcion);
+                                jsonParam.put("Cantidad","1");
+                                jsonParam.put("Precio",preciofinal);
+                                array1.put(jsonParam);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }else{
+                        double pideenpesos = Double.valueOf(pesos.getText().toString());
+                        double litrospedidos = pideenpesos / Double.valueOf(precio);
+                        String valor = String.valueOf(litrospedidos);
+                        String valor1 = valor.substring(0,4);
+                        litros.setText(valor1);
+
+                        try {
+                            //Add string params
+                            jsonParam.put("TipoProducto",tipoproductofinal);
+                            jsonParam.put("ProductoId",productoIdfinal);
+                            jsonParam.put("NumeroInterno",productoIdfinal);
+                            jsonParam.put("Descripcion",descripcion);
+                            jsonParam.put("Cantidad",valor1);
+                            jsonParam.put("Precio",pideenpesos);
+                            array1.put(jsonParam);
+
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                }else{
+                    double litrospedidos = Double.valueOf(litros.getText().toString());
+                    double costofinal = litrospedidos * Double.valueOf(precio);
+                    String valor = String.valueOf(costofinal);
+                    String valor1 = valor.substring(0,4);
+                    pesos.setText(valor1);
+
+                    try {
+                        //Add string params
+                        cantidadProducto  = findViewById(R.id.edtCantidadProducto);
+                        litros = findViewById(R.id.edtLitros);
+                        jsonParam.put("TipoProducto",tipoproductofinal);
+                        jsonParam.put("ProductoId",productoIdfinal);
+                        jsonParam.put("NumeroInterno",numeroInternofinal);
+                        jsonParam.put("Descripcion",Descripcionfinal);
+                        jsonParam.put("Cantidad",cantidadProducto.getText().toString());
+                        jsonParam.put("Precio",valor1);
+                        array1.put(jsonParam);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
 
 //      Los elementos anteriores son los primero que se mostraran en el activity al iniciar
-
         btnMostrarCombustibles = findViewById(R.id.btnCombustibles);
         btnMostrarCombustibles.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                litros = findViewById(R.id.edtLitros);
+                litros.setEnabled(true);
+                pesos=findViewById(R.id.edtPesos);
+                pesos.setEnabled(true);
                 MostrarCombustibles();
             }
         });
@@ -79,10 +157,17 @@ public class BalanceProductos extends AppCompatActivity {
         btnMostrarProductos.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                litros.setText("");
+                pesos.setText("");
+                litros = findViewById(R.id.edtLitros);
+                litros.setEnabled(false);
+                pesos=findViewById(R.id.edtPesos);
+                pesos.setEnabled(false);
                 MostrarProductos();
             }
         });
     }
+
     private void MostrarCombustibles() {
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/precioCombustibles/estacion/"+data.getIdEstacion()+"/actuales";
@@ -108,7 +193,6 @@ public class BalanceProductos extends AppCompatActivity {
         requestQueue.add(stringRequest);
 
     }
-
     private void MetodoResponsecombustibles(final String response) {
         List<String> maintitle;
         maintitle = new ArrayList<String>();
@@ -138,6 +222,9 @@ public class BalanceProductos extends AppCompatActivity {
                     cs = conbustibles.getString("EstacionCombustibleId");
                     IdCombustible1.add(cs);
 
+//                    String combustibleId = conbustibles.getString("EstacionCombustibleEstacionId");
+//                    tipoprod.add(combustibleId);
+
 
                     precio = conbustibles.getString("Importe");
                     Precio.add(precio);
@@ -153,10 +240,6 @@ public class BalanceProductos extends AppCompatActivity {
                     JSONObject nombre = new JSONObject(combustible);
                     descripcion = nombre.getString("DescripcionLarga");
                 }
-
-
-
-
                 maintitle.add(descripcion);
                 subtitle.add("Precio: $"+precio);
                 if (cs == "1"){
@@ -187,13 +270,15 @@ public class BalanceProductos extends AppCompatActivity {
                 // TODO Auto-generated method stub
 
                 String identificadorCombustible = IdProducto.get(position);
-                IdCombustible = identificadorCombustible;
+                productoIdfinal = identificadorCombustible;
 
                 String interno = IdCombustible1.get(position);
-                IdCombus = interno;
+                numeroInternofinal = interno;
 
                 String cuesta = Precio.get(position);
-                Costo = cuesta;
+                preciofinal = cuesta;
+
+                tipoproductofinal = "1";
             }
         });
     }
@@ -239,6 +324,8 @@ public class BalanceProductos extends AppCompatActivity {
 
         ProductoId = new ArrayList();
 
+        CategoriaId = new ArrayList<>();
+
         //ArrayList<singleRow> singlerow = new ArrayList<>();
         try {
             JSONObject p1 = new JSONObject(response);
@@ -256,6 +343,9 @@ public class BalanceProductos extends AppCompatActivity {
                 ExistenciaProductos.add(ExProductos);
                 String productoclave = pA.getString("Producto");
                 JSONObject prod = new JSONObject(productoclave);
+                String categoria = prod.getString("CategoriaProducto");
+                JSONObject categoriaProducto = new JSONObject(categoria);
+                String IdCategoria = categoriaProducto.getString("NumeroInterno");
                 DescLarga=prod.getString("DescripcionLarga");
                 String codigobarra = prod.getString("CodigoBarras");
                 idArticulo=prod.getString("NumeroInterno");
@@ -273,6 +363,7 @@ public class BalanceProductos extends AppCompatActivity {
                 ClaveProducto.add(idArticulo);
                 CodigoBarras.add(codigobarra);
                 ProductoId.add(idproductos);
+                CategoriaId.add(IdCategoria);
             }
 
         } catch (JSONException e) {
@@ -287,11 +378,12 @@ public class BalanceProductos extends AppCompatActivity {
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String  Descripcion = ID.get(i).toString();
-                String precioUnitario = PrecioProducto.get(i).toString();
-                String paso= ClaveProducto.get(i).toString();
+                Descripcionfinal = ID.get(i).toString();
+                preciofinal = PrecioProducto.get(i).toString();
+                numeroInternofinal= ClaveProducto.get(i).toString();
                 String existencia = ExistenciaProductos.get(i).toString();
-                String idproduc = ProductoId.get(i);
+                productoIdfinal = ProductoId.get(i);
+                tipoproductofinal = CategoriaId.get(i);
 
 //                Producto.setText(paso);
 //                txtDescripcion.setText(Descripcion);
