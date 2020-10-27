@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.Ticket.Monederos.despachdorclave;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 public class tipo_ticket extends AppCompatActivity {
@@ -15,15 +16,15 @@ public class tipo_ticket extends AppCompatActivity {
     ListView list;
 
     String[] maintitle ={
-            "Ticket","Puntada","Tanque Lleno"
+            "Ticket","Monederos Electronicos"
     };
 
     String[] subtitle ={
-            "Emite tickets de venta","Imprime tickets de Puntada","Imprime tickets de Tanque LLeno",
+            "Emite tickets de venta","Imprime ticketde monederos electronicos",
     };
 
     Integer[] imgid={
-            R.drawable.ventas,R.drawable.nuevapuntada,R.drawable.tanquelleno,
+            R.drawable.ventas,R.drawable.trajeta,
     };
 
     @Override
@@ -45,15 +46,11 @@ public class tipo_ticket extends AppCompatActivity {
                 }
 
                 else if(position == 1) {
-                    Intent intent = new Intent( getApplicationContext(), ventas.class);
+                    Intent intent = new Intent( getApplicationContext(), despachdorclave.class);
                     intent.putExtra("tipo" , "1");
                     startActivity(intent);
                 }
-                else if (position == 2){
-                    Intent intent = new Intent(getApplicationContext(), ventas.class);
-                    intent.putExtra("tipo", "2");
-                    startActivity(intent);
-                }
+
             }
         });
     }

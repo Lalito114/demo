@@ -9,15 +9,16 @@
 
     <TextView
         android:id="@+id/textView45"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="274dp"
+        android:layout_height="52dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="58dp"
-        android:layout_marginBottom="500dp"
+        android:layout_marginEnd="42dp"
+        android:layout_marginBottom="447dp"
         android:fontFamily="monospace"
         android:lineSpacingExtra="10sp"
-        android:text="Ingresa tu contraseña"
+        android:text="Ingresa tu contraseña Despachador"
+        android:textAlignment="center"
         android:textColor="#000000"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -112,8 +113,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="165dp"
-        android:layout_marginBottom="608dp"
+        android:layout_marginEnd="164dp"
+        android:layout_marginBottom="511dp"
         android:text="TextView"
         android:visibility="invisible" />
 

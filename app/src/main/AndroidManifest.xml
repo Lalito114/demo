@@ -30,26 +30,25 @@
         android:icon="@mipmap/icon_corpoapp"
         android:label="@string/app_name"
         android:logo="@mipmap/icon_corpoapp"
-        android:roundIcon="@mipmap/icon_corpoapp"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".EmpleadoHuellas.validaHuella"></activity>
+        <activity android:name=".Ticket.Monederos.posicionesDespachador"></activity>
+        <activity android:name=".Ticket.Monederos.despachdorclave" />
+        <activity android:name=".FinalizaVenta.claveFinalizaVenta" />
+        <activity android:name=".FinalizaVenta.posicionFinaliza" />
+        <activity android:name=".Productos.tipoproducto" />
+        <activity android:name=".EmpleadoHuellas.validaHuella" />
         <activity android:name=".Menus_Laterales.Close.Cerrar_Sesion" />
         <activity android:name=".Ticket.Definicion_Tarjeta" />
         <activity android:name=".EmpleadoHuellas.capturaEmpleadoHuella" />
         <activity android:name=".Ticket.tipo_ticket" />
-        <activity android:name=".FinalizaVenta.claveFinalizaVenta"></activity>
-        <activity android:name=".FinalizaVenta.posicionFinaliza" />
-        <activity android:name=".Productos.tipoproducto" />
-        <activity android:name=".EmpleadoHuellas.validaHuella" />
-
-        <activity android:name=".Cortes2.IslasEstacion"></activity>
+        <activity android:name=".Cortes2.IslasEstacion" />
         <activity android:name=".Cortes2.VentaProductosFaltantes" />
         <activity android:name=".Cortes2.VentasTotales" />
         <activity android:name=".Cortes2.GranTotal" />
         <activity android:name=".Cortes2.CierreFormaPago" />
-
         <activity android:name=".Cortes2.DesgloseValesM" />
         <activity android:name=".Cortes2.TotalProductos" />
         <activity android:name=".Cortes2.SubOfiSiVale" />
@@ -61,8 +60,6 @@
         <activity android:name=".Cortes2.FajillasBilletes" />
         <activity android:name=".Cortes2.Lecturas" />
         <activity android:name=".Cortes2.Clave" />
-
-
         <activity android:name=".Puntada.Acumular.ClaveDespachadorAcumular" />
         <activity android:name=".Puntada.Acumular.ActivityEscanear" />
         <activity android:name=".Productos.FPaga" />
@@ -150,7 +147,6 @@
         <activity android:name=".SLE4442Activity" />
         <activity android:name=".SLE4428Activity" />
         <activity android:name=".EmvActivity" />
-
     </application>
 
 </manifest>

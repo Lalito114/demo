@@ -22,6 +22,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.zxing.client.android.Contents;
+import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -97,77 +98,55 @@ public class PosicionCargaTLl extends AppCompatActivity {
                         try {
                             JSONObject datos = new JSONObject(response);
                             String correcto = datos.getString("Correcto");
-                            String creditodispoble = datos.getString("CreditoDisponible");
-                            final String numerointernosucursal = datos.getString("NumeroInternoSucursal");
-                            final String odometro = datos.getString("PideOdometro");
-
-                            final String placa = datos.getString("PidePlaca");
-                            final String sucursalempleados = datos.getString("SucursalEmpleadoId");
-                            final String tipocliente = datos.getString("TipoCliente");
-                            String conbustibles = datos.getString("CombustiblesAutorizados");
-                            final String clave = datos.getString("Clave");
-                            final String transaccionId = datos.getString("TransaccionId");
-                            final String folio = datos.getString("Folio");
-                            //JSONObject conbustible = new JSONObject(conbustibles);
-
-                            if (correcto == "true"){
-                                if (odometro.equals("true")){
-                                    try {
-                                        final EditText input = new EditText(getApplicationContext());
-                                        input.setTextColor(Color.BLACK);
-                                        input.setInputType(InputType.TYPE_CLASS_NUMBER);
-                                        input.setGravity(Gravity.CENTER);
-                                        input.setTextSize(22);
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(PosicionCargaTLl.this);
-                                        builder.setTitle("Ingresa el Odometro \n");
-                                        builder.setView(input)
-                                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                                        String odometro = input.getText().toString();
-                                                        if (odometro != null){
-                                                           IngresarPlacas(placa,odometro,numerointernosucursal,sucursalempleados,posi,track,clave,tipocliente,transaccionId,folio);
-                                                         }else{
-                                                            Toast.makeText(PosicionCargaTLl.this, "Ingresa el odometro", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                    }
-                                                })
-                                                .setNegativeButton("Calcelar", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialog, int which) {
-                                                        dialog.cancel();
-                                                    }
-                                                }).show();
-                                    }catch (Exception e){
-                                        e.printStackTrace();
+                            if (correcto.equals("false")){
+                                String mensaje = datos.getString("Mensaje");
+                                AlertDialog.Builder builder = new AlertDialog.Builder(PosicionCargaTLl.this);
+                                builder.setTitle("Tarjeta Puntada");
+                                builder.setMessage(mensaje);
+                                builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                        startActivity(intent);
+                                        finish();
                                     }
-                                }else{
-                                    if (placa.equals("true")){
+                                });
+                                AlertDialog dialog= builder.create();
+                                dialog.show();
+
+                            }else{
+                                String creditodispoble = datos.getString("CreditoDisponible");
+                                final String numerointernosucursal = datos.getString("NumeroInternoSucursal");
+                                final String odometro = datos.getString("PideOdometro");
+
+                                final String placa = datos.getString("PidePlaca");
+                                final String sucursalempleados = datos.getString("SucursalEmpleadoId");
+                                final String tipocliente = datos.getString("TipoCliente");
+                                String conbustibles = datos.getString("CombustiblesAutorizados");
+                                final String clave = datos.getString("Clave");
+                                final String transaccionId = datos.getString("TransaccionId");
+                                final String folio = datos.getString("Folio");
+                                //JSONObject conbustible = new JSONObject(conbustibles);
+
+                                if (correcto == "true"){
+                                    if (odometro.equals("true")){
                                         try {
                                             final EditText input = new EditText(getApplicationContext());
                                             input.setTextColor(Color.BLACK);
+                                            input.setInputType(InputType.TYPE_CLASS_NUMBER);
                                             input.setGravity(Gravity.CENTER);
                                             input.setTextSize(22);
                                             AlertDialog.Builder builder = new AlertDialog.Builder(PosicionCargaTLl.this);
-                                            builder.setTitle("Ingresa las Placas \n");
+                                            builder.setTitle("Ingresa el Odometro \n");
                                             builder.setView(input)
                                                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                         @Override
                                                         public void onClick(DialogInterface dialogInterface, int i) {
-                                                            String placas = input.getText().toString();
-                                                            if (placas != null){
-                                                                Intent intent = new Intent(getApplicationContext(),ProductoTLl.class);
-                                                                intent.putExtra("placas",placas);
-                                                                intent.putExtra("odometro",odometro);
-                                                                intent.putExtra("NumeroInternoEstacion", numerointernosucursal);
-                                                                intent.putExtra("SucursalEmpleadoId",sucursalempleados);
-                                                                intent.putExtra("PosicioDeCarga", posi);
-                                                                intent.putExtra("NumeroDeTarjeta",track);
-                                                                intent.putExtra("ClaveTanqueLleno",clave);
-                                                                intent.putExtra("Tipocliente",tipocliente);
-                                                                startActivity(intent);
+                                                            String odometro = input.getText().toString();
+                                                            if (odometro != null){
+                                                                IngresarPlacas(placa,odometro,numerointernosucursal,sucursalempleados,posi,track,clave,tipocliente,transaccionId,folio);
                                                             }else{
-                                                                Toast.makeText(PosicionCargaTLl.this, "Ingresa las Placas", Toast.LENGTH_SHORT).show();
+                                                                Toast.makeText(PosicionCargaTLl.this, "Ingresa el odometro", Toast.LENGTH_SHORT).show();
                                                             }
                                                         }
                                                     })
@@ -181,15 +160,56 @@ public class PosicionCargaTLl extends AppCompatActivity {
                                             e.printStackTrace();
                                         }
                                     }else{
-                                        Intent intent = new Intent(getApplicationContext(),ProductoTLl.class);
-                                        startActivity(intent);
+                                        if (placa.equals("true")){
+                                            try {
+                                                final EditText input = new EditText(getApplicationContext());
+                                                input.setTextColor(Color.BLACK);
+                                                input.setGravity(Gravity.CENTER);
+                                                input.setTextSize(22);
+                                                AlertDialog.Builder builder = new AlertDialog.Builder(PosicionCargaTLl.this);
+                                                builder.setTitle("Ingresa las Placas \n");
+                                                builder.setView(input)
+                                                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                                String placas = input.getText().toString();
+                                                                if (placas != null){
+                                                                    Intent intent = new Intent(getApplicationContext(),ProductoTLl.class);
+                                                                    intent.putExtra("placas",placas);
+                                                                    intent.putExtra("odometro",odometro);
+                                                                    intent.putExtra("NumeroInternoEstacion", numerointernosucursal);
+                                                                    intent.putExtra("SucursalEmpleadoId",sucursalempleados);
+                                                                    intent.putExtra("PosicioDeCarga", posi);
+                                                                    intent.putExtra("NumeroDeTarjeta",track);
+                                                                    intent.putExtra("ClaveTanqueLleno",clave);
+                                                                    intent.putExtra("Tipocliente",tipocliente);
+                                                                    startActivity(intent);
+                                                                }else{
+                                                                    Toast.makeText(PosicionCargaTLl.this, "Ingresa las Placas", Toast.LENGTH_SHORT).show();
+                                                                }
+                                                            }
+                                                        })
+                                                        .setNegativeButton("Calcelar", new DialogInterface.OnClickListener() {
+                                                            @Override
+                                                            public void onClick(DialogInterface dialog, int which) {
+                                                                dialog.cancel();
+                                                            }
+                                                        }).show();
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+                                        }else{
+                                            Intent intent = new Intent(getApplicationContext(),ProductoTLl.class);
+                                            startActivity(intent);
+                                        }
+
                                     }
 
+                                }else{
+                                    Toast.makeText(getApplicationContext(),"La contraseña ingresada no es correcta",Toast.LENGTH_LONG).show();
                                 }
-
-                            }else{
-                                Toast.makeText(getApplicationContext(),"La contraseña ingresada no es correcta",Toast.LENGTH_LONG).show();
                             }
+
 
                         } catch (JSONException e) {
                             e.printStackTrace();

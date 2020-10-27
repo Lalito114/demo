@@ -91,7 +91,6 @@ public class claveUsuario extends BaseActivity implements FingerprintListener, V
         //lee valores usuario y carga
         usuario= findViewById(R.id.usuario);
         carga = findViewById(R.id.carga);
-        idUsuario();
         //Crea Boton Enviar
 
         btnEnviar = findViewById(R.id.imgticket);
@@ -105,7 +104,7 @@ public class claveUsuario extends BaseActivity implements FingerprintListener, V
                 if (tipo.equals("0")){
                     enviardatos();
                 }else{
-                    if (tipo.equals("1")){
+                    if (tipo.equals("1")|| tipo.equals("2")){
                         idUsuario();
                     }
                 }
@@ -113,8 +112,8 @@ public class claveUsuario extends BaseActivity implements FingerprintListener, V
 
             }
         });
-        initFinger();
-        ObtieneHuellas();
+//        initFinger();
+//        ObtieneHuellas();
 
     }
 

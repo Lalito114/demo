@@ -246,9 +246,9 @@ public class productosVendidos extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        final ListAdapterBilletes adapterP = new ListAdapterBilletes(this,   maintitle, subtitle, total);
-        list.setTextFilterEnabled(true);
-        list.setAdapter(adapterP);
+//        final ListAdapterBilletes adapterP = new ListAdapterBilletes(this,   maintitle, subtitle, total);
+//        list.setTextFilterEnabled(true);
+//        list.setAdapter(adapterP);
     }
 
 
