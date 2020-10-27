@@ -419,6 +419,24 @@ public class ProductoTLl extends AppCompatActivity {
 
                 String cuesta = Precio.get(position);
                 Costo = cuesta;
+
+                String main = maintitle.get(position);
+                String sub = subtitle.get(position);
+                if (cs == "1"){
+                    imgid.add(R.drawable.premium);
+                }else{
+                    if (cs == "2"){
+                        imgid.add(R.drawable.magna);
+                    }else{
+                        if (cs == "3"){
+                            imgid.add(R.drawable.diesel);
+                        }
+                    }
+                }
+                ListAdapterConbustiblesTLl adapterP = new ListAdapterConbustiblesTLl(ProductoTLl.this, maintitle, subtitle, imgid);
+                list=(ListView)findViewById(R.id.list);
+                list.setAdapter(adapterP);
+
             }
         });
     }

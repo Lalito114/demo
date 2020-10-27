@@ -17,8 +17,8 @@ public class MyApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-//        sDriverManager = DriverManager.getInstance();
-//        cardInfoEntity = new CardInfoEntity();
+        sDriverManager = DriverManager.getInstance();
+        cardInfoEntity = new CardInfoEntity();
 
         Config.init(this)
                 .setUpdate();
