@@ -492,6 +492,6 @@ public class claveUPendientes extends BaseActivity implements FingerprintListene
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
         startActivity(intent);
-        //finish();
+        finish();
     }
 }

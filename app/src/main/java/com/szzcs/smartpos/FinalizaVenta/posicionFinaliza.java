@@ -18,22 +18,27 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Cortes2.VentasTotales;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.Productos.ListAdapterProd;
+import com.szzcs.smartpos.Productos.VentasProductos;
 import com.szzcs.smartpos.Productos.claveProducto;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class posicionFinaliza extends AppCompatActivity {
     ListView list;
-    String carga, usuarioId;
-    String EstacionId, sucursalId, ipEstacion, numeroTarjetero ;
+    String carga, usuarioid;
+    String EstacionId, sucursalId, ipEstacion, numeroTarjetero, lugarproviene, usuario, posicion, clave;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,37 +46,106 @@ public class posicionFinaliza extends AppCompatActivity {
         setContentView(R.layout.activity_posicion_finaliza);
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
-        sucursalId=db.getIdSucursal();
+        sucursalId = db.getIdSucursal();
         ipEstacion = db.getIpEstacion();
+        lugarproviene = getIntent().getStringExtra("lugarproviene");
+        usuarioid = getIntent().getStringExtra("usuario");
+        usuario = getIntent().getStringExtra("clave");
         posicionCargaFinaliza();
     }
 
-    //Proceso para cargar el listView con las posiciones de carga
     public void posicionCargaFinaliza(){
-        //Declaramos direccion URL de las posiciones de carga. Para acceder a los metodos de la API
-        String url = "http://"+ipEstacion+"/CorpogasService/api/posicionCargas/estacion/"+EstacionId+"/maximo";
-        //inicializamos el String reques que es el metodo de la funcion de Volley que no va a permir accder a la API
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            //El metodo onResponse el cual va cachar si hay una respuesta de tipo cadena
-            public void onResponse(String response) {
-                //llamamos al metodo posicion en donde aoptine como resultado
-                //el valos maximo de posiciones de carga
-                vax(response);
-            }
-            //si exite un error este entrata de el metodo ErrorListener
-        }, new Response.ErrorListener() {
+    String url = "http://"+ipEstacion+"/CorpogasService/api/accesoUsuarios/sucursal/"+sucursalId+"/clave/" + usuario;
+
+        // Utilizamos el metodo Post para validar la contraseña
+        StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Declaramos la lista de titulo
+                        List<String> maintitle;
+                        //lo assignamos a un nuevo ArrayList
+                        maintitle = new ArrayList<String>();
+
+                        List<String> maintitle1;
+                        //lo assignamos a un nuevo ArrayList
+                        maintitle1 = new ArrayList<String>();
+
+                        //Creamos la lista para los subtitulos
+                        List<String> subtitle;
+                        //Lo asignamos a un nuevo ArrayList
+                        subtitle = new ArrayList<String>();
+
+                        //CReamos una nueva list de tipo Integer con la cual cargaremos a una imagen
+                        List<Integer> imgid;
+                        //La asignamos a un nuevo elemento de ArrayList
+                        imgid = new ArrayList<>();
+
+                        String carga;
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
+
+                            JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
+                            String control = jsonObject1.getString("Controles");
+
+                            JSONArray control1 = new JSONArray(control);
+                            for (int i = 0; i <control1.length() ; i++) {
+                                JSONObject posiciones = control1.getJSONObject(i);
+                                String posi = posiciones.getString("Posiciones");
+
+                                JSONArray mangue = new JSONArray(posi);
+                                for (int j = 0; j < mangue.length(); j++) {
+                                    JSONObject res = mangue.getJSONObject(j);
+                                    carga = res.getString("PosicionCargaId");
+
+                                    maintitle.add("PC " + carga);
+                                    maintitle1.add(carga);
+                                    subtitle.add("Magna  |  Premium  |  Diesel");
+                                    imgid.add(R.drawable.gas);
+                                }
+
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        ListAdapterProd adapterProd = new ListAdapterProd(posicionFinaliza.this, maintitle, subtitle, imgid);
+                        list = (ListView) findViewById(R.id.list);
+                        list.setAdapter(adapterProd);
+
+                        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                            @Override
+                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                // TODO Auto-generated method stub
+                                String numerocarga = maintitle1.get(position);
+                                posicion = numerocarga;
+                                //Se llama la clase para la clave del usuario
+                                if (lugarproviene.equals("1")) {
+                                    solicitadespacho();
+                                }else {
+                                    validaPosicionDisponible(numerocarga);
+                                }
+
+
+                            }
+                        });
+                    }
+                    //funcion para capturar errores
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
             }
         });
-        //Ejecutamos el stringrequest para invocar a la clase volley
-        RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
-        //Agregamos el stringrequest al Requestque
-        requestQueue.add(stringRequest);
 
+        // Añade la peticion a la cola
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(eventoReq);
     }
+
+
+    //Proceso para cargar el listView con las posiciones de carga
 
     //Procedimiento que carga las posiciones de carga
     private void vax(final String response) {
@@ -83,16 +157,58 @@ public class posicionFinaliza extends AppCompatActivity {
         List<Integer> imgid;
         imgid = new ArrayList<>();
 
-        //ciclo para cargar las posiciones de carga
-        for (int i = 1; i <= Integer.parseInt(response); i++) {
-            maintitle.add("PC" + String.valueOf(i));
-            subtitle.add("Magna |  Premium  |  Diesel");
-            imgid.add(R.drawable.gas);
+
+        try {
+            JSONObject respuesta = new JSONObject(response);
+            String correcto = respuesta.getString("Correcto");
+            String objetorespuesta = respuesta.getString("ObjetoRespuesta");
+            String mensaje = respuesta.getString("Mensaje");
+            if (correcto.equals("true")){
+                JSONObject respuestaobjeto = new JSONObject(objetorespuesta);
+                String control = respuestaobjeto.getString("Controles");
+                JSONArray controles = new JSONArray(control);
+                for (int j = 0; j<=controles.length(); j++) {
+                    JSONObject controlfinal = controles.getJSONObject(j);
+                    //JSONObject posicionA = new JSONObject(controlfinal);
+                    //ciclo para cargar las posiciones de carga
+                    for (int m = 0; m <= controlfinal.length(); m++) {
+                        JSONObject posiciones = controlfinal.getJSONObject(String.valueOf(m));
+                        String posicioncarga = posiciones.getString("PosicionCargaId");
+                        String numnerointerno = posiciones.getString("NumeroInterno");
+
+                        maintitle.add("PC" + numnerointerno);
+                        subtitle.add("Magna |  Premium  |  Diesel");
+                        imgid.add(R.drawable.gas);
+                    }
+                }
+            }else{
+                //El usuario no tiene posiciones de carga asociadas
+                try {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(posicionFinaliza.this);
+                    builder.setTitle("Ventas");
+                    builder.setMessage(mensaje)
+                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    Intent intent1 = new Intent(getApplicationContext(), claveFinalizaVenta.class);
+                                    startActivity(intent1);
+                                    finish();
+                                }
+                            }).show();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         //Inicializacion del listview con el adaptador
         ListAdapterProd adapterProd = new ListAdapterProd(this, maintitle, subtitle, imgid);
-        list=(ListView)findViewById(R.id.list);
+        list = (ListView) findViewById(R.id.list);
         list.setAdapter(adapterProd);
         //Definición del Evento Click del listview
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -100,19 +216,24 @@ public class posicionFinaliza extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 // declaracion de variables, posicion seleccionada en el listview
-                int posicion = position +1;
-                String posi = String.valueOf(posicion);
+                int posic = position + 1;
+                String posi = String.valueOf(posic);
+                posicion = posi;
                 //Se llama la clase para la clave del usuario
-                validaPosicionDisponible(posi);
+                if (lugarproviene.equals("1")) {
+                    solicitadespacho();
+                }else {
+                    validaPosicionDisponible(posi);
+                }
             }
         });
     }
 
-    private void validaPosicionDisponible(final String posicioncarga){
+    private void validaPosicionDisponible(final String posicioncarga) {
         // URL para obtener los empleados  y huellas de la posición de carga X
-        String url = "http://"+ipEstacion+"/CorpogasService/api/tickets/validaPendienteCobro/estacionId/"+EstacionId+"/posicionCargaId/"+posicioncarga;
+        String url = "http://" + ipEstacion + "/CorpogasService/api/tickets/validaPendienteCobro/estacionId/" + EstacionId + "/posicionCargaId/" + posicioncarga;
         // Utilizamos el metodo Post para validar la contraseña
-        StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
+        StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -120,19 +241,17 @@ public class posicionFinaliza extends AppCompatActivity {
                             JSONObject p1 = new JSONObject(response);
 
                             String correcto = p1.getString("ObjetoRespuesta");
-                            if (correcto.equals("true")){
-                                Intent intente = new Intent(getApplicationContext(), claveFinalizaVenta.class);
-                                //se envia el id seleccionado a la clase Usuario Producto
-                                intente.putExtra("posicion",posicioncarga);
-                                //Ejecuta la clase del Usuario producto
-                                startActivity(intente);
-                            }else{
+                            if (correcto.equals("true")) {
+                                if (lugarproviene == "2") {
+                                    finalizaventa();
+                                }
+                            } else {
                                 //Despacho en proceso
                                 try {
                                     String mensaje = p1.getString("Mensaje");
                                     AlertDialog.Builder builder = new AlertDialog.Builder(posicionFinaliza.this);
                                     builder.setTitle("Finaliza Venta");
-                                    builder.setMessage("Despacho en proceso: "+ mensaje )
+                                    builder.setMessage("Despacho en proceso: " + mensaje)
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -141,7 +260,7 @@ public class posicionFinaliza extends AppCompatActivity {
                                                     finish();
                                                 }
                                             }).show();
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
                                 //Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
@@ -149,7 +268,7 @@ public class posicionFinaliza extends AppCompatActivity {
                         } catch (JSONException e) {
                             //herramienta  para diagnostico de excepciones
                             //e.printStackTrace();
-                            Toast.makeText(getApplicationContext(),"error al obtener la validación posición disponible",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "error al obtener la validación posición disponible", Toast.LENGTH_SHORT).show();
                         }
                     }
                     //funcion para capturar errores
@@ -158,7 +277,7 @@ public class posicionFinaliza extends AppCompatActivity {
             public void onErrorResponse(VolleyError error) {
                 //Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
                 //VolleyLog.e("Error: ", volleyError.getMessage());
-                String algo = new String(error.networkResponse.data) ;
+                String algo = new String(error.networkResponse.data);
                 try {
                     //creamos un json Object del String algo
                     JSONObject errorCaptado = new JSONObject(algo);
@@ -175,7 +294,7 @@ public class posicionFinaliza extends AppCompatActivity {
                                         startActivity(intente);
                                     }
                                 }).show();
-                    }catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -193,6 +312,129 @@ public class posicionFinaliza extends AppCompatActivity {
 
     }
 
+    private void finalizaventa() {
+        //Utilizamos el metodo POST para  finalizar la Venta
+        String url = "http://" + ipEstacion + "/CorpogasService/api/Transacciones/finalizaVenta/sucursal/" + sucursalId + "/posicionCarga/" + posicion + "/usuario/" + usuario;
+        StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        //Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
+                        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                        startActivity(intent);
+                        finish();
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                // Colocar parametros para ingresar la  url
+                Map<String, String> params = new HashMap<String, String>();
+                return params;
+            }
+        };
 
 
+        // Añade la peticion a la cola
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        eventoReq.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(eventoReq);
+    }
+
+    private void solicitadespacho() {
+
+        String url = "http://" + ipEstacion + "/CorpogasService/api/despachos/autorizaDespacho/posicionCargaId/" + posicion + "/usuarioId/" + usuarioid;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject respuesta = new JSONObject(response);
+                    String correctoautoriza = respuesta.getString("Correcto");
+                    String mensajeautoriza = respuesta.getString("Mensaje");
+                    String objetoRespuesta = respuesta.getString("ObjetoRespuesta");
+                    if (correctoautoriza.equals("true")) {
+                        //Se inicializa el control para solicitar confirmacion
+                        AlertDialog.Builder builder;
+                        //Obtengo la posicion de carga que se pasa como parametro
+                        //String Posi = Posicion;
+                        //Enviar datos de peoductos y posicion de carga para regresar Ticket
+                        builder = new AlertDialog.Builder(posicionFinaliza.this);
+                        builder.setMessage("Desea agregar productos?");
+                        builder.setTitle("Ventas");
+                        builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                Intent intent = new Intent(getApplicationContext(), VentasProductos.class);
+                                startActivity(intent);
+                                finish();
+                                dialogInterface.cancel();
+                            }
+                        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                enviaMunu();
+                            }
+                        });
+                        AlertDialog dialog = builder.create();
+                        dialog.show();
+
+
+                    } else {
+                        Toast.makeText(getApplicationContext(), mensajeautoriza, Toast.LENGTH_LONG).show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
+        stringRequest.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
+        requestQueue.add(stringRequest);
+
+    }
+
+    private void enviaMunu() {
+        //Se inicializa el control para solicitar confirmacion
+        AlertDialog.Builder builder;
+        //Obtengo la posicion de carga que se pasa como parametro
+        //String Posi = Posicion;
+        //Enviar datos de peoductos y posicion de carga para regresar Ticket
+        builder = new AlertDialog.Builder(posicionFinaliza.this);
+        builder.setMessage("Venta inicializada");
+        builder.setTitle("Ventas");
+        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                startActivity(intent);
+                finish();
+                dialogInterface.cancel();
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+
+    }
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+        startActivity(intent);
+        finish();
+    }
 }

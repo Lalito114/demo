@@ -358,8 +358,8 @@ public class cargaGasto extends AppCompatActivity {
     //Metodo para regresar a la actividad principal
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(), claveGastos.class);
+        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
         startActivity(intent);
-        //finish();
+        finish();
     }
 }

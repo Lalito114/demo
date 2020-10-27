@@ -352,7 +352,7 @@ public class FPaga extends AppCompatActivity {
         finalizaventa(posicion, usuarioid);
         Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
         startActivity(intent);
-        //finish();
+        finish();
     }
 
 }

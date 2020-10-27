@@ -286,6 +286,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                 precio.setText(precioUnitario);
                 existencias.setText(existencia);
                 productoIdentificador.setText(idproduc);
+                tipoproductoid.setText(idproduc);
             }else{
                 Toast.makeText(getApplicationContext(), "Producto no encontrado en la lista", Toast.LENGTH_LONG).show();
                 Producto.setText("");
@@ -294,6 +295,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                 //existencias.setText(existencia);
                 productoIdentificador.setText("");
                 cantidadProducto.setText("1");
+                tipoproductoid.setText("");
             }
         }
 
@@ -568,12 +570,17 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                 idArticulo=prod.getString("NumeroInterno");
                 String codigobarras=prod.getString("CodigoBarras");
                 String PControl=prod.getString("ProductoControles");
-                JSONArray PC = new JSONArray(PControl);
-                for (int j = 0; j <PC.length() ; j++) {
-                    JSONObject Control = PC.getJSONObject(j);
-                    preciol  = Control.getString("Precio");
-                    IdProductos=Control.getString("Id");
-                }
+
+                //if (PControl.equals("null")){
+
+                //}else{
+                    JSONArray PC = new JSONArray(PControl);
+                    for (int j = 0; j < PC.length(); j++) {
+                        JSONObject Control = PC.getJSONObject(j);
+                        preciol = Control.getString("Precio");
+                        IdProductos = Control.getString("Id");
+                    }
+                //}
                 //if (IdProductos.equals("null")){
                 //    ProductosId.add("0");
                 //    preciol  = "0";
@@ -835,9 +842,9 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
     //Metodo para regresar a la actividad principal
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(), posicionProductos.class);
+        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
         startActivity(intent);
-        //finish();
+        finish();
     }
 
 }

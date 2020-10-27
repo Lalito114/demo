@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,17 +15,35 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
 import com.szzcs.smartpos.Cortes2.Clave;
+import com.szzcs.smartpos.Cortes2.FajillasBilletes;
+//import com.szzcs.smartpos.Cortes2.TotalProductos;
+import com.szzcs.smartpos.Cortes2.VentasTotales;
 import com.szzcs.smartpos.EmpleadoHuellas.capturaEmpleadoHuella;
 import com.szzcs.smartpos.Encriptacion.EncriptarMAC;
+import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
 import com.szzcs.smartpos.FinalizaVenta.posicionFinaliza;
+import com.szzcs.smartpos.FinalizaVenta.ventash;
 import com.szzcs.smartpos.Gastos.claveGastos;
 import com.szzcs.smartpos.Menus_Laterales.Close.Cerrar_Sesion;
 import com.szzcs.smartpos.Pendientes.claveUPendientes;
 import com.szzcs.smartpos.Productos.posicionProductos;
+import com.szzcs.smartpos.Ticket.Definicion_Tarjeta;
 import com.szzcs.smartpos.Ticket.tipo_ticket;
+import com.szzcs.smartpos.Ticket.ventas;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 import com.zcs.sdk.card.CardReaderTypeEnum;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import static com.zcs.sdk.card.CardReaderTypeEnum.MAG_CARD;
 
@@ -33,20 +52,20 @@ public class Munu_Principal extends AppCompatActivity {
     ListView list;
 
     String[] maintitle ={
-            "Finaliza Venta","Monederos Electronicos",
+            "Ventas","Monederos Electronicos",
             "Productos","Cortes",
             "Pendientes", "Gasto","Facturas", "Captura Huellas", "Tickets",
     };
 
     String[] subtitle ={
-            "Finaliza proceso Venta","Registro, Acumular y Redimir",
+            "Procesos Venta","Registro, Acumular y Redimir",
             "Administra productos","Realiza cortes de turnos",
             "Enlista pendientes", "Reporta lo Egresos","Imprime tus Tickets",
             "Captura Huellas Empleados", "Emite tickets de venta"
     };
 
     Integer[] imgid={
-            R.drawable.finaliza,R.drawable.monedero,
+            R.drawable.ventastotal,R.drawable.monedero,
             R.drawable.product,R.drawable.cortes,
             R.drawable.pendientes,R.drawable.gastos,R.drawable.fact, R.drawable.huella, R.drawable.ventas
     };
@@ -56,6 +75,10 @@ public class Munu_Principal extends AppCompatActivity {
         setContentView(R.layout.activity_munu__principal);
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEsatcion());
+
+        //Toolbar toolbar = (Toolbar)findViewById(R.id.id);
+//aplica color
+        //toolbar.setBackgroundColor(Color.parseColor("#00FF00"));
 
         EncriptarMAC mac = new EncriptarMAC();
         String mac2 = mac.getMacAddr();
@@ -73,9 +96,12 @@ public class Munu_Principal extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
                 // TODO Auto-generated method stub
                 if(position == 0) {
-                    Intent intent = new Intent( getApplicationContext(), posicionFinaliza.class);
+                    //code specific to first list item
+                   // Toast.makeText(getApplicationContext(),"Place Your First Option Code",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent( getApplicationContext(), ventash.class);
                     startActivity(intent);
                 }
+
                 else if(position == 1) {
                     CardReaderTypeEnum cardType = MAG_CARD;
                     CardFragment cf = new CardFragment();
@@ -90,7 +116,7 @@ public class Munu_Principal extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 3) {
-                    Intent intent = new Intent(getApplicationContext(), Clave.class);
+                    Intent intent = new Intent(getApplicationContext(), VentasTotales.class);
                     startActivity(intent);
                 }
                 else if(position == 4) {
