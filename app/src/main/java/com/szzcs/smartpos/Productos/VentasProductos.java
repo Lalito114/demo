@@ -72,6 +72,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
     JSONObject mjason = new JSONObject();
     JSONArray myArray = new JSONArray();
     JSONArray myArrayVer = new JSONArray();
+    JSONArray myArrayPaso = new JSONArray();
 
     String EstacionId, sucursalId, ipEstacion, tipoTransaccion, numerodispositivo ;
     ListView list;
@@ -79,6 +80,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
     String posicion, usuario;
     String transaccionId;
     TextView txtproductos;
+    String cadenaproducto = "";
 
     private ImageButton b_auto, btnbuscar;
     private MVBarcodeScanner.ScanningMode modo_Escaneo;
@@ -109,8 +111,20 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
         tipoTransaccion = "1"; //Transaccion Normal
         numerodispositivo = "1";
 
+        cadenaproducto = getIntent().getStringExtra("cadenaproducto");
+            txtproductos=findViewById(R.id.txtproductos);
+        if (cadenaproducto.length()>0){
+            txtproductos.setText(myArrayVer.toString());
+        }else{
+            txtproductos.setText("");
+        }
+
         empleado=findViewById(R.id.empleado);
-        empleado.setText(getIntent().getStringExtra("user"));
+        empleado.setText(getIntent().getStringExtra("usuario"));
+
+        posicion = getIntent().getStringExtra("posicion");
+        usuario = getIntent().getStringExtra("usuario");
+
 
         btnsolicitadespacho = findViewById(R.id.btnsolicitadespacho);
         btnsolicitadespacho.setOnClickListener(new View.OnClickListener() {
@@ -125,9 +139,9 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
             public void onClick(View view) {
                 //se asignan valores
                 final String posicion;
-                posicion = getIntent().getStringExtra("car");
+                posicion = getIntent().getStringExtra("posicion");
                 final String usuarioid;
-                usuarioid = getIntent().getStringExtra("user");
+                usuarioid = getIntent().getStringExtra("usuario");
 
                 if (myArray.length()==0  )       //.length() >0)
                 {
@@ -147,8 +161,13 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                 {
                     Toast.makeText(getApplicationContext(), "Seleccione al menos uno de los Productos", Toast.LENGTH_LONG).show();
                 } else {
+                    Intent intent = new Intent(getApplicationContext(), confirmaVenta.class);
+                    intent.putExtra("posicion", posicion);
+                    intent.putExtra("usuario", usuario);
+                    intent.putExtra("cadenaproducto", myArrayPaso.toString());
+                    startActivity(intent);
+                    finish();
 
-                    EnviarDatos();
                 }
             }
         });
@@ -195,9 +214,9 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
 
         private void Autorizadespacho(){
             final String posicion;
-            posicion = getIntent().getStringExtra("car");
+            posicion = getIntent().getStringExtra("posicion");
             final String usuarioid;
-            usuarioid = getIntent().getStringExtra("user");
+            usuarioid = getIntent().getStringExtra("usuario");
 
 
             String url = "http://"+ipEstacion+"/CorpogasService/api/despachos/autorizaDespacho/posicionCargaId/"+posicion+"/usuarioId/"+usuarioid;
@@ -329,9 +348,9 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
         private void EnviarDatos() {
         //Si es valido se asignan valores
         final String posicion;
-        posicion = getIntent().getStringExtra("car");
+        posicion = getIntent().getStringExtra("posicion");
         final String usuarioid;
-        usuarioid = getIntent().getStringExtra("user");
+        usuarioid = getIntent().getStringExtra("usuario");
 
         //EnviarProductos(posicion, usuarioid);
         AgregarDespacho(posicion, usuarioid);
@@ -476,6 +495,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                 if (bandera==true) {
                     JSONObject mjason = new JSONObject();
                     JSONObject mjasonver = new JSONObject();
+                    JSONObject mjasonpaso = new JSONObject();
 
                     mjason.put("TipoProducto", Integer.parseInt(TipoProductoId));
                     mjason.put("ProductoId", ProductoIdEntero);
@@ -483,7 +503,18 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                     //mjason.put("Descripcion", descrProducto.toString());
                     mjason.put("Cantidad", TotalProducto);
                     mjason.put("Precio", precioUnitario);
+                    //mjason.put("Descripcion", descrProducto);
                     myArray.put(mjason);
+
+                    mjasonpaso.put("TipoProducto", Integer.parseInt(TipoProductoId));
+                    mjasonpaso.put("ProductoId", ProductoIdEntero);
+                    mjasonpaso.put("NumeroInterno", Integer.parseInt(numInterno));
+                    //mjasonpaso.put("Descripcion", descrProducto.toString());
+                    mjasonpaso.put("Cantidad", TotalProducto);
+                    mjasonpaso.put("Precio", precioUnitario);
+                    mjasonpaso.put("Descripcion", descrProducto);
+
+                    myArrayPaso.put(mjasonpaso);
 
                     mjasonver.put("Producto:", Integer.parseInt(numInterno));
                     mjasonver.put("Cantidad:", TotalProducto);
@@ -510,7 +541,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
 
     private void MostrarProductos() {
         final String posicion;
-        posicion = getIntent().getStringExtra("car");
+        posicion = getIntent().getStringExtra("posicion");
         String url = "http://"+ipEstacion+"/CorpogasService/api/islas/productos/estacion/"+EstacionId+"/posicionCargaId/"+posicion;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override

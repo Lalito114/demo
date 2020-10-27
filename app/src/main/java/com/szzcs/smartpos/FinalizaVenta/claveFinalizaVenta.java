@@ -48,7 +48,7 @@ import java.util.Map;
 
 public class claveFinalizaVenta extends BaseActivity implements FingerprintListener, View.OnClickListener  {
     private static final String TAG = "FingerprintActivity";
-    TextView usuario, carga;
+    TextView usuario, carga, txtventas;
     EditText contrasena;
     String EstacionId, sucursalId, ipEstacion ;
     Button btnhuella;
@@ -83,6 +83,12 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
         lugarproviene =getIntent().getStringExtra("lugarproviene");
         usuarioid = getIntent().getStringExtra("usuario");
 
+        txtventas=findViewById(R.id.txtventas);
+        if (lugarproviene.equals("1")){
+            txtventas.setText("Inicia Venta");
+        }else{
+            txtventas.setText("Finaliza Venta");
+        }
         validaClave();
         initFinger();
         ObtieneHuellas();
@@ -491,7 +497,7 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
                     String errorMensaje = errorCaptado.getString("ExceptionMessage");
                     try {
                         AlertDialog.Builder builder = new AlertDialog.Builder(claveFinalizaVenta.this);
-                        builder.setTitle("Tickets Pendientes");
+                        builder.setTitle("Ventas");
                         builder.setMessage("Usuario ocupado: " + errorMensaje)
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
