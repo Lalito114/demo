@@ -107,6 +107,7 @@ public class posicionProductos extends AppCompatActivity {
                 intente.putExtra("posicion",posi);
                 //Ejecuta la clase del Usuario producto
                 startActivity(intente);
+                finish();
             }
         });
     }
@@ -115,7 +116,7 @@ public class posicionProductos extends AppCompatActivity {
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
         startActivity(intent);
-        //finish();
+        finish();
     }
 
 

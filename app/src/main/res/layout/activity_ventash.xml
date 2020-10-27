@@ -4,37 +4,31 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Productos.tipoproducto">
+    tools:context=".FinalizaVenta.ventash">
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
 
     <ImageView
-        android:id="@+id/imgProducto"
-        android:layout_width="108dp"
-        android:layout_height="108dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="132dp"
+        android:id="@+id/imageView9"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="11dp"
         android:layout_marginBottom="104dp"
 
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/product" />
-
-    <ImageView
-        android:id="@+id/imageView7"
-        android:layout_width="108dp"
-        android:layout_height="108dp"
-        android:layout_marginTop="11dp"
-        android:layout_marginBottom="384dp"
-
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.555"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinnerIslas"
-        app:srcCompat="@drawable/gas" />
+        app:srcCompat="@drawable/gas"
+        tools:visibility="invisible" />
 
     <Button
-        android:id="@+id/btnproductos"
+        android:id="@+id/btnfinalizaventa"
         android:layout_width="340dp"
         android:layout_height="60dp"
         android:layout_alignParentEnd="true"
@@ -44,14 +38,15 @@
         android:background="@drawable/b3"
         android:enabled="true"
         android:saveEnabled="true"
-        android:text="Productos"
+        android:text="Finaliza Venta"
         android:textColor="@color/a_normal"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="invisible" />
 
     <Button
-        android:id="@+id/btndespacho"
+        android:id="@+id/btniniciaventa"
         android:layout_width="340dp"
         android:layout_height="60dp"
         android:layout_alignParentEnd="true"
@@ -61,9 +56,26 @@
         android:background="@drawable/b3"
         android:enabled="true"
         android:saveEnabled="true"
-        android:text="Solicitud de despacho"
+        android:text="inicia venta"
         android:textColor="@color/a_normal"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/imageView8"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginTop="11dp"
+        android:layout_marginBottom="376dp"
+
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.555"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinnerIslas"
+        app:srcCompat="@drawable/gas"
+        tools:visibility="invisible" />
 </android.support.constraint.ConstraintLayout>

@@ -26,10 +26,12 @@ import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Cortes2.Clave;
 import com.szzcs.smartpos.Cortes2.FajillasBilletes;
 //import com.szzcs.smartpos.Cortes2.TotalProductos;
+import com.szzcs.smartpos.Cortes2.VentasTotales;
 import com.szzcs.smartpos.EmpleadoHuellas.capturaEmpleadoHuella;
 import com.szzcs.smartpos.Encriptacion.EncriptarMAC;
 import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
 import com.szzcs.smartpos.FinalizaVenta.posicionFinaliza;
+import com.szzcs.smartpos.FinalizaVenta.ventash;
 import com.szzcs.smartpos.Gastos.claveGastos;
 import com.szzcs.smartpos.Menus_Laterales.Close.Cerrar_Sesion;
 import com.szzcs.smartpos.Pendientes.claveUPendientes;
@@ -50,20 +52,20 @@ public class Munu_Principal extends AppCompatActivity {
     ListView list;
 
     String[] maintitle ={
-            "Finaliza Venta","Monederos Electronicos",
+            "Ventas","Monederos Electronicos",
             "Productos","Cortes",
             "Pendientes", "Gasto","Facturas", "Captura Huellas", "Tickets",
     };
 
     String[] subtitle ={
-            "Finaliza proceso Venta","Registro, Acumular y Redimir",
+            "Procesos Venta","Registro, Acumular y Redimir",
             "Administra productos","Realiza cortes de turnos",
             "Enlista pendientes", "Reporta lo Egresos","Imprime tus Tickets",
             "Captura Huellas Empleados", "Emite tickets de venta"
     };
 
     Integer[] imgid={
-            R.drawable.finaliza,R.drawable.monedero,
+            R.drawable.ventastotal,R.drawable.monedero,
             R.drawable.product,R.drawable.cortes,
             R.drawable.pendientes,R.drawable.gastos,R.drawable.fact, R.drawable.huella, R.drawable.ventas
     };
@@ -96,7 +98,7 @@ public class Munu_Principal extends AppCompatActivity {
                 if(position == 0) {
                     //code specific to first list item
                    // Toast.makeText(getApplicationContext(),"Place Your First Option Code",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent( getApplicationContext(), posicionFinaliza.class);
+                    Intent intent = new Intent( getApplicationContext(), ventash.class);
                     startActivity(intent);
                 }
 
@@ -114,7 +116,7 @@ public class Munu_Principal extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 3) {
-                    Intent intent = new Intent(getApplicationContext(), Clave.class);
+                    Intent intent = new Intent(getApplicationContext(), VentasTotales.class);
                     startActivity(intent);
                 }
                 else if(position == 4) {

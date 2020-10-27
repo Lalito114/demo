@@ -101,4 +101,12 @@ public class tipoproducto extends AppCompatActivity {
 
     }
 
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+        startActivity(intent);
+        finish();
+    }
+
 }

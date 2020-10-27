@@ -61,7 +61,7 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
     private Handler mHandler;
     TextView textResultado;
     Boolean banderaIdentificado;
-    String usuarioid, posicioncarga;
+    String usuarioid, posicioncarga, lugarproviene;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +79,9 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
         sucursalId=db.getIdSucursal();
         EstacionId = db.getIdEstacion();
         ipEstacion = db.getIpEstacion();
-        posicioncarga =getIntent().getStringExtra("posicion");
+        //posicioncarga =getIntent().getStringExtra("posicion");
+        lugarproviene =getIntent().getStringExtra("lugarproviene");
+        usuarioid = getIntent().getStringExtra("usuario");
 
         validaClave();
         initFinger();
@@ -218,12 +220,18 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
                                             String idusuario = validar.getString("Id");
                                             if (valido == "true") {
                                                 //Si es valido se asignan valores
-                                                finalizaventa(posicioncarga, idusuario);
+                                                Intent intente = new Intent(getApplicationContext(), posicionFinaliza.class);
+                                                intente.putExtra("lugarproviene", lugarproviene);
+                                                intente.putExtra("usuario", idusuario);
+                                                intente.putExtra("clave", pass);
+
+                                                startActivity(intente);
+                                                finish();
                                             } else {
                                                 //Si no es valido se envia mensaje
                                                 try {
                                                     AlertDialog.Builder builder = new AlertDialog.Builder(claveFinalizaVenta.this);
-                                                    builder.setTitle("Tickets Pendientes");
+                                                    builder.setTitle("Ventas");
                                                     builder.setMessage("Contraseña Incorrecta")
                                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                                 @Override
@@ -606,7 +614,7 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
         startActivity(intent);
-        //finish();
+        finish();
     }
 
 }

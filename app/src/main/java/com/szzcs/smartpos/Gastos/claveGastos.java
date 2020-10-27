@@ -566,7 +566,7 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
     public void onBackPressed() {
         Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
         startActivity(intent);
-        //finish();
+        finish();
     }
 
 }

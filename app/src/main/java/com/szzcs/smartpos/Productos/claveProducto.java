@@ -25,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.MyApp;
 import com.szzcs.smartpos.Pendientes.claveUPendientes;
 import com.szzcs.smartpos.R;
@@ -493,9 +494,9 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
     //Metodo para regresar a la actividad principal
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(), posicionProductos.class);
+        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
         startActivity(intent);
-        //finish();
+        finish();
     }
 
 }
