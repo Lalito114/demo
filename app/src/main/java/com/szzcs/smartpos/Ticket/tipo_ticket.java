@@ -8,6 +8,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.Ticket.Monederos.despachdorclave;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 public class tipo_ticket extends AppCompatActivity {
@@ -45,7 +46,7 @@ public class tipo_ticket extends AppCompatActivity {
                 }
 
                 else if(position == 1) {
-                    Intent intent = new Intent( getApplicationContext(), claveUsuario.class);
+                    Intent intent = new Intent( getApplicationContext(), despachdorclave.class);
                     intent.putExtra("tipo" , "1");
                     startActivity(intent);
                 }

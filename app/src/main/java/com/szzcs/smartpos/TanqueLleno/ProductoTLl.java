@@ -1,5 +1,6 @@
 package com.szzcs.smartpos.TanqueLleno;
 
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AlertDialog;
@@ -48,6 +49,7 @@ public class ProductoTLl extends AppCompatActivity {
     JSONArray array1 = new JSONArray();
     JSONObject jsonParam = new JSONObject();
     String folio, transaccion;
+    boolean pasa;
     String NumeroInternoSucursal,SucursalEmpleadoId,PosicionDeCarga,NumeroDeTarjeta,ClaveTanqueLleno,TipoCliente;
 
     @Override
@@ -142,7 +144,14 @@ public class ProductoTLl extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (array1!= null){
+                    ProgressDialog bar = new ProgressDialog(ProductoTLl.this);
+                    bar.setTitle("Tanque Lleno");
+                    bar.setMessage("Esperando Respuesta");
+                    bar.setIcon(R.drawable.tanquelleno);
+                    bar.show();
                     EnviarProductos1();
+
+
                     v.setVisibility(View.INVISIBLE);
 
                 }else{
@@ -167,7 +176,6 @@ public class ProductoTLl extends AppCompatActivity {
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/tanqueLleno/EnviarProductos";
         RequestQueue queue = Volley.newRequestQueue(this);
-
         try {
 
             datos.put("NumeroInternoSucursal", NumeroInternoSucursal);
@@ -190,8 +198,8 @@ public class ProductoTLl extends AppCompatActivity {
         JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, datos, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
+                pasa= true;
 
-            //Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
                 try {
                     String validacion = response.getString("Correcto");
                      transaccion = response.getString("TransaccionId");
@@ -208,6 +216,7 @@ public class ProductoTLl extends AppCompatActivity {
                         builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
+
                                 Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
                                 startActivity(intent);
                                 finish();
@@ -235,12 +244,15 @@ public class ProductoTLl extends AppCompatActivity {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+
+
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 String error1 = error.networkResponse.data.toString();
                 Toast.makeText(ProductoTLl.this, error1, Toast.LENGTH_SHORT).show();
+                pasa= false;
             }
         }){
             public Map<String,String>getHeaders() throws AuthFailureError{
@@ -263,12 +275,21 @@ public class ProductoTLl extends AppCompatActivity {
             }
         };
         request_json.setRetryPolicy(new DefaultRetryPolicy(
-                12000,
+                120000,
                 DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
                 DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         queue.add(request_json);
 
+
+
     }
+
+    private boolean valido() {
+        boolean b = false;
+        pasa = b ;
+        return b;
+    }
+
 
     private void enviarDatosCuerpoTicket(final String Transaccion, final String folio) {
         SQLiteBD data = new SQLiteBD(getApplicationContext());
@@ -420,20 +441,24 @@ public class ProductoTLl extends AppCompatActivity {
                 String cuesta = Precio.get(position);
                 Costo = cuesta;
 
-                String main = maintitle.get(position);
-                String sub = subtitle.get(position);
-                if (cs == "1"){
-                    imgid.add(R.drawable.premium);
-                }else{
-                    if (cs == "2"){
-                        imgid.add(R.drawable.magna);
-                    }else{
-                        if (cs == "3"){
-                            imgid.add(R.drawable.diesel);
-                        }
-                    }
-                }
-                ListAdapterConbustiblesTLl adapterP = new ListAdapterConbustiblesTLl(ProductoTLl.this, maintitle, subtitle, imgid);
+                final List<String> main;
+                main = new ArrayList<String>();
+
+                main.add(maintitle.get(position));
+
+
+                final List<String> sub;
+                sub = new ArrayList<String>();
+
+                sub.add(subtitle.get(position));
+
+
+                final List<Integer> img;
+                img = new ArrayList<>();
+
+                img.add(imgid.get(position));
+
+                ListAdapterConbustiblesTLl adapterP = new ListAdapterConbustiblesTLl(ProductoTLl.this, main, sub, img);
                 list=(ListView)findViewById(R.id.list);
                 list.setAdapter(adapterP);
 

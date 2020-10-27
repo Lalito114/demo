@@ -34,7 +34,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".FinalizaVenta.claveFinalizaVenta"></activity>
+        <activity android:name=".Ticket.Monederos.posicionesDespachador"></activity>
+        <activity android:name=".Ticket.Monederos.despachdorclave" />
+        <activity android:name=".FinalizaVenta.claveFinalizaVenta" />
         <activity android:name=".FinalizaVenta.posicionFinaliza" />
         <activity android:name=".Productos.tipoproducto" />
         <activity android:name=".EmpleadoHuellas.validaHuella" />

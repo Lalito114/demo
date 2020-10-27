@@ -427,7 +427,7 @@ public class PrintFragment extends PreferenceFragment {
                     String despachador = getArguments().getString("despachador");
                     String vendedor = getArguments().getString("vendedor");
                     mPrinter.setPrintAppendString("PC: " + posicion + " Desp: " + despachador + " Vend: " + vendedor,format);
-                    String formapago = getArguments().getString("nombrepago");
+                    String formapago = getArguments().getString("formapago");
                     mPrinter.setPrintAppendString("PAGO: " + formapago ,format);
                     format.setTextSize(23);
                     format.setStyle(PrnTextStyle.NORMAL);
@@ -602,7 +602,7 @@ public class PrintFragment extends PreferenceFragment {
                     String despachador = getArguments().getString("despachador");
                     String vendedor = getArguments().getString("vendedor");
                     mPrinter.setPrintAppendString("PC: " + posicion + " Desp: " + despachador + " Vend: " + vendedor,format);
-                    String formapago = getArguments().getString("nombrepago");
+                    String formapago = getArguments().getString("formapago");
                     mPrinter.setPrintAppendString("PAGO: " + formapago ,format);
                     format.setTextSize(23);
                     format.setStyle(PrnTextStyle.NORMAL);

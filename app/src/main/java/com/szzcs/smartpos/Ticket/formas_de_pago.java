@@ -36,6 +36,7 @@ import com.google.gson.JsonObject;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.Ticket.Monederos.posicionesDespachador;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;
@@ -224,6 +225,25 @@ public class formas_de_pago extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String detalle = jsonObject.getString("Detalle");
+                            if (detalle.equals("null")){
+                                String estado1 = jsonObject.getString("Resultado");
+                                JSONObject descripcion = new JSONObject(estado1);
+                                String estado = descripcion.getString("Descripcion");
+                                AlertDialog.Builder builder = new AlertDialog.Builder(formas_de_pago.this);
+                                builder.setTitle("Tarjeta Puntada");
+                                builder.setMessage(estado);
+                                builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
+                                AlertDialog dialog= builder.create();
+                                dialog.show();
+
+                            }
                             String pie = jsonObject.getString("Pie");
                             JSONObject mensaje = new JSONObject(pie);
                             final JSONArray names = mensaje.getJSONArray("Mensaje");
