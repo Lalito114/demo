@@ -85,7 +85,6 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
         EstacionId = db.getIdEstacion();
         ipEstacion = db.getIpEstacion();
 
-        carga.setText(getIntent().getStringExtra("posicion"));
         //procedimiento para validar la contraseña
         validaClave();
        //Inicializacion y carga de huella
@@ -160,8 +159,9 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        Intent intente = new Intent(getApplicationContext(), posicionProductos.class);
+                                        Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
                                         startActivity(intente);
+                                        finish();
                                     }
                                 }).show();
                     }catch (Exception e){
@@ -209,7 +209,9 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
                     //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
 
                     //Conexion con la base y ejecuta valida clave
-                    String url = "http://"+ipEstacion+"/CorpogasService/api/SucursalEmpleados/clave/"+pass;
+                    //String url = "http://"+ipEstacion+"/CorpogasService/api/SucursalEmpleados/clave/"+pass;
+                    String url = "http://"+ipEstacion+"/CorpogasService/api/SucursalEmpleados/claveSinValidacion/"+pass;
+
 
                     // Utilizamos el metodo Post para validar la contraseña
                     StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
@@ -224,12 +226,12 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
                                         if (valido == "true"){
                                             //Si es valido se asignan valores
                                             usuario.setText(idusuario);
-                                            carga.setText(posicion);
+                                            //carga.setText(posicion);
                                             //Se instancia y se llama a la clase Venta de Productos
-                                            Intent intent = new Intent(getApplicationContext(), tipoproducto.class); //formaPago
+                                            Intent intent = new Intent(getApplicationContext(), posicionProductos.class); //formaPago
                                             //Se envian los parametros de posicion y usuario
-                                            intent.putExtra("car",posicion);
-                                            intent.putExtra("user",idusuario);
+                                            intent.putExtra("usuario",idusuario);
+                                            intent.putExtra("clave",pass);
                                             //inicia el activity
                                             startActivity(intent);
                                             finish();
@@ -329,12 +331,12 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
                                         if (valido == "true"){
                                             //Si es valido se asignan valores
                                             usuario.setText(idusuario);
-                                            carga.setText(posicion);
+                                            //carga.setText(posicion);
                                             //Se instancia y se llama a la clase Venta de Productos
-                                            Intent intent = new Intent(getApplicationContext(), tipoproducto.class); //formaPago
+                                            Intent intent = new Intent(getApplicationContext(), posicionProductos.class); //formaPago
                                             //Se envian los parametros de posicion y usuario
-                                            intent.putExtra("car",posicion);
-                                            intent.putExtra("user",EmpleadoId);
+                                            intent.putExtra("usuario",idusuario);
+                                            intent.putExtra("clave",idusuario);
                                             //inicia el activity
                                             startActivity(intent);
                                             finish();
@@ -381,8 +383,9 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                                    Intent intente = new Intent(getApplicationContext(), posicionProductos.class);
+                                                    Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
                                                     startActivity(intente);
+                                                    finish();
                                                 }
                                             }).show();
                                 }catch (Exception e){

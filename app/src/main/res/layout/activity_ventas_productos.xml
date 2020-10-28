@@ -20,7 +20,7 @@
         android:saveEnabled="true"
         android:text="Solicitud de despacho"
         android:textColor="@color/a_normal"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -40,11 +40,11 @@
     <TextView
         android:id="@+id/txtproductos"
         android:layout_width="330dp"
-        android:layout_height="30dp"
+        android:layout_height="74dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="111dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="67dp"
         android:textColor="#070707"
         android:textSize="15sp"
         android:textStyle="bold" />
@@ -235,7 +235,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="13dp"
         android:text="Enviar"
-        tools:visibility="invisible" />
+        tools:visibility="visible" />
 
     <Button
         android:id="@+id/comprar"
@@ -243,8 +243,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="13dp"
-        android:text="cobrar" />
+        android:layout_marginEnd="307dp"
+        android:layout_marginBottom="610dp"
+        android:text="cobrar"
+        android:visibility="invisible" />
 
 </RelativeLayout >

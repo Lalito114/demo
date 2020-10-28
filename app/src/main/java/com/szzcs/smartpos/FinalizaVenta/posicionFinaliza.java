@@ -23,6 +23,7 @@ import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.Productos.ListAdapterProd;
 import com.szzcs.smartpos.Productos.VentasProductos;
 import com.szzcs.smartpos.Productos.claveProducto;
+import com.szzcs.smartpos.Productos.posicionProductos;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -85,26 +86,48 @@ public class posicionFinaliza extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
+                            String mensaje = jsonObject.getString("Mensaje");
 
-                            JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
-                            String control = jsonObject1.getString("Controles");
-
-                            JSONArray control1 = new JSONArray(control);
-                            for (int i = 0; i <control1.length() ; i++) {
-                                JSONObject posiciones = control1.getJSONObject(i);
-                                String posi = posiciones.getString("Posiciones");
-
-                                JSONArray mangue = new JSONArray(posi);
-                                for (int j = 0; j < mangue.length(); j++) {
-                                    JSONObject res = mangue.getJSONObject(j);
-                                    carga = res.getString("PosicionCargaId");
-
-                                    maintitle.add("PC " + carga);
-                                    maintitle1.add(carga);
-                                    subtitle.add("Magna  |  Premium  |  Diesel");
-                                    imgid.add(R.drawable.gas);
+                            if (ObjetoRespuesta.equals("null")){
+                                //Toast.makeText(posicionProductos.this, mensaje, Toast.LENGTH_SHORT).show();
+                                try {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(posicionFinaliza.this);
+                                    builder.setTitle("Productos");
+                                    builder.setMessage("" + mensaje)
+                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    Intent intent = new Intent(getApplicationContext(), claveFinalizaVenta.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            }).show();
+                                }catch (Exception e){
+                                    e.printStackTrace();
                                 }
 
+                            }else {
+
+                                JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
+                                String control = jsonObject1.getString("Controles");
+
+                                JSONArray control1 = new JSONArray(control);
+                                for (int i = 0; i <control1.length() ; i++) {
+                                    JSONObject posiciones = control1.getJSONObject(i);
+                                    String posi = posiciones.getString("Posiciones");
+
+                                    JSONArray mangue = new JSONArray(posi);
+                                    for (int j = 0; j < mangue.length(); j++) {
+                                        JSONObject res = mangue.getJSONObject(j);
+                                        carga = res.getString("PosicionCargaId");
+
+                                        maintitle.add("PC " + carga);
+                                        maintitle1.add(carga);
+                                        subtitle.add("Magna  |  Premium  |  Diesel");
+                                        imgid.add(R.drawable.gas);
+                                    }
+
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
