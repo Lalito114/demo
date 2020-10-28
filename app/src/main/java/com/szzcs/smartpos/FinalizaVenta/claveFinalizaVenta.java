@@ -230,7 +230,6 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
                                                 intente.putExtra("lugarproviene", lugarproviene);
                                                 intente.putExtra("usuario", idusuario);
                                                 intente.putExtra("clave", pass);
-
                                                 startActivity(intente);
                                                 finish();
                                             } else {
@@ -457,9 +456,18 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
                                 JSONObject validar = new JSONObject(response);
                                 String valido = validar.getString("Activo");
                                 String idusuario = validar.getString("Id");
+                                String claveu = validar.getString("Clave");
                                 if (valido == "true"){
                                     //Si es valido se asignan valores
-                                    validaPosicionDisponible(posicioncarga, idusuario);
+                                    //validaPosicionDisponible(posicioncarga, idusuario);
+                                    //Si es valido se asignan valores
+                                    Intent intente = new Intent(getApplicationContext(), posicionFinaliza.class);
+                                    intente.putExtra("lugarproviene", lugarproviene);
+                                    intente.putExtra("usuario", idusuario);
+                                    intente.putExtra("clave", claveu);
+                                    startActivity(intente);
+                                    finish();
+
                                 }else {
                                     //Si no es valido se envia mensaje de conteaseña incorrecta
                                     try {

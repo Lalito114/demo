@@ -197,8 +197,18 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
             }
         });
         //procedimiento para inicializar variables
-        CantidadProducto();
-        //procedimiento que despliega la lista de productos
+        //CantidadProducto();
+            cantidadProducto = findViewById(R.id.cantidadProducto);
+            Producto= findViewById(R.id.Producto);
+            cantidad = cantidadProducto.toString();
+            txtDescripcion = findViewById(R.id.txtDescripcion);
+            precio = findViewById(R.id.precio);
+            existencias = findViewById(R.id.existencias);
+            productoIdentificador = findViewById(R.id.productoIdentificador);
+            tipoproductoid = findViewById(R.id.tipoproductoid);
+            txtproductos = findViewById(R.id.txtproductos);
+
+            //procedimiento que despliega la lista de productos
         MostrarProductos();
         UI();
 
@@ -423,27 +433,34 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
         txtproductos = findViewById(R.id.txtproductos);
     }
     private void Aumentar() {
-        cantidad = cantidadProducto.getText().toString();
-        int numero = Integer.parseInt(cantidad);
-        int totalexistencia = Integer.parseInt(existencias.getText().toString());
-        if (numero<totalexistencia) {
-            int total = numero + 1;
-            String resultado = String.valueOf(total);
-            cantidadProducto.setText(resultado);
-        }else{
-            Toast.makeText(getApplicationContext(), "solo hay "+ existencias.getText().toString()+ " en existencia ", Toast.LENGTH_LONG).show();
+        if (txtDescripcion.length() == 0){
+            Toast.makeText(this, "Seleccione uno de los productos", Toast.LENGTH_SHORT).show();
+        }else {
+            cantidad = cantidadProducto.getText().toString();
+            int numero = Integer.parseInt(cantidad);
+            int totalexistencia = Integer.parseInt(existencias.getText().toString());
+            if (numero < totalexistencia) {
+                int total = numero + 1;
+                String resultado = String.valueOf(total);
+                cantidadProducto.setText(resultado);
+            } else {
+                Toast.makeText(getApplicationContext(), "solo hay " + existencias.getText().toString() + " en existencia ", Toast.LENGTH_LONG).show();
+            }
         }
-
     }
     private void Decrementar() {
-        cantidad = cantidadProducto.getText().toString();
-        int numero = Integer.parseInt(cantidad);
-        if (numero > 1) {
-            int total = numero - 1;
-            String resultado = String.valueOf(total);
-            cantidadProducto.setText(resultado);
-        }else{
-            Toast.makeText(getApplicationContext(), "el valor minimo debe ser 1", Toast.LENGTH_LONG).show();
+        if (txtDescripcion.length() == 0){
+            Toast.makeText(this, "Seleccione uno de los productos", Toast.LENGTH_SHORT).show();
+        }else {
+            cantidad = cantidadProducto.getText().toString();
+            int numero = Integer.parseInt(cantidad);
+            if (numero > 1) {
+                int total = numero - 1;
+                String resultado = String.valueOf(total);
+                cantidadProducto.setText(resultado);
+            } else {
+                Toast.makeText(getApplicationContext(), "el valor minimo debe ser 1", Toast.LENGTH_LONG).show();
+            }
         }
     };
 
@@ -540,8 +557,8 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
     }
 
     private void MostrarProductos() {
-        final String posicion;
-        posicion = getIntent().getStringExtra("posicion");
+        //final String posicion;
+        //posicion = getIntent().getStringExtra("posicion");
         String url = "http://"+ipEstacion+"/CorpogasService/api/islas/productos/estacion/"+EstacionId+"/posicionCargaId/"+posicion;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override

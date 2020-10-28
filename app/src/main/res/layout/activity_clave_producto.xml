@@ -42,9 +42,9 @@
     <Button
         android:id="@+id/btnhuella"
         android:layout_width="match_parent"
-        android:layout_height="36dp"
+        android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="140dp"
+        android:layout_marginBottom="80dp"
         android:text="Valida Huella"
         android:textAllCaps="false"
         android:textColorHint="@color/colorPrimary" />
