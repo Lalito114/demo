@@ -150,8 +150,6 @@ public class ProductoTLl extends AppCompatActivity {
                     bar.setIcon(R.drawable.tanquelleno);
                     bar.show();
                     EnviarProductos1();
-
-
                     v.setVisibility(View.INVISIBLE);
 
                 }else{
