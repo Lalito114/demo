@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -64,6 +65,7 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
     Boolean banderaIdentificado;
     List<String> AEmpleadoId;
     List<byte[]> AHuella;
+    EditText pasword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +86,8 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
         sucursalId=db.getIdSucursal();
         EstacionId = db.getIdEstacion();
         ipEstacion = db.getIpEstacion();
+        pasword= (EditText) findViewById(R.id.pasword);
 
-        //procedimiento para validar la contraseña
-        validaClave();
        //Inicializacion y carga de huella
         initFinger();
         ObtieneHuellas();
@@ -154,7 +155,8 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
                     String errorMensaje = errorCaptado.getString("ExceptionMessage");
                     try {
                         AlertDialog.Builder builder = new AlertDialog.Builder(claveProducto.this);
-                        builder.setTitle("Vemta Productos");
+                        builder.setTitle("Venta Productos");
+                        builder.setCancelable(false);
                         builder.setMessage("Usuario ocupado: " + errorMensaje)
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
@@ -191,26 +193,20 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
     private void  validaClave(){
         //Crea Boton Enviar
         //Button btnenviar = (Button) findViewById(R.id.enviar);
-        ImageView btnenviar = findViewById(R.id.imgProducto);
+        //ImageView btnenviar = findViewById(R.id.imgProducto);
         //En espera a recibir el evento Onclick del boton Enviar
-        btnenviar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        //btnenviar.setOnClickListener(new View.OnClickListener() {
+            //@Override
+            //public void onClick(View v) {
                 //Se lee el password del objeto y se asigna a variable
-                final String posicion;
-                posicion = getIntent().getStringExtra("posicion");
-                final EditText pasword = (EditText) findViewById(R.id.pasword);
-                final String pass = pasword.getText().toString();
+                String pass = pasword.getText().toString();
 
                 //Si no se terclea nada envia mensaje de teclear contraseña
-                if (pass.isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Ingresa la contraseña",Toast.LENGTH_SHORT).show();
-                }else{
                     //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
 
                     //Conexion con la base y ejecuta valida clave
-                    //String url = "http://"+ipEstacion+"/CorpogasService/api/SucursalEmpleados/clave/"+pass;
-                    String url = "http://"+ipEstacion+"/CorpogasService/api/SucursalEmpleados/claveSinValidacion/"+pass;
+                    String url = "http://"+ipEstacion+"/CorpogasService/api/SucursalEmpleados/clave/"+pass;
+                    //String url = "http://"+ipEstacion+"/CorpogasService/api/SucursalEmpleados/claveSinValidacion/"+pass;
 
 
                     // Utilizamos el metodo Post para validar la contraseña
@@ -239,7 +235,7 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
                                             //Si no es valido se envia mensaje de conteaseña incorrecta
                                             try {
                                                 AlertDialog.Builder builder = new AlertDialog.Builder(claveProducto.this);
-                                                builder.setTitle("Productos");
+                                                builder.setTitle("Venta Productos");
                                                 builder.setMessage("Contraseña Incorrecta")
                                                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                             @Override
@@ -274,12 +270,14 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
                                 try {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(claveProducto.this);
                                     builder.setTitle("Venta Productos");
+                                    builder.setCancelable(false);
                                     builder.setMessage("Usuario ocupado: " + errorMensaje)
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                                    Intent intente = new Intent(getApplicationContext(), posicionProductos.class);
+                                                    Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
                                                     startActivity(intente);
+                                                    finish();
                                                 }
                                             }).show();
                                 }catch (Exception e){
@@ -301,10 +299,8 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
 
 
                     //-------------------------Aqui termina el volley --------------
-                }
-
-            }
-        });
+            //}
+        //});
 
     }
 
@@ -344,7 +340,7 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
                                             //Si no es valido se envia mensaje de conteaseña incorrecta
                                             try {
                                                 AlertDialog.Builder builder = new AlertDialog.Builder(claveProducto.this);
-                                                builder.setTitle("Productos");
+                                                builder.setTitle("Venta Productos");
                                                 builder.setMessage("Usuario no validado")
                                                         .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                             @Override
@@ -379,6 +375,7 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
                                 try {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(claveProducto.this);
                                     builder.setTitle("Venta Productos");
+                                    builder.setCancelable(false);
                                     builder.setMessage("Usuario ocupado: " + errorMensaje)
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
@@ -502,4 +499,27 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
         finish();
     }
 
+    //procedimiento para  cachar el Enter del teclado
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                calculos();
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
+    }
+
+    private void calculos() {
+        //Se lee el password del objeto y se asigna a variable
+        String pass;
+
+        pass = pasword.getText().toString();
+        if (pass.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Ingresa la contraseña", Toast.LENGTH_SHORT).show();
+        } else {
+            validaClave();
+        }
+    }
 }

@@ -43,6 +43,7 @@ public class ventash extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ventash);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         MyListAdapter adapter=new MyListAdapter(ventash.this, maintitle, subtitle,imgid);
         list= findViewById(R.id.list);
@@ -55,14 +56,14 @@ public class ventash extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view,int position, long id) {
                 // TODO Auto-generated method stub
                 if(position == 0) {
-                    Intent intent = new Intent(getApplicationContext(), claveFinalizaVenta.class);
+                    Intent intent = new Intent(getApplicationContext(), claveIniciaVenta.class);
                     intent.putExtra("lugarproviene", "1");
                     startActivity(intent);
                     finish();
                 }
 
                 else if(position == 1) {
-                    Intent intent1 = new Intent(getApplicationContext(), claveFinalizaVenta.class);
+                    Intent intent1 = new Intent(getApplicationContext(), claveFinVenta.class);
                     intent1.putExtra("lugarproviene", "2");
                     startActivity(intent1);
                     finish();

@@ -66,8 +66,8 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
 
     //Declaracion de objetos
     Button btnAgregar,btnEnviar, incrementar, decrementar, comprar, btnsolicitadespacho;
-    TextView cantidadProducto, txtDescripcion, NumeroProductos, precio, existencias, productoIdentificador;
-    EditText Producto, tipoproductoid, empleado;
+    TextView  txtDescripcion, NumeroProductos, precio, existencias, productoIdentificador;
+    EditText cantidadProducto, Producto, tipoproductoid, empleado;
     String cantidad;
     JSONObject mjason = new JSONObject();
     JSONArray myArray = new JSONArray();
@@ -96,6 +96,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
     List<String> ProductosId;
     List<String> TipoProductoId;
     List<String> DescripcionPr;
+    String lugarproviene;
 
         @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +113,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
         numerodispositivo = "1";
 
         cadenaproducto = getIntent().getStringExtra("cadenaproducto");
+        lugarproviene = getIntent().getStringExtra("lugarproviene");
             txtproductos=findViewById(R.id.txtproductos);
         if (cadenaproducto.length()>0){
             txtproductos.setText(myArrayVer.toString());
@@ -165,6 +167,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                     intent.putExtra("posicion", posicion);
                     intent.putExtra("usuario", usuario);
                     intent.putExtra("cadenaproducto", myArrayPaso.toString());
+                    intent.putExtra("lugarproviene", lugarproviene);
                     startActivity(intent);
                     finish();
 
@@ -782,6 +785,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                     try {
                         AlertDialog.Builder builder = new AlertDialog.Builder(VentasProductos.this);
                         builder.setTitle("Vemta Productos");
+                        builder.setCancelable(false);
                         builder.setMessage(errorMensaje)
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override

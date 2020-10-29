@@ -4,89 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Productos.claveProducto">
-
-    <TextView
-        android:id="@+id/textView48"
-        android:layout_width="350dp"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="13dp"
-        android:layout_marginBottom="477dp"
-        android:fontFamily="monospace"
-        android:lineSpacingExtra="10sp"
-        android:text="Ingresa tu contraseña de despachador"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <TextView
-        android:id="@+id/textresultado"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="0dp"
-        android:layout_marginBottom="55dp"
-        android:fontFamily="monospace"
-        android:lineSpacingExtra="10sp"
-        android:textAlignment="center"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/btnhuella"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="80dp"
-        android:text="Valida Huella"
-        android:textAllCaps="false"
-        android:textColorHint="@color/colorPrimary" />
-
-    <TextView
-        android:id="@+id/textView29"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="159dp"
-        android:layout_marginBottom="431dp"
-        android:text="Productos"
-        android:textColor="@color/black"
-        android:textStyle="bold" />
-
-    <ImageView
-        android:id="@+id/imgProducto"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="1dp"
-        android:layout_marginBottom="360dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:srcCompat="@drawable/product" />
-
-    <Button
-        android:id="@+id/enviar"
-        android:layout_width="216dp"
-        android:layout_height="41dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="73dp"
-        android:layout_marginBottom="261dp"
-        android:background="@drawable/b3"
-        android:text="Enviar"
-        android:textColor="@color/a_normal"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+    tools:context=".FinalizaVenta.claveIniciaVenta">
 
     <TextView
         android:id="@+id/usuario"
@@ -110,6 +28,47 @@
         android:text="TextView"
         android:visibility="invisible" />
 
+    <TextView
+        android:id="@+id/textView50"
+        android:layout_width="350dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="13dp"
+        android:layout_marginBottom="477dp"
+        android:fontFamily="monospace"
+        android:lineSpacingExtra="10sp"
+        android:text="Ingresa tu contraseña de despachador"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/textView51"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="154dp"
+        android:layout_marginBottom="431dp"
+        android:text="Inicia Venta"
+        android:textColor="@color/black"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/imgventa"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="1dp"
+        android:layout_marginBottom="360dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:srcCompat="@drawable/ventastotal" />
+
     <EditText
         android:id="@+id/pasword"
         android:layout_width="300dp"
@@ -123,6 +82,47 @@
         android:gravity="center|center_horizontal|center_vertical"
         android:hint="******"
         android:inputType="numberPassword"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/enviar"
+        android:layout_width="216dp"
+        android:layout_height="41dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="73dp"
+        android:layout_marginBottom="261dp"
+        android:background="@drawable/b3"
+        android:text="Enviar"
+        android:textColor="@color/a_normal"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/btnhuella"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="80dp"
+        android:text="Valida Huella"
+        android:textAllCaps="false"
+        android:textColorHint="@color/colorPrimary" />
+
+    <TextView
+        android:id="@+id/textresultado"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="55dp"
+        android:fontFamily="monospace"
+        android:lineSpacingExtra="10sp"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </RelativeLayout>

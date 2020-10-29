@@ -53,6 +53,8 @@ public class ticketPendientes extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ticket_pendientes);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId=db.getIdSucursal();
@@ -216,6 +218,7 @@ public class ticketPendientes extends AppCompatActivity {
                                 try {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(ticketPendientes.this);
                                     builder.setTitle("Tickets Pendientes");
+                                    builder.setCancelable(false);
                                     builder.setMessage("El tarjetero No tiene ningún ticlet pendiente")
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
@@ -243,6 +246,7 @@ public class ticketPendientes extends AppCompatActivity {
                                         try {
                                             AlertDialog.Builder builder = new AlertDialog.Builder(ticketPendientes.this);
                                             builder.setTitle("Tickets Pendientes");
+                                            builder.setCancelable(false);
                                             builder.setMessage("Sin datos")
                                                     .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                         @Override
@@ -362,6 +366,7 @@ public class ticketPendientes extends AppCompatActivity {
                                     try {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(ticketPendientes.this);
                                         builder.setTitle("Tickets Pendientes");
+                                        builder.setCancelable(false);
                                         builder.setMessage(desc)
                                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                     @Override
@@ -395,6 +400,7 @@ public class ticketPendientes extends AppCompatActivity {
                     try {
                         AlertDialog.Builder builder = new AlertDialog.Builder(ticketPendientes.this);
                         builder.setTitle("Tickets Pendientes");
+                        builder.setCancelable(false);
                         builder.setMessage(errorMensaje)
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
@@ -424,6 +430,7 @@ public class ticketPendientes extends AppCompatActivity {
     private void MostrarDialogoSimple(final String mensaje){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Tickets Pendientes");
+        builder.setCancelable(false);
         builder.setMessage(mensaje)
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     @Override

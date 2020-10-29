@@ -94,6 +94,7 @@ public class posicionProductos extends AppCompatActivity {
                                 try {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(posicionProductos.this);
                                     builder.setTitle("Productos");
+                                    builder.setCancelable(false);
                                     builder.setMessage("" + mensaje)
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
@@ -149,6 +150,7 @@ public class posicionProductos extends AppCompatActivity {
                                 intente.putExtra("posicion",posicion);
                                 intente.putExtra("usuario",usuarioid);
                                 intente.putExtra("cadenaproducto", "");
+                                intente.putExtra("lugarproviene", "SoloProductos");
                                 //Ejecuta la clase del Usuario producto
                                 startActivity(intente);
                                 //Finaliza activity
