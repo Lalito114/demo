@@ -24,8 +24,11 @@ import com.android.volley.toolbox.Volley;
 import com.google.zxing.client.android.Contents;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.Ticket.Monederos.AdapterPosiciones;
+import com.szzcs.smartpos.Ticket.Monederos.posicionesDespachador;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -43,28 +46,92 @@ public class PosicionCargaTLl extends AppCompatActivity {
         setContentView(R.layout.activity_posicion_carga_tll);
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEsatcion());
-        MetodoResponse("16");
+        ObtenerPosicionesdeCarga();
+    }
+
+    private void ObtenerPosicionesdeCarga() {
+
+
+        SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String IdUsuario = getIntent().getStringExtra("IdUsuario");
+        String ClaveDespachador = getIntent().getStringExtra("ClaveDespachador");
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/accesoUsuarios/sucursal/"+data.getIdSucursal()+"/clave/" + ClaveDespachador;
+
+        // Utilizamos el metodo Post para validar la contraseña
+        StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        MetodoResponse(response);
+                    }
+                    //funcion para capturar errores
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),"Error 500: No se establecio conexión en el servidor",Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // Añade la peticion a la cola
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(eventoReq);
     }
 
 
     private void MetodoResponse(final String response) {
+        //Declaramos la lista de titulo
         List<String> maintitle;
+        //lo assignamos a un nuevo ArrayList
         maintitle = new ArrayList<String>();
 
+        List<String> maintitle1;
+        //lo assignamos a un nuevo ArrayList
+        maintitle1 = new ArrayList<String>();
+
+        //Creamos la lista para los subtitulos
         List<String> subtitle;
+        //Lo asignamos a un nuevo ArrayList
         subtitle = new ArrayList<String>();
 
+        //CReamos una nueva list de tipo Integer con la cual cargaremos a una imagen
         List<Integer> imgid;
+        //La asignamos a un nuevo elemento de ArrayList
         imgid = new ArrayList<>();
 
+        String carga;
+        String pendientdecobro;
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
 
-        for (int i = 1; i <= Integer.parseInt(response); i++) {
-            maintitle.add("PC" + String.valueOf(i));
-            subtitle.add("Magna | Premium | Diesel");
-            imgid.add(R.drawable.gas);
+            JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
+            String control = jsonObject1.getString("Controles");
+
+            JSONArray control1 = new JSONArray(control);
+            for (int i = 0; i <control1.length() ; i++) {
+                JSONObject posiciones = control1.getJSONObject(i);
+                String posi = posiciones.getString("Posiciones");
+
+
+                JSONArray mangue = new JSONArray(posi);
+                for (int j = 0; j < mangue.length(); j++) {
+                    JSONObject res = mangue.getJSONObject(j);
+                    carga = res.getString("PosicionCargaId");
+                    pendientdecobro = res.getString("PendienteCobro");
+                    if (pendientdecobro.equals("false")){
+                        maintitle.add("PC " + carga);
+                        maintitle1.add(carga);
+                        subtitle.add("Magna  |  Premium  |  Diesel");
+                        imgid.add(R.drawable.gas);
+                    }
+
+
+                }
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
-
-        //ListAdapterP adapterP=new ListAdapterP(this, maintitle, subtitle,imgid);
         ListAdapterPPCTL adapterP = new ListAdapterPPCTL(this, maintitle, subtitle, imgid);
         list=(ListView)findViewById(R.id.list);
         list.setAdapter(adapterP);
@@ -101,14 +168,12 @@ public class PosicionCargaTLl extends AppCompatActivity {
                             if (correcto.equals("false")){
                                 String mensaje = datos.getString("Mensaje");
                                 AlertDialog.Builder builder = new AlertDialog.Builder(PosicionCargaTLl.this);
-                                builder.setTitle("Tarjeta Puntada");
+                                builder.setTitle("Tarjeta Tanque Lleno");
                                 builder.setMessage(mensaje);
                                 builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
-                                        startActivity(intent);
-                                        finish();
+                                        dialogInterface.dismiss();
                                     }
                                 });
                                 AlertDialog dialog= builder.create();

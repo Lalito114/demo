@@ -30,6 +30,7 @@ import com.szzcs.smartpos.Cortes2.VentasTotales;
 import com.szzcs.smartpos.EmpleadoHuellas.capturaEmpleadoHuella;
 import com.szzcs.smartpos.Encriptacion.EncriptarMAC;
 import com.szzcs.smartpos.Encriptacion.EncriptarObtenerIP;
+import com.szzcs.smartpos.Facturas.ObtenerToken;
 import com.szzcs.smartpos.FinalizaVenta.posicionFinaliza;
 import com.szzcs.smartpos.FinalizaVenta.ventash;
 import com.szzcs.smartpos.Gastos.claveGastos;
@@ -108,15 +109,16 @@ public class Munu_Principal extends AppCompatActivity {
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("card_type", cardType);
                     cf.setArguments(bundle);
-                    getFragmentManager().beginTransaction().addToBackStack(null).replace(R.id.menu, cf).
-                            commit();
+                    getFragmentManager().beginTransaction().replace(R.id.menu, cf)
+                            .commit();
+
                 }
                 else if(position == 2) {
                     Intent intent = new Intent(getApplicationContext(), posicionProductos.class);
                     startActivity(intent);
                 }
                 else if(position == 3) {
-                    Intent intent = new Intent(getApplicationContext(), VentasTotales.class);
+                    Intent intent = new Intent(getApplicationContext(), Clave.class);
                     startActivity(intent);
                 }
                 else if(position == 4) {
@@ -128,7 +130,7 @@ public class Munu_Principal extends AppCompatActivity {
                     startActivity(intent);
                 }
                 else if(position == 6) {
-                    Intent intent = new Intent(getApplicationContext(), FingerprintActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), ObtenerToken.class);
                     startActivity(intent);
                 }
                 else if(position == 7) {

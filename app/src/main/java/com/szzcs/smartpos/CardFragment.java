@@ -359,6 +359,8 @@ public class CardFragment extends PreferenceFragment {
             String space = mtk2.substring(0,2);
 
             CompararTarjetas(tk1,tk2,tk3);
+            getActivity().finish();
+
 
         }
 
@@ -677,7 +679,7 @@ public class CardFragment extends PreferenceFragment {
         Log.i(TAG, "onDestroy");
         closeSearch();
         try {
-            Thread.sleep(100);
+            Thread.sleep(50);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

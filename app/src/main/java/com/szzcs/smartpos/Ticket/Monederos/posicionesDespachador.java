@@ -80,46 +80,99 @@ public class posicionesDespachador extends AppCompatActivity {
                         imgid = new ArrayList<>();
 
                         String carga;
+                        String pendientecobro;
+                        JSONArray validar = new JSONArray();
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
-
-                            JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
-                            String control = jsonObject1.getString("Controles");
-
-                            JSONArray control1 = new JSONArray(control);
-                            for (int i = 0; i <control1.length() ; i++) {
-                                JSONObject posiciones = control1.getJSONObject(i);
-                                String posi = posiciones.getString("Posiciones");
-
-                                JSONArray mangue = new JSONArray(posi);
-                                for (int j = 0; j < mangue.length(); j++) {
-                                    JSONObject res = mangue.getJSONObject(j);
-                                    carga = res.getString("PosicionCargaId");
-
-                                    maintitle.add("PC " + carga);
-                                    maintitle1.add(carga);
-                                    subtitle.add("Magna  |  Premium  |  Diesel");
-                                    imgid.add(R.drawable.gas);
+                            if (ObjetoRespuesta.equals("null")){
+                                String mensaje = jsonObject.getString("Mensaje");
+                                try{
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(posicionesDespachador.this);
+                                    builder.setTitle("Tarjeta Puntada");
+                                    builder.setMessage(mensaje);
+                                    builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            Intent intent = new Intent(getApplicationContext(),Munu_Principal.class);
+                                            startActivity(intent);
+                                            finish();
+                                        }
+                                    });
+                                    AlertDialog dialog= builder.create();
+                                    dialog.show();
+                                }catch (Exception e){
+                                    e.printStackTrace();
                                 }
 
+                            }else{
+                                JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
+                                String control = jsonObject1.getString("Controles");
+
+                                JSONArray control1 = new JSONArray(control);
+                                for (int i = 0; i <control1.length() ; i++) {
+                                    JSONObject posiciones = control1.getJSONObject(i);
+                                    String posi = posiciones.getString("Posiciones");
+
+                                    JSONArray mangue = new JSONArray(posi);
+                                    for (int j = 0; j < mangue.length(); j++) {
+                                        JSONObject res = mangue.getJSONObject(j);
+                                        carga = res.getString("PosicionCargaId");
+                                        pendientecobro = res.getString("PendienteCobro");
+                                        if (pendientecobro.equals("true")){
+                                            maintitle.add("PC " + carga);
+                                            maintitle1.add(carga);
+                                            subtitle.add("Magna  |  Premium  |  Diesel");
+                                            imgid.add(R.drawable.gas);
+                                        }else{
+                                            validar.put(pendientecobro);
+                                            if (validar.length() == mangue.length()){
+                                                try{
+                                                    AlertDialog.Builder builder = new AlertDialog.Builder(posicionesDespachador.this);
+                                                    builder.setTitle("Tarjeta Puntada");
+                                                    builder.setMessage("No hay tickets Pendientes");
+                                                    builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                                                        @Override
+                                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                                            Intent intent = new Intent(getApplicationContext(),Munu_Principal.class);
+                                                            startActivity(intent);
+                                                            finish();
+                                                        }
+                                                    });
+                                                    AlertDialog dialog= builder.create();
+                                                    dialog.show();
+                                                }catch (Exception e){
+                                                    e.printStackTrace();
+                                                }
+
+                                            }else{
+                                                AdapterPosiciones adapter=new AdapterPosiciones(posicionesDespachador.this, maintitle, subtitle,imgid);
+                                                list=(ListView)findViewById(R.id.list);
+                                                list.setAdapter(adapter);
+
+                                                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                                                    @Override
+                                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                                        // TODO Auto-generated method stub
+                                                        String numerocarga = maintitle1.get(position);
+                                                        imprimirticket(numerocarga);
+                                                    }
+                                                });
+                                            }
+                                        }
+
+
+                                    }
+
+                                }
                             }
+
+
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        AdapterPosiciones adapter=new AdapterPosiciones(posicionesDespachador.this, maintitle, subtitle,imgid);
-                        list=(ListView)findViewById(R.id.list);
-                        list.setAdapter(adapter);
 
-                        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                // TODO Auto-generated method stub
-                                String numerocarga = maintitle1.get(position);
-                                imprimirticket(numerocarga);
-                            }
-                        });
                     }
                     //funcion para capturar errores
                 }, new Response.ErrorListener() {
@@ -167,6 +220,11 @@ public class posicionesDespachador extends AppCompatActivity {
                                 String pie = jsonObject.getString("Pie");
                                 JSONObject mensaje = new JSONObject(pie);
                                 final JSONArray names = mensaje.getJSONArray("Mensaje");
+                                String nombretarjeta = mensaje.getString("NombreTarjeta");
+                                String numerotarjeta = mensaje.getString("NumeroTarjeta");
+                                String odometro = mensaje.getString("Odometro");
+                                String saldo= mensaje.getString("Saldo");
+
 
                                 JSONObject det = new JSONObject(detalle);
                                 final String numerorecibo = det.getString("NoRecibo");
@@ -219,6 +277,11 @@ public class posicionesDespachador extends AppCompatActivity {
                                 args.putString("total",total);
                                 args.putString("totaltexto",totaltexto);
                                 args.putString("mensaje",names.toString());
+                                args.putString("nombretarjeta",nombretarjeta);
+                                args.putString("numerotarjeta",numerotarjeta);
+                                args.putString("odometro",odometro);
+                                args.putString("saldo",saldo);
+
                                 String tipo = getIntent().getStringExtra("tipo");
                                 args.putString("tipo",tipo);
 

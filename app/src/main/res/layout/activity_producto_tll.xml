@@ -5,6 +5,7 @@
     android:id="@+id/tv2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:focusable="auto"
     tools:context=".TanqueLleno.ProductoTLl">
 
     <TextView
@@ -84,25 +85,13 @@
         android:textStyle="bold" />
 
     <Button
-        android:id="@+id/btnagregarProductos"
-        android:layout_width="145dp"
-        android:layout_height="48dp"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="197dp"
-        android:layout_marginBottom="20dp"
-        android:background="@drawable/b3"
-        android:text="Imprimir Ticket"
-        android:textColor="@color/a_normal" />
-
-    <Button
         android:id="@+id/btnenciarProductos"
         android:layout_width="161dp"
         android:layout_height="49dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="102dp"
+        android:layout_marginBottom="29dp"
         android:background="@drawable/b3"
         android:text="Enviar productos"
         android:textColor="@color/a_normal" />
