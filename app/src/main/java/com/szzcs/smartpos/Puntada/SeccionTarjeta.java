@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.MyListAdapter;
 import com.szzcs.smartpos.Puntada.Acumular.posicionCarga;
 import com.szzcs.smartpos.Puntada.Redimir.PosicionRedimir;
@@ -85,5 +86,15 @@ public class SeccionTarjeta extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+//        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+//        startActivity(intent);
+//        finish();
+        startActivity(new Intent(getBaseContext(), Munu_Principal.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+        finish();
     }
 }

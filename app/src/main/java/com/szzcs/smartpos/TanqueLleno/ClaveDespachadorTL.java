@@ -18,12 +18,18 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.Ticket.Monederos.despachdorclave;
+import com.szzcs.smartpos.Ticket.Monederos.posicionesDespachador;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class ClaveDespachadorTL extends AppCompatActivity {
+    String iduser;
 
 
     @Override
@@ -48,16 +54,58 @@ public class ClaveDespachadorTL extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(),"Ingresa tu contraseña de Despachador", Toast.LENGTH_LONG).show();
                     AlertDialog.Builder builder;
                 }else{
-                    String track = getIntent().getStringExtra("track");
-                    Intent intent = new Intent(getApplicationContext(),PosicionCargaTLl.class);
-                    intent.putExtra("track", track);
-                    intent.putExtra("pass",pass);
-                    startActivity(intent);
-                    pasword.setText("");
+                    SQLiteBD data = new SQLiteBD(getApplicationContext());
+                    String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/SucursalEmpleados/clave/"+pass;
+
+                    // Utilizamos el metodo Post para validar la contraseña
+                    StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    try {
+                                        //Se instancia la respuesta del json
+                                        JSONObject validar = new JSONObject(response);
+                                        String valido = validar.getString("Activo");
+                                        iduser = validar.getString("Id");
+                                        if (valido == "true"){
+                                            String track = getIntent().getStringExtra("track");
+                                            Intent intent = new Intent(getApplicationContext(), PosicionCargaTLl.class);
+                                            intent.putExtra("IdUsuario", iduser);
+                                            intent.putExtra("ClaveDespachador", pass);
+                                            intent.putExtra("track", track);
+                                            intent.putExtra("pass",pass);
+                                            startActivity(intent);
+                                            pasword.setText("");
+                                        }else{
+                                            //Si no es valido se envia mensaje
+                                            Toast.makeText(getApplicationContext(),"La contraseña es incorecta",Toast.LENGTH_SHORT).show();
+                                        }
+                                    } catch (JSONException e) {
+                                        //herramienta  para diagnostico de excepciones
+                                        e.printStackTrace();
+                                    }
+                                }
+                                //funcion para capturar errores
+                            }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    // Añade la peticion a la cola
+                    RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                    requestQueue.add(eventoReq);
                 }
 
             }
         });
+    }
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(getBaseContext(), Munu_Principal.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP));
+        finish();
     }
 
 

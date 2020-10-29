@@ -34,22 +34,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Ticket.Monederos.posicionesDespachador"></activity>
-        <activity android:name=".Ticket.Monederos.despachdorclave" />
-        <activity android:name=".FinalizaVenta.claveFinalizaVenta" />
-        <activity android:name=".FinalizaVenta.posicionFinaliza" />
-        <activity android:name=".Productos.tipoproducto" />
-        <activity android:name=".EmpleadoHuellas.validaHuella" />
-        <activity android:name=".Menus_Laterales.Close.Cerrar_Sesion" />
-        <activity android:name=".Ticket.Definicion_Tarjeta" />
-        <activity android:name=".EmpleadoHuellas.capturaEmpleadoHuella" />
-        <activity android:name=".Ticket.tipo_ticket" />
+
+        <!--        Modulo de cortes del cierre-->
         <activity android:name=".Cortes2.IslasEstacion" />
         <activity android:name=".Cortes2.VentaProductosFaltantes" />
         <activity android:name=".Cortes2.VentasTotales" />
         <activity android:name=".Cortes2.GranTotal" />
         <activity android:name=".Cortes2.CierreFormaPago" />
-        <activity android:name=".Cortes2.DesgloseValesM" />
         <activity android:name=".Cortes2.TotalProductos" />
         <activity android:name=".Cortes2.SubOfiSiVale" />
         <activity android:name=".Cortes2.SubOfiAccor" />
@@ -60,8 +51,44 @@
         <activity android:name=".Cortes2.FajillasBilletes" />
         <activity android:name=".Cortes2.Lecturas" />
         <activity android:name=".Cortes2.Clave" />
-        <activity android:name=".Puntada.Acumular.ClaveDespachadorAcumular" />
-        <activity android:name=".Puntada.Acumular.ActivityEscanear" />
+        <!--        Temina el modulo de cortes cierres-->
+
+        <!--        Modulo Empleados huellas-->
+        <activity android:name=".EmpleadoHuellas.validaHuella" />
+        <activity android:name=".EmpleadoHuellas.capturaEmpleadoHuella" />
+        <!--        Finaliza modulo de huellas-->
+
+        <!--        Modulo Facturas-->
+        <activity android:name=".Facturas.ObtenerToken"></activity>
+        <activity android:name=".Facturas.ObtenerRFC"></activity>
+        <activity android:name=".Facturas.FillListRFC"></activity>
+        <activity android:name=".Facturas.Factura"></activity>
+        <activity android:name=".Facturas.CantidadTickets"></activity>
+        <!--        Termina modulo facturas-->
+
+        <!--        Modulo Finzaliza venta-->
+        <activity android:name=".FinalizaVenta.claveFinalizaVenta" />
+        <activity android:name=".FinalizaVenta.posicionFinaliza" />
+        <activity android:name=".FinalizaVenta.ventash" />
+        <!--        Termina modulo finaliza venta-->
+
+        <!--        Modulo de Gastos-->
+        <activity android:name=".Gastos.cargavaleGasto" />
+        <activity android:name=".Gastos.claveGastos" />
+        <activity android:name=".Gastos.cargaGasto" />
+        <activity android:name=".Gastos.autizacionGastos" />
+        <!--        Termina modulo de Gastos-->
+
+        <!--        Modulo Menu Lateales close-->
+        <activity android:name=".Menus_Laterales.Close.Cerrar_Sesion" />
+        <!--        Termina modulo de menu laterales-->
+
+        <!--        Modulo pendientes-->
+        <activity android:name=".Pendientes.claveUPendientes" />
+        <activity android:name=".Pendientes.ticketPendientes" />
+        <!--        Termina modulo de pendientes-->
+
+        <!--        modulo de Productos-->
         <activity android:name=".Productos.FPaga" />
         <activity android:name=".Productos.claveProducto" />
         <activity android:name=".Productos.ListAdapterFProductos" />
@@ -70,28 +97,56 @@
         <activity android:name=".Productos.posicionProductos" />
         <activity android:name=".Productos.terminaVenta" />
         <activity android:name=".Productos.VentasProductos" />
-        <activity android:name=".Pendientes.claveUPendientes" />
-        <activity android:name=".Pendientes.ticketPendientes" />
-        <activity android:name=".Gastos.cargavaleGasto" />
-        <activity android:name=".Gastos.claveGastos" />
-        <activity android:name=".Gastos.cargaGasto" />
-        <activity android:name=".Gastos.autizacionGastos" />
-        <activity android:name=".SplashEmpresas.SplashPemex" />
-        <activity android:name=".SplashEmpresas.SplashGulf" />
-        <activity android:name=".Puntada.Registrar.ClaveDespachadorPuntada" />
-        <activity android:name=".TanqueLleno.ProductoTLl" />
-        <activity android:name=".configuracion.tipoempresa" />
-        <activity android:name=".SplashEmpresas.Splash" />
+        <activity android:name=".Productos.formapagoProducto" />
+        <activity android:name=".Productos.productoFormapago" />
+        <activity android:name=".Productos.tipoproducto" />
+        <!--       Termina Modulo productos -->
+
+        <!--        Modulo Puntada-->
+        <activity android:name=".Puntada.SeccionTarjeta" />
+
+        <!--        Sub modulo Puntada Acumular-->
+        <activity android:name=".Puntada.Acumular.productos" />
+        <activity android:name=".Puntada.Acumular.posicionCarga" />
+        <activity android:name=".Puntada.Acumular.ClaveDespachadorAcumular" />
+        <activity android:name=".Puntada.Acumular.ActivityEscanear" />
+        <!--        Termina sub modulos de Acumular-->
+
+        <!--        Sub modulo Redimir-->
         <activity android:name=".Puntada.Redimir.BalanceProductos" />
         <activity android:name=".Puntada.Redimir.ClaveTarjeta" />
-        <activity android:name=".Puntada.Acumular.productos" />
         <activity android:name=".Puntada.Redimir.PosicionRedimir" />
-        <activity android:name=".Puntada.Acumular.posicionCarga" />
-        <activity android:name=".TanqueLleno.ClaveDespachadorTL" />
-        <activity android:name=".TanqueLleno.PosicionCargaTLl" />
+        <!--        Termina modulo redimir-->
+
+        <!--        Sub modulo Registrar-->
+        <activity android:name=".Puntada.Registrar.ClaveDespachadorPuntada" />
         <activity android:name=".Puntada.Registrar.PosicionCargasPuntada" />
         <activity android:name=".Puntada.Registrar.ClaveRegistrarPuntada" />
-        <activity android:name=".Puntada.SeccionTarjeta" /> <!-- Esto es la escala gerarquica de herncia entre ventanas -->
+        <!--        Termina sub modulo Registrar-->
+        <!--        Termina modulo puntada-->
+
+        <!--        Inicia modulo de Tanque lleno-->
+        <activity android:name=".TanqueLleno.ProductoTLl" />
+        <activity android:name=".TanqueLleno.ClaveDespachadorTL" />
+        <activity android:name=".TanqueLleno.PosicionCargaTLl" />
+        <!--        Termina modulo de tanque lleno-->
+
+        <!--        Inicia modulo de Tickets-->
+        <activity android:name=".Ticket.Monederos.posicionesDespachador"></activity>
+        <activity android:name=".Ticket.Monederos.despachdorclave" />
+        <activity android:name=".Ticket.Definicion_Tarjeta" />
+        <activity android:name=".Ticket.tipo_ticket" />
+
+
+        <activity android:name=".SplashEmpresas.SplashPemex" />
+        <activity android:name=".SplashEmpresas.SplashGulf" />
+
+
+        <activity android:name=".configuracion.tipoempresa" />
+        <activity android:name=".SplashEmpresas.Splash" />
+
+
+        <!-- Esto es la escala gerarquica de herncia entre ventanas -->
         <!-- Este Activity es formas de pago -->
         <activity
             android:name=".Ticket.formas_de_pago"
