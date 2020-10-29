@@ -40,6 +40,7 @@ public class posicionFinaliza extends AppCompatActivity {
     ListView list;
     String carga, usuarioid;
     String EstacionId, sucursalId, ipEstacion, numeroTarjetero, lugarproviene, usuario, posicion, clave;
+    Boolean banderaposicionCarga;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,7 +83,7 @@ public class posicionFinaliza extends AppCompatActivity {
                         //La asignamos a un nuevo elemento de ArrayList
                         imgid = new ArrayList<>();
 
-                        String carga;
+                        banderaposicionCarga= false;
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
@@ -107,7 +108,6 @@ public class posicionFinaliza extends AppCompatActivity {
                                 }
 
                             }else {
-
                                 JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
                                 String control = jsonObject1.getString("Controles");
 
@@ -120,11 +120,30 @@ public class posicionFinaliza extends AppCompatActivity {
                                     for (int j = 0; j < mangue.length(); j++) {
                                         JSONObject res = mangue.getJSONObject(j);
                                         carga = res.getString("PosicionCargaId");
+                                        String pocioncargadisponible = res.getString("Disponible");
+                                        String pocioncargapendientecobro = res.getString("PendienteCobro");
 
-                                        maintitle.add("PC " + carga);
-                                        maintitle1.add(carga);
-                                        subtitle.add("Magna  |  Premium  |  Diesel");
-                                        imgid.add(R.drawable.gas);
+                                        Boolean banderacarga ;
+                                        if (lugarproviene.equals("1")){//Inicia despacho
+                                            if (pocioncargadisponible.equals("true")){
+                                                banderacarga = true;
+                                            }else{
+                                                banderacarga = false;
+                                            }
+                                        }else{//Finaliza despacho
+                                            if (pocioncargapendientecobro.equals("true")){
+                                                banderacarga = true;
+                                            }else{
+                                                banderacarga= false;
+                                            }
+                                        }
+                                        if (banderacarga.equals(true)) {
+                                           maintitle.add("PC " + carga);
+                                            maintitle1.add(carga);
+                                            subtitle.add("Magna  |  Premium  |  Diesel");
+                                            imgid.add(R.drawable.gas);
+                                            banderaposicionCarga = true;
+                                        }
                                     }
 
                                 }
@@ -132,27 +151,31 @@ public class posicionFinaliza extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        ListAdapterProd adapterProd = new ListAdapterProd(posicionFinaliza.this, maintitle, subtitle, imgid);
-                        list = (ListView) findViewById(R.id.list);
-                        list.setAdapter(adapterProd);
+                        if (banderaposicionCarga.equals(false)){
+                            Toast.makeText(posicionFinaliza.this, "No hay Posiciones de Carga para Finalizar", Toast.LENGTH_SHORT).show();
+                        }else {
+                            ListAdapterProd adapterProd = new ListAdapterProd(posicionFinaliza.this, maintitle, subtitle, imgid);
+                            list = (ListView) findViewById(R.id.list);
+                            list.setAdapter(adapterProd);
 
-                        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-                            @Override
-                            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                // TODO Auto-generated method stub
-                                String numerocarga = maintitle1.get(position);
-                                posicion = numerocarga;
-                                //Se llama la clase para la clave del usuario
-                                if (lugarproviene.equals("1")) {
-                                    solicitadespacho();
-                                }else {
-                                    validaPosicionDisponible(numerocarga);
+                                @Override
+                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                    // TODO Auto-generated method stub
+                                    String numerocarga = maintitle1.get(position);
+                                    posicion = numerocarga;
+                                    //Se llama la clase para la clave del usuario
+                                    if (lugarproviene.equals("1")) {
+                                        solicitadespacho();
+                                    } else {
+                                        validaPosicionDisponible(numerocarga);
+                                    }
+
+
                                 }
-
-
-                            }
-                        });
+                            });
+                        }
                     }
                     //funcion para capturar errores
                 }, new Response.ErrorListener() {
@@ -265,7 +288,7 @@ public class posicionFinaliza extends AppCompatActivity {
 
                             String correcto = p1.getString("ObjetoRespuesta");
                             if (correcto.equals("true")) {
-                                if (lugarproviene == "2") {
+                                if (lugarproviene.equals("2") ) {
                                     finalizaventa();
                                 }
                             } else {
@@ -342,6 +365,10 @@ public class posicionFinaliza extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
+                        String respuesta = response;
+                        if (respuesta.equals("-1")) {
+                            Toast.makeText(posicionFinaliza.this, "La transacción no corresponde al usuario con el que se identificó", Toast.LENGTH_SHORT).show();
+                        }
                         //Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
                         startActivity(intent);
@@ -351,7 +378,6 @@ public class posicionFinaliza extends AppCompatActivity {
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                 }, new Response.ErrorListener() {
             @Override
@@ -397,9 +423,16 @@ public class posicionFinaliza extends AppCompatActivity {
                         builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent intent = new Intent(getApplicationContext(), VentasProductos.class);
-                                startActivity(intent);
+                                Intent intente = new Intent(getApplicationContext(), VentasProductos.class);
+                                //se envia el id seleccionado a la clase Usuario Producto
+                                intente.putExtra("posicion",posicion);
+                                intente.putExtra("usuario",usuarioid);
+                                intente.putExtra("cadenaproducto", "");
+                                //Ejecuta la clase del Usuario producto
+                                startActivity(intente);
+                                //Finaliza activity
                                 finish();
+
                                 dialogInterface.cancel();
                             }
                         }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -438,7 +471,7 @@ public class posicionFinaliza extends AppCompatActivity {
         //String Posi = Posicion;
         //Enviar datos de peoductos y posicion de carga para regresar Ticket
         builder = new AlertDialog.Builder(posicionFinaliza.this);
-        builder.setMessage("Venta inicializada");
+        builder.setMessage("Listo para Iniciar Despacho");
         builder.setTitle("Ventas");
         builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
             @Override

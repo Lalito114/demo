@@ -36,6 +36,7 @@
         android:gravity="center|center_horizontal|center_vertical"
         android:hint="******"
         android:inputType="numberPassword"
+        android:imeOptions="actionDone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -69,7 +70,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="140dp"
+        android:layout_marginBottom="80dp"
         android:text="Valida Huella"
         android:textAllCaps="false"
         android:textColorHint="@color/colorPrimary" />

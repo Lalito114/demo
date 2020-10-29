@@ -38,7 +38,7 @@ public class Clave extends AppCompatActivity {
 
     String pass, idSucursal, idUsuario, contra;
     TextView usuario, estacion;
-    EditText password;
+    EditText password;//
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

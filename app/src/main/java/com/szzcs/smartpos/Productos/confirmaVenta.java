@@ -227,12 +227,6 @@ public class confirmaVenta extends AppCompatActivity {
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    String  Descripcion = ID.get(i).toString();
-                    String precioUnitario = PrecioProducto.get(i).toString();
-                    String paso= ClaveProducto.get(i).toString();
-                    String existencia = ExistenciaProductos.get(i).toString();
-                    String IProd = ProductosId.get(i).toString();
-                    String TProd = TipoProductoId.get(i).toString();
 
                 }
             });

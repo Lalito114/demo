@@ -11,6 +11,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -165,6 +166,7 @@ public class posicionProductos extends AppCompatActivity {
 
         // Añade la peticion a la cola
         RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        eventoReq.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
         requestQueue.add(eventoReq);
     }
 

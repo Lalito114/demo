@@ -97,7 +97,6 @@ public class VentasTotales extends AppCompatActivity {
         ipEstacion= db.getIpEstacion();
         islaId =  getIntent().getStringExtra("islaId");
         idusuario  = getIntent().getStringExtra("idusuario");
-        posicion = "1"; //getIntent().getStringExtra("car");
         numerodispositivo = "1";
         cierreRespuestaApi = (RespuestaApi<Cierre>) getIntent().getSerializableExtra( "lcierreRespuestaApi");
         turnoId = cierreRespuestaApi.getObjetoRespuesta().getTurnoId();
@@ -188,14 +187,18 @@ public class VentasTotales extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), VentaProductosFaltantes.class);
                     String paso = ArrayventasFaltantes.toString();
                     intent.putExtra("articulos", paso);
-                    intent.putExtra("posicion", posicion);
-                    intent.putExtra("idusuario", idusuario);
                     intent.putExtra("productosEntregados", ArregloProductosEntregados);
                     intent.putExtra("turnoId", turnoId);
-                    intent.putExtra("islaId", islaId);
                     intent.putExtra("fechatrabajo", fechaTrabajo);
-                    intent.putExtra("cierreId", cierreId);
+
+                    intent.putExtra("idusuario", idusuario);
+                    intent.putExtra("islaId", islaId);
                     intent.putExtra("ventaproductos", VentaProductos);
+                    intent.putExtra("cantidadAceites", String.valueOf(cantidadAceites));
+                    intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+                    startActivity(intent);
+
+
 
                     startActivity(intent);
 
@@ -223,11 +226,11 @@ public class VentasTotales extends AppCompatActivity {
         banderaSigue= true;
 
 
-        String url = "http://"+ipEstacion+"/CorpogasService/api/cierres/registrar/sucursal/"+sucursalId+"/isla/"+posicion+"/usuario/"+idusuario+"/origen/" + numerodispositivo;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/cierres/registrar/sucursal/"+sucursalId+"/isla/"+islaId+"/usuario/"+idusuario+"/origen/" + numerodispositivo;
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                mostrarProductosCierre(response, posicion, idusuario);
+                mostrarProductosCierre(response,  idusuario);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -264,7 +267,7 @@ public class VentasTotales extends AppCompatActivity {
     }
 
     private void
-    mostrarProductosCierre(String response, final String posicion, final String usuario){
+    mostrarProductosCierre(String response, final String usuario){
         String TProductoId;
         int cantidad;
         maintitle = new ArrayList<String>();
