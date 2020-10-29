@@ -3,6 +3,7 @@ package com.szzcs.smartpos.Ticket.Monederos;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -39,17 +40,30 @@ public class despachdorclave extends AppCompatActivity {
         });
     }
 
-    public void idUsuario(){
+    //procedimiento para  cachar el Enter del teclado
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                idUsuario();
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
+    }
+
+    public void idUsuario() {
+        VentanaMensajesError vm = new VentanaMensajesError(despachdorclave.this);
 
         EditText pasword = (EditText) findViewById(R.id.edtclavedespachador);
         final String pass = pasword.getText().toString();
         final String idusuario;
 
         SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/SucursalEmpleados/clave/"+pass;
+        String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/SucursalEmpleados/clave/" + pass;
 
         // Utilizamos el metodo Post para validar la contraseña
-        StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
+        StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -58,25 +72,27 @@ public class despachdorclave extends AppCompatActivity {
                             JSONObject validar = new JSONObject(response);
                             String valido = validar.getString("Activo");
                             iduser = validar.getString("Id");
-                            if (valido == "true"){
+                            if (valido == "true") {
                                 Intent intent = new Intent(despachdorclave.this, posicionesDespachador.class);
                                 intent.putExtra("IdUsuario", iduser);
                                 intent.putExtra("ClaveDespachador", pass);
                                 startActivity(intent);
-                            }else{
+                                finish();
+                            } else {
                                 //Si no es valido se envia mensaje
-                                Toast.makeText(getApplicationContext(),"La contraseña es incorecta",Toast.LENGTH_SHORT).show();
+                                vm.mostrarVentana("Usuario No encontrado");
                             }
                         } catch (JSONException e) {
                             //herramienta  para diagnostico de excepciones
                             e.printStackTrace();
+                            vm.mostrarVentana("Alerta: No hay Cominicación con el Servidor");
                         }
                     }
                     //funcion para capturar errores
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                vm.mostrarVentana("Error 500: Cominicación con el Servidor");
             }
         });
 
@@ -85,4 +101,6 @@ public class despachdorclave extends AppCompatActivity {
         requestQueue.add(eventoReq);
 
     }
+
+
 }

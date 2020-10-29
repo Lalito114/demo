@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
@@ -44,6 +45,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posicion_carga_tll);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEsatcion());
         ObtenerPosicionesdeCarga();
@@ -200,6 +202,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
                                             input.setTextColor(Color.BLACK);
                                             input.setInputType(InputType.TYPE_CLASS_NUMBER);
                                             input.setGravity(Gravity.CENTER);
+                                            input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(7)});
                                             input.setTextSize(22);
                                             AlertDialog.Builder builder = new AlertDialog.Builder(PosicionCargaTLl.this);
                                             builder.setTitle("Ingresa el Odometro \n");
@@ -249,6 +252,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
                                                                     intent.putExtra("ClaveTanqueLleno",clave);
                                                                     intent.putExtra("Tipocliente",tipocliente);
                                                                     startActivity(intent);
+                                                                    finish();
                                                                 }else{
                                                                     Toast.makeText(PosicionCargaTLl.this, "Ingresa las Placas", Toast.LENGTH_SHORT).show();
                                                                 }
@@ -266,6 +270,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
                                         }else{
                                             Intent intent = new Intent(getApplicationContext(),ProductoTLl.class);
                                             startActivity(intent);
+                                            finish();
                                         }
 
                                     }
@@ -333,6 +338,7 @@ public class PosicionCargaTLl extends AppCompatActivity {
                                     intent.putExtra("transaccionid",transaccionId);
                                     intent.putExtra("folio", folio);
                                     startActivity(intent);
+                                    finish();
                                 }else{
                                     Toast.makeText(PosicionCargaTLl.this, "Ingresa las Placas", Toast.LENGTH_SHORT).show();
                                 }

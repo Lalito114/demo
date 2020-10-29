@@ -36,6 +36,7 @@ import java.util.Map;
 public class posicionesDespachador extends AppCompatActivity {
     ListView list;
     Bundle args = new Bundle();
+    String nombreCompletoempleado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +82,13 @@ public class posicionesDespachador extends AppCompatActivity {
 
                         String carga;
                         String pendientecobro;
+                        String ticketPendiente;
                         JSONArray validar = new JSONArray();
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
+
+
                             if (ObjetoRespuesta.equals("null")){
                                 String mensaje = jsonObject.getString("Mensaje");
                                 try{
@@ -107,7 +111,9 @@ public class posicionesDespachador extends AppCompatActivity {
 
                             }else{
                                 JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
+                                nombreCompletoempleado = jsonObject1.getString("NombreCompleto");
                                 String control = jsonObject1.getString("Controles");
+
 
                                 JSONArray control1 = new JSONArray(control);
                                 for (int i = 0; i <control1.length() ; i++) {
@@ -119,10 +125,11 @@ public class posicionesDespachador extends AppCompatActivity {
                                         JSONObject res = mangue.getJSONObject(j);
                                         carga = res.getString("PosicionCargaId");
                                         pendientecobro = res.getString("PendienteCobro");
+                                        ticketPendiente = res.getString("DescripcionOperativa");
                                         if (pendientecobro.equals("true")){
                                             maintitle.add("PC " + carga);
                                             maintitle1.add(carga);
-                                            subtitle.add("Magna  |  Premium  |  Diesel");
+                                            subtitle.add(ticketPendiente);
                                             imgid.add(R.drawable.gas);
                                         }else{
                                             validar.put(pendientecobro);
@@ -130,7 +137,7 @@ public class posicionesDespachador extends AppCompatActivity {
                                                 try{
                                                     AlertDialog.Builder builder = new AlertDialog.Builder(posicionesDespachador.this);
                                                     builder.setTitle("Tarjeta Puntada");
-                                                    builder.setMessage("No hay tickets Pendientes");
+                                                    builder.setMessage("No hay tickets Pendientes de cobro");
                                                     builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
                                                         @Override
                                                         public void onClick(DialogInterface dialogInterface, int i) {
@@ -266,8 +273,8 @@ public class posicionesDespachador extends AppCompatActivity {
                                 args.putString("numticket", "2");
                                 args.putString("numerotransaccion", numerotransaccion);
                                 args.putString("numerorastreo", numerorastreo);
-                                args.putString("posicion", carga);
-                                args.putString("despachador",despachador);
+                                args.putString("posicion", poscarga);
+                                args.putString("despachador",nombreCompletoempleado);
                                 args.putString("vendedor",user);
                                 args.putString("formapago",formapago);
                                 args.putString("productos", protic);

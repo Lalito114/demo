@@ -9,13 +9,13 @@
     tools:context=".TanqueLleno.ProductoTLl">
 
     <TextView
-        android:id="@+id/textView9"
+        android:id="@+id/txtleyenda"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="48dp"
-        android:layout_marginBottom="510dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="461dp"
         android:text="SELECCIONA EL COMBUSTIBLE"
         android:textColor="@color/black"
         android:textSize="18sp"
@@ -27,22 +27,8 @@
         android:layout_height="254dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="248dp" />
-
-    <EditText
-        android:id="@+id/edtLitros"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginEnd="43dp"
-        android:layout_marginBottom="199dp"
-        android:background="@drawable/border"
-        android:ems="10"
-        android:gravity="center_horizontal"
-        android:hint="0.00"
-        android:inputType="numberDecimal" />
+        android:layout_marginEnd="48dp"
+        android:layout_marginBottom="200dp" />
 
     <EditText
         android:id="@+id/edtPesos"
@@ -51,7 +37,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="42dp"
-        android:layout_marginBottom="141dp"
+        android:layout_marginBottom="202dp"
         android:background="@drawable/border"
         android:ems="10"
         android:gravity="center_horizontal"
@@ -59,27 +45,41 @@
         android:inputType="numberDecimal" />
 
     <TextView
-        android:id="@+id/textView14"
+        android:id="@+id/txtPesos"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="263dp"
-        android:layout_marginBottom="207dp"
-        android:text="Litros: "
+        android:layout_marginBottom="210dp"
+        android:text="Pesos: "
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold" />
 
+    <EditText
+        android:id="@+id/edtLitros"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="43dp"
+        android:layout_marginBottom="260dp"
+        android:background="@drawable/border"
+        android:ems="10"
+        android:gravity="center_horizontal"
+        android:hint="0.00"
+        android:inputType="numberDecimal" />
+
     <TextView
-        android:id="@+id/textView15"
+        android:id="@+id/txtLitros"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="263dp"
-        android:layout_marginBottom="149dp"
-        android:text="Pesos: "
+        android:layout_marginBottom="268dp"
+        android:text="Litros: "
         android:textColor="@color/black"
         android:textSize="18sp"
         android:textStyle="bold" />
@@ -90,8 +90,8 @@
         android:layout_height="49dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="102dp"
-        android:layout_marginBottom="29dp"
+        android:layout_marginEnd="17dp"
+        android:layout_marginBottom="80dp"
         android:background="@drawable/b3"
         android:text="Enviar productos"
         android:textColor="@color/a_normal" />
@@ -106,7 +106,8 @@
         android:layout_marginBottom="84dp"
         android:background="@drawable/b3"
         android:text="Agregar combustible"
-        android:textColor="@color/a_normal" />
+        android:textColor="@color/a_normal"
+        android:visibility="invisible" />
 
     <Button
         android:id="@+id/btnLipmpiarProducto"
@@ -119,4 +120,14 @@
         android:background="@drawable/b3"
         android:text="Limpiar"
         android:textColor="@color/a_normal" />
+
+    <ImageView
+        android:id="@+id/imageView11"
+        android:layout_width="104dp"
+        android:layout_height="45dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="31dp"
+        android:layout_marginBottom="501dp"
+        app:srcCompat="@drawable/tanquelleno" />
 </RelativeLayout>

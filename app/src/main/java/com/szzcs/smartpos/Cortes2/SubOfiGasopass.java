@@ -25,6 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Facturas.EntidadListRFC;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -67,6 +68,7 @@ public class SubOfiGasopass extends AppCompatActivity {
     String cantidadAceites;
 
     RespuestaApi<Cierre> cierreRespuestaApi;
+    RespuestaApi<EntidadListRFC> cierreRespuestaApi2;
     long cierreId;
     long turnoId;
 

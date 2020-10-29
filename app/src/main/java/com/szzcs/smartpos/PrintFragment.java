@@ -426,9 +426,14 @@ public class PrintFragment extends PreferenceFragment {
                     String posicion = getArguments().getString("posicion");
                     String despachador = getArguments().getString("despachador");
                     String vendedor = getArguments().getString("vendedor");
-                    mPrinter.setPrintAppendString("PC: " + posicion + " Desp: " + despachador + " Vend: " + vendedor,format);
+                    mPrinter.setPrintAppendString("PC: " + posicion,format);
+                    mPrinter.setPrintAppendString("Le atendio: " + despachador,format);
                     String nombretarjeta = getArguments().getString("nombretarjeta");
-                    mPrinter.setPrintAppendString("PAGO: " + nombretarjeta ,format);
+                    mPrinter.setPrintAppendString("NOMBRE: " + nombretarjeta ,format);
+
+                    format.setTextSize(25);
+                    format.setStyle(PrnTextStyle.BOLD);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
                     String formapago = getArguments().getString("formapago");
                     mPrinter.setPrintAppendString("PAGO: " + formapago ,format);
                     format.setTextSize(23);
@@ -464,7 +469,7 @@ public class PrintFragment extends PreferenceFragment {
 
                     mPrinter.setPrintAppendString("$ " + total,format);
 
-                    mPrinter.setPrintAppendQRCode(numeroRastreo, 200, 200, Layout.Alignment.ALIGN_CENTER);
+                    //mPrinter.setPrintAppendQRCode(numeroRastreo, 200, 200, Layout.Alignment.ALIGN_CENTER);
                     format.setTextSize(23);
                     format.setStyle(PrnTextStyle.NORMAL);
                     format.setAli(Layout.Alignment.ALIGN_CENTER);
@@ -473,12 +478,12 @@ public class PrintFragment extends PreferenceFragment {
                     String saldo = getArguments().getString("saldo");
                     mPrinter.setPrintAppendString("Número de Tarjeta: " + numerotarjeta ,format);
                     mPrinter.setPrintAppendString("Odometro: " + odometro ,format);
-                    mPrinter.setPrintAppendString("El saldo es: " + saldo ,format);
+                   // mPrinter.setPrintAppendString("El saldo es: " + saldo ,format);
                     format.setTextSize(23);
                     format.setStyle(PrnTextStyle.NORMAL);
                     format.setAli(Layout.Alignment.ALIGN_CENTER);
-                    String mensaje = getArguments().getString("mensaje");
-                    mPrinter.setPrintAppendString(mensaje ,format);
+                    //String mensaje = getArguments().getString("mensaje");
+                    //mPrinter.setPrintAppendString(mensaje ,format);
                     mPrinter.setPrintAppendString("" ,format);
                     mPrinter.setPrintAppendString("" ,format);
                     mPrinter.setPrintAppendString("" ,format);
@@ -611,7 +616,11 @@ public class PrintFragment extends PreferenceFragment {
                     String posicion = getArguments().getString("posicion");
                     String despachador = getArguments().getString("despachador");
                     String vendedor = getArguments().getString("vendedor");
-                    mPrinter.setPrintAppendString("PC: " + posicion + " Desp: " + despachador + " Vend: " + vendedor,format);
+                    mPrinter.setPrintAppendString("PC: " + posicion,format);
+                    mPrinter.setPrintAppendString("Le atendio : " + despachador,format);
+                    format.setTextSize(25);
+                    format.setStyle(PrnTextStyle.BOLD);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
                     String formapago = getArguments().getString("formapago");
                     mPrinter.setPrintAppendString("PAGO: " + formapago ,format);
                     format.setTextSize(23);
@@ -650,8 +659,16 @@ public class PrintFragment extends PreferenceFragment {
 //                    mPrinter.setPrintAppendQRCode(numeroRastreo, 200, 200, Layout.Alignment.ALIGN_CENTER);
 
                     format.setTextSize(23);
+                    format.setStyle(PrnTextStyle.BOLD);
+                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    mPrinter.setPrintAppendString("" ,format);
+                    mPrinter.setPrintAppendString("" ,format);
+                    mPrinter.setPrintAppendString("" ,format);
+                    mPrinter.setPrintAppendString("_______________________________" ,format);
+                    format.setTextSize(23);
                     format.setStyle(PrnTextStyle.NORMAL);
                     format.setAli(Layout.Alignment.ALIGN_CENTER);
+                    mPrinter.setPrintAppendString("Firma del Cliente" ,format);
                     //String mensaje = getArguments().getString("mensaje");
                     //mPrinter.setPrintAppendString(mensaje ,format);
 

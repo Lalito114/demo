@@ -126,9 +126,24 @@
         <!--        Termina modulo puntada-->
 
         <!--        Inicia modulo de Tanque lleno-->
-        <activity android:name=".TanqueLleno.ProductoTLl" />
-        <activity android:name=".TanqueLleno.ClaveDespachadorTL" />
-        <activity android:name=".TanqueLleno.PosicionCargaTLl" />
+        <activity android:name=".TanqueLleno.ProductoTLl"
+            android:parentActivityName=".Munu_Principal">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Munu_Principal" />
+        </activity>
+        <activity android:name=".TanqueLleno.ClaveDespachadorTL"
+            android:parentActivityName=".Munu_Principal">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Munu_Principal" />
+        </activity>
+        <activity android:name=".TanqueLleno.PosicionCargaTLl"
+            android:parentActivityName=".Munu_Principal">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Munu_Principal" />
+        </activity>
         <!--        Termina modulo de tanque lleno-->
 
         <!--        Inicia modulo de Tickets-->

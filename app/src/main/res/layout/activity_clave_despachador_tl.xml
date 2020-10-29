@@ -17,6 +17,7 @@
         android:background="@drawable/b3"
         android:text="Siguiente"
         android:textColor="@color/a_normal"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

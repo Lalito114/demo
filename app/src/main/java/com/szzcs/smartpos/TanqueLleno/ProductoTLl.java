@@ -7,12 +7,14 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
@@ -48,6 +50,7 @@ import java.util.Map;
 public class ProductoTLl extends AppCompatActivity {
     ListView list;
     EditText litros, pesos;
+    TextView leyenda, txtpesos, txtlitros;
     Button agregarcombustible, imprimirTicket, enviarProductos, limpiar;
     String IdCombustible, cs,numneroInterno,  descripcion, precio, IdCombus, Costo;
     double  LitrosCoversion;
@@ -62,6 +65,7 @@ public class ProductoTLl extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_producto_tll);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         SQLiteBD data = new SQLiteBD(this);
         this.setTitle(data.getRazonSocial());
 
@@ -76,10 +80,14 @@ public class ProductoTLl extends AppCompatActivity {
         Combustibles();
 
         pesos = findViewById(R.id.edtPesos);
-        pesos.setEnabled(false);
-
         litros = findViewById(R.id.edtLitros);
-        litros.setEnabled(false);
+        litros.setVisibility(View.INVISIBLE);
+        pesos.setVisibility(View.INVISIBLE);
+        txtlitros = findViewById(R.id.txtLitros);
+        txtpesos = findViewById(R.id.txtPesos);
+        txtpesos.setVisibility(View.INVISIBLE);
+        txtlitros.setVisibility(View.INVISIBLE);
+
 
 
         limpiar = findViewById(R.id.btnLipmpiarProducto);
@@ -92,81 +100,30 @@ public class ProductoTLl extends AppCompatActivity {
                 Combustibles();
                 litros.setText("");
                 pesos.setText("");
-                agregarcombustible.setVisibility(View.VISIBLE);
+//                agregarcombustible.setVisibility(View.VISIBLE);
                 enviarProductos.setVisibility(View.INVISIBLE);
+                pesos = findViewById(R.id.edtPesos);
+                litros = findViewById(R.id.edtLitros);
+                litros.setVisibility(View.INVISIBLE);
+                pesos.setVisibility(View.INVISIBLE);
+                txtlitros = findViewById(R.id.txtLitros);
+                txtpesos = findViewById(R.id.txtPesos);
+                txtpesos.setVisibility(View.INVISIBLE);
+                txtlitros.setVisibility(View.INVISIBLE);
+                leyenda.setText("SELECCIONA EL COMBUSTIBLE");
+                leyenda.setTextSize(18);
+
 
             }
         });
 
-        agregarcombustible = findViewById(R.id.btnAgregarcombustible);
-        agregarcombustible.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (litros.getText().toString().isEmpty()){
-                    if (pesos.getText().toString().isEmpty()){
-                        Toast.makeText(ProductoTLl.this, "Ingresa uno de los dos campos que se requieren", Toast.LENGTH_SHORT).show();
-                    }else{
-                        double pideenpesos = Double.valueOf(pesos.getText().toString());
-                        double litrospedidos = pideenpesos / Double.valueOf(Costo);
-                        String valor = String.valueOf(litrospedidos);
-
-//                        NumberFormat nf = NumberFormat.getNumberInstance(Locale.GERMAN);
-//                        DecimalFormat df = (DecimalFormat)nf;
-                        DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
-                        simbolos.setDecimalSeparator('.');
-                        DecimalFormat df = new DecimalFormat("####.####",simbolos);
-
-                        df.setMaximumFractionDigits(3);
-                        litros.setText(df.format(litrospedidos));
-
-                        try {
-                            //Add string params
-                            jsonParam.put("TipoProducto","1");
-                            jsonParam.put("ProductoId",IdCombustible);
-                            jsonParam.put("NumeroInterno",IdCombustible);
-                            jsonParam.put("Descripcion",descripcion);
-                            jsonParam.put("Cantidad",df.format(litrospedidos));
-                            jsonParam.put("Precio",pideenpesos);
-                            array1.put(jsonParam);
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-
-                }else{
-                    double litrospedidos = Double.valueOf(litros.getText().toString());
-                    double costofinal = litrospedidos * Double.valueOf(Costo);
-                    String valor = String.valueOf(costofinal);
-
-                    DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
-                    simbolos.setDecimalSeparator('.');
-                    DecimalFormat df = new DecimalFormat("####.####",simbolos);
-
-                    df.setMaximumFractionDigits(3);
-                    pesos.setText(df.format(costofinal));
-
-                    try {
-                        //Add string params
-                        litros = findViewById(R.id.edtLitros);
-                        jsonParam.put("TipoProducto","1");
-                        jsonParam.put("ProductoId",IdCombustible);
-                        jsonParam.put("NumeroInterno",IdCombustible);
-                        jsonParam.put("Descripcion",descripcion);
-                        jsonParam.put("Cantidad",litrospedidos);
-                        jsonParam.put("Precio",df.format(costofinal));
-                        array1.put(jsonParam);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                v.setVisibility(View.INVISIBLE);
-                enviarProductos.setVisibility(View.VISIBLE);
-                limpiar.setVisibility(View.VISIBLE);
-                //imprimirTicket.setVisibility(View.INVISIBLE);
-
-            }
-        });
+//        agregarcombustible = findViewById(R.id.btnAgregarcombustible);
+//        agregarcombustible.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                calculos();
+//            }
+//        });
 
         enviarProductos = findViewById(R.id.btnenciarProductos);
         enviarProductos.setVisibility(View.INVISIBLE);
@@ -178,6 +135,7 @@ public class ProductoTLl extends AppCompatActivity {
                     bar.setTitle("Tanque Lleno");
                     bar.setMessage("Esperando Respuesta");
                     bar.setIcon(R.drawable.tanquelleno);
+                    bar.setCancelable(false);
                     bar.show();
                     EnviarProductos1();
                     v.setVisibility(View.INVISIBLE);
@@ -224,7 +182,7 @@ public class ProductoTLl extends AppCompatActivity {
                      transaccion = response.getString("TransaccionId");
                      folio = response.getString("Folio");
                     if (validacion == "true"){
-                        agregarcombustible.setVisibility(View.INVISIBLE);
+//                        agregarcombustible.setVisibility(View.INVISIBLE);
 //                        imprimirTicket.setVisibility(View.VISIBLE);
                         limpiar.setVisibility(View.INVISIBLE);
 
@@ -232,6 +190,7 @@ public class ProductoTLl extends AppCompatActivity {
                         AlertDialog.Builder builder = new AlertDialog.Builder(ProductoTLl.this);
                         builder.setTitle("Tarjeta Tanque Lleno");
                         builder.setMessage("La peticion se ha completado corectamente");
+                        builder.setCancelable(false);
                         builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -439,12 +398,98 @@ public class ProductoTLl extends AppCompatActivity {
                 list.setAdapter(adapterP);
                 pesos = findViewById(R.id.edtPesos);
                 litros = findViewById(R.id.edtLitros);
-                litros.setEnabled(true);
-
-                pesos.setEnabled(true);
+                litros.setVisibility(View.VISIBLE);
+                pesos.setVisibility(View.VISIBLE);
+                leyenda = findViewById(R.id.txtleyenda);
+                leyenda.setText("PRODUCTO SELECCIONADO");
+                leyenda.setTextSize(18);
+                leyenda.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                txtlitros = findViewById(R.id.txtLitros);
+                txtpesos = findViewById(R.id.txtPesos);
+                txtpesos.setVisibility(View.VISIBLE);
+                txtlitros.setVisibility(View.VISIBLE);
 
 
             }
         });
     }
+    //procedimiento para  cachar el Enter del teclado
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                calculos();
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
+    }
+
+    private void calculos() {
+        if (litros.getText().toString().isEmpty()){
+            if (pesos.getText().toString().isEmpty()){
+                Toast.makeText(ProductoTLl.this, "Ingresa uno de los dos campos que se requieren", Toast.LENGTH_SHORT).show();
+            }else{
+                double pideenpesos = Double.valueOf(pesos.getText().toString());
+                double litrospedidos = pideenpesos / Double.valueOf(Costo);
+                String valor = String.valueOf(litrospedidos);
+
+//                        NumberFormat nf = NumberFormat.getNumberInstance(Locale.GERMAN);
+//                        DecimalFormat df = (DecimalFormat)nf;
+                DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+                simbolos.setDecimalSeparator('.');
+                DecimalFormat df = new DecimalFormat("####.####",simbolos);
+
+                df.setMaximumFractionDigits(3);
+                litros.setText(df.format(litrospedidos));
+
+                try {
+                    //Add string params
+                    jsonParam.put("TipoProducto","1");
+                    jsonParam.put("ProductoId",IdCombustible);
+                    jsonParam.put("NumeroInterno",IdCombustible);
+                    jsonParam.put("Descripcion",descripcion);
+                    jsonParam.put("Cantidad",df.format(litrospedidos));
+                    jsonParam.put("Precio",pideenpesos);
+                    array1.put(jsonParam);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }else{
+            double litrospedidos = Double.valueOf(litros.getText().toString());
+            double costofinal = litrospedidos * Double.valueOf(Costo);
+            String valor = String.valueOf(costofinal);
+
+            DecimalFormatSymbols simbolos = new DecimalFormatSymbols();
+            simbolos.setDecimalSeparator('.');
+            DecimalFormat df = new DecimalFormat("####.####",simbolos);
+
+            df.setMaximumFractionDigits(3);
+            pesos.setText(df.format(costofinal));
+
+            try {
+                //Add string params
+                litros = findViewById(R.id.edtLitros);
+                jsonParam.put("TipoProducto","1");
+                jsonParam.put("ProductoId",IdCombustible);
+                jsonParam.put("NumeroInterno",IdCombustible);
+                jsonParam.put("Descripcion",descripcion);
+                jsonParam.put("Cantidad",litrospedidos);
+                jsonParam.put("Precio",df.format(costofinal));
+                array1.put(jsonParam);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+//        v.setVisibility(View.INVISIBLE);
+        enviarProductos.setVisibility(View.VISIBLE);
+        limpiar.setVisibility(View.VISIBLE);
+        //imprimirTicket.setVisibility(View.INVISIBLE);
+    }
+
 }
+
+

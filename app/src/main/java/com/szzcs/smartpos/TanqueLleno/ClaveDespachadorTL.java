@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,6 +37,7 @@ public class ClaveDespachadorTL extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_despachador_tl);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEsatcion());
 
@@ -50,15 +52,15 @@ public class ClaveDespachadorTL extends AppCompatActivity {
                 String pass = pasword.getText().toString();
 
                 //Si no se terclea nada envia mensaje de teclear contraseña
-                if (pass.isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Ingresa tu contraseña de Despachador", Toast.LENGTH_LONG).show();
+                if (pass.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Ingresa tu contraseña de Despachador", Toast.LENGTH_LONG).show();
                     AlertDialog.Builder builder;
-                }else{
+                } else {
                     SQLiteBD data = new SQLiteBD(getApplicationContext());
-                    String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/SucursalEmpleados/clave/"+pass;
+                    String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/SucursalEmpleados/clave/" + pass;
 
                     // Utilizamos el metodo Post para validar la contraseña
-                    StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
+                    StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
@@ -67,18 +69,18 @@ public class ClaveDespachadorTL extends AppCompatActivity {
                                         JSONObject validar = new JSONObject(response);
                                         String valido = validar.getString("Activo");
                                         iduser = validar.getString("Id");
-                                        if (valido == "true"){
+                                        if (valido == "true") {
                                             String track = getIntent().getStringExtra("track");
                                             Intent intent = new Intent(getApplicationContext(), PosicionCargaTLl.class);
                                             intent.putExtra("IdUsuario", iduser);
                                             intent.putExtra("ClaveDespachador", pass);
                                             intent.putExtra("track", track);
-                                            intent.putExtra("pass",pass);
+                                            intent.putExtra("pass", pass);
                                             startActivity(intent);
                                             pasword.setText("");
-                                        }else{
+                                        } else {
                                             //Si no es valido se envia mensaje
-                                            Toast.makeText(getApplicationContext(),"La contraseña es incorecta",Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(getApplicationContext(), "La contraseña es incorecta", Toast.LENGTH_SHORT).show();
                                         }
                                     } catch (JSONException e) {
                                         //herramienta  para diagnostico de excepciones
@@ -89,7 +91,7 @@ public class ClaveDespachadorTL extends AppCompatActivity {
                             }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
                         }
                     });
 
@@ -101,6 +103,7 @@ public class ClaveDespachadorTL extends AppCompatActivity {
             }
         });
     }
+
     @Override
     public void onBackPressed() {
         startActivity(new Intent(getBaseContext(), Munu_Principal.class)
@@ -108,5 +111,72 @@ public class ClaveDespachadorTL extends AppCompatActivity {
         finish();
     }
 
+    //procedimiento para  cachar el Enter del teclado
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                calculos();
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
+    }
+
+    private void calculos() {
+        //Se lee el password del objeto y se asigna a variable
+        EditText pasword = (EditText) findViewById(R.id.pasword);
+        String pass = pasword.getText().toString();
+
+        //Si no se terclea nada envia mensaje de teclear contraseña
+        if (pass.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Ingresa tu contraseña de Despachador", Toast.LENGTH_LONG).show();
+            AlertDialog.Builder builder;
+        } else {
+            SQLiteBD data = new SQLiteBD(getApplicationContext());
+            String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/SucursalEmpleados/clave/" + pass;
+
+            // Utilizamos el metodo Post para validar la contraseña
+            StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                //Se instancia la respuesta del json
+                                JSONObject validar = new JSONObject(response);
+                                String valido = validar.getString("Activo");
+                                iduser = validar.getString("Id");
+                                if (valido == "true") {
+                                    String track = getIntent().getStringExtra("track");
+                                    Intent intent = new Intent(getApplicationContext(), PosicionCargaTLl.class);
+                                    intent.putExtra("IdUsuario", iduser);
+                                    intent.putExtra("ClaveDespachador", pass);
+                                    intent.putExtra("track", track);
+                                    intent.putExtra("pass", pass);
+                                    startActivity(intent);
+                                    pasword.setText("");
+                                    finish();
+                                } else {
+                                    //Si no es valido se envia mensaje
+                                    Toast.makeText(getApplicationContext(), "La contraseña es incorecta", Toast.LENGTH_SHORT).show();
+                                }
+                            } catch (JSONException e) {
+                                //herramienta  para diagnostico de excepciones
+                                e.printStackTrace();
+                            }
+                        }
+                        //funcion para capturar errores
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
+            // Añade la peticion a la cola
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            requestQueue.add(eventoReq);
+        }
+    }
 
 }

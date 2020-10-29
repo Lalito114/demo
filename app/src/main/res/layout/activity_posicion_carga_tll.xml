@@ -6,8 +6,36 @@
     android:layout_height="match_parent"
     tools:context=".TanqueLleno.PosicionCargaTLl">
 
+    <ImageView
+        android:id="@+id/imageView13"
+        android:layout_width="191dp"
+        android:layout_height="39dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="499dp"
+        app:srcCompat="@drawable/tanquelleno" />
+
+    <TextView
+        android:id="@+id/textView46"
+        android:layout_width="398dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="470dp"
+        android:text="SELECCIONA POSICION DE CARGA"
+        android:textAlignment="center"
+        android:textColor="#090909"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="448dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="0dp"
+        android:layout_marginBottom="9dp" />
 </RelativeLayout>
