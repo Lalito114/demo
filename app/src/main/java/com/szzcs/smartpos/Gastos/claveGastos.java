@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,10 +28,12 @@ import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.MyApp;
 import com.szzcs.smartpos.Pendientes.claveUPendientes;
 import com.szzcs.smartpos.Pendientes.ticketPendientes;
+import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.Productos.VentasProductos;
 import com.szzcs.smartpos.Productos.claveProducto;
 import com.szzcs.smartpos.Productos.posicionProductos;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.Ticket.formas_de_pago;
 import com.szzcs.smartpos.base.BaseActivity;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 import com.zcs.sdk.fingerprint.FingerprintListener;
@@ -45,7 +48,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class claveGastos extends BaseActivity implements FingerprintListener, View.OnClickListener  {
     private static final String TAG = "FingerprintActivity";
@@ -65,6 +70,7 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
     List<String> AEmpleadoId;
     List<byte[]> AHuella;
     List<String> AClaveEmpleado;
+    EditText pasword;
 
 
     @Override
@@ -72,6 +78,7 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_gastos);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         empleadoIdentificado="0";
         claveEmpleadoIdentificado = "";
         btnhuella  =  findViewById(R.id.btnhuella);
@@ -94,7 +101,9 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
 
 
         proviene = "0";
-        validaClave();
+        pasword= (EditText) findViewById(R.id.pasword);
+
+        //Inicializacion y carga de huella
         initFinger();
         ObtieneHuellas();
 
@@ -166,6 +175,7 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                     try {
                         AlertDialog.Builder builder = new AlertDialog.Builder(claveGastos.this);
                         builder.setTitle("Gastos");
+                        builder.setCancelable(false);
                         builder.setMessage("Usuario ocupado: " + errorMensaje)
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
@@ -318,6 +328,7 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                                     try {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(claveGastos.this);
                                         builder.setTitle("Contraseña Incorrecta");
+                                        builder.setCancelable(false);
                                         builder.setMessage("Debe ser de Jefe de Isla o Gerente")
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
@@ -350,6 +361,7 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                         try {
                             AlertDialog.Builder builder = new AlertDialog.Builder(claveGastos.this);
                             builder.setTitle("Gastos");
+                            builder.setCancelable(false);
                             builder.setMessage("Usuario ocupado: " + errorMensaje)
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
@@ -412,6 +424,7 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                                     try {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(claveGastos.this);
                                         builder.setTitle("Contraseña Incorrecta");
+                                        builder.setCancelable(false);
                                         builder.setMessage("Debe ser de Jefe de Isla o Gerente")
                                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                     @Override
@@ -445,6 +458,7 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                     try {
                         AlertDialog.Builder builder = new AlertDialog.Builder(claveGastos.this);
                         builder.setTitle("Gastos");
+                        builder.setCancelable(false);
                         builder.setMessage("Usuario ocupado: " + errorMensaje)
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
@@ -567,6 +581,79 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
         Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
         startActivity(intent);
         finish();
+    }
+    //procedimiento para  cachar el Enter del teclado
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                try {
+                    AlertDialog.Builder builder;
+
+                    builder = new AlertDialog.Builder(claveGastos.this);
+                    builder.setMessage("Qué tipo de Gasto desea realizar?");
+                    builder.setTitle("TIPO GASTO");
+                    builder.setCancelable(false);
+                    builder.setPositiveButton("GASTOS", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //Se lee el password del objeto y se asigna a variable
+                            final String pass = password.getText().toString();
+
+                            //Si no se terclea nada envia mensaje de teclear contraseña
+                            if (pass.isEmpty()){
+                                Toast.makeText(getApplicationContext(),"Ingresa la contraseña",Toast.LENGTH_SHORT).show();
+                            }else {
+                                if (empleadoIdentificado == "0") {
+                                    ObtenerClave(pass, "1");
+                                }else{
+                                    proviene = "1";
+                                    validaId(empleadoIdentificado);
+                                }
+                            }
+
+                        }
+                    }).setNegativeButton("GASTOS CAJA CHICA", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            //Se lee el password del objeto y se asigna a variable
+                            final String pass = password.getText().toString();
+                            //Si no se terclea nada envia mensaje de teclear contraseña
+                            if (pass.isEmpty()){
+                                Toast.makeText(getApplicationContext(),"Ingresa la contraseña",Toast.LENGTH_SHORT).show();
+                            }else {
+                                if (empleadoIdentificado == "0") {
+                                    ObtenerClave(pass,"2");
+                                }else{
+                                    proviene = "2";
+                                    validaId(empleadoIdentificado);
+                                }
+                            }
+                        }
+                    });
+                    AlertDialog dialog = builder.create();
+                    dialog.show();
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+                calculos();
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
+    }
+
+    private void calculos() {
+        //Se lee el password del objeto y se asigna a variable
+        String pass;
+
+        pass = pasword.getText().toString();
+        if (pass.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Ingresa la contraseña", Toast.LENGTH_SHORT).show();
+        } else {
+            validaClave();
+        }
     }
 
 }

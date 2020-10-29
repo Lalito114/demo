@@ -7,6 +7,43 @@
     tools:context=".FinalizaVenta.claveFinalizaVenta">
 
     <TextView
+        android:id="@+id/usuario"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="217dp"
+        android:layout_marginBottom="691dp"
+        android:text="TextView"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/carga"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="165dp"
+        android:layout_marginBottom="608dp"
+        android:text="TextView"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/enviar"
+        android:layout_width="216dp"
+        android:layout_height="41dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="73dp"
+        android:layout_marginBottom="261dp"
+        android:background="@drawable/b3"
+        android:text="Enviar"
+        android:textColor="@color/a_normal"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
         android:id="@+id/textView43"
         android:layout_width="350dp"
         android:layout_height="wrap_content"
@@ -81,8 +118,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="2dp"
-        android:layout_marginBottom="80dp"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="54dp"
         android:fontFamily="monospace"
         android:lineSpacingExtra="10sp"
         android:textAlignment="center"

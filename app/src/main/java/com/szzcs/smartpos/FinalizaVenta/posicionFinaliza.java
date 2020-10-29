@@ -46,6 +46,7 @@ public class posicionFinaliza extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_posicion_finaliza);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId = db.getIdSucursal();
@@ -94,6 +95,7 @@ public class posicionFinaliza extends AppCompatActivity {
                                 try {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(posicionFinaliza.this);
                                     builder.setTitle("Productos");
+                                    builder.setCancelable(false);
                                     builder.setMessage("" + mensaje)
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
@@ -152,7 +154,7 @@ public class posicionFinaliza extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         if (banderaposicionCarga.equals(false)){
-                            Toast.makeText(posicionFinaliza.this, "No hay Posiciones de Carga para Finalizar", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(posicionFinaliza.this, "No hay Posiciones de Carga para Iniciar o Finalizar Venta", Toast.LENGTH_SHORT).show();
                         }else {
                             ListAdapterProd adapterProd = new ListAdapterProd(posicionFinaliza.this, maintitle, subtitle, imgid);
                             list = (ListView) findViewById(R.id.list);
@@ -232,6 +234,7 @@ public class posicionFinaliza extends AppCompatActivity {
                 try {
                     AlertDialog.Builder builder = new AlertDialog.Builder(posicionFinaliza.this);
                     builder.setTitle("Ventas");
+                    builder.setCancelable(false);
                     builder.setMessage(mensaje)
                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                 @Override
@@ -297,6 +300,7 @@ public class posicionFinaliza extends AppCompatActivity {
                                     String mensaje = p1.getString("Mensaje");
                                     AlertDialog.Builder builder = new AlertDialog.Builder(posicionFinaliza.this);
                                     builder.setTitle("Finaliza Venta");
+                                    builder.setCancelable(false);
                                     builder.setMessage("Despacho en proceso: " + mensaje)
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
@@ -332,6 +336,7 @@ public class posicionFinaliza extends AppCompatActivity {
                     try {
                         AlertDialog.Builder builder = new AlertDialog.Builder(posicionFinaliza.this);
                         builder.setTitle("Finaliza Venta");
+                        builder.setCancelable(false);
                         builder.setMessage("Usuario ocupado: " + errorMensaje)
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
@@ -420,6 +425,7 @@ public class posicionFinaliza extends AppCompatActivity {
                         builder = new AlertDialog.Builder(posicionFinaliza.this);
                         builder.setMessage("Desea agregar productos?");
                         builder.setTitle("Ventas");
+                        builder.setCancelable(false);
                         builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
@@ -428,6 +434,7 @@ public class posicionFinaliza extends AppCompatActivity {
                                 intente.putExtra("posicion",posicion);
                                 intente.putExtra("usuario",usuarioid);
                                 intente.putExtra("cadenaproducto", "");
+                                intente.putExtra("lugarproviene", "IniciaProductos");
                                 //Ejecuta la clase del Usuario producto
                                 startActivity(intente);
                                 //Finaliza activity
@@ -473,6 +480,7 @@ public class posicionFinaliza extends AppCompatActivity {
         builder = new AlertDialog.Builder(posicionFinaliza.this);
         builder.setMessage("Listo para Iniciar Despacho");
         builder.setTitle("Ventas");
+        builder.setCancelable(false);
         builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {

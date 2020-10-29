@@ -53,6 +53,7 @@ public class cargaGasto extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_carga_gasto);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId=db.getIdSucursal();

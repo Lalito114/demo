@@ -40,6 +40,8 @@ public class FPaga extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId=db.getIdSucursal();
@@ -180,6 +182,7 @@ public class FPaga extends AppCompatActivity {
         if (FormaPagoId == "2") { //Efectivo
             builder.setMessage("Desea finalizar  la Venta?");
             builder.setTitle("Venta de Productos");
+            builder.setCancelable(false);
             builder.setPositiveButton("FINALIZAR", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {

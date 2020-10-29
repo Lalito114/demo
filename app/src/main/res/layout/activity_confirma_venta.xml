@@ -7,13 +7,44 @@
     tools:context=".Productos.confirmaVenta">
 
     <TextView
+        android:id="@+id/txtdespachosolicitado"
+        android:layout_width="325dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="74dp"
+        android:fontFamily="monospace"
+        android:lineSpacingExtra="10sp"
+        android:text="DESPACHO SOLICITADO, SE AGREGARÁ MONTO EN EL TICKET"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:visibility="invisible" />
+
+    <TextView
+        android:id="@+id/txtproducto"
+        android:layout_width="325dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="13dp"
+        android:layout_marginBottom="208dp"
+        android:fontFamily="monospace"
+        android:lineSpacingExtra="10sp"
+        android:textAlignment="center"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:visibility="invisible" />
+
+    <TextView
         android:id="@+id/txttotal"
         android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="149dp"
+        android:layout_marginEnd="13dp"
+        android:layout_marginBottom="143dp"
         android:fontFamily="monospace"
         android:lineSpacingExtra="10sp"
         android:text="TOTAL : "
@@ -29,7 +60,8 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="171dp"
         android:layout_marginBottom="13dp"
-        android:text="Cargar Productos" />
+        android:text="Cargar Productos"
+        android:visibility="invisible" />
 
     <TextView
         android:id="@+id/textView49"
@@ -37,8 +69,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="4dp"
-        android:layout_marginBottom="504dp"
+        android:layout_marginEnd="-3dp"
+        android:layout_marginBottom="529dp"
         android:fontFamily="monospace"
         android:lineSpacingExtra="10sp"
         android:text="Confirmar Venta"
@@ -48,21 +80,32 @@
 
     <Button
         android:id="@+id/comprar"
-        android:layout_width="wrap_content"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="13dp"
-        android:layout_marginBottom="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="13dp"
         android:text="cobrar" />
+
+    <Button
+        android:id="@+id/eliminar"
+        android:layout_width="319dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="145dp"
+        android:text="eliminar producto seleccionado"
+        android:visibility="invisible" />
 
     <ListView
         android:id="@+id/list"
-        android:layout_width="330dp"
-        android:layout_height="280dp"
+        android:layout_width="333dp"
+        android:layout_height="350dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="12dp"
-        android:layout_marginBottom="200dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="179dp"
         android:background="@drawable/border" />
 </RelativeLayout>

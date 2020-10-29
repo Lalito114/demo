@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -47,7 +48,9 @@ import java.util.List;
 import java.util.Map;
 
 public class claveFinalizaVenta extends BaseActivity implements FingerprintListener, View.OnClickListener  {
+    //datos para huella
     private static final String TAG = "FingerprintActivity";
+
     TextView usuario, carga, txtventas;
     EditText contrasena;
     String EstacionId, sucursalId, ipEstacion ;
@@ -62,11 +65,14 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
     TextView textResultado;
     Boolean banderaIdentificado;
     String usuarioid, posicioncarga, lugarproviene;
+    EditText pasword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_finaliza_venta);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         mHandler = new Handler(Looper.getMainLooper());
         textResultado = findViewById(R.id.textresultado);
         btnhuella = findViewById(R.id.btnhuella);
@@ -89,7 +95,8 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
         }else{
             txtventas.setText("Finaliza Venta");
         }
-        validaClave();
+
+        pasword= (EditText) findViewById(R.id.pasword);
         initFinger();
         ObtieneHuellas();
     }
@@ -156,6 +163,7 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
                     try {
                         AlertDialog.Builder builder = new AlertDialog.Builder(claveFinalizaVenta.this);
                         builder.setTitle("Vemta Productos");
+                        builder.setCancelable(false);
                         builder.setMessage("Usuario ocupado: " + errorMensaje)
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
@@ -192,22 +200,15 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
     private void  validaClave(){
         //Crea Boton Enviar
         //Button btnenviar = (Button) findViewById(R.id.enviar);
-        ImageView btnenviar = findViewById(R.id.imgfinaliza);
+        //ImageView btnenviar = findViewById(R.id.imgfinaliza);
         //En espera a recibir el evento Onclick del boton Enviar
-        btnenviar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        //btnenviar.setOnClickListener(new View.OnClickListener() {
+            //@Override
+            //public void onClick(View v) {
                 //Se lee el password del objeto y se asigna a variable
-                final String posicion;
-                final EditText pasword = (EditText) findViewById(R.id.pasword);
-                final String pass = pasword.getText().toString();
-
-                //Si no se terclea nada envia mensaje de teclear contraseña
-                if (pass.isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Ingresa la contraseña",Toast.LENGTH_SHORT).show();
-                }else{
+                //final String posicion;
                     //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
-
+                    String pass = pasword.getText().toString();
                     //Conexion con la base y ejecuta valida clave
                     String url = "http://"+ipEstacion+"/CorpogasService/api/SucursalEmpleados/claveSinValidacion/"+pass;
                     // Utilizamos el metodo Post para validar la contraseña
@@ -237,6 +238,7 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
                                                 try {
                                                     AlertDialog.Builder builder = new AlertDialog.Builder(claveFinalizaVenta.this);
                                                     builder.setTitle("Ventas");
+                                                    builder.setCancelable(false);
                                                     builder.setMessage("Contraseña Incorrecta")
                                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                                 @Override
@@ -269,6 +271,7 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
                                 try {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(claveFinalizaVenta.this);
                                     builder.setTitle("Tickets Pendientes");
+                                    builder.setCancelable(false);
                                     builder.setMessage("Usuario ocupado: " + errorMensaje)
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
@@ -292,15 +295,7 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
                     RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
                     eventoReq.setRetryPolicy(new DefaultRetryPolicy(12000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT));
                     requestQueue.add(eventoReq);
-
-
-
                     //-------------------------Aqui termina el volley --------------
-                }
-
-            }
-        });
-
     }
 
     private void validaPosicionDisponible(final String posicioncarga, final String usuario){
@@ -323,6 +318,7 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
                                     String mensaje = p1.getString("Mensaje");
                                     AlertDialog.Builder builder = new AlertDialog.Builder(claveFinalizaVenta.this);
                                     builder.setTitle("Finaliza Venta");
+                                    builder.setCancelable(false);
                                     builder.setMessage("Despacho en proceso: "+ mensaje )
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
@@ -358,6 +354,7 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
                     try {
                         AlertDialog.Builder builder = new AlertDialog.Builder(claveFinalizaVenta.this);
                         builder.setTitle("Finaliza Venta");
+                        builder.setCancelable(false);
                         builder.setMessage("Usuario ocupado: " + errorMensaje)
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
@@ -473,6 +470,7 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
                                     try {
                                         AlertDialog.Builder builder = new AlertDialog.Builder(claveFinalizaVenta.this);
                                         builder.setTitle("Productos");
+                                        builder.setCancelable(false);
                                         builder.setMessage("Usuario no validado")
                                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                     @Override
@@ -506,6 +504,7 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
                     try {
                         AlertDialog.Builder builder = new AlertDialog.Builder(claveFinalizaVenta.this);
                         builder.setTitle("Ventas");
+                        builder.setCancelable(false);
                         builder.setMessage("Usuario ocupado: " + errorMensaje)
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                     @Override
@@ -630,5 +629,30 @@ public class claveFinalizaVenta extends BaseActivity implements FingerprintListe
         startActivity(intent);
         finish();
     }
+
+    //procedimiento para  cachar el Enter del teclado
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                calculos();
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
+    }
+
+    private void calculos() {
+        //Se lee el password del objeto y se asigna a variable
+        String pass;
+
+        pass = pasword.getText().toString();
+        if (pass.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Ingresa la contraseña", Toast.LENGTH_SHORT).show();
+        } else {
+            validaClave();
+        }
+    }
+
 
 }

@@ -77,6 +77,7 @@ public class capturaEmpleadoHuella extends BaseActivity implements FingerprintLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_captura_empleado_huella);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();

@@ -24,6 +24,7 @@ import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.FinalizaVenta.posicionFinaliza;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.Ticket.claveUsuario;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;
@@ -39,7 +40,7 @@ public class confirmaVenta extends AppCompatActivity {
     String usuario, posicion, cadenaproductos, nombreproducto;
     ListView list;
     Double MontoTotal=0.0;
-    Button Cobrar, Agregar;
+    Button Cobrar, Agregar, Eliminar;
     List<String> ID;
     List<String> NombreProducto;
     List<String> PrecioProducto;
@@ -48,16 +49,18 @@ public class confirmaVenta extends AppCompatActivity {
     List<String> ExistenciaProductos;
     List<String> ProductosId;
     List<String> TipoProductoId;
-    List<String> DescripcionPr;
+    List<String> DescripcionProducto;
     JSONArray myArray = new JSONArray();
     String EstacionId, sucursalId, ipEstacion, tipoTransaccion, numerodispositivo ;
-    TextView txttotal;
-
+    TextView txttotal, txtdespachosolicitado, txtproducto;
+    String lugarproviene;
+    Integer idSeleccionado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_confirma_venta);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
@@ -66,13 +69,24 @@ public class confirmaVenta extends AppCompatActivity {
         tipoTransaccion = "1"; //Transaccion Normal
         numerodispositivo = "1";
         txttotal=findViewById(R.id.txttotal);
+        txtdespachosolicitado=findViewById(R.id.txtdespachosolicitado);
+        txtproducto=findViewById(R.id.txtproducto);
 
         posicion = getIntent().getStringExtra("posicion");
         usuario = getIntent().getStringExtra("usuario");
+        lugarproviene = getIntent().getStringExtra("lugarproviene");
+
         cadenaproductos = getIntent().getStringExtra("cadenaproducto");
         nombreproducto = getIntent().getStringExtra("Descripcion");
         Cobrar = findViewById(R.id.comprar);
         Agregar = findViewById(R.id.btnagregar);
+        Eliminar = findViewById(R.id.eliminar);
+
+        if (lugarproviene.equals("SoloProductos")){
+            txtdespachosolicitado.setVisibility(View.INVISIBLE);
+        }else{
+            txtdespachosolicitado.setVisibility(View.VISIBLE);
+        }
 
         Cobrar.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,6 +109,12 @@ public class confirmaVenta extends AppCompatActivity {
             }
         });
 
+        Eliminar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
         despliegadatos();
     }
 
@@ -193,7 +213,7 @@ public class confirmaVenta extends AppCompatActivity {
         ExistenciaProductos = new ArrayList();
         ProductosId = new ArrayList();
         TipoProductoId = new ArrayList();
-        DescripcionPr = new ArrayList();;
+        DescripcionProducto = new ArrayList();;
 
         try {
 
@@ -216,7 +236,7 @@ public class confirmaVenta extends AppCompatActivity {
                 //ProductosId.add(IdProductos);
                 //codigoBarras.add(codigobarras);
                 TipoProductoId.add(tproductoid);
-                //DescripcionPr.add(DescLarga);
+                DescripcionProducto.add(descripcioncorta);
             }
             txttotal.setText("TOTAL : $"+MontoTotal);
             final ListAdapterProductos adapterP = new ListAdapterProductos(this,  ID, NombreProducto);
@@ -227,6 +247,33 @@ public class confirmaVenta extends AppCompatActivity {
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    //String producto = DescripcionProducto.get(i);
+                    //String precio = PrecioProducto.get(i);
+                    //txtproducto.setText(producto);
+                    //Eliminar.setVisibility(View.VISIBLE);
+                    idSeleccionado = i;
+
+
+                    AlertDialog.Builder builder = new AlertDialog.Builder(confirmaVenta.this);
+                    builder.setTitle("Estas seguro");
+                    builder.setCancelable(false);
+                    builder.setMessage("Deseas eliminar el elemento seleccionado?")
+                            .setPositiveButton("Si", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialogInterface, int i) {
+                                    DescripcionProducto.remove(idSeleccionado);
+                                    PrecioProducto.remove(idSeleccionado);
+                                    NombreProducto.remove(idSeleccionado);
+                                    ID.remove(idSeleccionado);
+                                    PrecioProducto.remove(idSeleccionado);
+                                    ClaveProducto.remove(idSeleccionado);
+                                    TipoProductoId.remove(idSeleccionado);
+                                    DescripcionProducto.remove(idSeleccionado);
+                                    adapterP.notifyDataSetChanged();
+                                }
+                            })
+                            .setNegativeButton("No", null)
+                            .show();
 
                 }
             });

@@ -36,11 +36,13 @@ public class autizacionGastos extends AppCompatActivity {
     ListView list;
     TextView txtusuario, txtclaveusuario;
     String EstacionId, sucursalId, ipEstacion, islaId ;
+    String proviene, turnoId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_autizacion_gastos);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
@@ -50,9 +52,9 @@ public class autizacionGastos extends AppCompatActivity {
         txtusuario = findViewById(R.id.txtempleado);
         txtclaveusuario= findViewById(R.id.txtclaveempleado);
 
-        final String proviene = getIntent().getStringExtra("tipoGasto");
-        final String islaId = getIntent().getStringExtra("isla");
-        final String turnoId = getIntent().getStringExtra("turno");
+        proviene = getIntent().getStringExtra("tipoGasto");
+        islaId = getIntent().getStringExtra("isla");
+        turnoId = getIntent().getStringExtra("turno");
 
 
         enviar=findViewById(R.id.enviar);
@@ -144,6 +146,30 @@ public class autizacionGastos extends AppCompatActivity {
                 String  clave = NombreUsuario.get(i).toString();
                 txtusuario.setText(Descripcion);
                 txtclaveusuario.setText(clave);
+
+                //Cargamos el usuario
+                if (txtusuario.length() >0) {
+                    if (proviene.equals("1")) {
+                        Intent intent = new Intent(getApplicationContext(), cargaGasto.class);
+                        intent.putExtra("isla", islaId);
+                        intent.putExtra("turno", turnoId);
+                        intent.putExtra("empleadoid", txtclaveusuario.getText().toString());
+                        intent.putExtra("empleado", txtusuario.getText().toString());
+                        startActivity(intent);
+                        finish();
+                    } else {
+                        Intent intent = new Intent(getApplicationContext(), cargavaleGasto.class);
+                        intent.putExtra("isla", islaId);
+                        intent.putExtra("turno", turnoId);
+                        intent.putExtra("empleadoid", txtclaveusuario.getText().toString());
+                        intent.putExtra("empleado", txtusuario.getText().toString());
+                        startActivity(intent);
+                        finish();
+                    }
+                }else{
+                    Toast.makeText(getApplicationContext(),"Seleccione un empleado de la lista", Toast.LENGTH_LONG).show();
+                }
+
             }
         });
     }

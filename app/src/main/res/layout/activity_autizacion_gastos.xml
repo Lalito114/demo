@@ -8,12 +8,12 @@
 
     <TextView
         android:id="@+id/txtclaveempleado"
-        android:layout_width="55dp"
-        android:layout_height="wrap_content"
+        android:layout_width="316dp"
+        android:layout_height="15dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="321dp"
-        android:layout_marginBottom="684dp"
+        android:layout_marginEnd="13dp"
+        android:layout_marginBottom="710dp"
         android:text="Total"
         android:textColor="#070707"
         android:textSize="20sp"
@@ -35,11 +35,11 @@
     <ListView
         android:id="@+id/list"
         android:layout_width="330dp"
-        android:layout_height="254dp"
+        android:layout_height="300dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="10dp"
-        android:layout_marginBottom="93dp"
+        android:layout_marginBottom="30dp"
         android:background="@drawable/border" />
 
     <Button
@@ -53,7 +53,7 @@
         android:background="@drawable/b3"
         android:text="Autorizado"
         android:textColor="@color/a_normal"
-        android:visibility="visible"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -66,5 +66,18 @@
         android:layout_marginEnd="124dp"
         android:layout_marginBottom="432dp"
         app:srcCompat="@drawable/qrvalidar" />
+
+    <TextView
+        android:id="@+id/txtetiqueta"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="187dp"
+        android:layout_marginBottom="334dp"
+        android:text="Autorizado por :"
+        android:textColor="@color/black"
+        android:textSize="20sp"
+        tools:textStyle="bold" />
 
 </RelativeLayout>
