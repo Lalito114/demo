@@ -69,7 +69,7 @@ public class posicionProductos extends AppCompatActivity {
                         //lo assignamos a un nuevo ArrayList
                         maintitle = new ArrayList<String>();
 
-                        List<String> maintitle1;
+                        final List<String> maintitle1;
                         //lo assignamos a un nuevo ArrayList
                         maintitle1 = new ArrayList<String>();
 
@@ -84,6 +84,8 @@ public class posicionProductos extends AppCompatActivity {
                         imgid = new ArrayList<>();
 
                         String carga;
+                        String pendientdecobro;
+                        String descripcionoperativa;
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
@@ -112,6 +114,7 @@ public class posicionProductos extends AppCompatActivity {
                                 JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
                                 String control = jsonObject1.getString("Controles");
 
+
                                 JSONArray control1 = new JSONArray(control);
                                 for (int i = 0; i < control1.length(); i++) {
                                     JSONObject posiciones = control1.getJSONObject(i);
@@ -121,11 +124,19 @@ public class posicionProductos extends AppCompatActivity {
                                     for (int j = 0; j < mangue.length(); j++) {
                                         JSONObject res = mangue.getJSONObject(j);
                                         carga = res.getString("PosicionCargaId");
-
-                                        maintitle.add("PC " + carga);
-                                        maintitle1.add(carga);
-                                        subtitle.add("Magna  |  Premium  |  Diesel");
-                                        imgid.add(R.drawable.gas);
+                                        pendientdecobro = res.getString("PendienteCobro");
+                                        descripcionoperativa =res.getString("DescripcionOperativa");
+                                        if (pendientdecobro.equals("false")) {
+                                            maintitle.add("PC " + carga);
+                                            maintitle1.add(carga);
+                                            subtitle.add("Magna  |  Premium  |  Diesel");
+                                            imgid.add(R.drawable.gas);
+                                        }else{
+                                            maintitle.add("PC " + carga);
+                                            maintitle1.add(carga);
+                                            subtitle.add(descripcionoperativa);
+                                            imgid.add(R.drawable.gas);
+                                        }
                                     }
 
                                 }

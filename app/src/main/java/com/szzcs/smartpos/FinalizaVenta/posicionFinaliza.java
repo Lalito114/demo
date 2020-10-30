@@ -70,7 +70,7 @@ public class posicionFinaliza extends AppCompatActivity {
                         //lo assignamos a un nuevo ArrayList
                         maintitle = new ArrayList<String>();
 
-                        List<String> maintitle1;
+                        final List<String> maintitle1;
                         //lo assignamos a un nuevo ArrayList
                         maintitle1 = new ArrayList<String>();
 
@@ -84,6 +84,7 @@ public class posicionFinaliza extends AppCompatActivity {
                         //La asignamos a un nuevo elemento de ArrayList
                         imgid = new ArrayList<>();
 
+                        String descripcionoperativa;
                         banderaposicionCarga= false;
                         try {
                             JSONObject jsonObject = new JSONObject(response);
@@ -92,9 +93,9 @@ public class posicionFinaliza extends AppCompatActivity {
 
                             if (ObjetoRespuesta.equals("null")){
                                 //Toast.makeText(posicionProductos.this, mensaje, Toast.LENGTH_SHORT).show();
-                                try {
+                                //try {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(posicionFinaliza.this);
-                                    builder.setTitle("Productos");
+                                    builder.setTitle("Finaliza Venta");
                                     builder.setCancelable(false);
                                     builder.setMessage("" + mensaje)
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -105,9 +106,9 @@ public class posicionFinaliza extends AppCompatActivity {
                                                     finish();
                                                 }
                                             }).show();
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
+                                //}catch (Exception e){
+                                //    e.printStackTrace();
+                                //}
 
                             }else {
                                 JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
@@ -124,7 +125,7 @@ public class posicionFinaliza extends AppCompatActivity {
                                         carga = res.getString("PosicionCargaId");
                                         String pocioncargadisponible = res.getString("Disponible");
                                         String pocioncargapendientecobro = res.getString("PendienteCobro");
-
+                                        descripcionoperativa =res.getString("DescripcionOperativa");
                                         Boolean banderacarga ;
                                         if (lugarproviene.equals("1")){//Inicia despacho
                                             if (pocioncargadisponible.equals("true")){
@@ -142,41 +143,48 @@ public class posicionFinaliza extends AppCompatActivity {
                                         if (banderacarga.equals(true)) {
                                            maintitle.add("PC " + carga);
                                             maintitle1.add(carga);
-                                            subtitle.add("Magna  |  Premium  |  Diesel");
+                                            if (lugarproviene.equals("1")) {
+                                                subtitle.add("Magna  |  Premium  |  Diesel");
+                                            }else{
+                                                subtitle.add(descripcionoperativa); //"Magna  |  Premium  |  Diesel");
+                                            }
                                             imgid.add(R.drawable.gas);
                                             banderaposicionCarga = true;
                                         }
                                     }
 
                                 }
+                                if (banderaposicionCarga.equals(false)){
+                                    Toast.makeText(posicionFinaliza.this, "No hay Posiciones de Carga para Finalizar Venta", Toast.LENGTH_SHORT).show();
+                                    Intent intent1 = new Intent(getApplicationContext(), Munu_Principal.class);
+                                    startActivity(intent1);
+                                    finish();
+                                }else {
+                                    ListAdapterProd adapterProd = new ListAdapterProd(posicionFinaliza.this, maintitle, subtitle, imgid);
+                                    list = (ListView) findViewById(R.id.list);
+                                    list.setAdapter(adapterProd);
+
+                                    list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                                        @Override
+                                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                            // TODO Auto-generated method stub
+                                            String numerocarga = maintitle1.get(position);
+                                            posicion = numerocarga;
+                                            //Se llama la clase para la clave del usuario
+                                            if (lugarproviene.equals("1")) {
+                                                solicitadespacho();
+                                            } else {
+                                                validaPosicionDisponible(numerocarga);
+                                            }
+
+
+                                        }
+                                    });
+                                }
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-                        }
-                        if (banderaposicionCarga.equals(false)){
-                            Toast.makeText(posicionFinaliza.this, "No hay Posiciones de Carga para Iniciar o Finalizar Venta", Toast.LENGTH_SHORT).show();
-                        }else {
-                            ListAdapterProd adapterProd = new ListAdapterProd(posicionFinaliza.this, maintitle, subtitle, imgid);
-                            list = (ListView) findViewById(R.id.list);
-                            list.setAdapter(adapterProd);
-
-                            list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                                @Override
-                                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                    // TODO Auto-generated method stub
-                                    String numerocarga = maintitle1.get(position);
-                                    posicion = numerocarga;
-                                    //Se llama la clase para la clave del usuario
-                                    if (lugarproviene.equals("1")) {
-                                        solicitadespacho();
-                                    } else {
-                                        validaPosicionDisponible(numerocarga);
-                                    }
-
-
-                                }
-                            });
                         }
                     }
                     //funcion para capturar errores
@@ -374,6 +382,8 @@ public class posicionFinaliza extends AppCompatActivity {
                         if (respuesta.equals("-1")) {
                             Toast.makeText(posicionFinaliza.this, "La transacción no corresponde al usuario con el que se identificó", Toast.LENGTH_SHORT).show();
                         }
+
+
                         //Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
                         startActivity(intent);
