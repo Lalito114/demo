@@ -15,14 +15,28 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="112dp"
-        android:layout_marginEnd="54dp"
-        android:layout_marginBottom="378dp"
+        android:layout_marginEnd="57dp"
+        android:layout_marginBottom="374dp"
         android:text="INGRESA LA CONTRASEÑA DE DESPACHADOR"
         android:textAlignment="center"
         android:textColor="#101010"
         android:textSize="20sp"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_editor_absoluteX="16dp" />
+
+    <Button
+        android:id="@+id/btnsiguientetic"
+        android:layout_width="131dp"
+        android:layout_height="40dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="116dp"
+        android:layout_marginBottom="198dp"
+        android:background="@drawable/b3"
+        android:text="siguiente"
+        android:textColor="#FFFFFF"
+        tools:layout_editor_absoluteX="136dp"
+        tools:layout_editor_absoluteY="316dp" />
 
     <EditText
         android:id="@+id/edtclavedespachador"
@@ -31,8 +45,8 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="72dp"
-        android:layout_marginEnd="48dp"
-        android:layout_marginBottom="285dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="281dp"
         android:background="@drawable/border"
         android:ems="10"
         android:gravity="center_horizontal"
@@ -43,17 +57,13 @@
         app:layout_constraintTop_toBottomOf="@+id/textView48"
         tools:layout_editor_absoluteX="63dp" />
 
-    <Button
-        android:id="@+id/btnsiguientetic"
-        android:layout_width="131dp"
-        android:layout_height="40dp"
+    <ImageView
+        android:id="@+id/imageView12"
+        android:layout_width="84dp"
+        android:layout_height="67dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="114dp"
-        android:layout_marginBottom="202dp"
-        android:background="@drawable/b3"
-        android:text="siguiente"
-        android:textColor="#FFFFFF"
-        tools:layout_editor_absoluteX="136dp"
-        tools:layout_editor_absoluteY="316dp" />
+        android:layout_marginEnd="44dp"
+        android:layout_marginBottom="470dp"
+        app:srcCompat="@drawable/ventas" />
 </RelativeLayout>

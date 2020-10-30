@@ -70,6 +70,8 @@
         <activity android:name=".FinalizaVenta.claveFinalizaVenta" />
         <activity android:name=".FinalizaVenta.posicionFinaliza" />
         <activity android:name=".FinalizaVenta.ventash" />
+        <activity android:name=".FinalizaVenta.claveFinVenta" />
+        <activity android:name=".FinalizaVenta.claveIniciaVenta" />
         <!--        Termina modulo finaliza venta-->
 
         <!--        Modulo de Gastos-->

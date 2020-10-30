@@ -21,6 +21,7 @@ import com.szzcs.smartpos.FinalizaVenta.ventash;
 import com.szzcs.smartpos.Gastos.claveGastos;
 import com.szzcs.smartpos.Menus_Laterales.Close.Cerrar_Sesion;
 import com.szzcs.smartpos.Pendientes.claveUPendientes;
+import com.szzcs.smartpos.Productos.claveProducto;
 import com.szzcs.smartpos.Productos.posicionProductos;
 import com.szzcs.smartpos.Ticket.Monederos.despachdorclave;
 import com.szzcs.smartpos.Ticket.tipo_ticket;
@@ -90,7 +91,7 @@ public class Munu_Principal extends AppCompatActivity {
                     cf.setArguments(bundle);
                     getFragmentManager().beginTransaction().replace(R.id.menu, cf).commit();
                 } else if (position == 3) {
-                    Intent intent = new Intent(getApplicationContext(), posicionProductos.class);
+                    Intent intent = new Intent(getApplicationContext(), claveProducto.class);
                     startActivity(intent);
                 } else if (position == 4) {
                     Intent intent = new Intent(getApplicationContext(), Clave.class);

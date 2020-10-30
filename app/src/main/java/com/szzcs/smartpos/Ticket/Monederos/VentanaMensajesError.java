@@ -33,4 +33,20 @@ public class VentanaMensajesError extends View {
         AlertDialog dialog= builder.create();
         dialog.show();
     }
+
+    public void usuarioNoValido(String bandera){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(Html.fromHtml("<font color='#000000'>Campo Invalido</font>"));
+        builder.setMessage(Html.fromHtml("<font color='#000000'>"+bandera+"</font>"));
+        builder.setIcon(R.drawable.alerta);
+        builder.setCancelable(false);
+        builder.setPositiveButton(Html.fromHtml("<font color='#000000'>Cerrar</font>"), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.dismiss();
+            }
+        });
+        AlertDialog dialog= builder.create();
+        dialog.show();
+    }
 }

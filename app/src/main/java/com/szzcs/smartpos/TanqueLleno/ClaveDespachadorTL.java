@@ -19,6 +19,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.Ticket.Monederos.VentanaMensajesError;
 import com.szzcs.smartpos.Ticket.Monederos.despachdorclave;
 import com.szzcs.smartpos.Ticket.Monederos.posicionesDespachador;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
@@ -47,6 +48,7 @@ public class ClaveDespachadorTL extends AppCompatActivity {
         btnenviar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                VentanaMensajesError msj = new VentanaMensajesError(ClaveDespachadorTL.this);
                 //Se lee el password del objeto y se asigna a variable
                 EditText pasword = (EditText) findViewById(R.id.pasword);
                 String pass = pasword.getText().toString();
@@ -66,32 +68,41 @@ public class ClaveDespachadorTL extends AppCompatActivity {
                                 public void onResponse(String response) {
                                     try {
                                         //Se instancia la respuesta del json
-                                        JSONObject validar = new JSONObject(response);
-                                        String valido = validar.getString("Activo");
-                                        iduser = validar.getString("Id");
-                                        if (valido == "true") {
-                                            String track = getIntent().getStringExtra("track");
-                                            Intent intent = new Intent(getApplicationContext(), PosicionCargaTLl.class);
-                                            intent.putExtra("IdUsuario", iduser);
-                                            intent.putExtra("ClaveDespachador", pass);
-                                            intent.putExtra("track", track);
-                                            intent.putExtra("pass", pass);
-                                            startActivity(intent);
-                                            pasword.setText("");
-                                        } else {
-                                            //Si no es valido se envia mensaje
-                                            Toast.makeText(getApplicationContext(), "La contraseña es incorecta", Toast.LENGTH_SHORT).show();
+                                        JSONObject jsonObject = new JSONObject(response);
+                                        String correcto = jsonObject.getString("Correcto");
+                                        if (correcto.equals("true")){
+                                            String objeto = jsonObject.getString("ObjetoRespuesta");
+                                            JSONObject validar = new JSONObject(objeto);
+
+                                            String valido = validar.getString("Activo");
+                                            iduser = validar.getString("Id");
+                                            if (valido == "true") {
+                                                String track = getIntent().getStringExtra("track");
+                                                Intent intent = new Intent(getApplicationContext(), PosicionCargaTLl.class);
+                                                intent.putExtra("IdUsuario", iduser);
+                                                intent.putExtra("ClaveDespachador", pass);
+                                                intent.putExtra("track", track);
+                                                intent.putExtra("pass", pass);
+                                                startActivity(intent);
+                                                pasword.setText("");
+                                            } else {
+                                                //Si no es valido se envia mensaje
+                                                msj.mostrarVentana("Usuario No encontrado");
+                                            }
+                                        }else{
+                                                msj.mostrarVentana("Usuario No encontrado");
                                         }
+
                                     } catch (JSONException e) {
                                         //herramienta  para diagnostico de excepciones
-                                        e.printStackTrace();
+                                        msj.mostrarVentana("Alerta: No hay Cominicación con el Servidor");
                                     }
                                 }
                                 //funcion para capturar errores
                             }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                            msj.mostrarVentana("Alerta 500: Cominicación con el Servidor");
                         }
                     });
 
@@ -124,6 +135,7 @@ public class ClaveDespachadorTL extends AppCompatActivity {
     }
 
     private void calculos() {
+        VentanaMensajesError msj = new VentanaMensajesError(ClaveDespachadorTL.this);
         //Se lee el password del objeto y se asigna a variable
         EditText pasword = (EditText) findViewById(R.id.pasword);
         String pass = pasword.getText().toString();
@@ -143,33 +155,43 @@ public class ClaveDespachadorTL extends AppCompatActivity {
                         public void onResponse(String response) {
                             try {
                                 //Se instancia la respuesta del json
-                                JSONObject validar = new JSONObject(response);
-                                String valido = validar.getString("Activo");
-                                iduser = validar.getString("Id");
-                                if (valido == "true") {
-                                    String track = getIntent().getStringExtra("track");
-                                    Intent intent = new Intent(getApplicationContext(), PosicionCargaTLl.class);
-                                    intent.putExtra("IdUsuario", iduser);
-                                    intent.putExtra("ClaveDespachador", pass);
-                                    intent.putExtra("track", track);
-                                    intent.putExtra("pass", pass);
-                                    startActivity(intent);
+                                JSONObject jsonObject = new JSONObject(response);
+                                String correcto = jsonObject.getString("Correcto");
+                                String objeto = jsonObject.getString("ObjetoRespuesta");
+                                if (correcto.equals("true") && !objeto.equals("null")){
+
+                                    JSONObject validar = new JSONObject(objeto);
+
+                                    String valido = validar.getString("Activo");
+                                    iduser = validar.getString("Id");
+                                    if (valido == "true") {
+                                        String track = getIntent().getStringExtra("track");
+                                        Intent intent = new Intent(getApplicationContext(), PosicionCargaTLl.class);
+                                        intent.putExtra("IdUsuario", iduser);
+                                        intent.putExtra("ClaveDespachador", pass);
+                                        intent.putExtra("track", track);
+                                        intent.putExtra("pass", pass);
+                                        startActivity(intent);
+                                        pasword.setText("");
+                                    } else {
+                                        //Si no es valido se envia mensaje
+                                        msj.mostrarVentana("Usuario No encontrado");
+                                    }
+                                }else{
+                                    msj.mostrarVentana("Usuario No encontrado");
                                     pasword.setText("");
-                                    finish();
-                                } else {
-                                    //Si no es valido se envia mensaje
-                                    Toast.makeText(getApplicationContext(), "La contraseña es incorecta", Toast.LENGTH_SHORT).show();
                                 }
+
                             } catch (JSONException e) {
                                 //herramienta  para diagnostico de excepciones
-                                e.printStackTrace();
+                                msj.mostrarVentana("Alerta: Usuario No encontrado");
                             }
                         }
                         //funcion para capturar errores
                     }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                    msj.mostrarVentana("Alerta 500: Cominicación con el Servidor");
                 }
             });
 

@@ -199,8 +199,8 @@ public class claveFinVenta extends BaseActivity implements FingerprintListener, 
         //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
 
         //Conexion con la base y ejecuta valida clave
-        String url = "http://" + ipEstacion + "/CorpogasService/api/SucursalEmpleados/clave/" + pass;
-        //String url = "http://"+ipEstacion+"/CorpogasService/api/SucursalEmpleados/claveSinValidacion/"+pass;
+//        String url = "http://" + ipEstacion + "/CorpogasService/api/SucursalEmpleados/clave/" + pass;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/SucursalEmpleados/claveSinValidacion/"+pass;
 
 
         // Utilizamos el metodo Post para validar la contraseña

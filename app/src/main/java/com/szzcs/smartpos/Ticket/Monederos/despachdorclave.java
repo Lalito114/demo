@@ -18,6 +18,7 @@ import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -58,47 +59,59 @@ public class despachdorclave extends AppCompatActivity {
         EditText pasword = (EditText) findViewById(R.id.edtclavedespachador);
         final String pass = pasword.getText().toString();
         final String idusuario;
+        if(pass.isEmpty()){
+            vm.usuarioNoValido("Ingresa la contraseña");
+        }else{
+            SQLiteBD data = new SQLiteBD(getApplicationContext());
+            String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/SucursalEmpleados/clave/" + pass;
 
-        SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/SucursalEmpleados/clave/" + pass;
+            // Utilizamos el metodo Post para validar la contraseña
+            StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                //Se instancia la respuesta del json
+                                JSONObject jsonObject = new JSONObject(response);
+                                String correcto = jsonObject.getString("Correcto");
+                                String objeto = jsonObject.getString("ObjetoRespuesta");
+                                if (correcto.equals("false") && !objeto.equals("null")){
+                                    JSONObject validar = new JSONObject(objeto);
 
-        // Utilizamos el metodo Post para validar la contraseña
-        StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            //Se instancia la respuesta del json
-                            JSONObject validar = new JSONObject(response);
-                            String valido = validar.getString("Activo");
-                            iduser = validar.getString("Id");
-                            if (valido == "true") {
-                                Intent intent = new Intent(despachdorclave.this, posicionesDespachador.class);
-                                intent.putExtra("IdUsuario", iduser);
-                                intent.putExtra("ClaveDespachador", pass);
-                                startActivity(intent);
-                                finish();
-                            } else {
-                                //Si no es valido se envia mensaje
-                                vm.mostrarVentana("Usuario No encontrado");
+                                    String valido = validar.getString("Activo");
+                                    iduser = validar.getString("Id");
+                                    if (valido == "true") {
+                                        Intent intent = new Intent(despachdorclave.this, posicionesDespachador.class);
+                                        intent.putExtra("IdUsuario", iduser);
+                                        intent.putExtra("ClaveDespachador", pass);
+                                        startActivity(intent);
+                                        finish();
+                                    } else {
+                                        //Si no es valido se envia mensaje
+                                        vm.mostrarVentana("Usuario No encontrado");
+                                    }
+                                }else{
+                                    vm.mostrarVentana("Usuario No encontrado");
+                                }
+                            } catch (JSONException e) {
+                                //herramienta  para diagnostico de excepciones
+                                vm.mostrarVentana("Alerta: No hay Cominicación con el Servidor");
                             }
-                        } catch (JSONException e) {
-                            //herramienta  para diagnostico de excepciones
-                            e.printStackTrace();
-                            vm.mostrarVentana("Alerta: No hay Cominicación con el Servidor");
                         }
-                    }
-                    //funcion para capturar errores
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                vm.mostrarVentana("Error 500: Cominicación con el Servidor");
-            }
-        });
+                        //funcion para capturar errores
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    vm.mostrarVentana("Alerta 500: Cominicación con el Servidor");
+                }
+            });
 
-        // Añade la peticion a la cola
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        requestQueue.add(eventoReq);
+            // Añade la peticion a la cola
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            requestQueue.add(eventoReq);
+        }
+
+
 
     }
 

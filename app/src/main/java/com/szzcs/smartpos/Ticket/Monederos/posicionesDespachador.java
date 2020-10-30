@@ -22,6 +22,7 @@ import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.Ticket.ListAdapter;
 import com.szzcs.smartpos.Ticket.claveUsuario;
+import com.szzcs.smartpos.Ticket.formas_de_pago;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;
@@ -48,16 +49,14 @@ public class posicionesDespachador extends AppCompatActivity {
         Posicionesdecarga();
     }
 
-    public void Posicionesdecarga(){
-
-
+    public void Posicionesdecarga() {
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         String IdUsuario = getIntent().getStringExtra("IdUsuario");
         String ClaveDespachador = getIntent().getStringExtra("ClaveDespachador");
-        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/accesoUsuarios/sucursal/"+data.getIdSucursal()+"/clave/" + ClaveDespachador;
+        String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/accesoUsuarios/sucursal/" + data.getIdSucursal() + "/clave/" + ClaveDespachador;
 
         // Utilizamos el metodo Post para validar la contraseña
-        StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
+        StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -75,6 +74,11 @@ public class posicionesDespachador extends AppCompatActivity {
                         //Lo asignamos a un nuevo ArrayList
                         subtitle = new ArrayList<String>();
 
+                        //Creamos la lista para los subtitulos
+                        List<String> IdOperativa;
+                        //Lo asignamos a un nuevo ArrayList
+                        IdOperativa = new ArrayList<String>();
+
                         //CReamos una nueva list de tipo Integer con la cual cargaremos a una imagen
                         List<Integer> imgid;
                         //La asignamos a un nuevo elemento de ArrayList
@@ -83,40 +87,25 @@ public class posicionesDespachador extends AppCompatActivity {
                         String carga;
                         String pendientecobro;
                         String ticketPendiente;
+                        String idoperativa;
                         JSONArray validar = new JSONArray();
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
 
 
-                            if (ObjetoRespuesta.equals("null")){
+                            if (ObjetoRespuesta.equals("null")) {
                                 String mensaje = jsonObject.getString("Mensaje");
-                                try{
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(posicionesDespachador.this);
-                                    builder.setTitle("Tarjeta Puntada");
-                                    builder.setMessage(mensaje);
-                                    builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            Intent intent = new Intent(getApplicationContext(),Munu_Principal.class);
-                                            startActivity(intent);
-                                            finish();
-                                        }
-                                    });
-                                    AlertDialog dialog= builder.create();
-                                    dialog.show();
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
+                                mostrarventana(mensaje);
 
-                            }else{
+                            } else {
                                 JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
                                 nombreCompletoempleado = jsonObject1.getString("NombreCompleto");
                                 String control = jsonObject1.getString("Controles");
 
 
                                 JSONArray control1 = new JSONArray(control);
-                                for (int i = 0; i <control1.length() ; i++) {
+                                for (int i = 0; i < control1.length(); i++) {
                                     JSONObject posiciones = control1.getJSONObject(i);
                                     String posi = posiciones.getString("Posiciones");
 
@@ -126,35 +115,22 @@ public class posicionesDespachador extends AppCompatActivity {
                                         carga = res.getString("PosicionCargaId");
                                         pendientecobro = res.getString("PendienteCobro");
                                         ticketPendiente = res.getString("DescripcionOperativa");
-                                        if (pendientecobro.equals("true")){
+                                        idoperativa = res.getString("Operativa");
+                                        if (pendientecobro.equals("true")) {
                                             maintitle.add("PC " + carga);
+                                            IdOperativa.add(idoperativa);
                                             maintitle1.add(carga);
                                             subtitle.add(ticketPendiente);
                                             imgid.add(R.drawable.gas);
-                                        }else{
+                                        } else {
                                             validar.put(pendientecobro);
-                                            if (validar.length() == mangue.length()){
-                                                try{
-                                                    AlertDialog.Builder builder = new AlertDialog.Builder(posicionesDespachador.this);
-                                                    builder.setTitle("Tarjeta Puntada");
-                                                    builder.setMessage("No hay tickets Pendientes de cobro");
-                                                    builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
-                                                        @Override
-                                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                                            Intent intent = new Intent(getApplicationContext(),Munu_Principal.class);
-                                                            startActivity(intent);
-                                                            finish();
-                                                        }
-                                                    });
-                                                    AlertDialog dialog= builder.create();
-                                                    dialog.show();
-                                                }catch (Exception e){
-                                                    e.printStackTrace();
-                                                }
+                                            if (validar.length() == mangue.length()) {
+                                                String mensaje = "No hay ticket pendientes de cobro";
+                                                mostrarventana(mensaje);
 
-                                            }else{
-                                                AdapterPosiciones adapter=new AdapterPosiciones(posicionesDespachador.this, maintitle, subtitle,imgid);
-                                                list=(ListView)findViewById(R.id.list);
+                                            } else {
+                                                AdapterPosiciones adapter = new AdapterPosiciones(posicionesDespachador.this, maintitle, subtitle, imgid);
+                                                list = (ListView) findViewById(R.id.list);
                                                 list.setAdapter(adapter);
 
                                                 list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -163,19 +139,16 @@ public class posicionesDespachador extends AppCompatActivity {
                                                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                                         // TODO Auto-generated method stub
                                                         String numerocarga = maintitle1.get(position);
-                                                        imprimirticket(numerocarga);
+                                                        String OperativaId = IdOperativa.get(position);
+                                                        DescribirOperativa(numerocarga, OperativaId);
+
                                                     }
                                                 });
                                             }
                                         }
-
-
                                     }
-
                                 }
                             }
-
-
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -185,7 +158,7 @@ public class posicionesDespachador extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -194,23 +167,106 @@ public class posicionesDespachador extends AppCompatActivity {
         requestQueue.add(eventoReq);
     }
 
+    private void mostrarventana(String mensaje) {
+        try {
+            AlertDialog.Builder builder = new AlertDialog.Builder(posicionesDespachador.this);
+            builder.setTitle("Posiciones de Carga");
+            builder.setMessage(mensaje);
+            builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialogInterface, int i) {
+                    Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    public void DescribirOperativa(String numerocarga, String OperativaId) {
+
+        String idusuario = getIntent().getStringExtra("IdUsuario");
+        Intent intent = new Intent(getApplicationContext(), formas_de_pago.class);
+
+        int IdOperativa = Integer.parseInt(OperativaId);
+
+        switch (IdOperativa) {
+            case 1:
+//                Opertiva normal
+            case 20:
+//                Operativa Puntada P
+                intent.putExtra("posicioncarga",numerocarga);
+                intent.putExtra("IdOperativa", IdOperativa);
+                intent.putExtra("IdUsuario", idusuario);
+                startActivity(intent);
+                break;
+            case 2:
+//                Operativa Autoservicio
+                break;
+            case 3:
+//                Operativa Cliente Estacion
+                break;
+            case 4:
+//                Operativa Tanque Lleno Arillo
+                break;
+            case 5:
+//                Operativa Tanque Lleno Tarjeta
+                imprimirticket(numerocarga);
+                break;
+            case 6:
+//                Operativa Cliente Estacion E
+                break;
+            case 7:
+//                Operativa Yena Y
+                break;
+            case 8:
+//                Operativa Yena Ñ
+                break;
+            case 10:
+//                Operrativa Puntada Q
+                break;
+            case 11:
+//                Operativa Desconocida
+                break;
+            case 54:
+//                Operativa Predeterminada
+                break;
+            case 55:
+//                Operativa Jarreo
+                break;
+            default:
+//                No se encontro ninguna forma de operativa
+                break;
+
+
+        }
+
+    }
+
     private void imprimirticket(String carga) {
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/tickets/generar";
+        String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/tickets/generar";
 
-        StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
+        StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String detalle = jsonObject.getString("Detalle");
-                            if (detalle.equals("null")){
+                            if (detalle.equals("null")) {
                                 String estado1 = jsonObject.getString("Resultado");
                                 JSONObject descripcion = new JSONObject(estado1);
                                 String estado = descripcion.getString("Descripcion");
                                 AlertDialog.Builder builder = new AlertDialog.Builder(posicionesDespachador.this);
-                                builder.setTitle("Tarjeta Puntada");
+                                builder.setTitle("Mesaje");
+                                builder.setIcon(R.drawable.alerta);
                                 builder.setMessage(estado);
                                 builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
                                     @Override
@@ -220,17 +276,17 @@ public class posicionesDespachador extends AppCompatActivity {
                                         finish();
                                     }
                                 });
-                                AlertDialog dialog= builder.create();
+                                AlertDialog dialog = builder.create();
                                 dialog.show();
 
-                            }else{
+                            } else {
                                 String pie = jsonObject.getString("Pie");
                                 JSONObject mensaje = new JSONObject(pie);
                                 final JSONArray names = mensaje.getJSONArray("Mensaje");
                                 String nombretarjeta = mensaje.getString("NombreTarjeta");
                                 String numerotarjeta = mensaje.getString("NumeroTarjeta");
                                 String odometro = mensaje.getString("Odometro");
-                                String saldo= mensaje.getString("Saldo");
+                                String saldo = mensaje.getString("Saldo");
 
 
                                 JSONObject det = new JSONObject(detalle);
@@ -248,7 +304,7 @@ public class posicionesDespachador extends AppCompatActivity {
                                 String protic = new String();
                                 final String finalProtic = protic;
 
-                                for (int i = 0; i <producto.length() ; i++) {
+                                for (int i = 0; i < producto.length(); i++) {
                                     JSONObject p1 = producto.getJSONObject(i);
                                     String value = p1.getString("Cantidad");
 
@@ -258,7 +314,7 @@ public class posicionesDespachador extends AppCompatActivity {
 
                                     String prec = p1.getString("Precio");
 
-                                    protic +=value + " | " + descripcion + " | " + prec + " | " + importe+"\n";
+                                    protic += value + " | " + descripcion + " | " + prec + " | " + importe + "\n";
                                 }
 
                                 final String subtotal = det.getString("Subtotal");
@@ -274,23 +330,23 @@ public class posicionesDespachador extends AppCompatActivity {
                                 args.putString("numerotransaccion", numerotransaccion);
                                 args.putString("numerorastreo", numerorastreo);
                                 args.putString("posicion", poscarga);
-                                args.putString("despachador",nombreCompletoempleado);
-                                args.putString("vendedor",user);
-                                args.putString("formapago",formapago);
+                                args.putString("despachador", nombreCompletoempleado);
+                                args.putString("vendedor", user);
+                                args.putString("formapago", formapago);
                                 args.putString("productos", protic);
 
-                                args.putString("subtotal",subtotal);
-                                args.putString("iva",iva);
-                                args.putString("total",total);
-                                args.putString("totaltexto",totaltexto);
-                                args.putString("mensaje",names.toString());
-                                args.putString("nombretarjeta",nombretarjeta);
-                                args.putString("numerotarjeta",numerotarjeta);
-                                args.putString("odometro",odometro);
-                                args.putString("saldo",saldo);
+                                args.putString("subtotal", subtotal);
+                                args.putString("iva", iva);
+                                args.putString("total", total);
+                                args.putString("totaltexto", totaltexto);
+                                args.putString("mensaje", names.toString());
+                                args.putString("nombretarjeta", nombretarjeta);
+                                args.putString("numerotarjeta", numerotarjeta);
+                                args.putString("odometro", odometro);
+                                args.putString("saldo", saldo);
 
                                 String tipo = getIntent().getStringExtra("tipo");
-                                args.putString("tipo",tipo);
+                                args.putString("tipo", tipo);
 
                                 PrintFragment cf = new PrintFragment();
                                 cf.setArguments(args);
@@ -303,14 +359,13 @@ public class posicionesDespachador extends AppCompatActivity {
                         }
 
 
-
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 // Posting parameters to login url
@@ -318,8 +373,9 @@ public class posicionesDespachador extends AppCompatActivity {
                 String iduser = getIntent().getStringExtra("IdUsuario");
                 //String user = getIntent().getStringExtra("user");
                 params.put("PosCarga", carga);
-                params.put("IdUsuario",iduser);
-                params.put("SucursalId",data.getIdEstacion());
+                params.put("IdUsuario", iduser);
+                params.put("SucursalId", data.getIdEstacion());
+                params.put("IdFormaPago", "18");
                 return params;
             }
         };
