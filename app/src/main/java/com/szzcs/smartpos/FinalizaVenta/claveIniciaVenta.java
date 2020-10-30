@@ -196,7 +196,7 @@ public class claveIniciaVenta extends BaseActivity implements FingerprintListene
         //@Override
         //public void onClick(View v) {
         //Se lee el password del objeto y se asigna a variable
-        String pass = pasword.getText().toString();
+        final String pass = pasword.getText().toString();
 
         //Si no se terclea nada envia mensaje de teclear contraseña
         //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
@@ -214,8 +214,12 @@ public class claveIniciaVenta extends BaseActivity implements FingerprintListene
                         try {
                             //Se instancia la respuesta del json
                             JSONObject validar = new JSONObject(response);
-                            String valido = validar.getString("Activo");
-                            String idusuario = validar.getString("Id");
+                            String correcto = validar.getString("Correcto");
+                            String mensaje = validar.getString("Mensaje");
+                            String objetorespuesta = validar.getString("ObjetoRespuesta");
+                            JSONObject respuestaobjeto = new JSONObject(objetorespuesta);
+                            String valido = respuestaobjeto.getString("Activo");
+                            String idusuario = respuestaobjeto.getString("Id");
                             if (valido == "true") {
                                 //Si es valido se asignan valores
                                 usuario.setText(idusuario);

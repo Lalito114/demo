@@ -70,7 +70,7 @@ public class posicionFinaliza extends AppCompatActivity {
                         //lo assignamos a un nuevo ArrayList
                         maintitle = new ArrayList<String>();
 
-                        List<String> maintitle1;
+                        final List<String> maintitle1;
                         //lo assignamos a un nuevo ArrayList
                         maintitle1 = new ArrayList<String>();
 
@@ -84,6 +84,7 @@ public class posicionFinaliza extends AppCompatActivity {
                         //La asignamos a un nuevo elemento de ArrayList
                         imgid = new ArrayList<>();
 
+                        String descripcionoperativa;
                         banderaposicionCarga= false;
                         try {
                             JSONObject jsonObject = new JSONObject(response);
@@ -124,7 +125,7 @@ public class posicionFinaliza extends AppCompatActivity {
                                         carga = res.getString("PosicionCargaId");
                                         String pocioncargadisponible = res.getString("Disponible");
                                         String pocioncargapendientecobro = res.getString("PendienteCobro");
-
+                                        descripcionoperativa =res.getString("DescripcionOperativa");
                                         Boolean banderacarga ;
                                         if (lugarproviene.equals("1")){//Inicia despacho
                                             if (pocioncargadisponible.equals("true")){
@@ -142,7 +143,11 @@ public class posicionFinaliza extends AppCompatActivity {
                                         if (banderacarga.equals(true)) {
                                            maintitle.add("PC " + carga);
                                             maintitle1.add(carga);
-                                            subtitle.add("Magna  |  Premium  |  Diesel");
+                                            if (lugarproviene.equals("1")) {
+                                                subtitle.add("Magna  |  Premium  |  Diesel");
+                                            }else{
+                                                subtitle.add(descripcionoperativa); //"Magna  |  Premium  |  Diesel");
+                                            }
                                             imgid.add(R.drawable.gas);
                                             banderaposicionCarga = true;
                                         }
@@ -154,7 +159,10 @@ public class posicionFinaliza extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         if (banderaposicionCarga.equals(false)){
-                            Toast.makeText(posicionFinaliza.this, "No hay Posiciones de Carga para Iniciar o Finalizar Venta", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(posicionFinaliza.this, "No hay Posiciones de Carga para Finalizar Venta", Toast.LENGTH_SHORT).show();
+                            Intent intent1 = new Intent(getApplicationContext(), Munu_Principal.class);
+                            startActivity(intent1);
+                            finish();
                         }else {
                             ListAdapterProd adapterProd = new ListAdapterProd(posicionFinaliza.this, maintitle, subtitle, imgid);
                             list = (ListView) findViewById(R.id.list);
@@ -374,6 +382,8 @@ public class posicionFinaliza extends AppCompatActivity {
                         if (respuesta.equals("-1")) {
                             Toast.makeText(posicionFinaliza.this, "La transacción no corresponde al usuario con el que se identificó", Toast.LENGTH_SHORT).show();
                         }
+
+
                         //Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
                         Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
                         startActivity(intent);

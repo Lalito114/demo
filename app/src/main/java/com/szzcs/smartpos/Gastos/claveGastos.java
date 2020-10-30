@@ -316,10 +316,13 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                                 Toast.makeText(getApplicationContext(),"Clave inexistente ",Toast.LENGTH_SHORT).show();
                             }else{
                                 JSONObject validar = new JSONObject(response);
-                                String valido = validar.getString("Activo");
-                                String idusuario = validar.getString("Id");
-                                String idRoll = validar.getString("RolId");
-
+                                String correcto = validar.getString("Correcto");
+                                String mensaje = validar.getString("Mensaje");
+                                String objetorespuesta = validar.getString("ObjetoRespuesta");
+                                JSONObject respuestaobjeto = new JSONObject(objetorespuesta);
+                                String valido = respuestaobjeto.getString("Activo");
+                                String idusuario = respuestaobjeto.getString("Id");
+                                String idRoll = respuestaobjeto.getString("RolId");
                                 if (valido.equals("true") && idRoll.equals("3") || valido.equals("true") && idRoll.equals("1")){ // 1 es Jefe de ISla Autorizado por Gerente
                                     //Si es valido se asignan valores
                                     obtenerIsla(proviene);
