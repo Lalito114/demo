@@ -240,13 +240,14 @@ public class productos extends AppCompatActivity implements View.OnClickListener
 
     private void EnviarDatos() {
         SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String clave = getIntent().getStringExtra("PasswordDespachador");
+        String clave = getIntent().getStringExtra("clavedespachador");
         String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/puntadas/actualizaPuntos/clave/"+clave;
 
         RequestQueue queue = Volley.newRequestQueue(this);
 
         try {
-
+            String idusuario = getIntent().getStringExtra("IdUsuario");
+            datos.put("EmpleadoId", idusuario);
             datos.put("EstacionId", data.getIdEstacion());
             datos.put("RequestID",35);
             String PosicionDeCarga = getIntent().getStringExtra("pos");

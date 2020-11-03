@@ -58,7 +58,7 @@ public class posicionFinaliza extends AppCompatActivity {
     }
 
     public void posicionCargaFinaliza(){
-    String url = "http://"+ipEstacion+"/CorpogasService/api/accesoUsuarios/sucursal/"+sucursalId+"/clave/" + usuario;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/accesoUsuarios/sucursal/"+sucursalId+"/clave/" + usuario;
 
         // Utilizamos el metodo Post para validar la contraseña
         StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
@@ -94,18 +94,18 @@ public class posicionFinaliza extends AppCompatActivity {
                             if (ObjetoRespuesta.equals("null")){
                                 //Toast.makeText(posicionProductos.this, mensaje, Toast.LENGTH_SHORT).show();
                                 //try {
-                                    AlertDialog.Builder builder = new AlertDialog.Builder(posicionFinaliza.this);
-                                    builder.setTitle("Finaliza Venta");
-                                    builder.setCancelable(false);
-                                    builder.setMessage("" + mensaje)
-                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    Intent intent = new Intent(getApplicationContext(), claveFinalizaVenta.class);
-                                                    startActivity(intent);
-                                                    finish();
-                                                }
-                                            }).show();
+                                AlertDialog.Builder builder = new AlertDialog.Builder(posicionFinaliza.this);
+                                builder.setTitle("Finaliza Venta");
+                                builder.setCancelable(false);
+                                builder.setMessage("" + mensaje)
+                                        .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                            @Override
+                                            public void onClick(DialogInterface dialogInterface, int i) {
+                                                Intent intent = new Intent(getApplicationContext(), claveFinalizaVenta.class);
+                                                startActivity(intent);
+                                                finish();
+                                            }
+                                        }).show();
                                 //}catch (Exception e){
                                 //    e.printStackTrace();
                                 //}
@@ -141,7 +141,7 @@ public class posicionFinaliza extends AppCompatActivity {
                                             }
                                         }
                                         if (banderacarga.equals(true)) {
-                                           maintitle.add("PC " + carga);
+                                            maintitle.add("PC " + carga);
                                             maintitle1.add(carga);
                                             if (lugarproviene.equals("1")) {
                                                 subtitle.add("Magna  |  Premium  |  Diesel");

@@ -1,48 +1,35 @@
 package com.szzcs.smartpos.Ticket;
 
-import android.app.Activity;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.ClipData;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.media.Image;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.R;
-import com.szzcs.smartpos.Ticket.Monederos.posicionesDespachador;
+import com.szzcs.smartpos.Ticket.SalidasPapel.PrintFragmentTicketNormal;
+import com.szzcs.smartpos.Ticket.SalidasPapel.PrintFragmentTicketPuntadaAcumular;
+import com.szzcs.smartpos.Ticket.SalidasPapel.PrintFragmentTicketTarjetas;
+import com.szzcs.smartpos.Ticket.SalidasPapel.PrintFragmentTicketVales;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,11 +52,8 @@ public class formas_de_pago extends AppCompatActivity {
     Bundle args = new Bundle();
 
 
-
-
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -81,10 +65,10 @@ public class formas_de_pago extends AppCompatActivity {
     }
 
     //funcion para obtener formas de pago
-    public void obtenerformasdepago(){
+    public void obtenerformasdepago() {
         SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/sucursalformapagos/sucursal/"+data.getIdEstacion();
-        StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
+        String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/sucursalformapagos/sucursal/" + data.getIdEstacion();
+        StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -94,7 +78,7 @@ public class formas_de_pago extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
         // Añade la peticion a la cola
@@ -122,11 +106,15 @@ public class formas_de_pago extends AppCompatActivity {
         //Lo asignamos a un nuevo ArrayList
         numerotickets = new ArrayList<String>();
 
+        final List<String> IdFormaPago;
+        //Lo asignamos a un nuevo ArrayList
+        IdFormaPago = new ArrayList<String>();
+
         try {
             //JSONObject jsonObject = new JSONObject(response);
             //String formapago = jsonObject.getString("SucursalFormapagos");
             JSONArray nodo = new JSONArray(response);
-            for (int i = 0; i <=nodo.length() ; i++) {
+            for (int i = 0; i <= nodo.length(); i++) {
 
                 JSONObject nodo1 = nodo.getJSONObject(i);
                 String numero_pago = nodo1.getString("FormaPagoId");
@@ -135,32 +123,33 @@ public class formas_de_pago extends AppCompatActivity {
                 String nombre_pago = nodo2.getString("DescripcionLarga");
                 String numero_ticket = nodo2.getString("NumeroTickets");
                 String visible = nodo2.getString("VisibleTarjetero");
-                if (visible == "true"){
+                if (visible == "true") {
                     numerotickets.add(numero_ticket);
-                    maintitle.add( nombre_pago);
+                    maintitle.add(nombre_pago);
                     subtitle.add("ID Forma de Pago:" + numero_pago);
+                    IdFormaPago.add(numero_pago);
                 }
 
 
                 int idpago = Integer.parseInt(numero_pago);
-                switch (idpago){
+                switch (idpago) {
                     case 1:
-                        imgid.add(R.drawable.monedero);
-                        break;
-                    case 2:
                         imgid.add(R.drawable.billete);
                         break;
-                    case 3:
+                    case 2:
                         imgid.add(R.drawable.vale);
                         break;
-                    case 4:
+                    case 3:
                         imgid.add(R.drawable.american);
                         break;
-                    case 5:
+                    case 4:
                         imgid.add(R.drawable.gascard);
                         break;
-                    case  6:
+                    case 5:
                         imgid.add(R.drawable.visa);
+                        break;
+                    case 6:
+                        imgid.add(R.drawable.valeelectronico);
                         break;
                     case 7:
                         imgid.add(R.drawable.valeelectronico);
@@ -191,8 +180,8 @@ public class formas_de_pago extends AppCompatActivity {
         //Hacemos el ciclo para que cuente las posiciones de carga en las cuales se van a ver dibijadas
 
         //Invocamos a la clase de listadapter para crear la vista sobre el layout
-        Adaptador adapter=new Adaptador(this, maintitle, subtitle,imgid);
-        list=(ListView)findViewById(R.id.list);
+        Adaptador adapter = new Adaptador(this, maintitle, subtitle, imgid);
+        list = (ListView) findViewById(R.id.list);
         list.setAdapter(adapter);
 
         //Optenemos el numero del Item seleccionado que corresponde a al numero de posicion de carga
@@ -205,41 +194,56 @@ public class formas_de_pago extends AppCompatActivity {
                 formapago = String.valueOf(pos);
                 nombrepago = maintitle.get(position);
                 numticket = numerotickets.get(position);
+                int numpago = Integer.parseInt(IdFormaPago.get(position));
                 String idoperativa = getIntent().getStringExtra("IdOperativa");
                 String posicioncarga = getIntent().getStringExtra("posicioncarga");
                 String idusuario = getIntent().getStringExtra("IdUsuario");
                 int operativa = Integer.parseInt(idoperativa);
-                switch (operativa){
+                switch (operativa) {
 //                    Puntada Acumular
                     case 20:
-                        ObtenerTicketPuntadaAcumular(posicioncarga,idusuario, formapago);
+                        ObtenerTicketPuntadaAcumular(posicioncarga, idusuario, numpago);
                         break;
-
+//                    Ticket Nomal
+                    case 1:
+                        if (numpago == 2) {
+                            ObtenerDatosticketnormal(posicioncarga, idusuario, formapago, numticket);
+                        } else {
+                            if (numpago == 3) {
+                                ObtenerDatosTicketVales(posicioncarga, idusuario, formapago, numticket);
+                            } else {
+                                if (numpago == 4 || numpago == 5 || numpago == 6 || numpago == 7) {
+                                    ObtenerDatosTicketTarjetas(posicioncarga, idusuario, formapago, numticket);
+                                }
+                            }
+                        }
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + operativa);
                 }
-                ObtenerCuerpoTicket(nombrepago,numticket);
 
 
             }
         });
     }
 
-    public void ObtenerCuerpoTicket(final String nombrepago, final String numticket) {
+    private void ObtenerDatosTicketTarjetas(String posicioncarga, String idusuario, String formapago, String numtickets) {
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/tickets/generar";
+        String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/tickets/generar";
 
-        StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
+        StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String detalle = jsonObject.getString("Detalle");
-                            if (detalle.equals("null")){
+                            if (detalle.equals("null")) {
                                 String estado1 = jsonObject.getString("Resultado");
                                 JSONObject descripcion = new JSONObject(estado1);
                                 String estado = descripcion.getString("Descripcion");
                                 AlertDialog.Builder builder = new AlertDialog.Builder(formas_de_pago.this);
-                                builder.setTitle("Tarjeta Puntada");
+                                builder.setTitle("Impresion de Tickets");
                                 builder.setMessage(estado);
                                 builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
                                     @Override
@@ -249,7 +253,7 @@ public class formas_de_pago extends AppCompatActivity {
                                         finish();
                                     }
                                 });
-                                AlertDialog dialog= builder.create();
+                                AlertDialog dialog = builder.create();
                                 dialog.show();
 
                             }
@@ -269,9 +273,9 @@ public class formas_de_pago extends AppCompatActivity {
                             JSONArray producto = det.getJSONArray("Productos");
 
                             String protic = new String();
-                            final String finalProtic = protic;
+                            //final String finalProtic = protic;
 
-                            for (int i = 0; i <producto.length() ; i++) {
+                            for (int i = 0; i < producto.length(); i++) {
                                 JSONObject p1 = producto.getJSONObject(i);
                                 String value = p1.getString("Cantidad");
 
@@ -281,7 +285,7 @@ public class formas_de_pago extends AppCompatActivity {
 
                                 String prec = p1.getString("Precio");
 
-                                protic +=value + " | " + descripcion + " | " + prec + " | " + importe+"\n";
+                                protic += value + " | " + descripcion + " | " + prec + " | " + importe + "\n";
                             }
 
                             final String subtotal = det.getString("Subtotal");
@@ -289,115 +293,30 @@ public class formas_de_pago extends AppCompatActivity {
                             final String total = det.getString("Total");
                             final String totaltexto = det.getString("TotalTexto");
                             String clave = det.getString("Clave");
-                            if (numticket == "1"){
-                                try {
-                                    AlertDialog.Builder builder;
+                            String user = getIntent().getStringExtra("user");
 
-                                    builder = new AlertDialog.Builder(formas_de_pago.this);
-                                    builder.setMessage("Desea finalizar la venta?");
-                                    builder.setTitle("FINALIZAR VENTA");
-                                    builder.setPositiveButton("Imprimir", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            String carga = getIntent().getStringExtra("car");
-                                            String user = getIntent().getStringExtra("user");
-                                            args.putString("numerorecibo", numerorecibo);
-                                            args.putString("nombrepago", nombrepago);
-                                            args.putString("numticket", numticket);
-                                            args.putString("numerotransaccion", numerotransaccion);
-                                            args.putString("numerorastreo", numerorastreo);
-                                            args.putString("posicion", carga);
-                                            args.putString("despachador",despachador);
-                                            args.putString("vendedor",user);
-                                            args.putString("productos", finalProtic);
+                            args.putString("numerorecibo", numerorecibo);
+                            args.putString("nombrepago", nombrepago);
+                            args.putString("numticket", numtickets);
+                            args.putString("numerotransaccion", numerotransaccion);
+                            args.putString("numerorastreo", numerorastreo);
+                            args.putString("posicion", posicioncarga);
+                            args.putString("despachador", despachador);
+                            String nombrecompleto = getIntent().getStringExtra("nombrecompleto");
+                            args.putString("vendedor", nombrecompleto);
+                            args.putString("productos", protic);
 
-                                            args.putString("subtotal",subtotal);
-                                            args.putString("iva",iva);
-                                            args.putString("total",total);
-                                            args.putString("totaltexto",totaltexto);
-                                            args.putString("mensaje",names.toString());
+                            args.putString("subtotal", subtotal);
+                            args.putString("iva", iva);
+                            args.putString("total", total);
+                            args.putString("totaltexto", totaltexto);
+                            args.putString("mensaje", names.toString());
 
-                                            PrintFragment cf = new PrintFragment();
-                                            cf.setArguments(args);
-                                            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
-                                                    addToBackStack(PrintFragment.class.getName()).
-                                                    commit();
-
-                                        }
-                                    }).setNegativeButton("Finalizar", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            //EnviaVenta;
-                                            dialogInterface.cancel();
-                                            //Utilizamos el metodo POST para  finalizar la Venta
-                                            SQLiteBD data = new SQLiteBD(formas_de_pago.this);
-                                            String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/Transacciones/finalizaVenta/sucursal/"+data.getIdEstacion()+"/posicionCarga/"+poscarga;
-                                            StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
-                                                    new Response.Listener<String>() {
-                                                        @Override
-                                                        public void onResponse(String response) {
-                                                            if(response == "-1"){
-                                                                Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
-                                                                Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
-                                                                startActivity(intent);
-                                                            }else{
-                                                                Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
-                                                            }
-                                                        }
-                                                    }, new Response.ErrorListener() {
-                                                @Override
-                                                public void onErrorResponse(VolleyError error) {
-                                                    Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
-                                                }
-                                            }){
-                                                @Override
-                                                protected Map<String, String> getParams() {
-                                                    // Colocar parametros para ingresar la  url
-                                                    Map<String, String> params = new HashMap<String, String>();
-                                                    return params;
-                                                }
-                                            };
-
-                                            // Añade la peticion a la cola
-                                            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-                                            requestQueue.add(eventoReq);
-                                        }
-                                    });
-                                    AlertDialog dialog = builder.create();
-                                    dialog.show();
-                                }catch (Exception e){
-                                    e.printStackTrace();
-                                }
-
-
-                            }else{
-                                if (numticket == "2"){
-                                    String carga = getIntent().getStringExtra("car");
-                                    String user = getIntent().getStringExtra("user");
-                                    args.putString("numerorecibo", numerorecibo);
-                                    args.putString("nombrepago", nombrepago);
-                                    args.putString("numticket", numticket);
-                                    args.putString("numerotransaccion", numerotransaccion);
-                                    args.putString("numerorastreo", numerorastreo);
-                                    args.putString("posicion", carga);
-                                    args.putString("despachador",despachador);
-                                    args.putString("vendedor",user);
-                                    args.putString("productos", finalProtic);
-
-                                    args.putString("subtotal",subtotal);
-                                    args.putString("iva",iva);
-                                    args.putString("total",total);
-                                    args.putString("totaltexto",totaltexto);
-                                    args.putString("mensaje",names.toString());
-
-                                    PrintFragment cf = new PrintFragment();
-                                    cf.setArguments(args);
-                                    getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
-                                            addToBackStack(PrintFragment.class.getName()).
-                                            commit();
-
-                                }
-                            }
+                            PrintFragmentTicketTarjetas cf = new PrintFragmentTicketTarjetas();
+                            cf.setArguments(args);
+                            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+                                    addToBackStack(PrintFragment.class.getName()).
+                                    commit();
 
 
                         } catch (JSONException e) {
@@ -407,19 +326,17 @@ public class formas_de_pago extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
             }
-        }){
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 // Posting parameters to login url
                 Map<String, String> params = new HashMap<String, String>();
-                String carga = getIntent().getStringExtra("posicioncarga");
-                String user = getIntent().getStringExtra("user");
-                params.put("PosCarga", carga);
-                params.put("IdUsuario",user);
+                params.put("PosCarga", posicioncarga);
+                params.put("IdUsuario", idusuario);
                 params.put("IdFormaPago", formapago);
-                params.put("SucursalId",data.getIdEstacion());
+                params.put("SucursalId", data.getIdEstacion());
                 return params;
             }
         };
@@ -428,18 +345,327 @@ public class formas_de_pago extends AppCompatActivity {
         requestQueue.add(eventoReq);
     }
 
-    public void ObtenerTicketPuntadaAcumular(String posicioncarga, String IdUsuario, String formapago) {
+    private void ObtenerDatosTicketVales(String posicioncarga, String idusuario, String formapago, String numticket) {
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/tickets/generar";
+        String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/tickets/generar";
 
-        StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
+        StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String detalle = jsonObject.getString("Detalle");
-                            if (detalle.equals("null")){
+                            if (detalle.equals("null")) {
+                                String estado1 = jsonObject.getString("Resultado");
+                                JSONObject descripcion = new JSONObject(estado1);
+                                String estado = descripcion.getString("Descripcion");
+                                AlertDialog.Builder builder = new AlertDialog.Builder(formas_de_pago.this);
+                                builder.setTitle("Impresion de Tickets");
+                                builder.setMessage(estado);
+                                builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
+
+                            }
+                            String pie = jsonObject.getString("Pie");
+                            JSONObject mensaje = new JSONObject(pie);
+                            final JSONArray names = mensaje.getJSONArray("Mensaje");
+
+                            JSONObject det = new JSONObject(detalle);
+                            final String numerorecibo = det.getString("NoRecibo");
+                            final String numerotransaccion = det.getString("NoTransaccion");
+                            final String numerorastreo = det.getString("NoRastreo");
+                            final String poscarga = det.getString("PosCarga");
+                            final String despachador = det.getString("Desp");
+                            String vendedor = det.getString("Vend");
+                            String prod = det.getString("Productos");
+
+                            JSONArray producto = det.getJSONArray("Productos");
+
+                            String protic = new String();
+                            //final String finalProtic = protic;
+
+                            for (int i = 0; i < producto.length(); i++) {
+                                JSONObject p1 = producto.getJSONObject(i);
+                                String value = p1.getString("Cantidad");
+
+                                String descripcion = p1.getString("Descripcion");
+
+                                String importe = p1.getString("Importe");
+
+                                String prec = p1.getString("Precio");
+
+                                protic += value + " | " + descripcion + " | " + prec + " | " + importe + "\n";
+                            }
+
+                            final String subtotal = det.getString("Subtotal");
+                            final String iva = det.getString("IVA");
+                            final String total = det.getString("Total");
+                            final String totaltexto = det.getString("TotalTexto");
+                            String clave = det.getString("Clave");
+                            if (numticket == "1") {
+                                String user = getIntent().getStringExtra("user");
+                                args.putString("numerorecibo", numerorecibo);
+                                args.putString("nombrepago", nombrepago);
+                                args.putString("numticket", numticket);
+                                args.putString("numerotransaccion", numerotransaccion);
+                                args.putString("numerorastreo", numerorastreo);
+                                args.putString("posicion", posicioncarga);
+                                args.putString("despachador", despachador);
+                                String nombrecompleto = getIntent().getStringExtra("nombrecompleto");
+                                args.putString("vendedor", nombrecompleto);
+                                args.putString("productos", protic);
+
+                                args.putString("subtotal", subtotal);
+                                args.putString("iva", iva);
+                                args.putString("total", total);
+                                args.putString("totaltexto", totaltexto);
+                                args.putString("mensaje", names.toString());
+
+                                PrintFragmentTicketVales cf = new PrintFragmentTicketVales();
+                                cf.setArguments(args);
+                                getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+                                        addToBackStack(PrintFragment.class.getName()).
+                                        commit();
+
+
+                            } else {
+                                if (numticket == "2") {
+                                    Toast.makeText(formas_de_pago.this, "La forma de pago Efectivo no puede tener copia de ticket", Toast.LENGTH_SHORT).show();
+
+                                }
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("PosCarga", posicioncarga);
+                params.put("IdUsuario", idusuario);
+                params.put("IdFormaPago", formapago);
+                params.put("SucursalId", data.getIdEstacion());
+                return params;
+            }
+        };
+        // Añade la peticion a la cola
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(eventoReq);
+    }
+
+    private void ObtenerDatosticketnormal(String posicioncarga, String idusuario, String formapago, String numticket) {
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/tickets/generar";
+
+        StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String detalle = jsonObject.getString("Detalle");
+                            if (detalle.equals("null")) {
+                                String estado1 = jsonObject.getString("Resultado");
+                                JSONObject descripcion = new JSONObject(estado1);
+                                String estado = descripcion.getString("Descripcion");
+                                AlertDialog.Builder builder = new AlertDialog.Builder(formas_de_pago.this);
+                                builder.setTitle("Impresion de Tickets");
+                                builder.setMessage(estado);
+                                builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
+
+                            }
+                            String pie = jsonObject.getString("Pie");
+                            JSONObject mensaje = new JSONObject(pie);
+                            final JSONArray names = mensaje.getJSONArray("Mensaje");
+
+                            JSONObject det = new JSONObject(detalle);
+                            final String numerorecibo = det.getString("NoRecibo");
+                            final String numerotransaccion = det.getString("NoTransaccion");
+                            final String numerorastreo = det.getString("NoRastreo");
+                            final String poscarga = det.getString("PosCarga");
+                            final String despachador = det.getString("Desp");
+                            String vendedor = det.getString("Vend");
+                            String prod = det.getString("Productos");
+
+                            JSONArray producto = det.getJSONArray("Productos");
+
+                            String protic = new String();
+                            //final String finalProtic = protic;
+
+                            for (int i = 0; i < producto.length(); i++) {
+                                JSONObject p1 = producto.getJSONObject(i);
+                                String value = p1.getString("Cantidad");
+
+                                String descripcion = p1.getString("Descripcion");
+
+                                String importe = p1.getString("Importe");
+
+                                String prec = p1.getString("Precio");
+
+                                protic += value + " | " + descripcion + " | " + prec + " | " + importe + "\n";
+                            }
+
+                            final String subtotal = det.getString("Subtotal");
+                            final String iva = det.getString("IVA");
+                            final String total = det.getString("Total");
+                            final String totaltexto = det.getString("TotalTexto");
+                            String clave = det.getString("Clave");
+                            if (numticket == "1") {
+                                try {
+                                    AlertDialog.Builder builder;
+
+                                    builder = new AlertDialog.Builder(formas_de_pago.this);
+                                    builder.setMessage("Desea finalizar la venta?");
+                                    builder.setTitle("FINALIZAR VENTA");
+                                    String finalProtic = protic;
+                                    builder.setPositiveButton("Imprimir", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                                            String user = getIntent().getStringExtra("user");
+                                            args.putString("numerorecibo", numerorecibo);
+                                            args.putString("nombrepago", nombrepago);
+                                            args.putString("numticket", numticket);
+                                            args.putString("numerotransaccion", numerotransaccion);
+                                            args.putString("numerorastreo", numerorastreo);
+                                            args.putString("posicion", posicioncarga);
+                                            args.putString("despachador", despachador);
+                                            String nombrecompleto = getIntent().getStringExtra("nombrecompleto");
+                                            args.putString("vendedor", nombrecompleto);
+                                            args.putString("productos", finalProtic);
+
+                                            args.putString("subtotal", subtotal);
+                                            args.putString("iva", iva);
+                                            args.putString("total", total);
+                                            args.putString("totaltexto", totaltexto);
+                                            args.putString("mensaje", names.toString());
+
+                                            PrintFragmentTicketNormal cf = new PrintFragmentTicketNormal();
+                                            cf.setArguments(args);
+                                            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+                                                    addToBackStack(PrintFragment.class.getName()).
+                                                    commit();
+
+                                        }
+                                    }).setNegativeButton("Finalizar", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            //EnviaVenta;
+                                            dialogInterface.cancel();
+                                            //Utilizamos el metodo POST para  finalizar la Venta
+                                            SQLiteBD data = new SQLiteBD(formas_de_pago.this);
+                                            String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/Transacciones/finalizaVenta/sucursal/" + data.getIdEstacion() + "/posicionCarga/" + poscarga;
+                                            StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
+                                                    new Response.Listener<String>() {
+                                                        @Override
+                                                        public void onResponse(String response) {
+                                                            if (response == "-1") {
+                                                                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+                                                                Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                                                startActivity(intent);
+                                                            } else {
+                                                                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+                                                            }
+                                                        }
+                                                    }, new Response.ErrorListener() {
+                                                @Override
+                                                public void onErrorResponse(VolleyError error) {
+                                                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                                                }
+                                            }) {
+                                                @Override
+                                                protected Map<String, String> getParams() {
+                                                    // Colocar parametros para ingresar la  url
+                                                    Map<String, String> params = new HashMap<String, String>();
+                                                    return params;
+                                                }
+                                            };
+
+                                            // Añade la peticion a la cola
+                                            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+                                            requestQueue.add(eventoReq);
+                                        }
+                                    });
+                                    AlertDialog dialog = builder.create();
+                                    dialog.show();
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+
+
+                            } else {
+                                if (numticket == "2") {
+                                    Toast.makeText(formas_de_pago.this, "La forma de pago Efectivo no puede tener copia de ticket", Toast.LENGTH_SHORT).show();
+
+                                }
+                            }
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("PosCarga", posicioncarga);
+                params.put("IdUsuario", idusuario);
+                params.put("IdFormaPago", formapago);
+                params.put("SucursalId", data.getIdEstacion());
+                return params;
+            }
+        };
+        // Añade la peticion a la cola
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(eventoReq);
+    }
+
+    public void ObtenerCuerpoTicket(final String nombrepago, final String numticket) {
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/tickets/generar";
+
+        StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String detalle = jsonObject.getString("Detalle");
+                            if (detalle.equals("null")) {
                                 String estado1 = jsonObject.getString("Resultado");
                                 JSONObject descripcion = new JSONObject(estado1);
                                 String estado = descripcion.getString("Descripcion");
@@ -454,7 +680,7 @@ public class formas_de_pago extends AppCompatActivity {
                                         finish();
                                     }
                                 });
-                                AlertDialog dialog= builder.create();
+                                AlertDialog dialog = builder.create();
                                 dialog.show();
 
                             }
@@ -476,7 +702,7 @@ public class formas_de_pago extends AppCompatActivity {
                             String protic = new String();
                             final String finalProtic = protic;
 
-                            for (int i = 0; i <producto.length() ; i++) {
+                            for (int i = 0; i < producto.length(); i++) {
                                 JSONObject p1 = producto.getJSONObject(i);
                                 String value = p1.getString("Cantidad");
 
@@ -486,7 +712,7 @@ public class formas_de_pago extends AppCompatActivity {
 
                                 String prec = p1.getString("Precio");
 
-                                protic +=value + " | " + descripcion + " | " + prec + " | " + importe+"\n";
+                                protic += value + " | " + descripcion + " | " + prec + " | " + importe + "\n";
                             }
 
                             final String subtotal = det.getString("Subtotal");
@@ -494,7 +720,7 @@ public class formas_de_pago extends AppCompatActivity {
                             final String total = det.getString("Total");
                             final String totaltexto = det.getString("TotalTexto");
                             String clave = det.getString("Clave");
-                            if (numticket == "1"){
+                            if (numticket == "1") {
                                 try {
                                     AlertDialog.Builder builder;
 
@@ -512,15 +738,15 @@ public class formas_de_pago extends AppCompatActivity {
                                             args.putString("numerotransaccion", numerotransaccion);
                                             args.putString("numerorastreo", numerorastreo);
                                             args.putString("posicion", carga);
-                                            args.putString("despachador",despachador);
-                                            args.putString("vendedor",user);
+                                            args.putString("despachador", despachador);
+                                            args.putString("vendedor", user);
                                             args.putString("productos", finalProtic);
 
-                                            args.putString("subtotal",subtotal);
-                                            args.putString("iva",iva);
-                                            args.putString("total",total);
-                                            args.putString("totaltexto",totaltexto);
-                                            args.putString("mensaje",names.toString());
+                                            args.putString("subtotal", subtotal);
+                                            args.putString("iva", iva);
+                                            args.putString("total", total);
+                                            args.putString("totaltexto", totaltexto);
+                                            args.putString("mensaje", names.toString());
 
                                             PrintFragment cf = new PrintFragment();
                                             cf.setArguments(args);
@@ -536,25 +762,25 @@ public class formas_de_pago extends AppCompatActivity {
                                             dialogInterface.cancel();
                                             //Utilizamos el metodo POST para  finalizar la Venta
                                             SQLiteBD data = new SQLiteBD(formas_de_pago.this);
-                                            String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/Transacciones/finalizaVenta/sucursal/"+data.getIdEstacion()+"/posicionCarga/"+poscarga;
-                                            StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
+                                            String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/Transacciones/finalizaVenta/sucursal/" + data.getIdEstacion() + "/posicionCarga/" + poscarga;
+                                            StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
                                                     new Response.Listener<String>() {
                                                         @Override
                                                         public void onResponse(String response) {
-                                                            if(response == "-1"){
-                                                                Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
+                                                            if (response == "-1") {
+                                                                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
                                                                 Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
                                                                 startActivity(intent);
-                                                            }else{
-                                                                Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
+                                                            } else {
+                                                                Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
                                                             }
                                                         }
                                                     }, new Response.ErrorListener() {
                                                 @Override
                                                 public void onErrorResponse(VolleyError error) {
-                                                    Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                                                    Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
                                                 }
-                                            }){
+                                            }) {
                                                 @Override
                                                 protected Map<String, String> getParams() {
                                                     // Colocar parametros para ingresar la  url
@@ -570,13 +796,13 @@ public class formas_de_pago extends AppCompatActivity {
                                     });
                                     AlertDialog dialog = builder.create();
                                     dialog.show();
-                                }catch (Exception e){
+                                } catch (Exception e) {
                                     e.printStackTrace();
                                 }
 
 
-                            }else{
-                                if (numticket == "2"){
+                            } else {
+                                if (numticket == "2") {
                                     String carga = getIntent().getStringExtra("car");
                                     String user = getIntent().getStringExtra("user");
                                     args.putString("numerorecibo", numerorecibo);
@@ -585,15 +811,15 @@ public class formas_de_pago extends AppCompatActivity {
                                     args.putString("numerotransaccion", numerotransaccion);
                                     args.putString("numerorastreo", numerorastreo);
                                     args.putString("posicion", carga);
-                                    args.putString("despachador",despachador);
-                                    args.putString("vendedor",user);
+                                    args.putString("despachador", despachador);
+                                    args.putString("vendedor", user);
                                     args.putString("productos", finalProtic);
 
-                                    args.putString("subtotal",subtotal);
-                                    args.putString("iva",iva);
-                                    args.putString("total",total);
-                                    args.putString("totaltexto",totaltexto);
-                                    args.putString("mensaje",names.toString());
+                                    args.putString("subtotal", subtotal);
+                                    args.putString("iva", iva);
+                                    args.putString("total", total);
+                                    args.putString("totaltexto", totaltexto);
+                                    args.putString("mensaje", names.toString());
 
                                     PrintFragment cf = new PrintFragment();
                                     cf.setArguments(args);
@@ -612,17 +838,142 @@ public class formas_de_pago extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
             }
-        }){
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                // Posting parameters to login url
+                Map<String, String> params = new HashMap<String, String>();
+                String carga = getIntent().getStringExtra("posicioncarga");
+                String user = getIntent().getStringExtra("user");
+                params.put("PosCarga", carga);
+                params.put("IdUsuario", user);
+                params.put("IdFormaPago", formapago);
+                params.put("SucursalId", data.getIdEstacion());
+                return params;
+            }
+        };
+        // Añade la peticion a la cola
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(eventoReq);
+    }
+
+    public void ObtenerTicketPuntadaAcumular(String posicioncarga, String IdUsuario, int numpago) {
+        final SQLiteBD data = new SQLiteBD(getApplicationContext());
+        String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/tickets/generar";
+
+        StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        try {
+                            JSONObject jsonObject = new JSONObject(response);
+                            String detalle = jsonObject.getString("Detalle");
+                            if (detalle.equals("null")) {
+                                String estado1 = jsonObject.getString("Resultado");
+                                JSONObject descripcion = new JSONObject(estado1);
+                                String estado = descripcion.getString("Descripcion");
+                                AlertDialog.Builder builder = new AlertDialog.Builder(formas_de_pago.this);
+                                builder.setTitle("Tarjeta Puntada");
+                                builder.setMessage(estado);
+                                builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                });
+                                AlertDialog dialog = builder.create();
+                                dialog.show();
+
+                            }
+                            String pie = jsonObject.getString("Pie");
+                            JSONObject mensaje = new JSONObject(pie);
+                            final JSONArray names = mensaje.getJSONArray("Mensaje");
+                            String valor = new String();
+                            for (int i = 0; i <names.length() ; i++) {
+                                valor += names.getString(i) + "\n";
+                            }
+
+                            JSONObject det = new JSONObject(detalle);
+                            final String numerorecibo = det.getString("NoRecibo");
+                            final String numerotransaccion = det.getString("NoTransaccion");
+                            final String numerorastreo = det.getString("NoRastreo");
+                            final String poscarga = det.getString("PosCarga");
+                            final String despachador = det.getString("Desp");
+                            String vendedor = det.getString("Vend");
+                            String prod = det.getString("Productos");
+
+                            JSONArray producto = det.getJSONArray("Productos");
+
+                            String protic = new String();
+                            final String finalProtic = protic;
+
+                            for (int i = 0; i < producto.length(); i++) {
+                                JSONObject p1 = producto.getJSONObject(i);
+                                String value = p1.getString("Cantidad");
+
+                                String descripcion = p1.getString("Descripcion");
+
+                                String importe = p1.getString("Importe");
+
+                                String prec = p1.getString("Precio");
+
+                                protic += value + " | " + descripcion + " | " + prec + " | " + importe + "\n";
+                            }
+
+                            final String subtotal = det.getString("Subtotal");
+                            final String iva = det.getString("IVA");
+                            final String total = det.getString("Total");
+                            final String totaltexto = det.getString("TotalTexto");
+                            String clave = det.getString("Clave");
+
+                            String carga = getIntent().getStringExtra("car");
+                            String user = getIntent().getStringExtra("user");
+                            args.putString("numerorecibo", numerorecibo);
+                            args.putString("nombrepago", nombrepago);
+                            args.putString("numticket", numticket);
+                            args.putString("numerotransaccion", numerotransaccion);
+                            args.putString("numerorastreo", numerorastreo);
+                            args.putString("posicion", poscarga);
+                            String nombrecompleto = getIntent().getStringExtra("nombrecompleto");
+                            args.putString("despachador", nombrecompleto);
+                            args.putString("vendedor", user);
+                            args.putString("productos", protic);
+
+                            args.putString("subtotal", subtotal);
+                            args.putString("iva", iva);
+                            args.putString("total", total);
+                            args.putString("totaltexto", totaltexto);
+                            args.putString("mensaje", valor);
+
+                            PrintFragmentTicketPuntadaAcumular cf = new PrintFragmentTicketPuntadaAcumular();
+                            cf.setArguments(args);
+                            getFragmentManager().beginTransaction().replace(R.id.tv1, cf).
+                                    addToBackStack(PrintFragment.class.getName()).
+                                    commit();
+
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
             @Override
             protected Map<String, String> getParams() {
                 // Posting parameters to login url
                 Map<String, String> params = new HashMap<String, String>();
                 params.put("PosCarga", posicioncarga);
-                params.put("IdUsuario",IdUsuario);
-                params.put("IdFormaPago", formapago);
-                params.put("SucursalId",data.getIdEstacion());
+                params.put("IdUsuario", IdUsuario);
+                params.put("IdFormaPago", String.valueOf(numpago));
+                params.put("SucursalId", data.getIdEstacion());
                 return params;
             }
         };

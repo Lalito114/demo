@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.MyListAdapter;
+import com.szzcs.smartpos.Puntada.Acumular.ClaveDespachadorAcumular;
 import com.szzcs.smartpos.Puntada.Acumular.posicionCarga;
 import com.szzcs.smartpos.Puntada.Redimir.PosicionRedimir;
 import com.szzcs.smartpos.Puntada.Registrar.ClaveDespachadorPuntada;
@@ -57,7 +58,7 @@ public class SeccionTarjeta extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 switch (position) {
                     case 0: //Acumular
-                        Intent intent = new Intent(getApplicationContext(), posicionCarga.class);
+                        Intent intent = new Intent(getApplicationContext(), ClaveDespachadorAcumular.class);
                         Bundle bundle  = new Bundle();
                         bundle.putString("track",track2);
                         intent.putExtras(bundle);

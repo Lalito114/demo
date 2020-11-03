@@ -18,66 +18,110 @@ import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class posicionCarga extends AppCompatActivity {
+public class  posicionCarga extends AppCompatActivity {
     String titulo = "Seleccione Posicion de Carga";
     ListView list;
 
-    static int numBotones = 20;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         setContentView(R.layout.activity_posicion_carga_acumular);
         this.setTitle(data.getNombreEsatcion());
-        posicionAcumular();
+    ObtenerPosicionesdeCarga();
     }
 
-    private void posicionAcumular() {
+    private void ObtenerPosicionesdeCarga() {
+
+
         SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/posicionCargas/estacion/"+data.getIdEstacion()+"/maximo";
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                MetodoResponse(response);
-            }
-        }, new Response.ErrorListener() {
+        String IdUsuario = getIntent().getStringExtra("IdUsuario");
+        String ClaveDespachador = getIntent().getStringExtra("ClaveDespachador");
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/accesoUsuarios/sucursal/"+data.getIdSucursal()+"/clave/" + ClaveDespachador;
+
+        // Utilizamos el metodo Post para validar la contraseña
+        StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        MetodoResponse(response);
+                    }
+                    //funcion para capturar errores
+                }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(),error.toString(), Toast.LENGTH_LONG).show();
+                Toast.makeText(getApplicationContext(),"Error 500: No se establecio conexión en el servidor",Toast.LENGTH_SHORT).show();
             }
-        }){
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String,String> parametros = new HashMap<String, String>();
+        });
 
-                return parametros;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(this.getApplicationContext());
-        requestQueue.add(stringRequest);
-
+        // Añade la peticion a la cola
+        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+        requestQueue.add(eventoReq);
     }
 
     private void MetodoResponse(final String response) {
+        //Declaramos la lista de titulo
         List<String> maintitle;
+        //lo assignamos a un nuevo ArrayList
         maintitle = new ArrayList<String>();
 
+        List<String> maintitle1;
+        //lo assignamos a un nuevo ArrayList
+        maintitle1 = new ArrayList<String>();
+
+        //Creamos la lista para los subtitulos
         List<String> subtitle;
+        //Lo asignamos a un nuevo ArrayList
         subtitle = new ArrayList<String>();
 
+        //CReamos una nueva list de tipo Integer con la cual cargaremos a una imagen
         List<Integer> imgid;
+        //La asignamos a un nuevo elemento de ArrayList
         imgid = new ArrayList<>();
 
+        String carga;
+        String pendientdecobro;
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
 
-        for (int i = 1; i <= Integer.parseInt(response); i++) {
-            maintitle.add("PC" + String.valueOf(i));
-            subtitle.add("Magna  | Premium  |  Diesel");
-            imgid.add(R.drawable.gas);
+            JSONObject jsonObject1 = new JSONObject(ObjetoRespuesta);
+            String control = jsonObject1.getString("Controles");
+
+            JSONArray control1 = new JSONArray(control);
+            for (int i = 0; i <control1.length() ; i++) {
+                JSONObject posiciones = control1.getJSONObject(i);
+                String posi = posiciones.getString("Posiciones");
+
+
+                JSONArray mangue = new JSONArray(posi);
+                for (int j = 0; j < mangue.length(); j++) {
+                    JSONObject res = mangue.getJSONObject(j);
+                    carga = res.getString("PosicionCargaId");
+                    pendientdecobro = res.getString("PendienteCobro");
+                    if (pendientdecobro.equals("false")){
+                        maintitle.add("PC " + carga);
+                        maintitle1.add(carga);
+                        subtitle.add("Magna  |  Premium  |  Diesel");
+                        imgid.add(R.drawable.gas);
+                    }
+
+
+                }
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
         }
 
         //ListAdapterP adapterP=new ListAdapterP(this, maintitle, subtitle,imgid);
@@ -94,10 +138,16 @@ public class posicionCarga extends AppCompatActivity {
                 int posicion = position +1;
                 String posi = String.valueOf(posicion);
                 String track = getIntent().getStringExtra("track");
+                String idusuario = getIntent().getStringExtra("IdUsuario");
+                String clavedespachador = getIntent().getStringExtra("ClaveDespachador");
+                String nombrecompleto = getIntent().getStringExtra("nombrecompleto");
 
-                Intent intente = new Intent(getApplicationContext(), ClaveDespachadorAcumular.class);
+
+                Intent intente = new Intent(getApplicationContext(), productos.class);
                 intente.putExtra("pos",posi);
                 intente.putExtra("track", track);
+                intente.putExtra("IdUsuario", idusuario);
+                intente.putExtra("clavedespachador", clavedespachador);
                 startActivity(intente);
                 finish();
             }

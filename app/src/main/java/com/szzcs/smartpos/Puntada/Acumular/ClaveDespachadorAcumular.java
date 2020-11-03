@@ -1,52 +1,118 @@
 package com.szzcs.smartpos.Puntada.Acumular;
 
 import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.R;
+import com.szzcs.smartpos.TanqueLleno.ClaveDespachadorTL;
+import com.szzcs.smartpos.TanqueLleno.PosicionCargaTLl;
+import com.szzcs.smartpos.Ticket.Monederos.VentanaMensajesError;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
-public class ClaveDespachadorAcumular extends AppCompatActivity {
+import org.json.JSONException;
+import org.json.JSONObject;
 
+public class ClaveDespachadorAcumular extends AppCompatActivity {
+    String iduser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_clave_despachador_acumular);
         SQLiteBD data = new SQLiteBD(getApplicationContext());
         this.setTitle(data.getNombreEsatcion());
+
+    }
+
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                calculos();
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
+    }
+
+    private void calculos() {
         Bundle bundle = getIntent().getExtras();
-        final String track = bundle.getString("track");
         final String posicioncarga = bundle.getString("pos");
+        VentanaMensajesError msj = new VentanaMensajesError(ClaveDespachadorAcumular.this);
+        //Se lee el password del objeto y se asigna a variable
+        EditText pasword = (EditText) findViewById(R.id.edtDespachadorclave);
+        String pass = pasword.getText().toString();
 
-        Button btnsiguiente;
-        btnsiguiente = findViewById(R.id.btnSiguientePuntada);
+        //Si no se terclea nada envia mensaje de teclear contraseña
+        if (pass.isEmpty()) {
+            Toast.makeText(getApplicationContext(), "Ingresa tu contraseña de Despachador", Toast.LENGTH_LONG).show();
+            AlertDialog.Builder builder;
+        } else {
+            SQLiteBD data = new SQLiteBD(getApplicationContext());
+            String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/SucursalEmpleados/clave/" + pass;
 
-        btnsiguiente.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                EditText password;
-                password = findViewById(R.id.edtDespachadorclave);
-                String password2 = password.getText().toString();
+            // Utilizamos el metodo Post para validar la contraseña
+            StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            try {
+                                //Se instancia la respuesta del json
+                                JSONObject jsonObject = new JSONObject(response);
+                                String correcto = jsonObject.getString("Correcto");
+                                String objeto = jsonObject.getString("ObjetoRespuesta");
+                                if (correcto.equals("true") && !objeto.equals("null")){
 
-                if (password2.isEmpty()){
-                    Toast.makeText(getApplicationContext(),"Ingresa la Contraseña", Toast.LENGTH_LONG).show();
-                }else{
-                    Intent intent = new Intent(getApplicationContext(),productos.class);
-                    Bundle bundle1  = new Bundle();
-                    bundle1.putString("track",track);
-                    bundle1.putString("pos",posicioncarga);
-                    bundle1.putString("PasswordDespachador",password2);
-                    intent.putExtras(bundle1);
-                    startActivity(intent);
-                    finish();
+                                    JSONObject validar = new JSONObject(objeto);
+
+                                    String valido = validar.getString("Activo");
+                                    String nombrecompleto = validar.getString("NombreCompleto");
+                                    iduser = validar.getString("Id");
+                                    if (valido == "true") {
+                                        String track = getIntent().getStringExtra("track");
+                                        Intent intent = new Intent(getApplicationContext(), posicionCarga.class);
+                                        intent.putExtra("IdUsuario", iduser);
+                                        intent.putExtra("ClaveDespachador", pass);
+                                        intent.putExtra("nombrecompleto", nombrecompleto);
+                                        intent.putExtra("track", track);
+                                        startActivity(intent);
+                                        pasword.setText("");
+                                    } else {
+                                        //Si no es valido se envia mensaje
+                                        msj.mostrarVentana("Usuario No encontrado");
+                                    }
+                                }else{
+                                    msj.mostrarVentana("Usuario No encontrado");
+                                    pasword.setText("");
+                                }
+
+                            } catch (JSONException e) {
+                                //herramienta  para diagnostico de excepciones
+                                msj.mostrarVentana("Alerta: Usuario No encontrado");
+                            }
+                        }
+                        //funcion para capturar errores
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    msj.mostrarVentana("Alerta 500: Cominicación con el Servidor");
                 }
+            });
 
-            }
-        });
+            // Añade la peticion a la cola
+            RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
+            requestQueue.add(eventoReq);
+        }
     }
 }

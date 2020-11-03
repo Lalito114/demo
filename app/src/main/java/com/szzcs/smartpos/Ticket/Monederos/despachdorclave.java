@@ -75,15 +75,17 @@ public class despachdorclave extends AppCompatActivity {
                                 JSONObject jsonObject = new JSONObject(response);
                                 String correcto = jsonObject.getString("Correcto");
                                 String objeto = jsonObject.getString("ObjetoRespuesta");
-                                if (correcto.equals("false") && !objeto.equals("null")){
+                                if (!correcto.equals("true") && !objeto.equals("null")){
                                     JSONObject validar = new JSONObject(objeto);
 
                                     String valido = validar.getString("Activo");
+                                    String nombrecompleto = validar.getString("NombreCompleto");
                                     iduser = validar.getString("Id");
                                     if (valido == "true") {
                                         Intent intent = new Intent(despachdorclave.this, posicionesDespachador.class);
                                         intent.putExtra("IdUsuario", iduser);
                                         intent.putExtra("ClaveDespachador", pass);
+                                        intent.putExtra("nombrecompleto", nombrecompleto);
                                         startActivity(intent);
                                         finish();
                                     } else {

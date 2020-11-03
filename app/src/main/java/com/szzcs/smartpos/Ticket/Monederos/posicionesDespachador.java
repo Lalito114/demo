@@ -129,25 +129,26 @@ public class posicionesDespachador extends AppCompatActivity {
                                                 mostrarventana(mensaje);
 
                                             } else {
-                                                AdapterPosiciones adapter = new AdapterPosiciones(posicionesDespachador.this, maintitle, subtitle, imgid);
-                                                list = (ListView) findViewById(R.id.list);
-                                                list.setAdapter(adapter);
 
-                                                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                                                    @Override
-                                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                                                        // TODO Auto-generated method stub
-                                                        String numerocarga = maintitle1.get(position);
-                                                        String OperativaId = IdOperativa.get(position);
-                                                        DescribirOperativa(numerocarga, OperativaId);
-
-                                                    }
-                                                });
                                             }
                                         }
                                     }
                                 }
+                                AdapterPosiciones adapter = new AdapterPosiciones(posicionesDespachador.this, maintitle, subtitle, imgid);
+                                list = (ListView) findViewById(R.id.list);
+                                list.setAdapter(adapter);
+
+                                list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                                    @Override
+                                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                                        // TODO Auto-generated method stub
+                                        String numerocarga = maintitle1.get(position);
+                                        String OperativaId = IdOperativa.get(position);
+                                        DescribirOperativa(numerocarga, OperativaId);
+
+                                    }
+                                });
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -192,6 +193,7 @@ public class posicionesDespachador extends AppCompatActivity {
     public void DescribirOperativa(String numerocarga, String OperativaId) {
 
         String idusuario = getIntent().getStringExtra("IdUsuario");
+        String nombrecompleto = getIntent().getStringExtra("nombrecompleto");
         Intent intent = new Intent(getApplicationContext(), formas_de_pago.class);
 
         int IdOperativa = Integer.parseInt(OperativaId);
@@ -202,8 +204,9 @@ public class posicionesDespachador extends AppCompatActivity {
             case 20:
 //                Operativa Puntada P
                 intent.putExtra("posicioncarga",numerocarga);
-                intent.putExtra("IdOperativa", IdOperativa);
+                intent.putExtra("IdOperativa", OperativaId);
                 intent.putExtra("IdUsuario", idusuario);
+                intent.putExtra("nombrecompleto", nombrecompleto);
                 startActivity(intent);
                 break;
             case 2:
