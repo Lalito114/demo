@@ -21,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
@@ -52,7 +53,7 @@ public class confirmaVenta extends AppCompatActivity {
     JSONArray myArray = new JSONArray();
     String EstacionId, sucursalId, ipEstacion, tipoTransaccion, numerodispositivo ;
     TextView txttotal, txtdespachosolicitado, txtproducto;
-    String lugarproviene;
+    String lugarproviene, numerooperativa;
     int idSeleccionado;
 
     @Override
@@ -71,6 +72,7 @@ public class confirmaVenta extends AppCompatActivity {
         txtdespachosolicitado=findViewById(R.id.txtdespachosolicitado);
         txtproducto=findViewById(R.id.txtproducto);
 
+        numerooperativa = getIntent().getStringExtra("numeroOperativa");
         posicion = getIntent().getStringExtra("posicion");
         usuario = getIntent().getStringExtra("usuario");
         cadenaproductos = getIntent().getStringExtra("cadenaproducto");
@@ -128,12 +130,25 @@ public class confirmaVenta extends AppCompatActivity {
                     @Override
                     public void onResponse(JSONArray response) {
                         //Get Final response
-                        Toast.makeText(confirmaVenta.this, "Venta Realizada", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(), FPaga.class);
-                        intent.putExtra("posicion", posicion);
-                        intent.putExtra("usuario", usuario);
-                        startActivity(intent);
-                        finish();
+                        //Toast.makeText(confirmaVenta.this, "Venta Realizada", Toast.LENGTH_SHORT).show();
+                        String titulo = "AVISO";
+                        String mensaje = "Venta Realizada";
+                        Modales modales = new Modales(confirmaVenta.this);
+                        View view1 = modales.MostrarDialogoAlertaAceptar(confirmaVenta.this,mensaje,titulo);
+                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+                                Intent intent = new Intent(getApplicationContext(), FPaga.class);
+                                intent.putExtra("posicion", posicion);
+                                intent.putExtra("usuario", usuario);
+                                intent.putExtra("numeroOperativa", numerooperativa);
+                                startActivity(intent);
+                                finish();
+
+                            }
+                        });
+
                     }
                 }, new Response.ErrorListener() {
             @Override

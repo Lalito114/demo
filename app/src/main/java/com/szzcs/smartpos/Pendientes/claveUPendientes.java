@@ -25,6 +25,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.szzcs.smartpos.Gastos.claveGastos;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.MyApp;
 import com.szzcs.smartpos.PrintFragment;
@@ -606,17 +607,31 @@ public class claveUPendientes extends BaseActivity implements FingerprintListene
                     //Obtenemos el elemento ExceptionMesage del errro enviado
                     String errorMensaje = errorCaptado.getString("ExceptionMessage");
                     try {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(claveUPendientes.this);
-                        builder.setTitle("Tickets Pendientes");
-                        builder.setCancelable(false);
-                        builder.setMessage(errorMensaje)
-                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
-                                        startActivity(intente);
-                                    }
-                                }).show();
+                        String titulo = "AVISO";
+                        String mensaje = " "+ errorMensaje;
+                        Modales modales = new Modales(claveUPendientes.this);
+                        View view1 = modales.MostrarDialogoAlertaAceptar(claveUPendientes.this,mensaje,titulo);
+                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+                                Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
+                                startActivity(intente);
+                                finish();
+                            }
+                        });
+
+//                        AlertDialog.Builder builder = new AlertDialog.Builder(claveUPendientes.this);
+//                        builder.setTitle("Tickets Pendientes");
+//                        builder.setCancelable(false);
+//                        builder.setMessage(errorMensaje)
+//                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//                                    @Override
+//                                    public void onClick(DialogInterface dialogInterface, int i) {
+//                                        Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
+//                                        startActivity(intente);
+//                                    }
+//                                }).show();
                     }catch (Exception e){
                         e.printStackTrace();
                     }
