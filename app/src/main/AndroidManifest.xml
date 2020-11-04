@@ -132,6 +132,7 @@
 
         <!--        Inicia modulo de Tanque lleno-->
         <activity android:name=".TanqueLleno.ProductoTLl"
+            android:windowSoftInputMode="stateHidden"
             android:parentActivityName=".Munu_Principal">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

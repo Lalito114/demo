@@ -25,6 +25,7 @@ import com.szzcs.smartpos.Productos.claveProducto;
 import com.szzcs.smartpos.Productos.posicionProductos;
 import com.szzcs.smartpos.Ticket.Monederos.despachdorclave;
 import com.szzcs.smartpos.Ticket.tipo_ticket;
+import com.szzcs.smartpos.Ticket.ventas;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 import com.zcs.sdk.card.CardReaderTypeEnum;
 
@@ -38,20 +39,21 @@ public class Munu_Principal extends AppCompatActivity {
     String[] maintitle = {
             "Ventas", "Tickets", "Monederos Electronicos",
             "Productos", "Cortes",
-            "Pendientes", "Gasto", "Facturas", "Captura Huellas",
+            "Pendientes", "Gasto", "Facturas", "Captura Huellas", "Reimpresiones"
     };
 
     String[] subtitle = {
             "Procesos Venta", "Emite tickets de venta", "Registro, Acumular y Redimir",
             "Administra productos", "Realiza cortes de turnos",
             "Enlista pendientes", "Reporta lo Egresos", "Imprime tus Tickets",
-            "Captura Huellas Empleados",
+            "Captura Huellas Empleados", "Reimprime Tickets"
     };
 
     Integer[] imgid = {
             R.drawable.ventastotal, R.drawable.ventas, R.drawable.monedero,
             R.drawable.product, R.drawable.cortes,
-            R.drawable.pendientes, R.drawable.gastos, R.drawable.fact, R.drawable.huella
+            R.drawable.pendientes, R.drawable.gastos, R.drawable.fact, R.drawable.huella,
+            R.drawable.ventas
     };
 
     @Override
@@ -110,6 +112,11 @@ public class Munu_Principal extends AppCompatActivity {
                     Intent intent = new Intent(getApplicationContext(), capturaEmpleadoHuella.class);
                     startActivity(intent);
                 }
+                else if (position == 9) {
+                    Intent intent = new Intent(getApplicationContext(), ventas.class);
+                    startActivity(intent);
+                }
+
             }
         });
 

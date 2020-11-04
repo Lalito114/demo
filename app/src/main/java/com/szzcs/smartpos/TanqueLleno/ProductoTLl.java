@@ -208,10 +208,11 @@ public class ProductoTLl extends AppCompatActivity {
                         AlertDialog.Builder builder = new AlertDialog.Builder(ProductoTLl.this);
                         builder.setTitle("Tarjeta Tanque Lleno");
                         builder.setMessage(estado);
+                        builder.setCancelable(false);
                         builder.setPositiveButton("Cerrar", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                Intent intent = new Intent(getApplicationContext(), PosicionCargaTLl.class);
                                 startActivity(intent);
                                 finish();
                             }
@@ -442,6 +443,7 @@ public class ProductoTLl extends AppCompatActivity {
 
                 df.setMaximumFractionDigits(3);
                 litros.setText(df.format(litrospedidos));
+                litros.setEnabled(true);
 
                 try {
                     //Add string params
@@ -469,6 +471,7 @@ public class ProductoTLl extends AppCompatActivity {
 
             df.setMaximumFractionDigits(3);
             pesos.setText(df.format(costofinal));
+            pesos.setEnabled(true);
 
             try {
                 //Add string params
