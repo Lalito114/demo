@@ -164,7 +164,7 @@ public class ClaveDespachadorTL extends AppCompatActivity {
 
                                     String valido = validar.getString("Activo");
                                     iduser = validar.getString("Id");
-                                    if (valido == "true") {
+                                    if (valido.equals("true")) {
                                         String track = getIntent().getStringExtra("track");
                                         Intent intent = new Intent(getApplicationContext(), PosicionCargaTLl.class);
                                         intent.putExtra("IdUsuario", iduser);

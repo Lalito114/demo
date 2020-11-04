@@ -93,7 +93,7 @@
         <!--        modulo de Productos-->
         <activity android:name=".Productos.FPaga" />
         <activity android:name=".Productos.claveProducto" />
-        <activity android:name=".Productos.ListAdapterFProductos" />
+        <activity android:name=".Productos.confirmaVenta" />
         <activity android:name=".Productos.ListAdapterProd" />
         <activity android:name=".Productos.ListAdapterProductos" />
         <activity android:name=".Productos.posicionProductos" />

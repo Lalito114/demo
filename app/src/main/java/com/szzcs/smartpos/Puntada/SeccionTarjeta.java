@@ -13,6 +13,7 @@ import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.MyListAdapter;
 import com.szzcs.smartpos.Puntada.Acumular.ClaveDespachadorAcumular;
 import com.szzcs.smartpos.Puntada.Acumular.posicionCarga;
+import com.szzcs.smartpos.Puntada.Redimir.ClaveTarjeta;
 import com.szzcs.smartpos.Puntada.Redimir.PosicionRedimir;
 import com.szzcs.smartpos.Puntada.Registrar.ClaveDespachadorPuntada;
 import com.szzcs.smartpos.Puntada.Registrar.ClaveRegistrarPuntada;
@@ -73,7 +74,7 @@ public class SeccionTarjeta extends AppCompatActivity {
                         startActivity(intent2);
                         break;
                     case 2://Registrar
-                        Intent intent1 = new Intent(getApplicationContext(), ClaveDespachadorPuntada.class);
+                        Intent intent1 = new Intent(getApplicationContext(), ClaveTarjeta.class);
                         Bundle bundle1  = new Bundle();
                         bundle1.putString("track",track2);
                         intent1.putExtras(bundle1);
