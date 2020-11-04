@@ -212,16 +212,50 @@ public class FPaga extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
-                        startActivity(intent);
-                        finish();
                         try {
-                            JSONObject jsonObject = new JSONObject(response);
+                            JSONObject respuesta = new JSONObject(response);
+                            String correcto = respuesta.getString("Correcto");
+                            String mensaje = respuesta.getString("Mensaje");
+                            String objetoRespuesta = respuesta.getString("ObjetoRespuesta");
+                            if (objetoRespuesta.equals(null)) {
+                                try {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(FPaga.this);
+                                    builder.setTitle("Productos");
+                                    builder.setCancelable(false);
+                                    builder.setMessage(""+ mensaje )
+                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            }).show();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+
+                            }else {
+                                try {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(FPaga.this);
+                                    builder.setTitle("Productos");
+                                    builder.setCancelable(false);
+                                    builder.setMessage("Venta Finalizada Correctamente" )
+                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            }).show();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                 }, new Response.ErrorListener() {
             @Override

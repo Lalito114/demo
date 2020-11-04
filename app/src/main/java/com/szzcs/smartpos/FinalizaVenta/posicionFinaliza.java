@@ -18,8 +18,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Cortes2.IslasEstacion;
 import com.szzcs.smartpos.Cortes2.VentasTotales;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
 import com.szzcs.smartpos.Munu_Principal;
+import com.szzcs.smartpos.Productos.FPaga;
 import com.szzcs.smartpos.Productos.ListAdapterProd;
 import com.szzcs.smartpos.Productos.VentasProductos;
 import com.szzcs.smartpos.Productos.claveProducto;
@@ -89,7 +92,7 @@ public class posicionFinaliza extends AppCompatActivity {
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
-                            String mensaje = jsonObject.getString("Mensaje");
+                            String mensajes = jsonObject.getString("Mensaje");
 
                             if (ObjetoRespuesta.equals("null")){
                                 //Toast.makeText(posicionProductos.this, mensaje, Toast.LENGTH_SHORT).show();
@@ -97,7 +100,7 @@ public class posicionFinaliza extends AppCompatActivity {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(posicionFinaliza.this);
                                     builder.setTitle("Finaliza Venta");
                                     builder.setCancelable(false);
-                                    builder.setMessage("" + mensaje)
+                                    builder.setMessage("" + mensajes)
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
                                                 public void onClick(DialogInterface dialogInterface, int i) {
@@ -155,10 +158,23 @@ public class posicionFinaliza extends AppCompatActivity {
 
                                 }
                                 if (banderaposicionCarga.equals(false)){
-                                    Toast.makeText(posicionFinaliza.this, "No hay Posiciones de Carga para Finalizar Venta", Toast.LENGTH_SHORT).show();
-                                    Intent intent1 = new Intent(getApplicationContext(), Munu_Principal.class);
-                                    startActivity(intent1);
-                                    finish();
+                                    //Toast.makeText(posicionFinaliza.this, "No hay Posiciones de Carga para Finalizar Venta", Toast.LENGTH_SHORT).show();
+                                    String titulo = "AVISO";
+                                    String mensaje = "No hay Posiciones de Carga para Finalizar Venta";
+                                    Modales modales = new Modales(posicionFinaliza.this);
+                                    View view1 = modales.MostrarDialogoAlertaAceptar(posicionFinaliza.this,mensaje,titulo);
+                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            modales.alertDialog.dismiss();
+                                            Intent intent1 = new Intent(getApplicationContext(), Munu_Principal.class);
+                                            startActivity(intent1);
+                                            finish();
+                                        }
+                                    });
+
+
+
                                 }else {
                                     ListAdapterProd adapterProd = new ListAdapterProd(posicionFinaliza.this, maintitle, subtitle, imgid);
                                     list = (ListView) findViewById(R.id.list);
@@ -240,18 +256,32 @@ public class posicionFinaliza extends AppCompatActivity {
             }else{
                 //El usuario no tiene posiciones de carga asociadas
                 try {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(posicionFinaliza.this);
-                    builder.setTitle("Ventas");
-                    builder.setCancelable(false);
-                    builder.setMessage(mensaje)
-                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    Intent intent1 = new Intent(getApplicationContext(), claveFinalizaVenta.class);
-                                    startActivity(intent1);
-                                    finish();
-                                }
-                            }).show();
+                    String titulo = "AVISO";
+                    //String mensaje = "No hay Posiciones de Carga para Finalizar Venta";
+                    Modales modales = new Modales(posicionFinaliza.this);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(posicionFinaliza.this,mensaje,titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+                            Intent intent1 = new Intent(getApplicationContext(), Munu_Principal.class);
+                            startActivity(intent1);
+                            finish();
+                        }
+                    });
+
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(posicionFinaliza.this);
+//                    builder.setTitle("Ventas");
+//                    builder.setCancelable(false);
+//                    builder.setMessage(mensaje)
+//                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialogInterface, int i) {
+//                                    Intent intent1 = new Intent(getApplicationContext(), claveFinalizaVenta.class);
+//                                    startActivity(intent1);
+//                                    finish();
+//                                }
+//                            }).show();
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -300,7 +330,7 @@ public class posicionFinaliza extends AppCompatActivity {
                             String correcto = p1.getString("ObjetoRespuesta");
                             if (correcto.equals("true")) {
                                 if (lugarproviene.equals("2") ) {
-                                    finalizaventa();
+                                    finalizaventa(posicion, usuario);
                                 }
                             } else {
                                 //Despacho en proceso
@@ -371,25 +401,54 @@ public class posicionFinaliza extends AppCompatActivity {
 
     }
 
-    private void finalizaventa() {
+    private void finalizaventa(final String posicion, final String idUsuario){
         //Utilizamos el metodo POST para  finalizar la Venta
-        String url = "http://" + ipEstacion + "/CorpogasService/api/Transacciones/finalizaVenta/sucursal/" + sucursalId + "/posicionCarga/" + posicion + "/usuario/" + usuario;
-        StringRequest eventoReq = new StringRequest(Request.Method.POST, url,
+        String url = "http://"+ipEstacion+"/CorpogasService/api/Transacciones/finalizaVenta/sucursal/"+sucursalId+"/posicionCarga/"+posicion+"/usuario/"+idUsuario;
+        StringRequest eventoReq = new StringRequest(Request.Method.POST,url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        String respuesta = response;
-                        if (respuesta.equals("-1")) {
-                            Toast.makeText(posicionFinaliza.this, "La transacción no corresponde al usuario con el que se identificó", Toast.LENGTH_SHORT).show();
-                        }
-
-
-                        //Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
-                        startActivity(intent);
-                        finish();
                         try {
-                            JSONObject jsonObject = new JSONObject(response);
+                            JSONObject respuesta = new JSONObject(response);
+                            String correcto = respuesta.getString("Correcto");
+                            String mensaje = respuesta.getString("Mensaje");
+                            String objetoRespuesta = respuesta.getString("ObjetoRespuesta");
+                            if (objetoRespuesta.equals(null)) {
+                                try {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(posicionFinaliza.this);
+                                    builder.setTitle("Productos");
+                                    builder.setCancelable(false);
+                                    builder.setMessage(""+ mensaje )
+                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            }).show();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+
+                            }else {
+                                try {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(posicionFinaliza.this);
+                                    builder.setTitle("Productos");
+                                    builder.setCancelable(false);
+                                    builder.setMessage("Venta Finalizada Correctamente" )
+                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            }).show();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -397,9 +456,9 @@ public class posicionFinaliza extends AppCompatActivity {
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
             }
-        }) {
+        }){
             @Override
             protected Map<String, String> getParams() {
                 // Colocar parametros para ingresar la  url
@@ -415,6 +474,7 @@ public class posicionFinaliza extends AppCompatActivity {
         requestQueue.add(eventoReq);
     }
 
+
     private void solicitadespacho() {
 
         String url = "http://" + ipEstacion + "/CorpogasService/api/despachos/autorizaDespacho/posicionCargaId/" + posicion + "/usuarioId/" + usuarioid;
@@ -427,18 +487,13 @@ public class posicionFinaliza extends AppCompatActivity {
                     String mensajeautoriza = respuesta.getString("Mensaje");
                     String objetoRespuesta = respuesta.getString("ObjetoRespuesta");
                     if (correctoautoriza.equals("true")) {
-                        //Se inicializa el control para solicitar confirmacion
-                        AlertDialog.Builder builder;
-                        //Obtengo la posicion de carga que se pasa como parametro
-                        //String Posi = Posicion;
-                        //Enviar datos de peoductos y posicion de carga para regresar Ticket
-                        builder = new AlertDialog.Builder(posicionFinaliza.this);
-                        builder.setMessage("Desea agregar productos?");
-                        builder.setTitle("Ventas");
-                        builder.setCancelable(false);
-                        builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+                        String titulo = "Inicia Venta";
+                        String mensaje = "Desea agregar productos?";
+                        Modales modales = new Modales(posicionFinaliza.this);
+                        View viewLectura = modales.MostrarDialogoAlerta(posicionFinaliza.this, mensaje,  "Si", "No");
+                        viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
+                            public void onClick(View view) {
                                 Intent intente = new Intent(getApplicationContext(), VentasProductos.class);
                                 //se envia el id seleccionado a la clase Usuario Producto
                                 intente.putExtra("posicion",posicion);
@@ -450,16 +505,49 @@ public class posicionFinaliza extends AppCompatActivity {
                                 //Finaliza activity
                                 finish();
 
-                                dialogInterface.cancel();
-                            }
-                        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                enviaMunu();
                             }
                         });
-                        AlertDialog dialog = builder.create();
-                        dialog.show();
+
+                        viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                enviaMunu();
+                                modales.alertDialog.dismiss();
+                            }
+                        });
+//                        //Se inicializa el control para solicitar confirmacion
+//                        AlertDialog.Builder builder;
+//                        //Obtengo la posicion de carga que se pasa como parametro
+//                        //String Posi = Posicion;
+//                        //Enviar datos de peoductos y posicion de carga para regresar Ticket
+//                        builder = new AlertDialog.Builder(posicionFinaliza.this);
+//                        builder.setMessage("Desea agregar productos?");
+//                        builder.setTitle("Ventas");
+//                        builder.setCancelable(false);
+//                        builder.setPositiveButton("SI", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                Intent intente = new Intent(getApplicationContext(), VentasProductos.class);
+//                                //se envia el id seleccionado a la clase Usuario Producto
+//                                intente.putExtra("posicion",posicion);
+//                                intente.putExtra("usuario",usuarioid);
+//                                intente.putExtra("cadenaproducto", "");
+//                                intente.putExtra("lugarproviene", "IniciaProductos");
+//                                //Ejecuta la clase del Usuario producto
+//                                startActivity(intente);
+//                                //Finaliza activity
+//                                finish();
+//
+//                                dialogInterface.cancel();
+//                            }
+//                        }).setNegativeButton("NO", new DialogInterface.OnClickListener() {
+//                            @Override
+//                            public void onClick(DialogInterface dialogInterface, int i) {
+//                                enviaMunu();
+//                            }
+//                        });
+//                        AlertDialog dialog = builder.create();
+//                        dialog.show();
 
 
                     } else {
@@ -482,26 +570,40 @@ public class posicionFinaliza extends AppCompatActivity {
     }
 
     private void enviaMunu() {
-        //Se inicializa el control para solicitar confirmacion
-        AlertDialog.Builder builder;
-        //Obtengo la posicion de carga que se pasa como parametro
-        //String Posi = Posicion;
-        //Enviar datos de peoductos y posicion de carga para regresar Ticket
-        builder = new AlertDialog.Builder(posicionFinaliza.this);
-        builder.setMessage("Listo para Iniciar Despacho");
-        builder.setTitle("Ventas");
-        builder.setCancelable(false);
-        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+        String titulo = "AVISO";
+        String mensaje = "Listo para Iniciar Despacho";
+        Modales modales = new Modales(posicionFinaliza.this);
+        View view1 = modales.MostrarDialogoAlertaAceptar(posicionFinaliza.this,mensaje,titulo);
+        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
-                startActivity(intent);
+            public void onClick(View view) {
+                modales.alertDialog.dismiss();
+                Intent intent1 = new Intent(getApplicationContext(), Munu_Principal.class);
+                startActivity(intent1);
                 finish();
-                dialogInterface.cancel();
             }
         });
-        AlertDialog dialog = builder.create();
-        dialog.show();
+
+//        //Se inicializa el control para solicitar confirmacion
+//        AlertDialog.Builder builder;
+//        //Obtengo la posicion de carga que se pasa como parametro
+//        //String Posi = Posicion;
+//        //Enviar datos de peoductos y posicion de carga para regresar Ticket
+//        builder = new AlertDialog.Builder(posicionFinaliza.this);
+//        builder.setMessage("Listo para Iniciar Despacho");
+//        builder.setTitle("Ventas");
+//        builder.setCancelable(false);
+//        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialogInterface, int i) {
+//                Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+//                startActivity(intent);
+//                finish();
+//                dialogInterface.cancel();
+//            }
+//        });
+//        AlertDialog dialog = builder.create();
+//        dialog.show();
 
     }
     //Metodo para regresar a la actividad principal

@@ -12,22 +12,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpHeaderParser;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.gson.JsonArray;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
@@ -36,11 +30,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class VentasTotales extends AppCompatActivity {
     List<String> maintitle, subtitle, calculo, cantidadEntregada, cantidadVendidos; //total
@@ -52,17 +43,18 @@ public class VentasTotales extends AppCompatActivity {
     ArrayList arrayMonto = new ArrayList();
     int resultado;
     Double result;
-    ImageView imgAceptar;
+
     JSONArray prueba2 = new JSONArray();
     double sumainter;
     int fajillaBillete;
     String EstacionId, sucursalId, ipEstacion, islaId ;
     Boolean banderaSigue;
-    Button btnsiguiente;
+    Button btnsiguiente, btnAceptar;
     String numerointerno, idarticulo, descripcionarticulo;
     JSONObject mjason = new JSONObject();
-    JSONArray ArrayventasFaltantes = new JSONArray();
-    String posicion, idusuario, numerodispositivo;
+    JSONArray ArrayventasFaltantes2 = new JSONArray();
+    ArrayList<ProductosFaltantes> ArrayventasFaltantes = new ArrayList<ProductosFaltantes>();
+    String posicion, numerodispositivo;
     boolean banderaValida;
     String fechaTrabajo;
     JSONObject JOcompleto = new JSONObject();
@@ -86,6 +78,8 @@ public class VentasTotales extends AppCompatActivity {
     RespuestaApi<Cierre> cierreRespuestaApi;
     long cierreId;
     long turnoId;
+    RespuestaApi<AccesoUsuario> accesoUsuario;
+    long idusuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +90,9 @@ public class VentasTotales extends AppCompatActivity {
         sucursalId = db.getIdSucursal();
         ipEstacion= db.getIpEstacion();
         islaId =  getIntent().getStringExtra("islaId");
-        idusuario  = getIntent().getStringExtra("idusuario");
+        accesoUsuario = (RespuestaApi<AccesoUsuario>) getIntent().getSerializableExtra("accesoUsuario");
+        idusuario = accesoUsuario.getObjetoRespuesta().getSucursalEmpleadoId();
+        posicion = "1"; //getIntent().getStringExtra("car");
         numerodispositivo = "1";
         cierreRespuestaApi = (RespuestaApi<Cierre>) getIntent().getSerializableExtra( "lcierreRespuestaApi");
         turnoId = cierreRespuestaApi.getObjetoRespuesta().getTurnoId();
@@ -105,8 +101,8 @@ public class VentasTotales extends AppCompatActivity {
 
         MostrarProductos();
         CargaProductosFaltantes();
-        imgAceptar=findViewById(R.id.imgAceptar);
-        imgAceptar.setOnClickListener(new View.OnClickListener() {
+        btnAceptar=findViewById(R.id.btnAceptar);
+        btnAceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 banderaValida = true;
@@ -121,18 +117,55 @@ public class VentasTotales extends AppCompatActivity {
                 if (banderaValida == true) {
 
                     if (btnsiguiente.getVisibility() == View.VISIBLE) {
-                        try {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(VentasTotales.this);
-                            builder.setTitle("CORTE, Conteo Perifericos");
-                            builder.setMessage("Hay diferencias entre los productos vendidos y los que entrega, oprima el botón VENTA PRODUCTOS FALTANTES")
-                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
+
+                            //String titulo = "AVISO";
+                            String nombrebtnAceptar ="SI";
+                            String nombreBtnCancelar ="NO";
+                            String mensaje = "Existen diferencias. ¿DESEA IR A VENTA PRODUCTOS FALTANTES?"; //Hay diferencias entre los productos vendidos y los que entrega, oprima el botón VENTA PRODUCTOS FALTANTES
+                            Modales modales = new Modales(VentasTotales.this); 
+                            View view1 = modales.MostrarDialogoAlerta(VentasTotales.this,mensaje,nombrebtnAceptar,nombreBtnCancelar);
+                            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    banderaValida = true;
+                                    String valorCapturado;
+                                    for (int k=0; k<mList.getCount(); k++){
+                                        valorCapturado = maintitle.get(k);
+                                        if (valorCapturado == "-"){
+                                            banderaValida = false;
+                                            break;
                                         }
-                                    }).show();
-                        }catch (Exception e){
-                            e.printStackTrace();
-                        }
+                                    }
+                                    if (banderaValida == true) {
+                                        //ObtieneArrayResultanteparaGuardar();
+                                        String ArregloProductosEntregados = ArrayResultante.toString();
+
+                                        Intent intent = new Intent(getApplicationContext(), VentaProductosFaltantes.class);
+                                        String paso = ArrayventasFaltantes.toString();
+                                        intent.putExtra("articulos", paso);
+                                        intent.putExtra("posicion", posicion);
+                                        intent.putExtra("productosEntregados", ArregloProductosEntregados);
+                                        intent.putExtra("islaId", islaId);
+                                        intent.putExtra("VentaProductos", String.valueOf(VentaProductos));
+                                        intent.putExtra("cantidadAceites", String.valueOf(cantidadAceites));
+                                        intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+                                        intent.putExtra("accesoUsuario", accesoUsuario);
+
+                                        startActivity(intent);
+
+                                    }
+                                }
+                            });
+
+                        view1.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+
+                            }
+                        });
+
+
                     } else {//Enviamos a Guardar
 
                                     Intent intent = new Intent(getApplicationContext(),FajillasBilletes.class);
@@ -141,23 +174,26 @@ public class VentasTotales extends AppCompatActivity {
                                     intent.putExtra("VentaProductos", String.valueOf(VentaProductos));
                                     intent.putExtra("cantidadAceites", String.valueOf(cantidadAceites));
                                     intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+                                    intent.putExtra("accesoUsuario", accesoUsuario);
                                     startActivity(intent);
 
                     }
 
                 }else{
-                    try {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(VentasTotales.this);
-                        builder.setTitle("CORTE, Conteo Productos");
-                        builder.setMessage("Existe productos que aún no se han contabilzado")
-                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                    }
-                                }).show();
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
+
+                        String titulo = "AVISO";
+                        String mensaje = "Existe productos que aún no se han contabilzado.";
+                        Modales modales = new Modales(VentasTotales.this);
+                        View view1 = modales.MostrarDialogoAlertaAceptar(VentasTotales.this,mensaje,titulo);
+                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+
+                            }
+                        });
+
+
                 }
 
            }
@@ -185,20 +221,36 @@ public class VentasTotales extends AppCompatActivity {
                     String ArregloProductosEntregados = ArrayResultante.toString();
 
                     Intent intent = new Intent(getApplicationContext(), VentaProductosFaltantes.class);
-                    String paso = ArrayventasFaltantes.toString();
-                    intent.putExtra("articulos", paso);
-                    intent.putExtra("productosEntregados", ArregloProductosEntregados);
-                    intent.putExtra("turnoId", turnoId);
-                    intent.putExtra("fechatrabajo", fechaTrabajo);
+                    ArrayventasFaltantes2 = new JSONArray();
+                    for(ProductosFaltantes item : ArrayventasFaltantes)
+                    {
+                        JSONObject mjason = new JSONObject();
+                        try {
+                            mjason.put("TipoProducto", item.TProducto);
+                            mjason.put("ProductoId", item.numeroproducto);
+                            //ventaRestante.put("CodigoBarras", codigobarras);
+                            mjason.put("NumeroInterno", item.internonumero);
+                            mjason.put("Cantidad", item.cantidad);
+                            mjason.put("Precio", item.preciounitario);
+                            mjason.put("DescCorta", item.descCorta);
+                            mjason.put("CodigoBarras", item.codBarras);
 
-                    intent.putExtra("idusuario", idusuario);
+
+                            ArrayventasFaltantes2.put(mjason);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    }
+                    String paso = ArrayventasFaltantes2.toString();
+                    intent.putExtra("articulos", paso);
+                    intent.putExtra("posicion", posicion);
+                    intent.putExtra("productosEntregados", ArregloProductosEntregados);
                     intent.putExtra("islaId", islaId);
-                    intent.putExtra("ventaproductos", VentaProductos);
+                    intent.putExtra("VentaProductos", String.valueOf(VentaProductos));
                     intent.putExtra("cantidadAceites", String.valueOf(cantidadAceites));
                     intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
-                    startActivity(intent);
-
-
+                    intent.putExtra("accesoUsuario", accesoUsuario);
 
                     startActivity(intent);
 
@@ -226,11 +278,11 @@ public class VentasTotales extends AppCompatActivity {
         banderaSigue= true;
 
 
-        String url = "http://"+ipEstacion+"/CorpogasService/api/cierres/registrar/sucursal/"+sucursalId+"/isla/"+islaId+"/usuario/"+idusuario+"/origen/" + numerodispositivo;
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        String url = "http://"+ipEstacion+"/CorpogasService/api/cierreDetalles/sucursal/"+sucursalId+"/isla/"+islaId+"/usuario/"+idusuario;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                mostrarProductosCierre(response,  idusuario);
+                mostrarProductosCierre(response, posicion, String.valueOf(idusuario));
             }
         }, new Response.ErrorListener() {
             @Override
@@ -267,7 +319,7 @@ public class VentasTotales extends AppCompatActivity {
     }
 
     private void
-    mostrarProductosCierre(String response, final String usuario){
+    mostrarProductosCierre(String response, final String posicion, final String usuario){
         String TProductoId;
         int cantidad;
         maintitle = new ArrayList<String>();
@@ -293,11 +345,11 @@ public class VentasTotales extends AppCompatActivity {
 
             //String ni = p1.getString("NumeroInterno");
             String objetorespuesta = p1.getString("ObjetoRespuesta");
-            JSONObject ps = new JSONObject(objetorespuesta);
-            String producto = ps.getString("CierreDetalles");
-            JSONArray cierredetalles = new JSONArray(producto);
+            //JSONObject ps = new JSONObject(objetorespuesta);
+            //String producto = ps.getString("CierreDetalles");
+            JSONArray cierredetalles = new JSONArray(objetorespuesta);
 
-            for (int i = 0; i <cierredetalles.length() ; i++){ //bodegaprod.length()
+            for (int i = 0; i < 3; i++){ //cierredetalles.length()
                 String IdProductos = null;
                 JSONObject pA = cierredetalles.getJSONObject(i);
                 //String ExProductos=pA.getString("Existencias");
@@ -314,7 +366,7 @@ public class VentasTotales extends AppCompatActivity {
                 //String PControl=prod.getString("ProductoControles");
                 //JSONArray PC = new JSONArray(PControl);
 
-                if (TProductoId.equals("1")) {
+                if (TProductoId.equals("1")) {// No considera combustibles
                 }else{
                     maintitle.add("-");
                     subtitle.add(DescLarga);
@@ -385,78 +437,190 @@ public class VentasTotales extends AppCompatActivity {
                     final String IProd = ProductosId.get(position).toString();
                     final String TProd = TipoProductoId.get(position).toString();
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(VentasTotales.this);
-                    builder.setTitle("Ingresa Cantidad \n");
-                    builder.setView(input)
-                            .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    String denomi = input.getText().toString();
-                                    // String preciou = "10";
-                                    if (denomi.isEmpty()){
-                                        Toast.makeText(VentasTotales.this, "Debes cargar un valor numérico", Toast.LENGTH_SHORT).show();
-                                    }else {
-                                        resultado = Integer.parseInt(denomi);
-                                        maintitle.set(position, denomi);
-                                        //total.set(position, String.valueOf(result));
-                                        String tEntregados = calculo.get(position).toString();
-                                        String tVendidos = productosRecibidos.get(position).toString();
-                                        final int totalVendidos = Integer.parseInt(tVendidos);
-                                        final int totalEntregados = Integer.parseInt(tEntregados);
-                                        if (totalEntregados < resultado){
-                                            Toast.makeText(VentasTotales.this, "La cantidad vendida no puede ser mayor que la que se recibió", Toast.LENGTH_SHORT).show();
-                                        }else {
-                                            if (resultado > (totalEntregados - totalVendidos)) {
-                                                btnsiguiente.setVisibility(View.VISIBLE);
-                                                String prod = ClaveProducto.get(position);
-                                                int diferencia = ((totalEntregados - totalVendidos) - resultado);
-                                                generaArreglo(prod, diferencia, preciou, subtitle.get(position), numerointerno, codbarras, IProd, TProd);
-                                                //valido si hay diferencias
-                                                banderaValidaBotonVentasFaltantes= true;
-                                                Boolean banderaNoCargada = true;
-                                                for (int g= 0; g< mList.getCount(); g++)
-                                                {
-                                                    String valorCapturado;
-                                                    valorCapturado = maintitle.get(g);
-                                                    if (valorCapturado == "-"){
-                                                        banderaValidaBotonVentasFaltantes = false;
-                                                        banderaNoCargada = false;
-                                                        break;
-                                                    }else {
 
-                                                        int entrega = Integer.parseInt(maintitle.get(g));
-                                                        int recibido = Integer.parseInt(calculo.get(g));
-                                                        int vendido = Integer.parseInt(productosVendidos.get(g));
-                                                        if (entrega < (recibido - vendido)) {
-                                                            banderaValidaBotonVentasFaltantes = false;
-                                                            break;
-                                                        }
-                                                    }
+
+                    String titulo = "PRODUCTOS";
+                    String mensaje = "Ingresa cantidad: " ;
+                    Modales modales = new Modales(VentasTotales.this);
+                    View viewLectura = modales.MostrarDialogoInsertaDato(VentasTotales.this, mensaje, titulo);
+                    EditText edtProductoCantidad = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
+
+
+                    viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String cantidad = edtProductoCantidad.getText().toString();
+                            if (cantidad.isEmpty()){
+                                edtProductoCantidad.setError("Campo requerido");
+                            }else {
+                                resultado = Integer.parseInt(cantidad);
+                                maintitle.set(position, cantidad);
+                                //total.set(position, String.valueOf(result));
+                                String tEntregados =  productosRecibidos.get(position).toString();
+                                String tVendidos = productosVendidos.get(position).toString();
+                                final int totalVendidos = Integer.parseInt(tVendidos);
+                                final int totalEntregados = Integer.parseInt(tEntregados);
+                                if (totalEntregados < resultado){
+                                    edtProductoCantidad.setError("La cantidad vendida no puede ser mayor que la que se recibió");
+                                }else {
+                                    if (resultado <= (totalEntregados - totalVendidos)) {
+                                        btnsiguiente.setVisibility(View.VISIBLE);
+                                        String prod = ClaveProducto.get(position);
+                                        int diferencia = ((totalEntregados - totalVendidos) - resultado);
+                                        //if (diferencia !=0) {
+                                            generaArreglo(prod, diferencia, preciou, subtitle.get(position), numerointerno, codbarras, IProd, TProd, position, diferencia);
+
+                                    //    }else {//valido si hay diferencias
+                                      //      boolean nuevo = true;
+
+
+//                                            for (int i = 0; i < ArrayventasFaltantes.size(); i++) {
+//                                                try {
+//                                                    JSONObject jsonObject = ArrayventasFaltantes.getJSONObject(i);
+//                                                    if (jsonObject.has("Posicion")) {
+//                                                        String valor = jsonObject.getString("Posicion");
+//                                                        int inPosicion = Integer.parseInt(valor);
+////                                                        if (inPosicion==posicion){
+////                                                            nuevo=false;
+////                                                        }
+//                                                    }
+//                                                } catch (JSONException e) {
+//                                                    e.printStackTrace();
+//                                                }
+//                                            }
+
+           //                             }
+                                        banderaValidaBotonVentasFaltantes= true;
+                                        Boolean banderaNoCargada = true;
+
+                                        for (int g= 0; g< mList.getCount(); g++)
+                                        {
+                                            String valorCapturado;
+                                            valorCapturado = maintitle.get(g);
+                                            if (valorCapturado == "-"){
+                                                banderaValidaBotonVentasFaltantes = false;
+                                                banderaNoCargada = false;
+                                                break;
+                                            }else {
+
+                                                int entrega = Integer.parseInt(valorCapturado);
+                                                int recibido = Integer.parseInt(productosRecibidos.get(g));
+                                                int vendido = Integer.parseInt(productosVendidos.get(g));
+                                                if (entrega < (recibido - vendido)) {
+                                                    banderaValidaBotonVentasFaltantes = false;
+                                                    break;
+                                                }else{
+                                                    banderaValidaBotonVentasFaltantes =true;
                                                 }
-                                                if (banderaNoCargada == false){
-                                                    btnsiguiente.setVisibility(View.INVISIBLE);
-                                                }else {
-                                                    if (banderaValidaBotonVentasFaltantes == false) {
-                                                        btnsiguiente.setVisibility(View.VISIBLE);
-                                                    } else {
-                                                        btnsiguiente.setVisibility(View.INVISIBLE);
-                                                    }
-                                                }
-                                                ListAdapterBilletes adapter = new ListAdapterBilletes(VentasTotales.this, maintitle, subtitle, calculo);
-                                                mList.setAdapter(adapter);
-                                            }else{
-                                                Toast.makeText(VentasTotales.this, "La cantidad capturada es mayor que el resultado de productos entregados menos las ventas", Toast.LENGTH_SHORT).show();
                                             }
                                         }
+
+                                        if (banderaNoCargada == false){
+                                            btnsiguiente.setVisibility(View.INVISIBLE);
+                                        }else {
+                                            if (banderaValidaBotonVentasFaltantes == false) {
+                                                btnsiguiente.setVisibility(View.VISIBLE);
+                                            } else {
+                                                btnsiguiente.setVisibility(View.INVISIBLE);
+                                            }
+                                        }
+                                        ListAdapterBilletes adapter = new ListAdapterBilletes(VentasTotales.this, maintitle, subtitle, calculo);
+                                        mList.setAdapter(adapter);
+                                        modales.alertDialog.dismiss();
+                                    }else{
+                                        edtProductoCantidad.setError("La cantidad capturada es mayor que el resultado de productos entregados menos las ventas");
+                                        //Toast.makeText(VentasTotales.this, "La cantidad capturada es mayor que el resultado de productos entregados menos las ventas", Toast.LENGTH_SHORT).show();
                                     }
                                 }
-                            })
-                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            }).show();
+                            }
+
+                        }
+                    });
+
+                    viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+
+                        }
+                    });
+
+
+
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(VentasTotales.this);
+//                    builder.setTitle("Ingresa Cantidad \n");
+//                    builder.setView(input)
+//                            .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialogInterface, int i) {
+//                                    String denomi = input.getText().toString();
+//                                    // String preciou = "10";
+//                                    if (denomi.isEmpty()){
+//                                        Toast.makeText(VentasTotales.this, "Debes cargar un valor numérico", Toast.LENGTH_SHORT).show();
+//                                    }else {
+//                                        resultado = Integer.parseInt(denomi);
+//                                        maintitle.set(position, denomi);
+//                                        //total.set(position, String.valueOf(result));
+//                                        String tEntregados =  productosRecibidos.get(position).toString();
+//                                        String tVendidos = productosVendidos.get(position).toString();
+//                                        final int totalVendidos = Integer.parseInt(tVendidos);
+//                                        final int totalEntregados = Integer.parseInt(tEntregados);
+//                                        if (totalEntregados < resultado){
+//                                            Toast.makeText(VentasTotales.this, "La cantidad vendida no puede ser mayor que la que se recibió", Toast.LENGTH_SHORT).show();
+//                                        }else {
+//                                            if (resultado <= (totalEntregados - totalVendidos)) {
+//                                                btnsiguiente.setVisibility(View.VISIBLE);
+//                                                String prod = ClaveProducto.get(position);
+//                                                int diferencia = ((totalEntregados - totalVendidos) - resultado);
+//                                                generaArreglo(prod, diferencia, preciou, subtitle.get(position), numerointerno, codbarras, IProd, TProd);
+//                                                //valido si hay diferencias
+//                                                banderaValidaBotonVentasFaltantes= true;
+//                                                Boolean banderaNoCargada = true;
+//                                                for (int g= 0; g< mList.getCount(); g++)
+//                                                {
+//                                                    String valorCapturado;
+//                                                    valorCapturado = maintitle.get(g);
+//                                                    if (valorCapturado == "-"){
+//                                                        banderaValidaBotonVentasFaltantes = false;
+//                                                        banderaNoCargada = false;
+//                                                        break;
+//                                                    }else {
+//
+//                                                        int entrega = Integer.parseInt(valorCapturado);
+//                                                        int recibido = Integer.parseInt(productosRecibidos.get(g));
+//                                                        int vendido = Integer.parseInt(productosVendidos.get(g));
+//                                                        if (entrega < (recibido - vendido)) {
+//                                                            banderaValidaBotonVentasFaltantes = false;
+//                                                            break;
+//                                                        }else{
+//                                                            banderaValidaBotonVentasFaltantes =true;
+//                                                        }
+//                                                    }
+//                                                }
+//                                                if (banderaNoCargada == false){
+//                                                    btnsiguiente.setVisibility(View.INVISIBLE);
+//                                                }else {
+//                                                    if (banderaValidaBotonVentasFaltantes == false) {
+//                                                        btnsiguiente.setVisibility(View.VISIBLE);
+//                                                    } else {
+//                                                        btnsiguiente.setVisibility(View.INVISIBLE);
+//                                                    }
+//                                                }
+//                                                ListAdapterBilletes adapter = new ListAdapterBilletes(VentasTotales.this, maintitle, subtitle, calculo);
+//                                                mList.setAdapter(adapter);
+//                                            }else{
+//                                                Toast.makeText(VentasTotales.this, "La cantidad capturada es mayor que el resultado de productos entregados menos las ventas", Toast.LENGTH_SHORT).show();
+//                                            }
+//                                        }
+//                                    }
+//                                }
+//                            })
+//                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.cancel();
+//                                }
+//                            }).show();
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -467,22 +631,102 @@ public class VentasTotales extends AppCompatActivity {
     }
 
 
-    private void generaArreglo(String numeroproducto, int cantidad, String preciounitario, String descCorta, String internonumero, String codBarras, String IProducto, String TProducto){
-        JSONObject mjason = new JSONObject();
-        try {
-            mjason.put("TipoProducto",TProducto);
-            mjason.put("ProductoId", numeroproducto);
-            //ventaRestante.put("CodigoBarras", codigobarras);
-            mjason.put("NumeroInterno", internonumero);
-            mjason.put("Cantidad", cantidad);
-            mjason.put("Precio", preciounitario);
-            mjason.put ("DescCorta", descCorta);
-            mjason.put("CodigoBarras", codBarras);
-            ArrayventasFaltantes.put(mjason);
+    private void generaArreglo(String numeroproducto, int cantidad, String preciounitario, String descCorta, String internonumero, String codBarras, String IProducto, String TProducto, int posicion, int diferencia){
+        boolean nuevo = true;
+        ProductosFaltantes productosFaltantes = new ProductosFaltantes();
+        for(ProductosFaltantes item : ArrayventasFaltantes)
+        {
+            if(item.posicion == posicion)
+            {
+                nuevo = false;
+                break;
+            }
 
-            //valido si hay
-        } catch (JSONException e) {
-            e.printStackTrace();
         }
+
+        if( nuevo == true) {
+            if(cantidad != 0){
+            productosFaltantes.TProducto = TProducto;
+            productosFaltantes.numeroproducto = numeroproducto;
+            productosFaltantes.internonumero = internonumero;
+            productosFaltantes.cantidad = cantidad;
+            productosFaltantes.preciounitario = preciounitario;
+            productosFaltantes.descCorta = descCorta;
+            productosFaltantes.codBarras = codBarras;
+            productosFaltantes.posicion = posicion;
+            productosFaltantes.diferencia = diferencia;
+            ArrayventasFaltantes.add(productosFaltantes);
+            }
+
+        }else
+        {
+            if(cantidad != 0)
+            {
+                productosFaltantes.setCantidad(cantidad);
+            }
+            else
+            {
+                for(int K=0; K<= ArrayventasFaltantes.size()-1; K++)
+                {
+                    if(ArrayventasFaltantes.get(K).posicion == posicion)
+                    {
+                        ArrayventasFaltantes.remove(K);
+                        break;
+                    }
+
+                }
+
+            }
+
+
+        }
+
+
+//        JSONObject mjason = new JSONObject();
+//        try {
+//                mjason.put("TipoProducto", TProducto);
+//                mjason.put("ProductoId", numeroproducto);
+//                //ventaRestante.put("CodigoBarras", codigobarras);
+//                mjason.put("NumeroInterno", internonumero);
+//                mjason.put("Cantidad", cantidad);
+//                mjason.put("Precio", preciounitario);
+//                mjason.put("DescCorta", descCorta);
+//                mjason.put("CodigoBarras", codBarras);
+//                mjason.put("Posicion", posicion);
+
+//                ArrayventasFaltantes.add(productosFaltantes);
+            //valido si hay
+//        } catch (JSONException e) {
+//            e.printStackTrace();
+//        }
     }
+
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        String mensaje = "Seras regresado al menú principal. ¿Estas seguro?";
+        Modales modales = new Modales(VentasTotales.this);
+        String nombrebtnAceptar ="SI";
+        String nombreBtnCancelar ="NO";
+        View view1 = modales.MostrarDialogoAlerta(VentasTotales.this,mensaje, nombrebtnAceptar, nombreBtnCancelar);
+
+        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                startActivity(intent);
+            }
+        });
+
+        view1.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                modales.alertDialog.dismiss();
+
+            }
+        });
+
+    }
+
+
 }

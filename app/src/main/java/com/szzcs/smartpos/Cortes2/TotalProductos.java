@@ -40,7 +40,7 @@ public class TotalProductos extends AppCompatActivity {
     List<String> total;
     ListView mListView;
     String islaId;
-    String usuarioId;
+
     String picos;
     String dineroBilletes;
     String dineroMorralla;
@@ -53,6 +53,9 @@ public class TotalProductos extends AppCompatActivity {
     long cierreId;
     long turnoId;
 
+    RespuestaApi<AccesoUsuario> accesoUsuario;
+    long idusuario;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +63,8 @@ public class TotalProductos extends AppCompatActivity {
         totalCombustible = (Button) findViewById(R.id.btnTotalCombustible);
 
         islaId = getIntent().getStringExtra("islaId");
-        usuarioId =getIntent().getStringExtra("idusuario");
+        accesoUsuario = (RespuestaApi<AccesoUsuario>) getIntent().getSerializableExtra("accesoUsuario");
+        idusuario = accesoUsuario.getObjetoRespuesta().getSucursalEmpleadoId();
 //        picos = getIntent().getStringExtra("sumaPicosBilletes");
         dineroBilletes = getIntent().getStringExtra("dineroBilletes");
         dineroMorralla = getIntent().getStringExtra("dineroMorralla");
@@ -89,6 +93,8 @@ public class TotalProductos extends AppCompatActivity {
                 intent.putExtra("VentaProductos", VentaProductos);
                 intent.putExtra("cantidadAceites", cantidadAceites);
                 intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+                intent.putExtra("accesoUsuario", accesoUsuario);
+
                 startActivity(intent);
             }
         });
@@ -99,7 +105,7 @@ public class TotalProductos extends AppCompatActivity {
         // Creamos la variable data para poder llamar a las variables que usaremos de la clase SQLiteBD
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
         // Declaramos la URl que se ocupara para el metodo obtenerTotales
-        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/cierres/registrar/sucursal/"+data.getIdSucursal()+"/isla/"+islaId+"/usuario/"+usuarioId+"/origen/1";
+        String url = "http://"+data.getIpEstacion()+"/CorpogasService/api/cierres/registrar/sucursal/"+data.getIdSucursal()+"/isla/"+islaId+"/usuario/"+idusuario+"/origen/1";
         // Utilizamos el metodo POST para obtener Cantidad, Total y ProductoDescripcion
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -169,6 +175,23 @@ public class TotalProductos extends AppCompatActivity {
 
         }
         return sumamax;
+    }
+
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), CierreFormaPago.class);
+        intent.putExtra("origenId","1");
+        intent.putExtra("islaId",islaId);
+        intent.putExtra("dineroBilletes",dineroBilletes);
+        intent.putExtra("dineroMorralla",dineroMorralla);
+        intent.putExtra("subTotalOficina",subTotalOficina);
+        intent.putExtra("VentaProductos", VentaProductos);
+        intent.putExtra("cantidadAceites", cantidadAceites);
+        intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+        intent.putExtra("accesoUsuario", accesoUsuario);
+        startActivity(intent);
+
     }
 
 }

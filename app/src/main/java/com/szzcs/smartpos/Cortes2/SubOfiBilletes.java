@@ -25,6 +25,8 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
+import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -54,6 +56,19 @@ public class SubOfiBilletes extends AppCompatActivity {
     String precioFajilla;
     int fajillaBillete;
     String denomi;
+    String islaId;
+
+    String dineroBilletes;
+    String dineroMorralla;
+    String VentaProductos;
+    String cantidadAceites;
+
+    RespuestaApi<Cierre> cierreRespuestaApi;
+    long cierreId;
+    long turnoId;
+
+    RespuestaApi<AccesoUsuario> accesoUsuario;
+    long idusuario;
 
 
     @Override
@@ -64,20 +79,65 @@ public class SubOfiBilletes extends AppCompatActivity {
         denominacionBilletes();
         valorFajilla();
         btnaceptar = findViewById(R.id.aceptarBilletes);
+        cierreRespuestaApi = (RespuestaApi<Cierre>) getIntent().getSerializableExtra( "lcierreRespuestaApi");
+        accesoUsuario = (RespuestaApi<AccesoUsuario>) getIntent().getSerializableExtra("accesoUsuario");
+
+        islaId = getIntent().getStringExtra("islaId");
+        idusuario = accesoUsuario.getObjetoRespuesta().getSucursalEmpleadoId();
+        dineroBilletes = getIntent().getStringExtra("dineroBilletes");
+        dineroMorralla = getIntent().getStringExtra("dineroMorralla");
+        VentaProductos = getIntent().getStringExtra("VentaProductos");
+        cantidadAceites = getIntent().getStringExtra("cantidadAceites");
+        turnoId = cierreRespuestaApi.getObjetoRespuesta().getTurnoId();
+        cierreId = cierreRespuestaApi.getObjetoRespuesta().getId();
 
         btnaceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(sumainter <= (fajillaBillete-10)){
-                    Toast.makeText(SubOfiBilletes.this, "Se registro un Total de "+ sumainter + " pesos", Toast.LENGTH_LONG).show();
+                if (sumainter == 0) {
+                    String mensaje = "No haz insertado ningun VALOR. ¿Deseas continuar?";
+                    Modales modales = new Modales(SubOfiBilletes.this);
+                    String nombrebtnAceptar ="SI";
+                    String nombreBtnCancelar ="NO";
+                    View view1 = modales.MostrarDialogoAlerta(SubOfiBilletes.this,mensaje, nombrebtnAceptar, nombreBtnCancelar);
 
-                    for (int i = 0; i < maintitle.size(); i++) {
-                        if(!maintitle.get(i).equals("0")){
-                            enviarFolios(maintitle.get(i), String.valueOf(arrayMonto.get(i)));
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getApplicationContext(), SubOfiGasopass.class);
+                            intent.putExtra("picoBilletes",String.valueOf(sumainter));
+                            intent.putExtra("origenId",1);
+                            intent.putExtra("islaId",islaId);
+                            intent.putExtra("dineroBilletes",dineroBilletes);
+                            intent.putExtra("dineroMorralla",dineroMorralla);
+                            intent.putExtra("VentaProductos", VentaProductos);
+                            intent.putExtra("cantidadAceites", cantidadAceites);
+                            intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+                            intent.putExtra("accesoUsuario", accesoUsuario);
+                            startActivity(intent);
+                            modales.alertDialog.dismiss();
                         }
+                    });
+
+                    view1.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+
+                        }
+                    });
+                } else {
+                    if (sumainter <= (fajillaBillete - 10)) {
+
+
+                        for (int i = 0; i < maintitle.size(); i++) {
+                            if (!maintitle.get(i).equals("0")) {
+                                enviarFolios(maintitle.get(i), String.valueOf(arrayMonto.get(i)));
+                            }
+                        }
+                    } else {
+                        Toast.makeText(SubOfiBilletes.this, "Existe un error", Toast.LENGTH_SHORT).show();
                     }
-                }else{
-                    Toast.makeText(SubOfiBilletes.this, "Existe un error", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -138,74 +198,78 @@ public class SubOfiBilletes extends AppCompatActivity {
 
                 final String ray = arrayMonto.get(position).toString();
 
-                try {
-                    final EditText input = new EditText(getApplicationContext());
-                    input.setTextColor(Color.BLACK);
-                    input.setGravity(Gravity.CENTER);
-                    input.setTextSize(22);
-                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
-                    builder.setTitle("Ingresa Cantidad \n");
-                    builder.setView(input)
+                    String titulo = "PICOS BILLETES";
+                    String mensaje = "Ingresa Cantidad : ";
+                    Modales modales = new Modales(SubOfiBilletes.this);
+                    View viewLectura = modales.MostrarDialogoInsertaDato(SubOfiBilletes.this, mensaje, titulo);
+                    EditText edtPicoBillete = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
 
-                            .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    denomi = input.getText().toString();
-                                    result = Double.parseDouble(denomi) * Double.parseDouble(ray);
-                                    if (result > fajillaBillete) {
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
-                                        builder.setTitle("Error");
-                                        builder.setMessage("No puede superar el valor de 1 Fajilla");
-                                        builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialogInterface, int i) {
-                                                dialogInterface.dismiss();
-                                            }
-                                        });
-                                        AlertDialog dialog= builder.create();
-                                        dialog.show();
+                    viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            String denomi = edtPicoBillete.getText().toString();
+                            if (denomi.equals("")){
+                                edtPicoBillete.setError("No ingresaste un Valor");
+                            }else{
+                                result = Double.parseDouble(denomi) * Double.parseDouble(ray);
+                                if (result>fajillaBillete){
+                                    edtPicoBillete.setError("No puede superar el valor de 1 Fajilla");
+//                                    String titulo = "AVISO";
+//                                    String mensaje = "No puede superar el valor de 1 Fajilla.";
+//                                    Modales modales = new Modales(SubOfiBilletes.this);
+//                                    View view1 = modales.MostrarDialogoAlertaAceptar(SubOfiBilletes.this,mensaje,titulo);
+//                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                                        @Override
+//                                        public void onClick(View view) {
+//                                            modales.alertDialog.dismiss();
+//
+//                                        }
+//                                    });
+                                }else {
 
-                                    } else {
-                                        maintitle.set(position, denomi);
-                                        total.set(position, String.valueOf(result));
-                                        final String ray2 = result.toString();
+                                    maintitle.set(position, denomi);
+                                    total.set(position, String.valueOf(result));
+                                    final String ray2 = result.toString();
+                                    sumainter = totalBilletes() + Double.parseDouble(ray2);
 
-                                        sumainter = totalBilletes() + Double.parseDouble(ray2);
+                                    if ((totalBilletes() <= (fajillaBillete - 10)) && (sumainter <= (fajillaBillete - 10))){
 
-                                        if ((totalBilletes()<= (fajillaBillete-10)) && (sumainter <= (fajillaBillete-10))){
-                                            Toast.makeText(SubOfiBilletes.this, "Cantidad Agregada", Toast.LENGTH_SHORT).show();
-                                            prueba2.put(ray2);
-                                            ListAdapterBilletes adapter = new ListAdapterBilletes(SubOfiBilletes.this, maintitle, subtitle, total);
-                                            mListView.setAdapter(adapter);
-                                        }else{
-                                            AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
-                                            builder.setTitle("Error");
-                                            builder.setMessage("Los Valores que ingresaste pueden ser 1 Fajilla");
-                                            builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
-                                                @Override
-                                                public void onClick(DialogInterface dialogInterface, int i) {
-                                                    dialogInterface.dismiss();
-                                                }
-                                            });
-                                            AlertDialog dialog= builder.create();
-                                            dialog.show();
-
-                                        }
-
+//                                        Toast.makeText(SubOfiBilletes.this, "Cantidad Agregada", Toast.LENGTH_SHORT).show();
+                                        prueba2.put(ray2);
+                                        modales.alertDialog.dismiss();
+                                        ListAdapterBilletes adapter = new ListAdapterBilletes(SubOfiBilletes.this, maintitle, subtitle, total);
+                                        mListView.setAdapter(adapter);
+                                    }else{
+                                        edtPicoBillete.setError("Los Valores que ingresaste pueden ser 1 Fajilla");
+//                                        String titulo = "AVISO";
+//                                        String mensaje = "Los Valores que ingresaste pueden ser 1 Fajilla.";
+//                                        Modales modales = new Modales(SubOfiBilletes.this);
+//                                        View view1 = modales.MostrarDialogoAlertaAceptar(SubOfiBilletes.this,mensaje,titulo);
+//                                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+//                                            @Override
+//                                            public void onClick(View view) {
+//                                                modales.alertDialog.dismiss();
+//
+//                                            }
+//                                        });
                                     }
+
                                 }
-                            })
-                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            }).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+
+                            }
+
+                        }
+                    });
+
+                    viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+
+                        }
+                    });
+
             }
         });
     }
@@ -259,26 +323,25 @@ public class SubOfiBilletes extends AppCompatActivity {
     }
 
     private void enviarFolios(String folio, String valor) {
-        final String origenId = getIntent().getStringExtra("origenId");
-        final String cierreId = getIntent().getStringExtra("cierreId");
         // String islaId = isla.getText().toString(); //getIntent().getStringExtra("isla");
         // String turnoId = "1";//getIntent().getStringExtra("turno");
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/1";
+        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/cierreFajillas/usuario/" + idusuario ;
+//        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/" + idusuario;
         final JSONObject mjason = new JSONObject();
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
             mjason.put("CierreId",cierreId);
-            mjason.put("CierreSucursalId", 1); //turno.getText().toString());
+            mjason.put("CierreSucursalId", "1"); //turno.getText().toString());
             JSONObject prueba = new JSONObject();
-            prueba.put("IslaId", "1");
+            prueba.put("IslaId", islaId);
             mjason.put("Cierre",prueba);//turno.getText().toString());Sucursal
-            mjason.put("SucursalId", "1");
+            mjason.put("SucursalId", data.getIdSucursal());
             mjason.put("TipoFajillaId","3");
-            mjason.put("FolioInicial", "0");
+//            mjason.put("FolioInicial", "1");
             mjason.put("FolioFinal", folio);
             mjason.put("Denominacion", valor);
-            mjason.put("OrigenId", origenId);
+            mjason.put("OrigenId", "1");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -289,42 +352,36 @@ public class SubOfiBilletes extends AppCompatActivity {
                 try {
                     String estado  = response.getString("Correcto");
                     if (estado == "true"){
-                        AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
-                        builder.setTitle("CorpoApp");
-                        builder.setMessage("Los datos se guardaron corretamente");
-                        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+
+                        String mensaje = "Se registro un Total de $"+ sumainter + " pesos.";
+                        Modales modales = new Modales(SubOfiBilletes.this);
+                        View view1 = modales.MostrarDialogoCorrecto(SubOfiBilletes.this,mensaje);
+                        view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent intent = new Intent(getApplicationContext(),TotalProductos.class);
+                            public void onClick(View view) {
+                                Intent intent = new Intent(getApplicationContext(),SubOfiGasopass.class);
+                                intent.putExtra("picoBilletes",String.valueOf(sumainter));
+                                intent.putExtra("origenId",1);
+                                intent.putExtra("islaId",islaId);
+                                intent.putExtra("dineroBilletes",dineroBilletes);
+                                intent.putExtra("dineroMorralla",dineroMorralla);
+                                intent.putExtra("VentaProductos", VentaProductos);
+                                intent.putExtra("cantidadAceites", cantidadAceites);
+                                intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+                                intent.putExtra("accesoUsuario", accesoUsuario);
                                 startActivity(intent);
-                                finish();
+                                modales.alertDialog.dismiss();
                             }
                         });
-                        AlertDialog dialog= builder.create();
-                        dialog.show();
-
                     }else{
                         String mensaje  = response.getString("Mensaje");
-                        AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiBilletes.this);
-                        builder.setTitle("Error");
-                        builder.setMessage(mensaje);
-                        builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        });
-                        AlertDialog dialog= builder.create();
-                        dialog.show();
-
+                        Modales modales = new Modales(SubOfiBilletes.this);
+                        modales.MostrarDialogoError(SubOfiBilletes.this,mensaje);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-//                Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
-//                startActivity(intente);
-                Toast.makeText(getApplicationContext(),"Gasto Cargado Exitosamente",Toast.LENGTH_LONG).show();
-                //Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
+
             }
         }, new Response.ErrorListener() {
             @Override
@@ -352,6 +409,23 @@ public class SubOfiBilletes extends AppCompatActivity {
             }
         };
         queue.add(request_json);
+
+    }
+
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), FajillaMorralla.class);
+        intent.putExtra("picoBilletes",String.valueOf(sumainter));
+        intent.putExtra("origenId",1);
+        intent.putExtra("islaId",islaId);
+        intent.putExtra("dineroBilletes",dineroBilletes);
+        intent.putExtra("dineroMorralla",dineroMorralla);
+        intent.putExtra("VentaProductos", VentaProductos);
+        intent.putExtra("cantidadAceites", cantidadAceites);
+        intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+        intent.putExtra("accesoUsuario", accesoUsuario);
+        startActivity(intent);
 
     }
 }

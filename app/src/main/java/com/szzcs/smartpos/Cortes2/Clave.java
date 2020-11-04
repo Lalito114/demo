@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,17 +20,30 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.google.gson.reflect.TypeToken;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.Productos.VentasProductos;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.HttpConnectionParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.xml.transform.ErrorListener;
@@ -38,7 +52,10 @@ public class Clave extends AppCompatActivity {
 
     String pass, idSucursal, idUsuario, contra;
     TextView usuario, estacion;
-    EditText password;//
+    EditText password;
+    SQLiteBD data;
+    RespuestaApi<AccesoUsuario> accesoUsuario;
+    Type respuestaAccesoUsuario;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,88 +65,79 @@ public class Clave extends AppCompatActivity {
         usuario = findViewById(R.id.usuario);
         estacion = findViewById(R.id.estacion);
         password = findViewById(R.id.pasword);
+        data = new SQLiteBD(getApplicationContext());
 
-        //Crea Boton Enviar
-        Button btnenviar = (Button) findViewById(R.id.enviar);
-        //En espera a recibir el evento Onclick del boton Enviar
-        btnenviar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Se lee el password del objeto y se asigna a variable
-                pass = password.getText().toString();
-
-                //Si no se terclea nada envia mensaje de teclear contraseña
-                if (pass.isEmpty()) {
-                    password.setError("Ingresa tu contraseña");
-                }else{
-                    datosUsuario();
-                }
-            }
-        });
     }
     public void datosUsuario(){
-
-        String URL_LOGIN = "http://10.0.1.20/CorpogasService/api/SucursalEmpleados/clave/"+pass;
-        // Utilizamos el metodo Post para validar la contraseña
-        StringRequest eventoReq = new StringRequest(Request.Method.GET,URL_LOGIN,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        if(response.equals("null")){
-                            password.setError("La contraseña es Incorrecta");
-                        }
-                        try {
-                            //Se instancia la respuesta del json
-                            JSONObject validar = new JSONObject(response);
-                            String valido = validar.getString("Activo");
-                            idSucursal = validar.getString("SucursalId");
-                            String nombre = validar.getString("NombreCompleto");
-                            contra = validar.getString("Clave");
-                            idUsuario = validar.getString("Id");
-                            String rol = validar.getString("Rol");
-                            JSONObject obj1 = new JSONObject(rol);
-                            String numeroInterno = obj1.getString("NumeroInterno");
-
-                            if(pass.equals(contra) && numeroInterno.equals("3")){
-                                Intent intent = new Intent(getApplicationContext(), IslasEstacion.class);
-                                intent.putExtra("password", pass);
-                                intent.putExtra("idsucursal",idSucursal);
-                                intent.putExtra("idusuario",idUsuario);
-                                intent.putExtra("nombreCompleto",nombre);
-                                startActivity(intent);
-                            }else{
-                                password.setError("No eres Jefe de Isla");
-                            }
-
-                        } catch (JSONException e) {
-                            //herramienta  para diagnostico de excepciones
-                            e.printStackTrace();
-                        }
-                    }
-                    //funcion para capturar errores
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                String algo = new String(error.networkResponse.data) ;
-                String json = new Gson().toJson(algo);
+        new Thread(new Runnable() {
+            public void run() {
+                //while(ejecutar) {
                 try {
-                    //creamos un json Object del String algo
-                    JSONObject errorCaptado = new JSONObject(algo);
-                    //Obtenemos el elemento ExceptionMesage del errro enviado
-                    String errorMensaje = errorCaptado.getString("ExceptionMessage");
-                    Toast.makeText(Clave.this, errorMensaje, Toast.LENGTH_LONG).show();
+                    httpGetAccesoUsusario();
+                    //ejecutar = false;
 
-                } catch (JSONException e) {
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
+                //}
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                       boolean  correcto = accesoUsuario.Correcto;
+                        if(correcto == true){
+                           if(accesoUsuario.getObjetoRespuesta().getClave().equals(pass) && accesoUsuario.getObjetoRespuesta().getNumeroInternoRol() == 3)
+                           {
+                                Intent intent = new Intent(getApplicationContext(), IslasEstacion.class);
+                                intent.putExtra("accesoUsuario", accesoUsuario);
+                                startActivity(intent);
+
+                           }else{
+                               password.setError("No eres jefe de isla");
+                           }
+
+                        }else{
+                          password.setError(accesoUsuario.Mensaje);
+                        }
+
+
+                    }
+                });
             }
-        });
-
-        // Añade la peticion a la cola
-        RequestQueue requestQueue = Volley.newRequestQueue(getApplicationContext());
-        requestQueue.add(eventoReq);
-
+        }).start();
     }
+
+    public void  httpGetAccesoUsusario() throws IOException {
+
+        String postUrl ="http://"+data.getIpEstacion()+"/CorpogasService/api/accesoUsuarios/sucursal/"+data.getIdSucursal()+"/clave/"+pass;
+        HttpClient client = new DefaultHttpClient();
+        HttpConnectionParams.setConnectionTimeout(client.getParams(), 5000);
+        HttpResponse response;
+        HttpGet request = new HttpGet(postUrl);
+        response = client.execute(request);
+
+        /*Checking response */
+        if (response != null) {
+            InputStream in = response.getEntity().getContent(); //Get the data in the entity
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) // Read line by line
+                sb.append(line + "\n");
+
+            String resString = sb.toString(); // Result is here
+
+            in.close(); // Close the stream
+            Gson json2 = new Gson();
+
+            respuestaAccesoUsuario = new TypeToken<RespuestaApi<AccesoUsuario>>(){}.getType();
+            accesoUsuario = json2.fromJson(resString, respuestaAccesoUsuario);
+        }
+    }
+
+
+
+
+
     //Metodo para regresar a la actividad principal
     @Override
     public void onBackPressed() {
@@ -137,5 +145,28 @@ public class Clave extends AppCompatActivity {
 
         startActivity(intent);
         // finish();
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                calculos();
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
+    }
+
+    private void calculos() {
+        //Se lee el password del objeto y se asigna a variable
+        pass = password.getText().toString();
+
+        //Si no se terclea nada envia mensaje de teclear contraseña
+        if (pass.isEmpty()) {
+            password.setError("Ingresa tu contraseña");
+        }else{
+            datosUsuario();
+        }
     }
 }

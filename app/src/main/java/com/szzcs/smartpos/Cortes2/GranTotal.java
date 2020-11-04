@@ -11,6 +11,9 @@ import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.szzcs.smartpos.Munu_Principal;
+import com.szzcs.smartpos.PrintFragment;
+import com.szzcs.smartpos.PrintFragmentCorte;
+import com.szzcs.smartpos.PrintFragmentVale;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -45,6 +48,11 @@ public class GranTotal extends AppCompatActivity {
     long turnoId;
     Cierre cierre;
     SQLiteBD data;
+    String islaId;
+    Bundle args = new Bundle();
+
+    RespuestaApi<AccesoUsuario> accesoUsuario;
+    long idusuario;
 
 
     @Override
@@ -52,6 +60,9 @@ public class GranTotal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gran_total);
 
+        accesoUsuario = (RespuestaApi<AccesoUsuario>) getIntent().getSerializableExtra("accesoUsuario");
+        idusuario = accesoUsuario.getObjetoRespuesta().getSucursalEmpleadoId();
+        islaId = getIntent().getStringExtra("islaId");
         subTotalOficina = getIntent().getStringExtra("subTotalOficina");
         dineroBilletes = getIntent().getStringExtra("dineroBilletes");
         dineroMorralla = getIntent().getStringExtra("dineroMorralla");
@@ -78,6 +89,26 @@ public class GranTotal extends AppCompatActivity {
         finalizarCierre.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                try{
+
+
+
+                    args.putString("subtotalcombustible", "400");
+                    args.putString("subtotalcombustible1", "401");
+                    args.putString("subtotalcombustible2", "801");
+                    args.putString("subtotalT", "1,682");
+                    PrintFragmentCorte cf = new PrintFragmentCorte();
+                    cf.setArguments(args);
+                    getFragmentManager().beginTransaction().replace(R.id.tv1Corte, cf).
+                            addToBackStack(PrintFragment.class.getName()).
+                            commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+
+
                 diferenciasCierre();
             }
         });
@@ -153,6 +184,23 @@ public class GranTotal extends AppCompatActivity {
             String pruebas = "";
 
         }
+    }
+
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), TotalProductos.class);
+        intent.putExtra("origenId","1");
+        intent.putExtra("islaId",islaId);
+        intent.putExtra("dineroBilletes",dineroBilletes);
+        intent.putExtra("dineroMorralla",dineroMorralla);
+        intent.putExtra("subTotalOficina",subTotalOficina);
+        intent.putExtra("VentaProductos", VentaProductos);
+        intent.putExtra("cantidadAceites", cantidadAceites);
+        intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+        intent.putExtra("accesoUsuario", accesoUsuario);
+        startActivity(intent);
+
     }
 
 }

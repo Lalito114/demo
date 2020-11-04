@@ -3,6 +3,7 @@ package com.szzcs.smartpos.Gastos;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -200,6 +201,30 @@ private void GuardarGasto(String fechatrabajo, String turnoId){
         Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
         startActivity(intent);
         finish();
+    }
+
+    //procedimiento para  cachar el Enter del teclado
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                calculos();
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
+    }
+
+    private void calculos() {
+        if (SubTotal.length()==0 )       //.length() >0)
+        {
+            Toast.makeText(getApplicationContext(), "digite el importe", Toast.LENGTH_LONG).show();
+        } else { if (Descripcion.length()==0){
+            Toast.makeText(getApplicationContext(), "digite la descripción", Toast.LENGTH_LONG).show();
+        }else {
+            EnviarGastos();
+        }
+        }
     }
 
 

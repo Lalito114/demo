@@ -21,10 +21,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
-import com.szzcs.smartpos.FinalizaVenta.posicionFinaliza;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
-import com.szzcs.smartpos.Ticket.claveUsuario;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
 import org.json.JSONArray;
@@ -38,7 +36,7 @@ import java.util.Map;
 
 public class confirmaVenta extends AppCompatActivity {
     String usuario, posicion, cadenaproductos, nombreproducto;
-    ListView list;
+    ListView list, list2;
     Double MontoTotal=0.0;
     Button Cobrar, Agregar, Eliminar;
     List<String> ID;
@@ -50,11 +48,12 @@ public class confirmaVenta extends AppCompatActivity {
     List<String> ProductosId;
     List<String> TipoProductoId;
     List<String> DescripcionProducto;
+    List<String> Cantidad;
     JSONArray myArray = new JSONArray();
     String EstacionId, sucursalId, ipEstacion, tipoTransaccion, numerodispositivo ;
     TextView txttotal, txtdespachosolicitado, txtproducto;
     String lugarproviene;
-    Integer idSeleccionado;
+    int idSeleccionado;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,10 +73,11 @@ public class confirmaVenta extends AppCompatActivity {
 
         posicion = getIntent().getStringExtra("posicion");
         usuario = getIntent().getStringExtra("usuario");
-        lugarproviene = getIntent().getStringExtra("lugarproviene");
-
         cadenaproductos = getIntent().getStringExtra("cadenaproducto");
         nombreproducto = getIntent().getStringExtra("Descripcion");
+
+        lugarproviene = getIntent().getStringExtra("lugarproviene");
+
         Cobrar = findViewById(R.id.comprar);
         Agregar = findViewById(R.id.btnagregar);
         Eliminar = findViewById(R.id.eliminar);
@@ -209,11 +209,12 @@ public class confirmaVenta extends AppCompatActivity {
         NombreProducto = new ArrayList<String>();
         PrecioProducto = new ArrayList<>();
         ClaveProducto = new ArrayList();
-        codigoBarras = new ArrayList();
-        ExistenciaProductos = new ArrayList();
+        //codigoBarras = new ArrayList();
+        //ExistenciaProductos = new ArrayList();
         ProductosId = new ArrayList();
         TipoProductoId = new ArrayList();
-        DescripcionProducto = new ArrayList();;
+        DescripcionProducto = new ArrayList();
+        Cantidad = new ArrayList();
 
         try {
 
@@ -221,59 +222,73 @@ public class confirmaVenta extends AppCompatActivity {
             myArray = response;
             for (int i=0; i< response.length(); i++){
                 JSONObject producto = response.getJSONObject(i);
-                String describeproducto = producto.getString("NumeroInterno");
+                String numerointerno = producto.getString("NumeroInterno");
                 String cantidad = producto.getString("Cantidad");
                 String precio = producto.getString("Precio");
                 String tproductoid = producto.getString("TipoProducto");
                 String descripcioncorta = producto.getString("Descripcion");
-                MontoTotal = MontoTotal +  Double.parseDouble(precio);
+                String productosid = producto.getString("ProductoId");
+                Double monto = Double.parseDouble(precio)*Double.parseDouble(cantidad);
+                MontoTotal = MontoTotal +  monto;
 
-
-                NombreProducto.add("ID: " + describeproducto + "    |     $"+precio);
                 ID.add(descripcioncorta);
+
+                NombreProducto.add("ID: " + numerointerno + "    |     $"+precio);
                 PrecioProducto.add(precio);
-                ClaveProducto.add(describeproducto);
-                //ProductosId.add(IdProductos);
+                ClaveProducto.add(numerointerno);
                 //codigoBarras.add(codigobarras);
+                //ExistenciaProductos.add(IdProductos);
+                ProductosId.add(productosid);
                 TipoProductoId.add(tproductoid);
                 DescripcionProducto.add(descripcioncorta);
+                Cantidad.add(cantidad);
+
             }
             txttotal.setText("TOTAL : $"+MontoTotal);
-            final ListAdapterProductos adapterP = new ListAdapterProductos(this,  ID, NombreProducto);
+
+            final ListAdapterProductos adapterP = new ListAdapterProductos(this,  ID ,  NombreProducto);
             list=(ListView)findViewById(R.id.list);
             list.setTextFilterEnabled(true);
             list.setAdapter(adapterP);
 //        Agregado  click en la lista
             list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
-                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                    //String producto = DescripcionProducto.get(i);
-                    //String precio = PrecioProducto.get(i);
-                    //txtproducto.setText(producto);
-                    //Eliminar.setVisibility(View.VISIBLE);
-                    idSeleccionado = i;
-
-
+                public void onItemClick(AdapterView<?> adapterView, View view, int identificador, long l) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(confirmaVenta.this);
-                    builder.setTitle("Estas seguro");
+
+                    builder.setTitle("Estas seguro?");
                     builder.setCancelable(false);
-                    builder.setMessage("Deseas eliminar el elemento seleccionado?")
+                    builder.setMessage("Deseas eliminar el elemento seleccionado?"+ID.get(identificador))
                             .setPositiveButton("Si", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialogInterface, int i) {
-                                    DescripcionProducto.remove(idSeleccionado);
-                                    PrecioProducto.remove(idSeleccionado);
-                                    NombreProducto.remove(idSeleccionado);
-                                    ID.remove(idSeleccionado);
-                                    PrecioProducto.remove(idSeleccionado);
-                                    ClaveProducto.remove(idSeleccionado);
-                                    TipoProductoId.remove(idSeleccionado);
-                                    DescripcionProducto.remove(idSeleccionado);
-                                    adapterP.notifyDataSetChanged();
+
+                                    if (ID.size() == 1) {
+                                        Toast.makeText(confirmaVenta.this, "No se puede eliminar ya que es el último elemento de la lista", Toast.LENGTH_SHORT).show();
+                                    }else{
+                                        ID.remove(identificador);
+                                        Cantidad.remove(identificador);
+                                        adapterP.notifyDataSetChanged();
+
+                                        NombreProducto.remove(identificador);
+                                        PrecioProducto.remove(identificador);
+                                        ClaveProducto.remove(identificador);
+                                        //codigoBarras.add(codigobarras);
+                                        //ExistenciaProductos.add(IdProductos);
+                                        ProductosId.remove(identificador);
+                                        TipoProductoId.remove(identificador);
+                                        DescripcionProducto.remove(identificador);
+
+                                        final ListAdapterProductos adapterP = new ListAdapterProductos(confirmaVenta.this, ID, Cantidad);
+
+                                        EliminarIdentificador(identificador);
+                                    }
                                 }
                             })
                             .setNegativeButton("No", null)
                             .show();
+
+
 
                 }
             });
@@ -283,5 +298,30 @@ public class confirmaVenta extends AppCompatActivity {
         }
 
     }
+
+    private void EliminarIdentificador(int identificador){
+        myArray = new JSONArray();
+        MontoTotal =0.0;
+
+        for (int m = 0; m<ID.size(); m++) {
+            JSONObject mjason = new JSONObject();
+            try {
+                mjason.put("TipoProducto", TipoProductoId.get(m));
+                mjason.put("ProductoId", ProductosId.get(m));
+                mjason.put("NumeroInterno", ClaveProducto.get(m));
+                //mjason.put("Descripcion", descrProducto.toString());
+                mjason.put("Cantidad", Cantidad.get(m));
+                mjason.put("Precio", PrecioProducto.get(m));
+                mjason.put("Descripcion", DescripcionProducto.get(m));
+                myArray.put(mjason);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        cadenaproductos = myArray.toString();
+        despliegadatos();
+
+    }
+
 
 }

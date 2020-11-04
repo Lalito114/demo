@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -363,4 +364,40 @@ public class cargaGasto extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    //procedimiento para  cachar el Enter del teclado
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                calculos();
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
+    }
+
+    private void calculos() {
+        if (txtClave.length() == 0)       //.length() >0)
+        {
+            Toast.makeText(getApplicationContext(), "Seleccione al menos uno de los tipos de gasto", Toast.LENGTH_LONG).show();
+        } else {
+            if (Descripcion.length() == 0) {
+                Toast.makeText(getApplicationContext(), "Dijite una descripción", Toast.LENGTH_LONG).show();
+
+            } else {
+                if (subTotal.length() == 0) {
+                    Toast.makeText(getApplicationContext(), "Digite el Subtotal", Toast.LENGTH_LONG).show();
+                } else {
+                    if(iva.length()==0){
+                        Toast.makeText(getApplicationContext(), "Digite el IVA", Toast.LENGTH_LONG).show();
+                    }else {
+                        EnviarGastos();
+                    }
+                }
+            }
+        }
+    }
+
+
 }

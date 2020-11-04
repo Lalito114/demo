@@ -14,7 +14,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="13dp"
-        android:layout_marginBottom="477dp"
+        android:layout_marginBottom="450dp"
         android:fontFamily="monospace"
         android:lineSpacingExtra="10sp"
         android:text="Ingresa tu contraseña de despachador"
@@ -57,7 +57,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="138dp"
-        android:layout_marginBottom="441dp"
+        android:layout_marginBottom="400dp"
         android:text="Ticket Pendiente"
         android:textColor="@color/black"
         android:textStyle="bold" />
@@ -91,7 +91,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="30dp"
-        android:layout_marginBottom="350dp"
+        android:layout_marginBottom="300dp"
         android:drawableLeft="@drawable/key"
         android:ems="10"
         android:gravity="center|center_horizontal|center_vertical"
@@ -102,12 +102,12 @@
 
     <ImageView
         android:id="@+id/imgPendientes"
-        android:layout_width="55dp"
-        android:layout_height="55dp"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="5dp"
-        android:layout_marginBottom="356dp"
+        android:layout_marginBottom="514dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/pendientes" />

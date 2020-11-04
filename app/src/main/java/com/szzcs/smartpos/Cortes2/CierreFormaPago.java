@@ -30,6 +30,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -59,7 +60,7 @@ public class CierreFormaPago extends AppCompatActivity {
     Double varMorralla;
     String resultadoPrueba;
     String islaId;
-    String usuarioId;
+
     String picos;
     String dineroBilletes;
     String dineroMorralla;
@@ -72,12 +73,17 @@ public class CierreFormaPago extends AppCompatActivity {
     long cierreId;
     long turnoId;
 
+    RespuestaApi<AccesoUsuario> accesoUsuario;
+    long idusuario;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cierre_forma_pago);
 
+        cierreRespuestaApi = (RespuestaApi<Cierre>) getIntent().getSerializableExtra( "lcierreRespuestaApi");
+        accesoUsuario = (RespuestaApi<AccesoUsuario>) getIntent().getSerializableExtra("accesoUsuario");
         morrallita = (EditText) findViewById(R.id.edtMorrallita);
         totalPicos = (TextView)findViewById(R.id.txtTotalPicos);
         subTotalOficina = (TextView) findViewById(R.id.txtSubtotalOficina);
@@ -85,17 +91,15 @@ public class CierreFormaPago extends AppCompatActivity {
         txtGasto = findViewById(R.id.txtGastos);
 
         islaId = getIntent().getStringExtra("islaId");
-        usuarioId =getIntent().getStringExtra("idusuario");
+        idusuario = accesoUsuario.getObjetoRespuesta().getSucursalEmpleadoId();
         picos = getIntent().getStringExtra("sumaPicosBilletes");
         dineroBilletes = getIntent().getStringExtra("dineroBilletes");
         dineroMorralla = getIntent().getStringExtra("dineroMorralla");
         VentaProductos = getIntent().getStringExtra("VentaProductos");
         cantidadAceites = getIntent().getStringExtra("cantidadAceites");
-        cierreRespuestaApi = (RespuestaApi<Cierre>) getIntent().getSerializableExtra( "lcierreRespuestaApi");
+
         turnoId = cierreRespuestaApi.getObjetoRespuesta().getTurnoId();
         cierreId = cierreRespuestaApi.getObjetoRespuesta().getId();
-
-
 
         BigDecimal bd1 = new BigDecimal(picos);
         String resultadoPicos = String.valueOf(bd1.setScale(0,RoundingMode.HALF_UP));
@@ -123,18 +127,19 @@ public class CierreFormaPago extends AppCompatActivity {
             public void onClick(View v) {
 
                 morralla = morrallita.getText().toString();
+                Modales modales = new Modales(CierreFormaPago.this);
                 if (morralla.isEmpty()){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(CierreFormaPago.this);
-                    builder.setTitle("ERROR");
-                    builder.setMessage("No haz ingresado un valor de Morralla");
-                    builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                    String titulo = "AVISO";
+                    String mensaje = "No haz ingresado un valor de Morralla.";
+                    View view1 = modales.MostrarDialogoAlertaAceptar(CierreFormaPago.this, mensaje, titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+
                         }
                     });
-                    AlertDialog dialog= builder.create();
-                    dialog.show();
+
 //                }else
 //                if (Double.parseDouble(morralla) > 200){
 //                    AlertDialog.Builder builder = new AlertDialog.Builder(CierreFormaPago.this);
@@ -162,8 +167,8 @@ public class CierreFormaPago extends AppCompatActivity {
 //                        AlertDialog dialog= builder.create();
 //                        dialog.show();
                 }else {
-                    if (Double.parseDouble(morralla) < 900000){
-                        Toast.makeText(CierreFormaPago.this, "Tu Valor fue: "+morralla, Toast.LENGTH_SHORT).show();
+
+//                        Toast.makeText(CierreFormaPago.this, "Tu Valor fue: "+morralla, Toast.LENGTH_SHORT).show();
                         varMorralla = Double.valueOf(morralla);
 
                         // Se suma el total de Picos billetes, Morralla y el total de las distintas formas de Pago
@@ -172,9 +177,9 @@ public class CierreFormaPago extends AppCompatActivity {
                         // Se limite el resultado a 4 decimales y se redondea
                         resultadoPrueba = String.valueOf(bd.setScale(4, RoundingMode.HALF_UP));
                         subTotalOficina.setText("SUBTOTAL OFICINA: " + resultadoPrueba);
-                        Toast.makeText(CierreFormaPago.this, "Tu subTotal es: "+ resultadoPrueba, Toast.LENGTH_LONG).show();
+//                        Toast.makeText(CierreFormaPago.this, "Tu subTotal es: "+ resultadoPrueba, Toast.LENGTH_LONG).show();
                         enviarFolios();
-                    }
+
                 }
             }
 
@@ -186,7 +191,7 @@ public class CierreFormaPago extends AppCompatActivity {
     public void obtenerCierreFormasPago() {
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
         // Declaramos la URl que se ocupara para el metodo obtenerTotales
-        String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/cierres/registrar/sucursal/" + data.getIdSucursal() + "/isla/"+islaId+"/usuario/"+usuarioId+"/origen/1";
+        String url = "http://" + data.getIpEstacion() + "/CorpogasService/api/cierres/registrar/sucursal/" + data.getIdSucursal() + "/isla/"+islaId+"/usuario/"+idusuario+"/origen/1";
         // Utilizamos el metodo POST para obtener Cantidad, Total y ProductoDescripcion
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -256,7 +261,8 @@ public class CierreFormaPago extends AppCompatActivity {
 
     private void enviarFolios() {
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/"+ usuarioId;
+//        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/"+ idusuario;
+        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/cierreFajillas/usuario/" + idusuario;
         final JSONObject mjason = new JSONObject();
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
@@ -280,49 +286,36 @@ public class CierreFormaPago extends AppCompatActivity {
                 try {
                     String estado  = response.getString("Correcto");
                     if (estado == "true"){
-                        AlertDialog.Builder builder = new AlertDialog.Builder(CierreFormaPago.this);
-                        builder.setTitle("CorpoApp");
-                        builder.setMessage("Los datos se guardaron corretamente");
-                        builder.setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+
+                        String mensaje = "Los datos se guardaron corretamente.";
+                        Modales modales = new Modales(CierreFormaPago.this);
+                        View view1 = modales.MostrarDialogoCorrecto(CierreFormaPago.this,mensaje);
+                        view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                Intent intent = new Intent(getApplicationContext(),TotalProductos.class);
+                            public void onClick(View view) {
+                                Intent intent = new Intent(getApplicationContext(), TotalProductos.class);
                                 intent.putExtra("origenId","1");
                                 intent.putExtra("islaId",islaId);
-                                intent.putExtra("idusuario", usuarioId);
                                 intent.putExtra("dineroBilletes",dineroBilletes);
                                 intent.putExtra("dineroMorralla",dineroMorralla);
                                 intent.putExtra("subTotalOficina",String.valueOf(resultadoPrueba));
                                 intent.putExtra("VentaProductos", VentaProductos);
                                 intent.putExtra("cantidadAceites", cantidadAceites);
                                 intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+                                intent.putExtra("accesoUsuario", accesoUsuario);
                                 startActivity(intent);
-                                dialogInterface.dismiss();
+                                modales.alertDialog.dismiss();
                             }
                         });
-                        AlertDialog dialog= builder.create();
-                        dialog.show();
 
                     }else{
                         String mensaje  = response.getString("Mensaje");
-                        AlertDialog.Builder builder = new AlertDialog.Builder(CierreFormaPago.this);
-                        builder.setTitle("Error");
-                        builder.setMessage(mensaje);
-                        builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                dialogInterface.dismiss();
-                            }
-                        });
-                        AlertDialog dialog= builder.create();
-                        dialog.show();
-
+                        Modales modales = new Modales(CierreFormaPago.this);
+                        modales.MostrarDialogoError(CierreFormaPago.this,mensaje);
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                Toast.makeText(getApplicationContext(),"Gasto Cargado Exitosamente",Toast.LENGTH_LONG).show();
 
             }
         }, new Response.ErrorListener() {
@@ -343,7 +336,7 @@ public class CierreFormaPago extends AppCompatActivity {
 
     public void obtenerGasto(){
         final SQLiteBD data = new SQLiteBD(getApplicationContext());
-        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/"+ usuarioId;
+        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/Fajillas/GuardaFoliosCierreFajillas/usuario/"+ idusuario;
         final JSONObject mjason = new JSONObject();
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
@@ -405,6 +398,23 @@ public class CierreFormaPago extends AppCompatActivity {
 
         };
         queue.add(request_json);
+
+    }
+
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), SubOfiGasopass.class);
+        intent.putExtra("origenId","1");
+        intent.putExtra("islaId",islaId);
+        intent.putExtra("dineroBilletes",dineroBilletes);
+        intent.putExtra("dineroMorralla",dineroMorralla);
+        intent.putExtra("subTotalOficina",String.valueOf(resultadoPrueba));
+        intent.putExtra("VentaProductos", VentaProductos);
+        intent.putExtra("cantidadAceites", cantidadAceites);
+        intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+        intent.putExtra("accesoUsuario", accesoUsuario);
+        startActivity(intent);
 
     }
 
