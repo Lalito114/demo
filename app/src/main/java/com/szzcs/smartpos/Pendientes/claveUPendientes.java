@@ -297,8 +297,6 @@ public class claveUPendientes extends BaseActivity implements FingerprintListene
         //Button btnenviar = (Button) findViewById(R.id.enviar);
         //Se lee el password del objeto y se asigna a variable
         final String posicion;
-        final EditText pasword = (EditText) findViewById(R.id.pasword);
-        final String pass = pasword.getText().toString();
         posicion = getIntent().getStringExtra("posicion");
         //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
 
@@ -311,44 +309,30 @@ public class claveUPendientes extends BaseActivity implements FingerprintListene
                     public void onResponse(String response) {
                         try {
                             //Se instancia la respuesta del json
-                            if (response.equals(null)){
-                                Toast.makeText(getApplicationContext(),"Clave inexistente ",Toast.LENGTH_SHORT).show();
+                            JSONObject validar = new JSONObject(response);
+                            String valido = validar.getString("Activo");
+                            String clave = validar.getString("Clave");
+                            if (valido == "true"){
+                                pasword.setText(clave);
+                                validaClave();
                             }else{
-                                JSONObject validar = new JSONObject(response);
-                                String valido = validar.getString("Activo");
-                                String idusuario = validar.getString("Id");
-                                if (valido == "true"){
-                                    //Si es valido se asignan valores
-                                    usuario.setText(idusuario);
-                                    carga.setText(posicion);
-                                    //Se instancia y se llama a la clase Venta de Productos
-                                    Intent intent = new Intent(getApplicationContext(), ticketPendientes.class); //formaPago
-                                    //Se envian los parametros de posicion y usuario
-                                    intent.putExtra("user",EmpleadoId);
-                                    //inicia el activity
-                                    startActivity(intent);
-                                    finish();
-                                }else {
-                                    //Si no es valido se envia mensaje de conteaseña incorrecta
-                                    try {
-                                        AlertDialog.Builder builder = new AlertDialog.Builder(claveUPendientes.this);
-                                        builder.setTitle("Productos");
-                                        builder.setCancelable(false);
-                                        builder.setMessage("Usuario no validado")
-                                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                                    @Override
-                                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                                        usuario.setText("");
-                                                    }
-                                                }).show();
-                                    } catch (Exception e) {
-                                        e.printStackTrace();
-                                    }
+                                //Si no es valido se envia mensaje de conteaseña incorrecta
+                                try {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(claveUPendientes.this);
+                                    builder.setTitle("Venta Productos");
+                                    builder.setMessage("Usuario no validado")
+                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    usuario.setText("");
+                                                }
+                                            }).show();
+                                }catch (Exception e){
+                                    e.printStackTrace();
                                 }
                             }
                         } catch (JSONException e) {
                             //herramienta  para diagnostico de excepciones
-                            //e.printStackTrace();
                             Toast.makeText(getApplicationContext(),"Clave inexistente ",Toast.LENGTH_SHORT).show();
                         }
                     }
@@ -366,7 +350,7 @@ public class claveUPendientes extends BaseActivity implements FingerprintListene
                     String errorMensaje = errorCaptado.getString("ExceptionMessage");
                     try {
                         AlertDialog.Builder builder = new AlertDialog.Builder(claveUPendientes.this);
-                        builder.setTitle("Tickets Pendientes");
+                        builder.setTitle("Venta Productos");
                         builder.setCancelable(false);
                         builder.setMessage("Usuario ocupado: " + errorMensaje)
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -374,6 +358,7 @@ public class claveUPendientes extends BaseActivity implements FingerprintListene
                                     public void onClick(DialogInterface dialogInterface, int i) {
                                         Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
                                         startActivity(intente);
+                                        finish();
                                     }
                                 }).show();
                     }catch (Exception e){

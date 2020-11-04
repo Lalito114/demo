@@ -98,8 +98,8 @@ public class claveIniciaVenta extends BaseActivity implements FingerprintListene
 
 
         // URL para obtener los empleados  y huellas de la posición de carga X
-        //String url = "http://" + ipEstacion + "/CorpogasService/api/estacionControles/empleadosPorIsla/estacionId/" + EstacionId + "/tipoBiometricoId/3";//posicionCargaId/" + carga.getText().toString();
-        String url = "http://"+ipEstacion+"/CorpogasService/api/estacionControles/empleadosTipoBiometrico/estacionId/"+EstacionId+"/tipoBiometricoId/3";
+        String url = "http://" + ipEstacion + "/CorpogasService/api/estacionControles/empleadosPorIsla/estacionId/" + EstacionId + "/tipoBiometricoId/3/posicionCargaId/" + carga.getText().toString();
+        //String url = "http://"+ipEstacion+"/CorpogasService/api/estacionControles/empleadosTipoBiometrico/estacionId/"+EstacionId+"/tipoBiometricoId/3";
 
         // Utilizamos el metodo Post para validar la contraseña
         StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
@@ -310,7 +310,7 @@ public class claveIniciaVenta extends BaseActivity implements FingerprintListene
 
     }
 
-    private void validaId(final String EmpleadoId) {
+    private void  validaId(final String EmpleadoId){
         //Crea Boton Enviar
         //Button btnenviar = (Button) findViewById(R.id.enviar);
         //Se lee el password del objeto y se asigna a variable
@@ -319,9 +319,9 @@ public class claveIniciaVenta extends BaseActivity implements FingerprintListene
         //----------------------Aqui va el Volley Si se tecleo contraseña----------------------------
 
         //Conexion con la base y ejecuta valida clave
-        String url = "http://" + ipEstacion + "/CorpogasService/api/SucursalEmpleados/" + EmpleadoId;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/SucursalEmpleados/"+EmpleadoId;
         // Utilizamos el metodo Post para validar la contraseña
-        StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
+        StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -329,25 +329,15 @@ public class claveIniciaVenta extends BaseActivity implements FingerprintListene
                             //Se instancia la respuesta del json
                             JSONObject validar = new JSONObject(response);
                             String valido = validar.getString("Activo");
-                            String idusuario = validar.getString("Id");
-                            if (valido == "true") {
-                                //Si es valido se asignan valores
-                                usuario.setText(idusuario);
-                                //carga.setText(posicion);
-                                //Se instancia y se llama a la clase Venta de Productos
-                                Intent intent = new Intent(getApplicationContext(), posicionFinaliza.class); //formaPago
-                                //Se envian los parametros de posicion y usuario
-                                intent.putExtra("usuario", idusuario);
-                                intent.putExtra("clave", idusuario);
-                                //inicia el activity
-                                startActivity(intent);
-                                finish();
-                            } else {
+                            String clave = validar.getString("Clave");
+                            if (valido == "true"){
+                                pasword.setText(clave);
+                                validaClave();
+                            }else{
                                 //Si no es valido se envia mensaje de conteaseña incorrecta
                                 try {
                                     AlertDialog.Builder builder = new AlertDialog.Builder(claveIniciaVenta.this);
-                                    builder.setTitle("Ventas");
-                                    builder.setCancelable(false);
+                                    builder.setTitle("Venta Productos");
                                     builder.setMessage("Usuario no validado")
                                             .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                                                 @Override
@@ -355,16 +345,13 @@ public class claveIniciaVenta extends BaseActivity implements FingerprintListene
                                                     usuario.setText("");
                                                 }
                                             }).show();
-                                } catch (Exception e) {
+                                }catch (Exception e){
                                     e.printStackTrace();
                                 }
-
-                                //Toast.makeText(getApplicationContext(),"La contraseña es incorecta",Toast.LENGTH_SHORT).show();
                             }
                         } catch (JSONException e) {
                             //herramienta  para diagnostico de excepciones
-                            //e.printStackTrace();
-                            Toast.makeText(getApplicationContext(), "Clave inexistente ", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(),"Clave inexistente ",Toast.LENGTH_SHORT).show();
                         }
                     }
                     //funcion para capturar errores
@@ -373,7 +360,7 @@ public class claveIniciaVenta extends BaseActivity implements FingerprintListene
             public void onErrorResponse(VolleyError error) {
                 //Toast.makeText(getApplicationContext(),error.toString(),Toast.LENGTH_SHORT).show();
                 //VolleyLog.e("Error: ", volleyError.getMessage());
-                String algo = new String(error.networkResponse.data);
+                String algo = new String(error.networkResponse.data) ;
                 try {
                     //creamos un json Object del String algo
                     JSONObject errorCaptado = new JSONObject(algo);
@@ -381,7 +368,7 @@ public class claveIniciaVenta extends BaseActivity implements FingerprintListene
                     String errorMensaje = errorCaptado.getString("ExceptionMessage");
                     try {
                         AlertDialog.Builder builder = new AlertDialog.Builder(claveIniciaVenta.this);
-                        builder.setTitle("Ventas");
+                        builder.setTitle("Venta Productos");
                         builder.setCancelable(false);
                         builder.setMessage("Usuario ocupado: " + errorMensaje)
                                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
@@ -392,7 +379,7 @@ public class claveIniciaVenta extends BaseActivity implements FingerprintListene
                                         finish();
                                     }
                                 }).show();
-                    } catch (Exception e) {
+                    }catch (Exception e){
                         e.printStackTrace();
                     }
 
