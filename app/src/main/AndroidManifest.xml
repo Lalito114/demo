@@ -98,7 +98,8 @@
         <activity android:name=".Productos.ListAdapterProductos" />
         <activity android:name=".Productos.posicionProductos" />
         <activity android:name=".Productos.terminaVenta" />
-        <activity android:name=".Productos.VentasProductos" />
+        <activity android:name=".Productos.VentasProductos"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".Productos.formapagoProducto" />
         <activity android:name=".Productos.productoFormapago" />
         <activity android:name=".Productos.tipoproducto" />
@@ -108,9 +109,11 @@
         <activity android:name=".Puntada.SeccionTarjeta" />
 
         <!--        Sub modulo Puntada Acumular-->
-        <activity android:name=".Puntada.Acumular.productos" />
+        <activity android:name=".Puntada.Acumular.productos"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".Puntada.Acumular.posicionCarga" />
-        <activity android:name=".Puntada.Acumular.ClaveDespachadorAcumular" />
+        <activity android:name=".Puntada.Acumular.ClaveDespachadorAcumular"
+            android:windowSoftInputMode="stateHidden"/>
         <activity android:name=".Puntada.Acumular.ActivityEscanear" />
         <!--        Termina sub modulos de Acumular-->
 
