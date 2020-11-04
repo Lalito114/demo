@@ -93,6 +93,4 @@ public class ValePapelDenominacion implements Serializable {
     public void setDenominacion(double denominacion) {
         Denominacion = denominacion;
     }
-
-
 }

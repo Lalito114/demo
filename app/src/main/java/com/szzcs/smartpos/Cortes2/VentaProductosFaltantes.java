@@ -58,9 +58,9 @@ public class VentaProductosFaltantes extends AppCompatActivity implements View.O
     JSONObject mjason;
     JSONArray myArray = new JSONArray();
     JSONObject JOcompleto = new JSONObject();
-    String turnoId, islaId, fechatrabajo, cierreId;
+    String islaId, fechatrabajo;
 
-    String posicion, usuario;
+    String posicion;
     int elementoSeleccionado;
     int elementoSeleccionadoID;
     int [] ArrayArticulos;
@@ -89,7 +89,17 @@ public class VentaProductosFaltantes extends AppCompatActivity implements View.O
     List<String> TipoProductoId;
     List<String> DescripcionPr;
 
-    Double VentaTotalProductos;
+//    Double VentaTotalProductos;
+
+    RespuestaApi<Cierre> cierreRespuestaApi;
+    long cierreId;
+    long turnoId;
+
+    String VentaProductos;
+    String cantidadAceites;
+
+    RespuestaApi<AccesoUsuario> accesoUsuario;
+    long idusuario;
 
 
     @Override
@@ -98,21 +108,25 @@ public class VentaProductosFaltantes extends AppCompatActivity implements View.O
         setContentView(R.layout.activity_venta_productos_faltantes);
 
         SQLiteBD db = new SQLiteBD(getApplicationContext());
+        cierreRespuestaApi = (RespuestaApi<Cierre>) getIntent().getSerializableExtra( "lcierreRespuestaApi");
+        accesoUsuario = (RespuestaApi<AccesoUsuario>) getIntent().getSerializableExtra("accesoUsuario");
         EstacionId = db.getIdEstacion();
         sucursalId = db.getIdSucursal();
         ipEstacion= db.getIpEstacion();
         tipoTransaccion = "1"; //Transaccion Normal
         numerodispositivo = "1";
-
         posicion = getIntent().getStringExtra("posicion");
-        usuario = getIntent().getStringExtra("usuario");
-        productosaEntregar= getIntent().getStringExtra("productosEntregados");
-        turnoId = getIntent().getStringExtra("turnoId");
+        idusuario = accesoUsuario.getObjetoRespuesta().getSucursalEmpleadoId();
+        productosaEntregar= getIntent().getStringExtra("articulos");
         islaId = getIntent().getStringExtra("islaId");
-        fechatrabajo = getIntent().getStringExtra("fechatrabajo");
-        cierreId = getIntent().getStringExtra("cierreId");
+        fechatrabajo = cierreRespuestaApi.getObjetoRespuesta().getFechaTrabajo();
+        VentaProductos = getIntent().getStringExtra("VentaProductos"); //null
+        cantidadAceites = getIntent().getStringExtra("cantidadAceites");
 
-        VentaTotalProductos = Double.parseDouble(getIntent().getStringExtra("ventaproductos"));
+        turnoId = cierreRespuestaApi.getObjetoRespuesta().getTurnoId();
+        cierreId = cierreRespuestaApi.getObjetoRespuesta().getId();
+
+//        VentaTotalProductos = Double.parseDouble(getIntent().getStringExtra("ventaproductos"));
 
         try {
             ArrayResultante = new JSONArray(productosaEntregar);
@@ -141,11 +155,14 @@ public class VentaProductosFaltantes extends AppCompatActivity implements View.O
 
                     if (TotalElementosLista == TotalElementosArregloVendidos){
                         //Envia a siguiente Activity
-                        try {
-                            ObtieneArrayResultanteparaGuardar();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
+                            Intent intent = new Intent(getApplicationContext(),FajillasBilletes.class);
+                            intent.putExtra("idusuario", idusuario);
+                            intent.putExtra("islaId", islaId);
+                            intent.putExtra("VentaProductos", String.valueOf(VentaProductos));
+                            intent.putExtra("cantidadAceites", String.valueOf(cantidadAceites));
+                            intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+                            intent.putExtra("accesoUsuario", accesoUsuario);
+                            startActivity(intent);
                     }else{
                         Toast.makeText(getApplicationContext(), "Aún existe productos que no se han capturado las ventas pendientes", Toast.LENGTH_LONG).show();
                     }
@@ -189,11 +206,9 @@ public class VentaProductosFaltantes extends AppCompatActivity implements View.O
                         mjason.put("Precio", precioUnitario);
 
                         //String cadenaVenta = myArray.toString();
-                        EnviarProductos(posicion, usuario);
+                        EnviarProductos(posicion, String.valueOf(idusuario), ProductoIdEntero);
 
-                        JSONObject mjasonP = new JSONObject();
-                        mjasonP.put("ProductoId", ProductoIdEntero);
-                        myArrayArticulo.put(mjasonP);
+
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -208,11 +223,11 @@ public class VentaProductosFaltantes extends AppCompatActivity implements View.O
         JsonArray acierreformapago= new JsonArray();
         JsonArray accarretes= new JsonArray();
         JsonArray acdetallecategoriaproducto= new JsonArray();
-        String url = "http://"+ipEstacion+"/CorpogasService/api/cierres/GuardaCierreDetalle/usuario/"+usuario;
+        String url = "http://"+ipEstacion+"/CorpogasService/api/cierres/GuardaCierreDetalle/usuario/"+idusuario;
         RequestQueue queue = Volley.newRequestQueue(this);
         try {
             JOcompleto.put("SucursalId", Integer.parseInt(sucursalId));
-            JOcompleto.put("TurnoId", Integer.parseInt(turnoId));
+            JOcompleto.put("TurnoId", turnoId);
             JOcompleto.put("TurnoSucursalId", Integer.parseInt(sucursalId));
             JOcompleto.put("Transacciones", 0);
             JOcompleto.put("TotalVenta", 0);
@@ -471,7 +486,7 @@ public class VentaProductosFaltantes extends AppCompatActivity implements View.O
         //}
     }
 
-    private void EnviarProductos(final String posicionCarga, final String Usuarioid) {
+    private void EnviarProductos(final String posicionCarga, final String Usuarioid, final Integer ProductoIdEntero) {
         //String url = "http://"+ipEstacion+"/CorpogasService/api/ventaProductos/GuardaProductos/sucursal/"+sucursalId+"/origen/"+numerodispositivo+"/usuario/"+Usuarioid+"/posicionCarga/"+posicionCarga;
         String url = "http://"+ipEstacion+"/CorpogasService/api/ventaProductos/GuardaProducto/sucursal/"+sucursalId+"/origen/"+numerodispositivo+"/usuario/"+Usuarioid+"/islaId/"+posicionCarga;
         RequestQueue queue = Volley.newRequestQueue(this);
@@ -490,6 +505,9 @@ public class VentaProductosFaltantes extends AppCompatActivity implements View.O
                 }
                 if (estado.equals("true")){
                     try {
+                        JSONObject mjasonP = new JSONObject();
+                        mjasonP.put("ProductoId", ProductoIdEntero);
+                        myArrayArticulo.put(mjasonP);
                         AlertDialog.Builder builder = new AlertDialog.Builder(VentaProductosFaltantes.this);
                         builder.setTitle("Venta Productos");
 

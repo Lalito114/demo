@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.gson.Gson;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -49,7 +50,7 @@ public class DesgloseVales extends AppCompatActivity {
     RespuestaApi<ValePapelDenominacion> outputList;
     SQLiteBD data;
     String islaId;
-    String usuarioId;
+
     String sumaPicosBilletes;
     String dineroBilletes;
     String dineroMorralla;
@@ -59,6 +60,9 @@ public class DesgloseVales extends AppCompatActivity {
     RespuestaApi<Cierre> cierreRespuestaApi;
     long cierreId;
     long turnoId;
+
+    RespuestaApi<AccesoUsuario> accesoUsuario;
+    long idusuario;
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -72,27 +76,25 @@ public class DesgloseVales extends AppCompatActivity {
         btnRegresaVales =(Button) findViewById(R.id.regresaValesPapel);
 
         data = new SQLiteBD(getApplicationContext());
+        cierreRespuestaApi = (RespuestaApi<Cierre>) getIntent().getSerializableExtra( "lcierreRespuestaApi");
+        accesoUsuario = (RespuestaApi<AccesoUsuario>) getIntent().getSerializableExtra("accesoUsuario");
+        lCarrito = (ArrayList<ValePapelDenominacion>) getIntent().getSerializableExtra( "lCarrito");
         islaId = getIntent().getStringExtra("islaId");
-        usuarioId =getIntent().getStringExtra("idusuario");
+        idusuario = accesoUsuario.getObjetoRespuesta().getSucursalEmpleadoId();
         sumaPicosBilletes = getIntent().getStringExtra("sumaPicosBilletes");
         dineroBilletes = getIntent().getStringExtra("dineroBilletes");
         dineroMorralla = getIntent().getStringExtra("dineroMorralla");
         VentaProductos = getIntent().getStringExtra("VentaProductos");
         cantidadAceites = getIntent().getStringExtra("cantidadAceites");
-
-        cierreRespuestaApi = (RespuestaApi<Cierre>) getIntent().getSerializableExtra( "lcierreRespuestaApi");
         turnoId = cierreRespuestaApi.getObjetoRespuesta().getTurnoId();
         cierreId = cierreRespuestaApi.getObjetoRespuesta().getId();
 
-
-        lCarrito = (ArrayList<ValePapelDenominacion>) getIntent().getSerializableExtra( "lCarrito");
         InitData();
         SetRecyclerView();
 
         btnGuardar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
 
                 new Thread(new Runnable() {
                     public void run() {
@@ -109,18 +111,42 @@ public class DesgloseVales extends AppCompatActivity {
                                 String respuetas = null;
                                 boolean  Correcto = outputList.Correcto;
                                 if(Correcto == true){
-                                    //respuetas =  "Se registraron con exito los vales";
-                                    Intent intent = new Intent(getApplicationContext(), CierreFormaPago.class);
-                                    intent.putExtra("lCarrito", lCarrito);
-                                    intent.putExtra("islaId",islaId);
-                                    intent.putExtra("idusuario", usuarioId);
-                                    intent.putExtra("sumaPicosBilletes",sumaPicosBilletes);
-                                    intent.putExtra("dineroBilletes",dineroBilletes);
-                                    intent.putExtra("dineroMorralla",dineroMorralla);
-                                    intent.putExtra("VentaProductos", VentaProductos);
-                                    intent.putExtra("cantidadAceites", cantidadAceites);
-                                    intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
-                                    startActivity(intent);
+
+                                    String mensaje = "Registro de Vales exitoso.";
+                                    Modales modales = new Modales(DesgloseVales.this);
+                                    View view1 = modales.MostrarDialogoCorrecto(DesgloseVales.this,mensaje);
+                                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            Intent intent = new Intent(getApplicationContext(), CierreFormaPago.class);
+                                            intent.putExtra("lCarrito", lCarrito);
+                                            intent.putExtra("islaId",islaId);
+                                            intent.putExtra("sumaPicosBilletes",sumaPicosBilletes);
+                                            intent.putExtra("dineroBilletes",dineroBilletes);
+                                            intent.putExtra("dineroMorralla",dineroMorralla);
+                                            intent.putExtra("VentaProductos", VentaProductos);
+                                            intent.putExtra("cantidadAceites", cantidadAceites);
+                                            intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+                                            intent.putExtra("accesoUsuario", accesoUsuario);
+                                            startActivity(intent);
+                                            modales.alertDialog.dismiss();
+                                        }
+                                    });
+
+
+//                                    respuetas =  "Se registraron con exito los vales";
+//                                    Intent intent = new Intent(getApplicationContext(), CierreFormaPago.class);
+//                                    intent.putExtra("lCarrito", lCarrito);
+//                                    intent.putExtra("islaId",islaId);
+//                                    intent.putExtra("sumaPicosBilletes",sumaPicosBilletes);
+//                                    intent.putExtra("dineroBilletes",dineroBilletes);
+//                                    intent.putExtra("dineroMorralla",dineroMorralla);
+//                                    intent.putExtra("VentaProductos", VentaProductos);
+//                                    intent.putExtra("cantidadAceites", cantidadAceites);
+//                                    intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+//                                    intent.putExtra("accesoUsuario", accesoUsuario);
+//
+//                                    startActivity(intent);
                                 }else{
                                     respuetas =  outputList.Mensaje;
 
@@ -150,7 +176,8 @@ public class DesgloseVales extends AppCompatActivity {
 //        String json = new Gson().toJson(tanqueLlenoPrueba);
 
         String json = new Gson().toJson(lCarrito);
-        String postUrl = "http://"+data.getIpEstacion()+"/CorpogasService/api/cierreValePapeles/cierre/sucursalId/"+data.getIdSucursal()+"/usuarioId/"+usuarioId+"/islaId/"+islaId;                    //"http://10.0.1.20/CorpogasService/api/cierreValePapeles/cierre/sucursalId/1/usuarioId/1/islaId/1";// put in your url
+        String postUrl = "http://"+data.getIpEstacion()+"/CorpogasService/api/cierreValePapeles/sucursal/"+data.getIdSucursal()+"/isla/"+islaId+"/usuario/"+idusuario;
+//        String postUrl = "http://"+data.getIpEstacion()+"/CorpogasService/api/cierreValePapeles/cierre/sucursalId/"+data.getIdSucursal()+"/usuarioId/"+idusuario+"/islaId/"+islaId;                    //"http://10.0.1.20/CorpogasService/api/cierreValePapeles/cierre/sucursalId/1/usuarioId/1/islaId/1";// put in your url
 
         HttpClient client = new DefaultHttpClient();
         HttpConnectionParams.setConnectionTimeout(client.getParams(), 1000);
@@ -279,5 +306,21 @@ public class DesgloseVales extends AppCompatActivity {
 
                 valesImporteTxt.setText("Total: $"+String.valueOf(totalPrice));
             }
+    }
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), SubOfiGasopass.class);
+        intent.putExtra("lCarrito", lCarrito);
+        intent.putExtra("islaId",islaId);
+        intent.putExtra("sumaPicosBilletes",sumaPicosBilletes);
+        intent.putExtra("dineroBilletes",dineroBilletes);
+        intent.putExtra("dineroMorralla",dineroMorralla);
+        intent.putExtra("VentaProductos", VentaProductos);
+        intent.putExtra("cantidadAceites", cantidadAceites);
+        intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+        intent.putExtra("accesoUsuario", accesoUsuario);
+        startActivity(intent);
+
     }
 }

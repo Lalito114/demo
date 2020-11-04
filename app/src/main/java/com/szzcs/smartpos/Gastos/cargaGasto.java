@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -22,6 +23,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.PrintFragmentVale;
@@ -162,16 +164,28 @@ public class cargaGasto extends AppCompatActivity {
         JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, mjason, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
-                Toast.makeText(getApplicationContext(),"Gasto Cargado Exitosamente",Toast.LENGTH_LONG).show();
-                String numeroticket = null;
-                try {
-                    numeroticket = response.getString("Id");
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                String titulo = "AVISO";
+                String mensaje = "Gasto cargado exitosamente";
+                Modales modales = new Modales(cargaGasto.this);
+                View view1 = modales.MostrarDialogoAlertaAceptar(cargaGasto.this,mensaje,titulo);
+                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        modales.alertDialog.dismiss();
+                        String numeroticket = null;
+                        try {
+                            numeroticket = response.getString("Id");
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
 
-                ObtenerCuerpoTicket(subTotal.getText().toString(), iva.getText().toString(), Descripcion.getText().toString(), txtDescripcion.getText().toString(), numeroticket, empleado);
-                //Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
+                        ObtenerCuerpoTicket(subTotal.getText().toString(), iva.getText().toString(), Descripcion.getText().toString(), txtDescripcion.getText().toString(), numeroticket, empleado);
+                        //Toast.makeText(getApplicationContext(),response.toString(),Toast.LENGTH_LONG).show();
+
+                    }
+                });
+
+                //Toast.makeText(getApplicationContext(),"Gasto Cargado Exitosamente",Toast.LENGTH_LONG).show();
             }
         }, new Response.ErrorListener() {
             @Override
@@ -363,4 +377,81 @@ public class cargaGasto extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+    //procedimiento para  cachar el Enter del teclado
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                calculos();
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
+    }
+
+    private void calculos() {
+        if (txtClave.length() == 0)       //.length() >0)
+        {
+            String titulo = "AVISO";
+            String mensaje = "Seleccione uno de los tipos de gasto";
+            Modales modales = new Modales(cargaGasto.this);
+            View view1 = modales.MostrarDialogoAlertaAceptar(cargaGasto.this,mensaje,titulo);
+            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    modales.alertDialog.dismiss();
+                }
+            });
+            //Toast.makeText(getApplicationContext(), "Seleccione al menos uno de los tipos de gasto", Toast.LENGTH_LONG).show();
+        } else {
+            if (Descripcion.length() == 0) {
+                String titulo = "AVISO";
+                String mensaje = "digite la descripción";
+                Modales modales = new Modales(cargaGasto.this);
+                View view1 = modales.MostrarDialogoAlertaAceptar(cargaGasto.this,mensaje,titulo);
+                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        modales.alertDialog.dismiss();
+                    }
+                });
+                //Toast.makeText(getApplicationContext(), "Dijite una descripción", Toast.LENGTH_LONG).show();
+            } else {
+                if (subTotal.length() == 0) {
+                    String titulo = "AVISO";
+                    String mensaje = "digite el Subtotal";
+                    Modales modales = new Modales(cargaGasto.this);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(cargaGasto.this,mensaje,titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+                        }
+                    });
+
+                    //Toast.makeText(getApplicationContext(), "Digite el Subtotal", Toast.LENGTH_LONG).show();
+                } else {
+                    if(iva.length()==0){
+                        String titulo = "AVISO";
+                        String mensaje = "digite el IVA";
+                        Modales modales = new Modales(cargaGasto.this);
+                        View view1 = modales.MostrarDialogoAlertaAceptar(cargaGasto.this,mensaje,titulo);
+                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                modales.alertDialog.dismiss();
+                            }
+                        });
+
+                        //Toast.makeText(getApplicationContext(), "Digite el IVA", Toast.LENGTH_LONG).show();
+                    }else {
+                        EnviarGastos();
+                    }
+                }
+            }
+        }
+    }
+
+
 }

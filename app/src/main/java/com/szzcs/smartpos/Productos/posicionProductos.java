@@ -10,7 +10,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -18,8 +17,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.szzcs.smartpos.FinalizaVenta.claveFinalizaVenta;
 import com.szzcs.smartpos.FinalizaVenta.posicionFinaliza;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
@@ -29,9 +28,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class posicionProductos extends AppCompatActivity {
     //declaracion de variables
@@ -83,9 +80,17 @@ public class posicionProductos extends AppCompatActivity {
                         //La asignamos a un nuevo elemento de ArrayList
                         imgid = new ArrayList<>();
 
+                        List<String> permiteventa;
+                        permiteventa = new ArrayList<>();
+
+                        List<String> numeroOperativa;
+                        numeroOperativa = new ArrayList<>();
+
                         String carga;
                         String pendientdecobro;
                         String descripcionoperativa;
+                        String permiteventaproductos;
+                        String numerooperativa;
                         try {
                             JSONObject jsonObject = new JSONObject(response);
                             String ObjetoRespuesta = jsonObject.getString("ObjetoRespuesta");
@@ -126,15 +131,22 @@ public class posicionProductos extends AppCompatActivity {
                                         carga = res.getString("PosicionCargaId");
                                         pendientdecobro = res.getString("PendienteCobro");
                                         descripcionoperativa =res.getString("DescripcionOperativa");
+                                        numerooperativa = res.getString("Operativa");
+                                        permiteventaproductos = res.getString("PermiteProductos");
                                         if (pendientdecobro.equals("false")) {
                                             maintitle.add("PC " + carga);
                                             maintitle1.add(carga);
                                             subtitle.add("Magna  |  Premium  |  Diesel");
+                                            permiteventa.add(permiteventaproductos);
+                                            numeroOperativa.add(numerooperativa);
                                             imgid.add(R.drawable.gas);
+
                                         }else{
                                             maintitle.add("PC " + carga);
                                             maintitle1.add(carga);
                                             subtitle.add(descripcionoperativa);
+                                            permiteventa.add(permiteventaproductos);
+                                            numeroOperativa.add(numerooperativa);
                                             imgid.add(R.drawable.gas);
                                         }
                                     }
@@ -153,19 +165,58 @@ public class posicionProductos extends AppCompatActivity {
                             @Override
                             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                                 // TODO Auto-generated method stub
-                                String numerocarga = maintitle1.get(position);
-                                posicion = numerocarga;
-                                //Se llama la clase para la clave del usuario
-                                Intent intente = new Intent(getApplicationContext(), VentasProductos.class);
-                                //se envia el id seleccionado a la clase Usuario Producto
-                                intente.putExtra("posicion",posicion);
-                                intente.putExtra("usuario",usuarioid);
-                                intente.putExtra("cadenaproducto", "");
-                                intente.putExtra("lugarproviene", "SoloProductos");
-                                //Ejecuta la clase del Usuario producto
-                                startActivity(intente);
-                                //Finaliza activity
-                                finish();
+                                String ventapermitida = permiteventa.get(position);
+                                String operativa = subtitle.get(position);
+                                String numerooperativa = numeroOperativa.get(position);
+                                if (ventapermitida == "true") {
+                                    String numerocarga = maintitle1.get(position);
+                                    posicion = numerocarga;
+                                    //Se llama la clase para la clave del usuario
+                                    Intent intente = new Intent(getApplicationContext(), VentasProductos.class);
+                                    //se envia el id seleccionado a la clase Usuario Producto
+                                    intente.putExtra("posicion", posicion);
+                                    intente.putExtra("usuario", usuarioid);
+                                    intente.putExtra("cadenaproducto", "");
+                                    intente.putExtra("lugarproviene", "SoloProductos");
+                                    intente.putExtra("numeroOperativa", numerooperativa);
+                                    //Ejecuta la clase del Usuario producto
+                                    startActivity(intente);
+                                    //Finaliza activity
+                                    finish();
+                                }else{
+                                    //Mensaje para comunicar que no se puede agregar productos
+                                    try {
+                                        //Toast.makeText(posicionFinaliza.this, "No hay Posiciones de Carga para Finalizar Venta", Toast.LENGTH_SHORT).show();
+                                        String titulo = "AVISO";
+                                        String mensaje = "La posición de carga no tiene permitido agregar productos ";
+                                        Modales modales = new Modales(posicionProductos.this);
+                                        View view1 = modales.MostrarDialogoAlertaAceptar(posicionProductos.this,mensaje,titulo);
+                                        view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                modales.alertDialog.dismiss();
+                                                Intent intent1 = new Intent(getApplicationContext(), claveProducto.class);
+                                                startActivity(intent1);
+                                                finish();
+                                            }
+                                        });
+
+//                                        AlertDialog.Builder builder = new AlertDialog.Builder(posicionProductos.this);
+//                                        builder.setTitle("Productos");
+//                                        builder.setCancelable(false);
+//                                        builder.setMessage("La posición de carga no tiene permitido agregar productos"+operativa )
+//                                                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//                                                    @Override
+//                                                    public void onClick(DialogInterface dialogInterface, int i) {
+//                                                        Intent intent = new Intent(getApplicationContext(), claveProducto.class);
+//                                                        startActivity(intent);
+//                                                        finish();
+//                                                    }
+//                                                }).show();
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
                         });
                     }

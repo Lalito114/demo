@@ -18,6 +18,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.FinalizaVenta.posicionFinaliza;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.PrintFragmentVale;
@@ -34,8 +36,9 @@ import java.util.List;
 import java.util.Map;
 
 public class FPaga extends AppCompatActivity {
-    String EstacionId, sucursalId, ipEstacion ;
+    String EstacionId, sucursalId, ipEstacion, numerooperativa ;
     Bundle args = new Bundle();
+    String tanquellenonumerooperativa="5";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,13 +47,21 @@ public class FPaga extends AppCompatActivity {
 
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
-        sucursalId=db.getIdSucursal();
+        sucursalId = db.getIdSucursal();
         ipEstacion = db.getIpEstacion();
 
         setContentView(R.layout.activity_f_paga);
         ListView list;
         list = findViewById(R.id.list);
-        cargaFormapago();
+        numerooperativa = getIntent().getStringExtra("numeroOperativa");
+        if (numerooperativa == tanquellenonumerooperativa) {//"Tanque LLeno"
+            String NombreFormapago = "Tanque Lleno";
+            String  FormaPagoId = "18";
+            String  copias = "2";
+            EnviarDatos(FormaPagoId, copias, NombreFormapago);
+        } else{
+            cargaFormapago();
+        }
     }
     private void cargaFormapago(){
         //Declaramos direccion URL de las posiciones de carga. Para acceder a los metodos de la API
@@ -180,25 +191,45 @@ public class FPaga extends AppCompatActivity {
         //Enviar datos de peoductos y posicion de carga para regresar Ticket
         builder = new AlertDialog.Builder(this);
         if (FormaPagoId == "2") { //Efectivo
-            builder.setMessage("Desea finalizar  la Venta?");
-            builder.setTitle("Venta de Productos");
-            builder.setCancelable(false);
-            builder.setPositiveButton("FINALIZAR", new DialogInterface.OnClickListener() {
+
+            String titulo = "Finaliza Venta";
+            String mensaje = "Desea finalizar la venta?";
+            Modales modales = new Modales(FPaga.this);
+            View viewLectura = modales.MostrarDialogoAlerta(FPaga.this, mensaje,  "FINALIZAR", "Imprimir");
+            viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    //Finaliza Venta;
-                    dialogInterface.cancel();
+                public void onClick(View view) {
                     finalizaventa(posicion, usuarioid);
                 }
-            }).setNegativeButton("imprimir", new DialogInterface.OnClickListener() {
+            });
+
+            viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialogInterface, int i) {
-                    //Funcion para obtener los datos del ticker
+                public void onClick(View view) {
                     ObtenerCuerpoTicket(NombreFormapago, Copias, posicion, usuarioid, FormaPagoId);
+                    modales.alertDialog.dismiss();
                 }
             });
-            AlertDialog dialog = builder.create();
-            dialog.show();
+
+//            builder.setMessage("Desea finalizar  la Venta?");
+//            builder.setTitle("Venta de Productos");
+//            builder.setCancelable(false);
+//            builder.setPositiveButton("FINALIZAR", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialogInterface, int i) {
+//                    //Finaliza Venta;
+//                    dialogInterface.cancel();
+//                    finalizaventa(posicion, usuarioid);
+//                }
+//            }).setNegativeButton("imprimir", new DialogInterface.OnClickListener() {
+//                @Override
+//                public void onClick(DialogInterface dialogInterface, int i) {
+//                    //Funcion para obtener los datos del ticker
+//                    ObtenerCuerpoTicket(NombreFormapago, Copias, posicion, usuarioid, FormaPagoId);
+//                }
+//            });
+//            AlertDialog dialog = builder.create();
+//            dialog.show();
         } else {
             //Funcion para obtener los datos del ticker
             ObtenerCuerpoTicket(FormaPagoId, Copias, posicion, usuarioid, FormaPagoId);
@@ -212,16 +243,66 @@ public class FPaga extends AppCompatActivity {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //Toast.makeText(getApplicationContext(),response,Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
-                        startActivity(intent);
-                        finish();
                         try {
-                            JSONObject jsonObject = new JSONObject(response);
+                            JSONObject respuesta = new JSONObject(response);
+                            String correcto = respuesta.getString("Correcto");
+                            String mensaje = respuesta.getString("Mensaje");
+                            String objetoRespuesta = respuesta.getString("ObjetoRespuesta");
+                            if (objetoRespuesta.equals(null)) {
+                                try {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(FPaga.this);
+                                    builder.setTitle("Productos");
+                                    builder.setCancelable(false);
+                                    builder.setMessage(""+ mensaje )
+                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialogInterface, int i) {
+                                                    Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                                    startActivity(intent);
+                                                    finish();
+                                                }
+                                            }).show();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+
+                            }else {
+                                try {
+                                    String titulo = "AVISO";
+                                    String mensajes = "Venta Finalizada Correctamente";
+                                    Modales modales = new Modales(FPaga.this);
+                                    View view1 = modales.MostrarDialogoAlertaAceptar(FPaga.this,mensajes,titulo);
+                                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                                        @Override
+                                        public void onClick(View view) {
+                                            modales.alertDialog.dismiss();
+                                            Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+                                            startActivity(intent);
+                                            finish();
+
+                                        }
+                                    });
+
+
+//                                    AlertDialog.Builder builder = new AlertDialog.Builder(FPaga.this);
+//                                    builder.setTitle("Productos");
+//                                    builder.setCancelable(false);
+//                                    builder.setMessage("Venta Finalizada Correctamente" )
+//                                            .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+//                                                @Override
+//                                                public void onClick(DialogInterface dialogInterface, int i) {
+//                                                    Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
+//                                                    startActivity(intent);
+//                                                    finish();
+//                                                }
+//                                            }).show();
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
                     }
                 }, new Response.ErrorListener() {
             @Override

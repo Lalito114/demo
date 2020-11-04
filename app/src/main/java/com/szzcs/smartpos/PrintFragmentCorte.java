@@ -200,43 +200,47 @@ public class PrintFragmentCorte  extends PreferenceFragment {
                     //Datos obre el regimen y domicilio Fiscal
                     mPrinter.setPrintAppendString(data.getCalle() + ", " + data.getNumeroExterior()+ ", " + data.getNumeroInterno() +", " + data.getColonia() +
                             data.getLocalidad() +  ", " + data.getMunicipio() + ", " + data.getEstado() + ", " + data.getPais() + ", CP:" + data.getCP(), format);
-                    mPrinter.setPrintAppendString(" ",format);
-                    mPrinter.setPrintAppendString("RFC: "+data.getRFC()+" SIIC: " + data.getSIIC(),format);
+                    //mPrinter.setPrintAppendString(" ",format);
+                    //mPrinter.setPrintAppendString("RFC: "+data.getRFC()+" SIIC: " + data.getSIIC(),format);
                     mPrinter.setPrintAppendString("" ,format);
-                    mPrinter.setPrintAppendString(data.getRegimenFiscal() ,format);
-
-                    mPrinter.setPrintAppendString("",format);
+                    //mPrinter.setPrintAppendString(data.getRegimenFiscal() ,format);
+                    format.setTextSize(30);
+                    format.setStyle(PrnTextStyle.BOLD);
+                    mPrinter.setPrintAppendString(" CORTE",format);
                     mPrinter.setPrintAppendString("-----------" ,format);
 
+                    format.setTextSize(23);
+                    format.setStyle(PrnTextStyle.NORMAL);
                     String subtotalcombustible = getArguments().getString("subtotalcombustible");
                     String subtotalcombustible1 = getArguments().getString("subtotalcombustible1");
                     String subtotalcombustible2 = getArguments().getString("subtotalcombustible2");
                     String subtotalT = getArguments().getString("subtotalT");
 
-                    String subtotalproducto = getArguments().getString("subtotalproducto");
-                    String subtotalproducto1 = getArguments().getString("subtotalproducto1");
-                    String subtotalproducto2 = getArguments().getString("subtotalproducto2");
-                    String subtotalproductoT = getArguments().getString("subtotalproductoT");
+                    String subtotalproducto = "40";  //getArguments().getString("subtotalproducto");
+                    String subtotalproducto1 = "25"; //getArguments().getString("subtotalproducto1");
+                    String subtotalproducto2 = "15";//getArguments().getString("subtotalproducto2");
+                    String subtotalproductoT = "1682";//getArguments().getString("subtotalproductoT");
 
-                    String fajillabiletes = getArguments().getString("fajillabiletes");
-                    String fajillamorralla = getArguments().getString("fajillamorralla");
-                    String picosbilletes = getArguments().getString("picosbilletes");
-                    String morrallita = getArguments().getString("morrallita");
-                    String gastos = getArguments().getString("gastos");
-                    String jarreo = getArguments().getString("picosbilletes");
-                    String valesgasolina = getArguments().getString("morrallita");
+                    String fajillabiletes =  "4,000";//getArguments().getString("fajillabiletes");
+                    String fajillamorralla =  "1,200";   //getArguments().getString("fajillamorralla");
+                    String picosbilletes = "800";//getArguments().getString("picosbilletes");
+                    String morrallita = "190";//getArguments().getString("morrallita");
+                    String gastos = "300";//getArguments().getString("gastos");
+                    String jarreo = "100";//getArguments().getString("picosbilletes");
+                    String valesgasolina = "80";//getArguments().getString("morrallita");
 
-                    String subtotal = getArguments().getString("subtotal");
-                    String total = getArguments().getString("total");
-                    String diferencia = getArguments().getString("diferencia");
+                    String subtotal = "8,352";   //getArguments().getString("subtotal");
+                    String total = "8,352";//getArguments().getString("total");
+                    String diferencia = "0.0";//getArguments().getString("diferencia");
 
 
-                    String jefeisla = getArguments().getString("jefeisla");
-                    String isla = getArguments().getString("isla");
-                    String turno = getArguments().getString("turno");
+                    String jefeisla ="YISUIS"; //getArguments().getString("jefeisla");
+                    String isla ="1"; //getArguments().getString("isla");
+                    String turno ="3"; //getArguments().getString("turno");
 
                         format.setTextSize(30);
                         format.setStyle(PrnTextStyle.BOLD);
+
 
                         mPrinter.setPrintAppendString("Jefe de Isla: "+jefeisla,format);
                         mPrinter.setPrintAppendString("Isla " + isla,format);
@@ -247,39 +251,39 @@ public class PrintFragmentCorte  extends PreferenceFragment {
                         format.setTextSize(30);
                         format.setStyle(PrnTextStyle.NORMAL);
                         format.setAli(Layout.Alignment.ALIGN_NORMAL);
-                        mPrinter.setPrintAppendString("     VENTA TOTAL        ",format);
-                        mPrinter.setPrintAppendString("  "+subtotalcombustible, format); //MAGNA
-                        mPrinter.setPrintAppendString("  "+subtotalcombustible1, format); //PREMIUM
-                        mPrinter.setPrintAppendString("  "+subtotalcombustible2, format); //DIESEL
+                        mPrinter.setPrintAppendString("         VENTA TOTAL        ",format);
+                        mPrinter.setPrintAppendString("Magna.................."+subtotalcombustible, format); //MAGNA
+                        mPrinter.setPrintAppendString("Premium................"+subtotalcombustible1, format); //PREMIUM
+                        mPrinter.setPrintAppendString("Diesel................."+subtotalcombustible2, format); //DIESEL
                         mPrinter.setPrintAppendString("" ,format);
 
 
                         mPrinter.setPrintAppendString("     VENTA TOTAL PRODUCTOS       ",format);
-                        mPrinter.setPrintAppendString("  "+subtotalproducto, format); //topoil
-                        mPrinter.setPrintAppendString("  "+subtotalproducto1, format); //topCop
-                        mPrinter.setPrintAppendString("  "+subtotalproducto2, format); //Miis P
-                        mPrinter.setPrintAppendString("  "+subtotalproductoT, format); //
-                        mPrinter.setPrintAppendString("" ,format);
-                        mPrinter.setPrintAppendString("     SUBTOTAL          "+subtotalT ,format);
+                        mPrinter.setPrintAppendString("Topoil................."+subtotalproducto, format); //topoil
+                        mPrinter.setPrintAppendString("TopEOp................."+subtotalproducto1, format); //topCop
+                        mPrinter.setPrintAppendString("Misspi................."+subtotalproducto2, format); //Miis P
+                        //mPrinter.setPrintAppendString("Subtotal.."+subtotalproductoT, format); //
+                        //mPrinter.setPrintAppendString("" ,format);
+                        mPrinter.setPrintAppendString("     SUBTOTAL.........."+subtotalT ,format);
 
 
                         mPrinter.setPrintAppendString("" ,format);
-                        mPrinter.setPrintAppendString("  "+fajillabiletes, format);
-                        mPrinter.setPrintAppendString("  "+fajillamorralla, format);
-                        mPrinter.setPrintAppendString("  "+picosbilletes, format);
-                        mPrinter.setPrintAppendString("  "+morrallita, format);
+                        mPrinter.setPrintAppendString("Fajillas billetes......"+fajillabiletes, format);
+                        mPrinter.setPrintAppendString("Fajillas morralla......"+fajillamorralla, format);
+                        mPrinter.setPrintAppendString("Picos billetes........."+picosbilletes, format);
+                        mPrinter.setPrintAppendString("Morrallita............."+morrallita, format);
 
-                        mPrinter.setPrintAppendString("  "+gastos, format);
-                        mPrinter.setPrintAppendString("  "+jarreo, format);
-                        mPrinter.setPrintAppendString("  "+valesgasolina, format);
+                        mPrinter.setPrintAppendString("Gastos................."+gastos, format);
+                        mPrinter.setPrintAppendString("Jarreo................."+jarreo, format);
+                        mPrinter.setPrintAppendString("Vales gasolina........."+valesgasolina, format);
                         mPrinter.setPrintAppendString("" ,format);
 
-                        format.setTextSize(40);
+                        format.setTextSize(35);
                         format.setStyle(PrnTextStyle.BOLD);
                         format.setAli(Layout.Alignment.ALIGN_CENTER);
-                        mPrinter.setPrintAppendString("  "+subtotal, format);
-                        mPrinter.setPrintAppendString("  "+total, format);
-                        mPrinter.setPrintAppendString("  "+diferencia, format);
+                        mPrinter.setPrintAppendString("Subtotal.........$"+subtotal, format);
+                        mPrinter.setPrintAppendString("Total............$"+total, format);
+                        mPrinter.setPrintAppendString("Diferencia......$"+diferencia, format);
                         mPrinter.setPrintAppendString("" ,format);
 
                         format.setTextSize(23);
@@ -289,13 +293,13 @@ public class PrintFragmentCorte  extends PreferenceFragment {
                         mPrinter.setPrintAppendString("",format);
                         mPrinter.setPrintAppendString("",format);
                         mPrinter.setPrintAppendString("________________________" ,format);
-                        mPrinter.setPrintAppendString(" Nombre y firma gerente" ,format);
+                        mPrinter.setPrintAppendString(" Nombre y firma Entrega" ,format);
 
                         mPrinter.setPrintAppendString("",format);
                         mPrinter.setPrintAppendString("",format);
                         mPrinter.setPrintAppendString("",format);
                         mPrinter.setPrintAppendString("________________________" ,format);
-                        mPrinter.setPrintAppendString(" Nombre y firma supervisor" ,format);
+                        mPrinter.setPrintAppendString(" Nombre y firma Recibe" ,format);
                         mPrinter.setPrintAppendString("",format);
                         mPrinter.setPrintAppendString("",format);
                         mPrinter.setPrintAppendString("",format);

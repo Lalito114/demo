@@ -1,5 +1,6 @@
     package com.szzcs.smartpos.Productos;
 
+import android.annotation.SuppressLint;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.security.keystore.SecureKeyImportUnavailableException;
@@ -37,6 +38,8 @@ import com.google.android.gms.vision.barcode.Barcode;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.szzcs.smartpos.FinalizaVenta.posicionFinaliza;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.Pendientes.ticketPendientes;
 import com.szzcs.smartpos.R;
@@ -81,8 +84,8 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
     String transaccionId;
     TextView txtproductos;
     String cadenaproducto = "";
-
-    private ImageButton b_auto, btnbuscar;
+    String textoresultado, numerooperativa;
+    private ImageButton b_auto, btnbuscar, btnborrartodo;
     private MVBarcodeScanner.ScanningMode modo_Escaneo;
     private TextView text_cod_escaneado;
     private int CODE_SCAN = 1;
@@ -98,6 +101,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
     List<String> DescripcionPr;
     String lugarproviene;
 
+        @SuppressLint("WrongViewCast")
         @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -105,6 +109,7 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
         //instruccion para que aparezca la flecha de regreso
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        textoresultado="";
         SQLiteBD db = new SQLiteBD(getApplicationContext());
         EstacionId = db.getIdEstacion();
         sucursalId = db.getIdSucursal();
@@ -112,9 +117,10 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
         tipoTransaccion = "1"; //Transaccion Normal
         numerodispositivo = "1";
 
+        numerooperativa = getIntent().getStringExtra("numeroOperativa");
         cadenaproducto = getIntent().getStringExtra("cadenaproducto");
         lugarproviene = getIntent().getStringExtra("lugarproviene");
-            txtproductos=findViewById(R.id.txtproductos);
+        txtproductos=findViewById(R.id.txtproductos);
         if (cadenaproducto.length()>0){
             txtproductos.setText(myArrayVer.toString());
         }else{
@@ -147,7 +153,17 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
 
                 if (myArray.length()==0  )       //.length() >0)
                 {
-                    Toast.makeText(getApplicationContext(), "Seleccione al menos uno de los Productos", Toast.LENGTH_LONG).show();
+                    String titulo = "AVISO";
+                    String mensaje = "Seleccione al menos uno de los Productos";
+                    Modales modales = new Modales(VentasProductos.this);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+                        }
+                    });
+                    //Toast.makeText(getApplicationContext(), "Seleccione al menos uno de los Productos", Toast.LENGTH_LONG).show();
                 } else {
                 ////AgregarDespacho(posicion, usuarioid);
                 EnviarProductos(posicion, usuarioid);
@@ -161,13 +177,23 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                 //Valida si se ha agregado productos al arreglo
                 if (myArray.length()==0  )       //.length() >0)
                 {
-                    Toast.makeText(getApplicationContext(), "Seleccione al menos uno de los Productos", Toast.LENGTH_LONG).show();
+                    String titulo = "AVISO";
+                    String mensaje = "Seleccione al menos uno de los Productos";
+                    Modales modales = new Modales(VentasProductos.this);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+                        }
+                    });
                 } else {
                     Intent intent = new Intent(getApplicationContext(), confirmaVenta.class);
                     intent.putExtra("posicion", posicion);
                     intent.putExtra("usuario", usuario);
                     intent.putExtra("cadenaproducto", myArrayPaso.toString());
                     intent.putExtra("lugarproviene", lugarproviene);
+                    intent.putExtra("numeroOpertativa", numerooperativa);
                     startActivity(intent);
                     finish();
 
@@ -222,6 +248,36 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                 buscaCodigoInterno(Producto.getText().toString());
             }
         });
+
+            btnborrartodo = findViewById(R.id.btnborrartodo);
+            btnborrartodo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                myArray= new JSONArray();
+                myArrayPaso =new JSONArray();
+                myArrayVer = new JSONArray();
+                Producto.setText("");
+                txtDescripcion.setText("");
+                cantidadProducto.setText("1");
+                precio.setText("");
+                existencias.setText("");
+                productoIdentificador.setText("");
+                txtproductos.setText("");
+                textoresultado="";
+                String titulo = "AVISO";
+                String mensaje = "Se vacio la canasta de productos";
+                Modales modales = new Modales(VentasProductos.this);
+                View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
+                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        modales.alertDialog.dismiss();
+                    }
+                });
+                //Toast.makeText(VentasProductos.this, "Se vacio la canasta de productos", Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
     }
 
@@ -437,7 +493,17 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
     }
     private void Aumentar() {
         if (txtDescripcion.length() == 0){
-            Toast.makeText(this, "Seleccione uno de los productos", Toast.LENGTH_SHORT).show();
+            String titulo = "AVISO";
+            String mensaje = "Seleccione uno de los Productos";
+            Modales modales = new Modales(VentasProductos.this);
+            View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
+            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    modales.alertDialog.dismiss();
+                }
+            });
+
         }else {
             cantidad = cantidadProducto.getText().toString();
             int numero = Integer.parseInt(cantidad);
@@ -447,13 +513,33 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                 String resultado = String.valueOf(total);
                 cantidadProducto.setText(resultado);
             } else {
-                Toast.makeText(getApplicationContext(), "solo hay " + existencias.getText().toString() + " en existencia ", Toast.LENGTH_LONG).show();
+                String titulo = "AVISO";
+                String mensaje = "Solo hay "+ existencias.getText().toString() + " en existencia ";
+                Modales modales = new Modales(VentasProductos.this);
+                View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
+                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        modales.alertDialog.dismiss();
+                    }
+                });
+
+                //Toast.makeText(getApplicationContext(), "solo hay " + existencias.getText().toString() + " en existencia ", Toast.LENGTH_LONG).show();
             }
         }
     }
     private void Decrementar() {
         if (txtDescripcion.length() == 0){
-            Toast.makeText(this, "Seleccione uno de los productos", Toast.LENGTH_SHORT).show();
+            String titulo = "AVISO";
+            String mensaje = "Seleccione  uno de los Productos";
+            Modales modales = new Modales(VentasProductos.this);
+            View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
+            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    modales.alertDialog.dismiss();
+                }
+            });
         }else {
             cantidad = cantidadProducto.getText().toString();
             int numero = Integer.parseInt(cantidad);
@@ -462,7 +548,17 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                 String resultado = String.valueOf(total);
                 cantidadProducto.setText(resultado);
             } else {
-                Toast.makeText(getApplicationContext(), "el valor minimo debe ser 1", Toast.LENGTH_LONG).show();
+                String titulo = "AVISO";
+                String mensaje = "El valor minimo debe ser 1";
+                Modales modales = new Modales(VentasProductos.this);
+                View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
+                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        modales.alertDialog.dismiss();
+                    }
+                });
+                //Toast.makeText(getApplicationContext(), "el valor minimo debe ser 1", Toast.LENGTH_LONG).show();
             }
         }
     };
@@ -480,7 +576,16 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
         //if (ProductoId.isEmpty())
         if (txtDescripcion.length() == 0)
         {
-            Toast.makeText(getApplicationContext(), "Seleccione uno de los Productos", Toast.LENGTH_LONG).show();
+            String titulo = "AVISO";
+            String mensaje = "Seleccione uno de los Productos";
+            Modales modales = new Modales(VentasProductos.this);
+            View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
+            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    modales.alertDialog.dismiss();
+                }
+            });
         }
         else{
             TotalProducto = Integer.parseInt(cantidadProducto.getText().toString());
@@ -541,10 +646,27 @@ import devliving.online.mvbarcodereader.MVBarcodeScanner;
                     mjasonver.put("Precio:", precioUnitario);
 
                     myArrayVer.put(mjasonver);
-                    txtproductos.setText(myArrayVer.toString());
+                    String txtproducto= "Producto: "+Integer.parseInt(numInterno);
+                    String txtcantidad= "Cantidad: "+TotalProducto;
+                    String txtprecio= "Precio: "+precioUnitario;
+
+
+                    textoresultado = textoresultado + " " + txtproducto + " " + txtcantidad + " " +txtprecio + "     ";
+                    txtproductos.setText(textoresultado);//myArrayVer.toString());
                     ProductosAgregados = +ProductosAgregados;
                 }else{
-                    Toast.makeText(getApplicationContext(), "Producto: "+ ProductoId+" cargado anteriormente"  , Toast.LENGTH_LONG).show();
+                    String titulo = "AVISO";
+                    String mensaje = "Producto: "+ ProductoId+" cargado anteriormente";
+                    Modales modales = new Modales(VentasProductos.this);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(VentasProductos.this,mensaje,titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+                        }
+                    });
+
+                    //Toast.makeText(getApplicationContext(), "Producto: "+ ProductoId+" cargado anteriormente"  , Toast.LENGTH_LONG).show();
                 }
                 Producto.setText("");
                 txtDescripcion.setText("");

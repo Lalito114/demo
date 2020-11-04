@@ -23,8 +23,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.MyApp;
+import com.szzcs.smartpos.Productos.VentasProductos;
 import com.szzcs.smartpos.Productos.claveProducto;
 import com.szzcs.smartpos.Productos.posicionProductos;
 import com.szzcs.smartpos.R;
@@ -87,7 +89,7 @@ public class claveIniciaVenta extends BaseActivity implements FingerprintListene
 
         //Inicializacion y carga de huella
         initFinger();
-        //ObtieneHuellas();
+        ObtieneHuellas();
     }
 
     private void ObtieneHuellas() {
@@ -96,7 +98,9 @@ public class claveIniciaVenta extends BaseActivity implements FingerprintListene
 
 
         // URL para obtener los empleados  y huellas de la posición de carga X
-        String url = "http://" + ipEstacion + "/CorpogasService/api/estacionControles/empleadosPorIsla/estacionId/" + EstacionId + "/tipoBiometricoId/3/posicionCargaId/" + carga.getText().toString();
+        //String url = "http://" + ipEstacion + "/CorpogasService/api/estacionControles/empleadosPorIsla/estacionId/" + EstacionId + "/tipoBiometricoId/3";//posicionCargaId/" + carga.getText().toString();
+        String url = "http://"+ipEstacion+"/CorpogasService/api/estacionControles/empleadosTipoBiometrico/estacionId/"+EstacionId+"/tipoBiometricoId/3";
+
         // Utilizamos el metodo Post para validar la contraseña
         StringRequest eventoReq = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
@@ -411,7 +415,17 @@ public class claveIniciaVenta extends BaseActivity implements FingerprintListene
         if (view.getId() == R.id.btnhuella) {
             //mFingerprintManager.authenticate(3); ES PARA HUELLAS CARGADAS EN LA HANDHELD
             if (AEmpleadoId.size() == 0) {
-                Toast.makeText(getApplicationContext(), "Ningún empleado con huellas capturadas", Toast.LENGTH_SHORT).show();
+                String titulo = "AVISO";
+                String mensaje = "Ningún empleado con huellas capturadas";
+                Modales modales = new Modales(claveIniciaVenta.this);
+                View view1 = modales.MostrarDialogoAlertaAceptar(claveIniciaVenta.this,mensaje,titulo);
+                view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        modales.alertDialog.dismiss();
+                    }
+                });
+                //Toast.makeText(getApplicationContext(), "Ningún empleado con huellas capturadas", Toast.LENGTH_SHORT).show();
             } else {
                 banderaIdentificado = true;
                 for (int q = 0; q < AEmpleadoId.size(); q++) { //

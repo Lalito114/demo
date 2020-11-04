@@ -2,8 +2,6 @@ package com.szzcs.smartpos.Cortes2;
 
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Color;
-import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -14,7 +12,6 @@ import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -23,26 +20,22 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
-
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicHeader;
 import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.protocol.HTTP;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Type;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,10 +51,13 @@ public class IslasEstacion extends AppCompatActivity {
     //List<Cierre> cierreList;
     RespuestaApi<Cierre> cierreRespuestaApi;
     Type tipóRespuesta;
+    Type respuestaCierreCarrete;
     String idsucursal;
-    String idusuario;
+    long idusuario;
     String password;
     String nombreCompleto;
+    RespuestaApi<List<CierreCarrete>> cierreCarretes;
+    RespuestaApi<AccesoUsuario> accesoUsuario;
 
     SQLiteBD data;
 
@@ -70,13 +66,17 @@ public class IslasEstacion extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_islas_estacion);
-        nombreCompleto = getIntent().getStringExtra("nombreCompleto");
+
+        accesoUsuario = (RespuestaApi<AccesoUsuario>) getIntent().getSerializableExtra("accesoUsuario");
+        nombreCompleto = accesoUsuario.getObjetoRespuesta().getNombreCompleto();
+
         textNombre = (TextView) findViewById(R.id.textNombre);
         islasEstacion = (Spinner) findViewById(R.id.spinnerIslas);
+
         textNombre.setText(nombreCompleto);
 
-        idusuario = getIntent().getStringExtra("idusuario");
-        password = getIntent().getStringExtra("password");
+        idusuario = accesoUsuario.getObjetoRespuesta().getSucursalEmpleadoId();
+        password = accesoUsuario.getObjetoRespuesta().getClave();
         data = new SQLiteBD(getApplicationContext());
 
         btnAceptar = (Button) findViewById(R.id.btnAceptarIsla);
@@ -84,21 +84,22 @@ public class IslasEstacion extends AppCompatActivity {
         btnAceptar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if(islasEstacion.getSelectedItemPosition()==0){
-                    AlertDialog.Builder builder = new AlertDialog.Builder(IslasEstacion.this);
-                    builder.setTitle("ERROR");
-                    builder.setMessage("Selecciona una Isla para Continuar con el Cierre");
-                    builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+                    String titulo = "AVISO";
+                    String mensaje = "Selecciona una Isla para Continuar con el Cierre.";
+                    Modales modales = new Modales(IslasEstacion.this);
+                    View view1 = modales.MostrarDialogoAlertaAceptar(IslasEstacion.this,mensaje,titulo);
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            dialogInterface.dismiss();
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+
                         }
                     });
-                    AlertDialog dialog= builder.create();
-                    dialog.show();
-                }else{
 
-                    ObtenCierre();
+                }else{
+                    ObtenLecturasMecanicas(islaCorte);
 
                 }
 
@@ -111,7 +112,7 @@ public class IslasEstacion extends AppCompatActivity {
             public void run() {
                 //while(ejecutar) {
                 try {
-                    httpJsonPost();
+                    httpPostObtenCierre();
                     //ejecutar = false;
 
                 } catch (IOException e) {
@@ -120,20 +121,19 @@ public class IslasEstacion extends AppCompatActivity {
                 //}
                 runOnUiThread(new Runnable() {
                     public void run() {
-                        String respuetas = null;
                         boolean  Correcto = cierreRespuestaApi.Correcto;
                         if(Correcto == true){ // true
 //                            respuetas =  "Se recupero el cierre";
                             Intent intent = new Intent(getApplicationContext(),Lecturas.class);
                             intent.putExtra("islaId",islaCorte);
-                            intent.putExtra("idusuario",idusuario);
-                            intent.putExtra("password",password);
-                            intent.putExtra("nombreCompleto",nombreCompleto);
                             intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+                            intent.putExtra("cierreCarretes", cierreCarretes);
+                            intent.putExtra("accesoUsuario", accesoUsuario);
                             startActivity(intent);
                         }else{
-                            respuetas =  cierreRespuestaApi.Mensaje;
-                            Toast.makeText(getApplicationContext(), respuetas, Toast.LENGTH_SHORT).show();
+                            String mensaje = cierreRespuestaApi.Mensaje;
+                            Modales modales = new Modales(IslasEstacion.this);
+                            modales.MostrarDialogoError(IslasEstacion.this,mensaje);
 
                         }
 //                        Toast.makeText(getApplicationContext(), respuetas, Toast.LENGTH_SHORT).show();
@@ -143,8 +143,8 @@ public class IslasEstacion extends AppCompatActivity {
         }).start();
     }
 
-        public void  httpJsonPost() throws IOException {
-        String postUrl = "http://"+data.getIpEstacion()+"/CorpogasService/api/cierres/registrar/sucursal/"+data.getIdSucursal()+"/isla/"+islaCorte+"/usuario/"+idusuario+"/origen/1";                    //"http://"+data.getIpEstacion()+"/CorpogasService/api/cierreValePapeles/cierre/sucursalId/1/usuarioId/1/islaId/1";// put in your url
+        public void  httpPostObtenCierre() throws IOException {
+        String postUrl = "http://"+data.getIpEstacion()+"/CorpogasService/api/cierres/cabecero/sucursal/"+data.getIdSucursal()+"/isla/"+islaCorte+"/usuario/"+idusuario+"/origen/1";                    //"http://"+data.getIpEstacion()+"/CorpogasService/api/cierreValePapeles/cierre/sucursalId/1/usuarioId/1/islaId/1";// put in your url
 
         HttpClient client = new DefaultHttpClient();
         HttpConnectionParams.setConnectionTimeout(client.getParams(), 5000);
@@ -228,6 +228,84 @@ public class IslasEstacion extends AppCompatActivity {
         requestQueue.add(stringRequest);
 
     }
+
+
+
+    public void ObtenLecturasMecanicas(String islaCorte){
+        new Thread(new Runnable() {
+            public void run() {
+                //while(ejecutar) {
+                try {
+                    httpPostLecturasMecanicas(islaCorte);
+                    //ejecutar = false;
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                //}
+                runOnUiThread(new Runnable() {
+                    public void run() {
+
+                        boolean  Correcto = cierreCarretes.Correcto;
+                        if(Correcto == true){
+                            ObtenCierre();
+
+                        }else{
+                            String mensaje = cierreCarretes.Mensaje;
+                            Modales modales = new Modales(IslasEstacion.this);
+                            modales.MostrarDialogoError(IslasEstacion.this,mensaje);
+
+//                            AlertDialog.Builder builder = new AlertDialog.Builder(IslasEstacion.this);
+//                            builder.setTitle("AVISO");
+//                            builder.setMessage(cierreCarretes.Mensaje);
+//                            builder.setCancelable(false);
+//                            builder.setNegativeButton("Cerrar", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialogInterface, int i) {
+//                                    dialogInterface.dismiss();
+//                                }
+//                            });
+//                            AlertDialog dialog= builder.create();
+//                            dialog.show();;
+                        }
+
+
+                    }
+                });
+            }
+        }).start();
+    }
+
+    public void  httpPostLecturasMecanicas(String islaCorte) throws IOException {
+
+        String postUrl = "http://"+data.getIpEstacion()+"/CorpogasService/api/cierreCarretes/sucursal/"+data.getIdSucursal()+"/isla/"+islaCorte+"/usuario/"+idusuario;
+        HttpClient client = new DefaultHttpClient();
+        HttpConnectionParams.setConnectionTimeout(client.getParams(), 5000);
+        HttpResponse response;
+        HttpGet request = new HttpGet(postUrl);
+        response = client.execute(request);
+
+        /*Checking response */
+        if (response != null) {
+            InputStream in = response.getEntity().getContent(); //Get the data in the entity
+
+            BufferedReader reader = new BufferedReader(new InputStreamReader(in, "iso-8859-1"), 8);
+            StringBuilder sb = new StringBuilder();
+            String line = null;
+            while ((line = reader.readLine()) != null) // Read line by line
+                sb.append(line + "\n");
+
+            String resString = sb.toString(); // Result is here
+
+            in.close(); // Close the stream
+            Gson json2 = new Gson();
+
+            respuestaCierreCarrete = new TypeToken<RespuestaApi<List<CierreCarrete>>>(){}.getType();
+            cierreCarretes = json2.fromJson(resString, respuestaCierreCarrete);
+        }
+    }
+
+
     //Metodo para regresar a la actividad principal
     @Override
     public void onBackPressed() {

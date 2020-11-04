@@ -24,11 +24,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.MyApp;
 import com.szzcs.smartpos.Pendientes.claveUPendientes;
 import com.szzcs.smartpos.Pendientes.ticketPendientes;
 import com.szzcs.smartpos.PrintFragment;
+import com.szzcs.smartpos.Productos.FPaga;
 import com.szzcs.smartpos.Productos.VentasProductos;
 import com.szzcs.smartpos.Productos.claveProducto;
 import com.szzcs.smartpos.Productos.posicionProductos;
@@ -591,16 +593,13 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
         switch (keyCode) {
             case KeyEvent.KEYCODE_ENTER:
                 try {
-                    AlertDialog.Builder builder;
-
-                    builder = new AlertDialog.Builder(claveGastos.this);
-                    builder.setMessage("Qué tipo de Gasto desea realizar?");
-                    builder.setTitle("TIPO GASTO");
-                    builder.setCancelable(false);
-                    builder.setPositiveButton("GASTOS", new DialogInterface.OnClickListener() {
+                    String titulo = "TIPO GASTO";
+                    String mensaje = "Qué tipo de Gasto desea realizar?";
+                    Modales modales = new Modales(claveGastos.this);
+                    View viewLectura = modales.MostrarDialogoAlerta(claveGastos.this, mensaje,  "GASTOS", "CAJA CHICA");
+                    viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            //Se lee el password del objeto y se asigna a variable
+                        public void onClick(View view) {
                             final String pass = password.getText().toString();
 
                             //Si no se terclea nada envia mensaje de teclear contraseña
@@ -614,12 +613,12 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                                     validaId(empleadoIdentificado);
                                 }
                             }
-
                         }
-                    }).setNegativeButton("GASTOS CAJA CHICA", new DialogInterface.OnClickListener() {
+                    });
+
+                    viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialogInterface, int i) {
-                            //Se lee el password del objeto y se asigna a variable
+                        public void onClick(View view) {
                             final String pass = password.getText().toString();
                             //Si no se terclea nada envia mensaje de teclear contraseña
                             if (pass.isEmpty()){
@@ -632,10 +631,54 @@ public class claveGastos extends BaseActivity implements FingerprintListener, Vi
                                     validaId(empleadoIdentificado);
                                 }
                             }
+                            modales.alertDialog.dismiss();
                         }
                     });
-                    AlertDialog dialog = builder.create();
-                    dialog.show();
+//                    AlertDialog.Builder builder;
+//
+//                    builder = new AlertDialog.Builder(claveGastos.this);
+//                    builder.setMessage("Qué tipo de Gasto desea realizar?");
+//                    builder.setTitle("TIPO GASTO");
+//                    builder.setCancelable(false);
+//                    builder.setPositiveButton("GASTOS", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            //Se lee el password del objeto y se asigna a variable
+//                            final String pass = password.getText().toString();
+//
+//                            //Si no se terclea nada envia mensaje de teclear contraseña
+//                            if (pass.isEmpty()){
+//                                Toast.makeText(getApplicationContext(),"Ingresa la contraseña",Toast.LENGTH_SHORT).show();
+//                            }else {
+//                                if (empleadoIdentificado == "0") {
+//                                    ObtenerClave(pass, "1");
+//                                }else{
+//                                    proviene = "1";
+//                                    validaId(empleadoIdentificado);
+//                                }
+//                            }
+//
+//                        }
+//                    }).setNegativeButton("GASTOS CAJA CHICA", new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialogInterface, int i) {
+//                            //Se lee el password del objeto y se asigna a variable
+//                            final String pass = password.getText().toString();
+//                            //Si no se terclea nada envia mensaje de teclear contraseña
+//                            if (pass.isEmpty()){
+//                                Toast.makeText(getApplicationContext(),"Ingresa la contraseña",Toast.LENGTH_SHORT).show();
+//                            }else {
+//                                if (empleadoIdentificado == "0") {
+//                                    ObtenerClave(pass,"2");
+//                                }else{
+//                                    proviene = "2";
+//                                    validaId(empleadoIdentificado);
+//                                }
+//                            }
+//                        }
+//                    });
+//                    AlertDialog dialog = builder.create();
+//                    dialog.show();
                 }catch (Exception e){
                     e.printStackTrace();
                 }

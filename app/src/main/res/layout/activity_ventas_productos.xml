@@ -14,7 +14,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="15dp"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="635dp"
         android:background="@drawable/b3"
         android:enabled="true"
         android:saveEnabled="true"
@@ -30,8 +30,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="139dp"
-        android:layout_marginBottom="508dp"
+        android:layout_marginEnd="354dp"
+        android:layout_marginBottom="615dp"
         android:ems="10"
         android:gravity="center_horizontal"
         android:inputType="number"
@@ -39,12 +39,12 @@
 
     <TextView
         android:id="@+id/txtproductos"
-        android:layout_width="330dp"
-        android:layout_height="74dp"
+        android:layout_width="329dp"
+        android:layout_height="40dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="14dp"
-        android:layout_marginBottom="67dp"
+        android:layout_marginEnd="11dp"
+        android:layout_marginBottom="74dp"
         android:textColor="#070707"
         android:textSize="15sp"
         android:textStyle="bold" />
@@ -103,12 +103,12 @@
 
     <TextView
         android:id="@+id/txtDescripcion"
-        android:layout_width="330dp"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="439dp"
+        android:layout_marginEnd="94dp"
+        android:layout_marginBottom="415dp"
         android:textColor="#070707"
         android:textSize="15sp"
         android:textStyle="bold" />
@@ -206,14 +206,24 @@
         android:layout_marginBottom="470dp"
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
+    <ImageButton
+        android:id="@+id/btnborrartodo"
+        android:layout_width="60dp"
+        android:layout_height="42dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="6dp"
+        android:layout_marginBottom="427dp"
+        app:srcCompat="@android:drawable/ic_menu_delete" />
+
     <ListView
         android:id="@+id/list"
         android:layout_width="330dp"
         android:layout_height="280dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="15dp"
-        android:layout_marginBottom="148dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginBottom="125dp"
         android:background="@drawable/border" />
 
     <Button
@@ -243,8 +253,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:layout_marginEnd="307dp"
-        android:layout_marginBottom="610dp"
+        android:layout_marginEnd="251dp"
+        android:layout_marginBottom="675dp"
         android:text="cobrar"
         android:visibility="invisible" />
 

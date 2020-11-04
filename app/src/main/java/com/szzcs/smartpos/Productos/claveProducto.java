@@ -99,7 +99,8 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
 
 
         // URL para obtener los empleados  y huellas de la posición de carga X
-        String url = "http://"+ipEstacion+"/CorpogasService/api/estacionControles/empleadosPorIsla/estacionId/"+EstacionId+"/tipoBiometricoId/3/posicionCargaId/"+carga.getText().toString();
+        //String url = "http://"+ipEstacion+"/CorpogasService/api/estacionControles/empleadosPorIsla/estacionId/"+EstacionId+"/tipoBiometricoId/3/posicionCargaId/"+carga.getText().toString();
+        String url = "http://"+ipEstacion+"/CorpogasService/api/estacionControles/empleadosTipoBiometrico/estacionId/"+EstacionId+"/tipoBiometricoId/3";
         // Utilizamos el metodo Post para validar la contraseña
         StringRequest eventoReq = new StringRequest(Request.Method.GET,url,
                 new Response.Listener<String>() {
@@ -326,19 +327,10 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
                                         //Se instancia la respuesta del json
                                         JSONObject validar = new JSONObject(response);
                                         String valido = validar.getString("Activo");
-                                        String idusuario = validar.getString("Id");
+                                        String clave = validar.getString("Clave");
                                         if (valido == "true"){
-                                            //Si es valido se asignan valores
-                                            usuario.setText(idusuario);
-                                            //carga.setText(posicion);
-                                            //Se instancia y se llama a la clase Venta de Productos
-                                            Intent intent = new Intent(getApplicationContext(), posicionProductos.class); //formaPago
-                                            //Se envian los parametros de posicion y usuario
-                                            intent.putExtra("usuario",idusuario);
-                                            intent.putExtra("clave",idusuario);
-                                            //inicia el activity
-                                            startActivity(intent);
-                                            finish();
+                                            pasword.setText(clave);
+                                            validaClave();
                                         }else{
                                             //Si no es valido se envia mensaje de conteaseña incorrecta
                                             try {
@@ -354,12 +346,9 @@ public class claveProducto extends BaseActivity implements FingerprintListener, 
                                             }catch (Exception e){
                                                 e.printStackTrace();
                                             }
-
-                                            //Toast.makeText(getApplicationContext(),"La contraseña es incorecta",Toast.LENGTH_SHORT).show();
                                         }
                                     } catch (JSONException e) {
                                         //herramienta  para diagnostico de excepciones
-                                        //e.printStackTrace();
                                         Toast.makeText(getApplicationContext(),"Clave inexistente ",Toast.LENGTH_SHORT).show();
                                     }
                                 }

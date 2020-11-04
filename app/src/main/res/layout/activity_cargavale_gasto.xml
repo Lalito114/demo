@@ -80,5 +80,6 @@
         android:layout_alignParentBottom="true"
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="19dp"
-        android:text="Enviar" />
+        android:text="Enviar"
+        android:visibility="invisible" />
 </RelativeLayout>

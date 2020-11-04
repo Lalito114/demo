@@ -14,4 +14,14 @@
     <color name="light_blue">#ff3FbFF0</color>
     <color name="half_trans">#80808080</color>
     <color name="white">#ffFFFFFF</color>
+
+    <color name="colorSucces">#4BB543</color>
+    <color name="colorWarning">#FFCC00</color>
+    <color name="colorNeutral">#434343</color>
+    <color name="colorError">#CC0000</color>
+    <color name="colorTextPrimary">#212121</color>
+
+    <color name="colorInsertarDato">#17a2b8</color>
+
+
 </resources>

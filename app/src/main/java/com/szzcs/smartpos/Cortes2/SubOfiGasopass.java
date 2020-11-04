@@ -25,7 +25,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.szzcs.smartpos.Facturas.EntidadListRFC;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 
@@ -60,7 +60,7 @@ public class SubOfiGasopass extends AppCompatActivity {
     ListAdapterBilletes2 adapter2;
 
     String islaId;
-    String usuarioId;
+
     String sumaPicosBilletes;
     String dineroBilletes;
     String dineroMorralla;
@@ -68,28 +68,31 @@ public class SubOfiGasopass extends AppCompatActivity {
     String cantidadAceites;
 
     RespuestaApi<Cierre> cierreRespuestaApi;
-    RespuestaApi<EntidadListRFC> cierreRespuestaApi2;
     long cierreId;
     long turnoId;
+
+    RespuestaApi<AccesoUsuario> accesoUsuario;
+    long idusuario;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sub_ofi_gasopass);
-
+        cierreRespuestaApi = (RespuestaApi<Cierre>) getIntent().getSerializableExtra( "lcierreRespuestaApi");
+        accesoUsuario = (RespuestaApi<AccesoUsuario>) getIntent().getSerializableExtra("accesoUsuario");
 
         tipoVales = findViewById(R.id.idSpinner);
         btnaceptar = findViewById(R.id.btnAceptar);
 
         islaId =  getIntent().getStringExtra("islaId");
-        usuarioId =getIntent().getStringExtra("idusuario");
+        idusuario = accesoUsuario.getObjetoRespuesta().getSucursalEmpleadoId();
         sumaPicosBilletes = getIntent().getStringExtra("picoBilletes");
         dineroBilletes = getIntent().getStringExtra("dineroBilletes");
         dineroMorralla = getIntent().getStringExtra("dineroMorralla");
         VentaProductos = getIntent().getStringExtra("VentaProductos");
         cantidadAceites = getIntent().getStringExtra("cantidadAceites");
-        cierreRespuestaApi = (RespuestaApi<Cierre>) getIntent().getSerializableExtra( "lcierreRespuestaApi");
+
         turnoId = cierreRespuestaApi.getObjetoRespuesta().getTurnoId();
         cierreId = cierreRespuestaApi.getObjetoRespuesta().getId();
 
@@ -100,26 +103,62 @@ public class SubOfiGasopass extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(lCarrito.size()> 0) {
-                    if (sumainter <= 900000) {
-                        Toast.makeText(SubOfiGasopass.this, "Se registro un Total de " + sumainter + " pesos", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(), DesgloseVales.class);
-                        intent.putExtra("lCarrito", lCarrito);
-                        intent.putExtra("islaId",islaId);
-                        intent.putExtra("idusuario", usuarioId);
-                        intent.putExtra("sumaPicosBilletes",sumaPicosBilletes);
-                        intent.putExtra("dineroBilletes",dineroBilletes);
-                        intent.putExtra("dineroMorralla",dineroMorralla);
-                        intent.putExtra("VentaProductos", VentaProductos);
-                        intent.putExtra("cantidadAceites", cantidadAceites);
-                        intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
-                        startActivity(intent);
-                    } else {
-                        Toast.makeText(SubOfiGasopass.this, "Existe un error", Toast.LENGTH_SHORT).show();
-                    }
+                    String mensaje = "Se registro un Total de $" + sumainter + " pesos.";
+                    Modales modales = new Modales(SubOfiGasopass.this);
+                    View view1 = modales.MostrarDialogoCorrecto(SubOfiGasopass.this,mensaje);
+                    view1.findViewById(R.id.buttonAction).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getApplicationContext(), DesgloseVales.class);
+                            intent.putExtra("lCarrito", lCarrito);
+                            intent.putExtra("islaId",islaId);
+                            intent.putExtra("sumaPicosBilletes",sumaPicosBilletes);
+                            intent.putExtra("dineroBilletes",dineroBilletes);
+                            intent.putExtra("dineroMorralla",dineroMorralla);
+                            intent.putExtra("VentaProductos", VentaProductos);
+                            intent.putExtra("cantidadAceites", cantidadAceites);
+                            intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+                            intent.putExtra("accesoUsuario", accesoUsuario);
+                            startActivity(intent);
+                            modales.alertDialog.dismiss();
+                        }
+                    });
+
                 }
                 else
                 {
-                    Toast.makeText(SubOfiGasopass.this, "Favor de capturar un tipo de vale", Toast.LENGTH_SHORT).show();
+
+                    String mensaje = "No haz ingreso ningu tipo de vale. ¿Deseas continuar?";
+                    Modales modales = new Modales(SubOfiGasopass.this);
+                    String nombrebtnAceptar ="SI";
+                    String nombreBtnCancelar ="NO";
+                    View view1 = modales.MostrarDialogoAlerta(SubOfiGasopass.this,mensaje, nombrebtnAceptar, nombreBtnCancelar);
+
+                    view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(getApplicationContext(), CierreFormaPago.class);
+                            intent.putExtra("lCarrito", lCarrito);
+                            intent.putExtra("islaId",islaId);
+                            intent.putExtra("sumaPicosBilletes",sumaPicosBilletes);
+                            intent.putExtra("dineroBilletes",dineroBilletes);
+                            intent.putExtra("dineroMorralla",dineroMorralla);
+                            intent.putExtra("VentaProductos", VentaProductos);
+                            intent.putExtra("cantidadAceites", cantidadAceites);
+                            intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+                            intent.putExtra("accesoUsuario", accesoUsuario);
+                            startActivity(intent);
+                            modales.alertDialog.dismiss();
+                        }
+                    });
+
+                    view1.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            modales.alertDialog.dismiss();
+
+                        }
+                    });
                 }
 
             }
@@ -182,73 +221,129 @@ public class SubOfiGasopass extends AppCompatActivity {
 
                 final String ray = arrayMonto.get(position).toString();
 
-                try {
-                    final EditText input = new EditText(getApplicationContext());
-                    input.setTextColor(Color.BLACK);
-                    input.setGravity(Gravity.CENTER);
-                    input.setTextSize(22);
-                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    String titulo = "VALES PAPEL";
+                    String mensaje = "Ingresa Cantidad: ";
+                    Modales modales = new Modales(SubOfiGasopass.this);
+                    View viewLectura = modales.MostrarDialogoInsertaDato(SubOfiGasopass.this, mensaje, titulo);
+                    EditText edtValePapel = ((EditText) viewLectura.findViewById(R.id.textInsertarDato));
 
-                    AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiGasopass.this);
-                    builder.setTitle("Ingresa Cantidad \n");
-                    builder.setView(input)
+                viewLectura.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        String denomi = edtValePapel.getText().toString();
+                        if (denomi.equals("")){
+                            edtValePapel.setError("No ingresaste un Valor");
+                        }else{
+                            result = Double.parseDouble(denomi) * Double.parseDouble(ray);
+                            for (int a = 0; a < lCarrito.size(); a++) {
 
-                            .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int i) {
-                                    String denomi = input.getText().toString();
-                                    //lCarrito.add(position);
-                                    result = Double.parseDouble(denomi) * Double.parseDouble(ray);
-                                    if (result > 900000) {
-                                        Toast.makeText(SubOfiGasopass.this, "No puedes superar el valor de 1 Fajilla", Toast.LENGTH_SHORT).show();
-                                    } else {
-
-
-                                        for (int a = 0; a < lCarrito.size(); a++) {
-                                            long tipovaleCarrito = lCarrito.get(a).TipoValePapelId;
-                                            int posicionCarrito = lCarrito.get(a).Posicion;
-                                            if(tipovaleCarrito == tipoValeSeleccion && posicionCarrito == position)
-                                            {
-                                                lCarrito.remove(a);
-                                            }
-                                        }
-
-                                        ValePapelDenominacion valePapelDenominacion = new ValePapelDenominacion();
-                                        valePapelDenominacion.TipoValePapelId = tipoValeSeleccion;
-                                        valePapelDenominacion.Cantidad = Integer.parseInt(denomi);
-                                        valePapelDenominacion.Importe = Double.parseDouble(ray);
-                                        valePapelDenominacion.Total = result;
-                                        valePapelDenominacion.Posicion = position;
-                                        valePapelDenominacion.NombreVale = nombreVale;
-                                        valePapelDenominacion.Denominacion = Double.parseDouble(denomi);
-                                        lCarrito.add(valePapelDenominacion);
-
-
-                                        maintitle.set(position, denomi);
-                                        total.set(position, String.valueOf(result));
-                                        final String ray2 = result.toString();
-
-                                        sumainter = totalBilletes() + Double.parseDouble(ray2);
-
-                                        if ((totalBilletes() <= 900000) && (sumainter <= 900000)){
-                                            Toast.makeText(SubOfiGasopass.this, "Cantidad Agregada", Toast.LENGTH_SHORT).show();
-                                            prueba2.put(ray2);
-                                        }else {
-                                            Toast.makeText(SubOfiGasopass.this, "Los Valores que ingresaste pueden ser 1 fajilla", Toast.LENGTH_SHORT).show();
-                                        }
-                                        proceso_grid(tipoValeSeleccion);
-                                    }
+                                long tipovaleCarrito = lCarrito.get(a).TipoValePapelId;
+                                int posicionCarrito = lCarrito.get(a).Posicion;
+                                if(tipovaleCarrito == tipoValeSeleccion && posicionCarrito == position)
+                                {
+                                    lCarrito.remove(a);
                                 }
-                            })
-                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.cancel();
-                                }
-                            }).show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                            }
+
+                            ValePapelDenominacion valePapelDenominacion = new ValePapelDenominacion();
+                            valePapelDenominacion.TipoValePapelId = tipoValeSeleccion;
+                            valePapelDenominacion.Cantidad = Integer.parseInt(denomi);
+                            valePapelDenominacion.Importe = Double.parseDouble(ray);
+                            valePapelDenominacion.Total = result;
+                            valePapelDenominacion.Posicion = position;
+                            valePapelDenominacion.NombreVale = nombreVale;
+                            valePapelDenominacion.Denominacion = Double.parseDouble(denomi);
+                            lCarrito.add(valePapelDenominacion);
+
+
+                            maintitle.set(position, denomi);
+                            total.set(position, String.valueOf(result));
+                            final String ray2 = result.toString();
+
+                            sumainter = totalBilletes() + Double.parseDouble(ray2);
+                            modales.alertDialog.dismiss();
+                            prueba2.put(ray2);
+                            proceso_grid(tipoValeSeleccion);
+
+                        }
+
+                    }
+                });
+
+                viewLectura.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        modales.alertDialog.dismiss();
+
+                    }
+                });
+
+
+
+//                    final EditText input = new EditText(getApplicationContext());
+//                    input.setTextColor(Color.BLACK);
+//                    input.setGravity(Gravity.CENTER);
+//                    input.setTextSize(22);
+//                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
+//
+//                    AlertDialog.Builder builder = new AlertDialog.Builder(SubOfiGasopass.this);
+//                    builder.setTitle("Ingresa Cantidad \n");
+//                    builder.setView(input)
+//
+//                            .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialogInterface, int i) {
+//                                    String denomi = input.getText().toString();
+//                                    //lCarrito.add(position);
+//                                    result = Double.parseDouble(denomi) * Double.parseDouble(ray);
+//                                    if (result > 900000) {
+//                                        Toast.makeText(SubOfiGasopass.this, "No puedes superar el valor de 1 Fajilla", Toast.LENGTH_SHORT).show();
+//                                    } else {
+//
+//
+//                                        for (int a = 0; a < lCarrito.size(); a++) {
+//                                            long tipovaleCarrito = lCarrito.get(a).TipoValePapelId;
+//                                            int posicionCarrito = lCarrito.get(a).Posicion;
+//                                            if(tipovaleCarrito == tipoValeSeleccion && posicionCarrito == position)
+//                                            {
+//                                                lCarrito.remove(a);
+//                                            }
+//                                        }
+//
+//                                        ValePapelDenominacion valePapelDenominacion = new ValePapelDenominacion();
+//                                        valePapelDenominacion.TipoValePapelId = tipoValeSeleccion;
+//                                        valePapelDenominacion.Cantidad = Integer.parseInt(denomi);
+//                                        valePapelDenominacion.Importe = Double.parseDouble(ray);
+//                                        valePapelDenominacion.Total = result;
+//                                        valePapelDenominacion.Posicion = position;
+//                                        valePapelDenominacion.NombreVale = nombreVale;
+//                                        valePapelDenominacion.Denominacion = Double.parseDouble(denomi);
+//                                        lCarrito.add(valePapelDenominacion);
+//
+//
+//                                        maintitle.set(position, denomi);
+//                                        total.set(position, String.valueOf(result));
+//                                        final String ray2 = result.toString();
+//
+//                                        sumainter = totalBilletes() + Double.parseDouble(ray2);
+//
+////                                        if ((totalBilletes() <= 900000) && (sumainter <= 900000)){
+////                                            Toast.makeText(SubOfiGasopass.this, "Cantidad Agregada", Toast.LENGTH_SHORT).show();
+//                                            prueba2.put(ray2);
+////                                        }else {
+////                                            Toast.makeText(SubOfiGasopass.this, "Los Valores que ingresaste pueden ser 1 fajilla", Toast.LENGTH_SHORT).show();
+////                                        }
+//                                        proceso_grid(tipoValeSeleccion);
+//                                    }
+//                                }
+//                            })
+//                            .setNegativeButton("Cancelar", new DialogInterface.OnClickListener() {
+//                                @Override
+//                                public void onClick(DialogInterface dialog, int which) {
+//                                    dialog.cancel();
+//                                }
+//                            }).show();
+
             }
         });
     }
@@ -287,20 +382,20 @@ public class SubOfiGasopass extends AppCompatActivity {
                             mListView.setAdapter(adapter2);
                             if (position == 1) {
                                 proceso_grid(tipoValeSeleccion);
-                                Toast.makeText(SubOfiGasopass.this, "SELECCIONADO: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+
                                 mListView.setVisibility(View.VISIBLE);
                             }if (position == 2){
                                 proceso_grid(tipoValeSeleccion);
-                                Toast.makeText(SubOfiGasopass.this, "SELECCIONADO: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+
                                 mListView.setVisibility(View.VISIBLE);
                             }if (position == 3){
                                 proceso_grid(tipoValeSeleccion);
                                 mListView.setVisibility(View.VISIBLE);
-                                Toast.makeText(SubOfiGasopass.this, "SELECCIONADO: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+
                             }if (position == 4){
                                 proceso_grid(tipoValeSeleccion);
                                 mListView.setVisibility(View.VISIBLE);
-                                Toast.makeText(SubOfiGasopass.this, "SELECCIONADO: " + parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+
                             }
                         }
 
@@ -370,6 +465,23 @@ public class SubOfiGasopass extends AppCompatActivity {
             }
         }
         return sumamax;
+    }
+
+    //Metodo para regresar a la actividad principal
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(), SubOfiBilletes.class);
+        intent.putExtra("lCarrito", lCarrito);
+        intent.putExtra("islaId",islaId);
+        intent.putExtra("sumaPicosBilletes",sumaPicosBilletes);
+        intent.putExtra("dineroBilletes",dineroBilletes);
+        intent.putExtra("dineroMorralla",dineroMorralla);
+        intent.putExtra("VentaProductos", VentaProductos);
+        intent.putExtra("cantidadAceites", cantidadAceites);
+        intent.putExtra("lcierreRespuestaApi", cierreRespuestaApi);
+        intent.putExtra("accesoUsuario", accesoUsuario);
+        startActivity(intent);
+
     }
 
 }

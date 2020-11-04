@@ -209,4 +209,18 @@
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
 
+
+    <string name="correcto">CORRECTO</string>
+    <string name="alerta">ALERTA</string>
+    <string name="titulo_correcto">CORRECTO</string>
+    <string name="titulo_aviso">AVISO</string>
+    <string name="titulo_error">ERROR</string>
+    <string name="dummy_text">Lorem ipsum is simply dummy text of the printing and type setting industry</string>
+    <string name="aceptar">ACEPTAR</string>
+    <string name="cancelar">CANCELAR</string>
+    <string name="error">error</string>
+    <string name="alerta_isla">Selecciona una Isla para Continuar con el Cierre</string>
+    <string name="titulo_insertarDato">LECTURA MECANICA</string>
+
+
 </resources>

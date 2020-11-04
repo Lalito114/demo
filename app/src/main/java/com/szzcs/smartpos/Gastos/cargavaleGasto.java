@@ -3,6 +3,7 @@ package com.szzcs.smartpos.Gastos;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
@@ -19,9 +20,11 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.szzcs.smartpos.Helpers.Modales.Modales;
 import com.szzcs.smartpos.Munu_Principal;
 import com.szzcs.smartpos.PrintFragment;
 import com.szzcs.smartpos.PrintFragmentVale;
+import com.szzcs.smartpos.Productos.VentasProductos;
 import com.szzcs.smartpos.Productos.posicionProductos;
 import com.szzcs.smartpos.R;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
@@ -133,16 +136,27 @@ private void GuardarGasto(String fechatrabajo, String turnoId){
     JsonObjectRequest request_json = new JsonObjectRequest(Request.Method.POST, URL, mjason, new Response.Listener<JSONObject>() {
         @Override
         public void onResponse(JSONObject response) {
-            Toast.makeText(getApplicationContext(),"Gasto Cargado Exitosamente",Toast.LENGTH_LONG).show();
-            String numeroticket = null;
-            try {
-                numeroticket = response.getString("Id");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            ObtenerCuerpoTicket(SubTotal.getText().toString(), Descripcion.getText().toString(), numeroticket, empleado);
-            //Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
-            //startActivity(intente);
+
+            //Toast.makeText(getApplicationContext(),"Gasto Cargado Exitosamente",Toast.LENGTH_LONG).show();
+            String titulo = "AVISO";
+            String mensaje = "Gasto Cargado Exitosamente";
+            Modales modales = new Modales(cargavaleGasto.this);
+            View view1 = modales.MostrarDialogoAlertaAceptar(cargavaleGasto.this,mensaje,titulo);
+            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    modales.alertDialog.dismiss();
+                    String numeroticket = null;
+                    try {
+                        numeroticket = response.getString("Id");
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    ObtenerCuerpoTicket(SubTotal.getText().toString(), Descripcion.getText().toString(), numeroticket, empleado);
+                    //Intent intente = new Intent(getApplicationContext(), Munu_Principal.class);
+                    //startActivity(intente);
+                }
+            });
         }
     }, new Response.ErrorListener() {
         @Override
@@ -200,6 +214,52 @@ private void GuardarGasto(String fechatrabajo, String turnoId){
         Intent intent = new Intent(getApplicationContext(), Munu_Principal.class);
         startActivity(intent);
         finish();
+    }
+
+    //procedimiento para  cachar el Enter del teclado
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_ENTER:
+                calculos();
+                return true;
+            default:
+                return super.onKeyUp(keyCode, event);
+        }
+    }
+
+    private void calculos() {
+        if (SubTotal.length()==0 )       //.length() >0)
+        {
+            String titulo = "AVISO";
+            String mensaje = "digite el importe";
+            Modales modales = new Modales(cargavaleGasto.this);
+            View view1 = modales.MostrarDialogoAlertaAceptar(cargavaleGasto.this,mensaje,titulo);
+            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    modales.alertDialog.dismiss();
+                }
+            });
+
+            //Toast.makeText(getApplicationContext(), "digite el importe", Toast.LENGTH_LONG).show();
+        } else { if (Descripcion.length()==0){
+            //Toast.makeText(getApplicationContext(), "digite la descripción", Toast.LENGTH_LONG).show();
+            String titulo = "AVISO";
+            String mensaje = "digite la descripción";
+            Modales modales = new Modales(cargavaleGasto.this);
+            View view1 = modales.MostrarDialogoAlertaAceptar(cargavaleGasto.this,mensaje,titulo);
+            view1.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    modales.alertDialog.dismiss();
+                }
+            });
+
+        }else {
+            EnviarGastos();
+        }
+        }
     }
 
 
