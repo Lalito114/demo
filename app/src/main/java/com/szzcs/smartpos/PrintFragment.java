@@ -23,7 +23,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
+import com.szzcs.smartpos.Ticket.ImpresionTicket.DatosTicket;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 import com.szzcs.smartpos.utils.DialogUtils;
 import com.zcs.sdk.DriverManager;
@@ -139,14 +141,7 @@ public class PrintFragment extends PreferenceFragment {
         } else {
             mPrintStatus = false;
         }
-        String numcopia = getArguments().getString("numticket");
-        if (numcopia == "1"){
-            printMatrixText1();
-        }else{
-            if (numcopia == "2"){
-                printMatrixText2();
-            }
-        }
+        printMatrixText2();
 
 
 
@@ -416,78 +411,81 @@ public class PrintFragment extends PreferenceFragment {
                     format.setAli(Layout.Alignment.ALIGN_CENTER);
 
 
-                    String numerorecibo = getArguments().getString("numerorecibo");
+                    String response = getArguments().getString("response");
+                    Gson gson = new Gson();
+                    DatosTicket datosTicket = gson.fromJson(response, DatosTicket.class);
+
                     String numerotransaccion = getArguments().getString("numerotransaccion");
-                    mPrinter.setPrintAppendString("No. Rec: " + numerorecibo + "  No. Trans: " + numerotransaccion,format);
+                    mPrinter.setPrintAppendString("No. Rec: " + datosTicket.getResultado().getDescripcion(),format);
 
-                    String numeroRastreo = getArguments().getString("numerorastreo");
-                    mPrinter.setPrintAppendString("No. Rastreo: " + numeroRastreo,format);
-
-                    String posicion = getArguments().getString("posicion");
-                    String despachador = getArguments().getString("despachador");
-                    String vendedor = getArguments().getString("vendedor");
-                    mPrinter.setPrintAppendString("PC: " + posicion,format);
-                    mPrinter.setPrintAppendString("Le atendio: " + despachador,format);
-                    String nombretarjeta = getArguments().getString("nombretarjeta");
-                    mPrinter.setPrintAppendString("NOMBRE: " + nombretarjeta ,format);
-
-                    format.setTextSize(25);
-                    format.setStyle(PrnTextStyle.BOLD);
-                    format.setAli(Layout.Alignment.ALIGN_CENTER);
-                    String formapago = getArguments().getString("formapago");
-                    mPrinter.setPrintAppendString("PAGO: " + formapago ,format);
-                    format.setTextSize(23);
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    format.setAli(Layout.Alignment.ALIGN_NORMAL);
-                    mPrinter.setPrintAppendString(" CANT    DESC    PRECIO    IMPORTE", format);
-                    mPrinter.setPrintAppendString("- - - - - - - - - - - - - - - - -", format);
-                    format.setTextSize(23);
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    format.setAli(Layout.Alignment.ALIGN_CENTER);
-                    String productos = getArguments().getString("productos");
-                    mPrinter.setPrintAppendString(productos,format);
-                    mPrinter.setPrintAppendString("- - - - - - - - - - - - - - - - -", format);
-
-                    String subtotal = getArguments().getString("subtotal");
-                    String iva = getArguments().getString("iva");
-                    String total = getArguments().getString("total");
-                    String totaltexto = getArguments().getString("totaltexto");
-                    mPrinter.setPrintAppendString("               SUBTOTAL:"+ subtotal, format);
-                    mPrinter.setPrintAppendString("                    IVA:"+ iva, format);
-                    mPrinter.setPrintAppendString("                  TOTAL:"+ total, format);
-                    mPrinter.setPrintAppendString("    ", format);
-                    format.setAli(Layout.Alignment.ALIGN_OPPOSITE);
-                    format.setTextSize(23);
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    format.setAli(Layout.Alignment.ALIGN_CENTER);
-                    mPrinter.setPrintAppendString("("+totaltexto+")", format);
-
-
-                    format.setTextSize(80);
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    format.setAli(Layout.Alignment.ALIGN_CENTER);
-
-                    mPrinter.setPrintAppendString("$ " + total,format);
-
-                    //mPrinter.setPrintAppendQRCode(numeroRastreo, 200, 200, Layout.Alignment.ALIGN_CENTER);
-                    format.setTextSize(23);
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    format.setAli(Layout.Alignment.ALIGN_CENTER);
-                    String numerotarjeta = getArguments().getString("numerotarjeta");
-                    String odometro = getArguments().getString("odometro");
-                    String saldo = getArguments().getString("saldo");
-                    mPrinter.setPrintAppendString("Número de Tarjeta: " + numerotarjeta ,format);
-                    mPrinter.setPrintAppendString("Odometro: " + odometro ,format);
-                   // mPrinter.setPrintAppendString("El saldo es: " + saldo ,format);
-                    format.setTextSize(23);
-                    format.setStyle(PrnTextStyle.NORMAL);
-                    format.setAli(Layout.Alignment.ALIGN_CENTER);
-                    //String mensaje = getArguments().getString("mensaje");
-                    //mPrinter.setPrintAppendString(mensaje ,format);
-                    mPrinter.setPrintAppendString("" ,format);
-                    mPrinter.setPrintAppendString("" ,format);
-                    mPrinter.setPrintAppendString("" ,format);
-                    mPrinter.setPrintAppendString("" ,format);
+//                    String numeroRastreo = getArguments().getString("numerorastreo");
+//                    mPrinter.setPrintAppendString("No. Rastreo: " + numeroRastreo,format);
+//
+//                    String posicion = getArguments().getString("posicion");
+//                    String despachador = getArguments().getString("despachador");
+//                    String vendedor = getArguments().getString("vendedor");
+//                    mPrinter.setPrintAppendString("PC: " + posicion,format);
+//                    mPrinter.setPrintAppendString("Le atendio: " + despachador,format);
+//                    String nombretarjeta = getArguments().getString("nombretarjeta");
+//                    mPrinter.setPrintAppendString("NOMBRE: " + nombretarjeta ,format);
+//
+//                    format.setTextSize(25);
+//                    format.setStyle(PrnTextStyle.BOLD);
+//                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+//                    String formapago = getArguments().getString("formapago");
+//                    mPrinter.setPrintAppendString("PAGO: " + formapago ,format);
+//                    format.setTextSize(23);
+//                    format.setStyle(PrnTextStyle.NORMAL);
+//                    format.setAli(Layout.Alignment.ALIGN_NORMAL);
+//                    mPrinter.setPrintAppendString(" CANT    DESC    PRECIO    IMPORTE", format);
+//                    mPrinter.setPrintAppendString("- - - - - - - - - - - - - - - - -", format);
+//                    format.setTextSize(23);
+//                    format.setStyle(PrnTextStyle.NORMAL);
+//                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+//                    String productos = getArguments().getString("productos");
+//                    mPrinter.setPrintAppendString(productos,format);
+//                    mPrinter.setPrintAppendString("- - - - - - - - - - - - - - - - -", format);
+//
+//                    String subtotal = getArguments().getString("subtotal");
+//                    String iva = getArguments().getString("iva");
+//                    String total = getArguments().getString("total");
+//                    String totaltexto = getArguments().getString("totaltexto");
+//                    mPrinter.setPrintAppendString("               SUBTOTAL:"+ subtotal, format);
+//                    mPrinter.setPrintAppendString("                    IVA:"+ iva, format);
+//                    mPrinter.setPrintAppendString("                  TOTAL:"+ total, format);
+//                    mPrinter.setPrintAppendString("    ", format);
+//                    format.setAli(Layout.Alignment.ALIGN_OPPOSITE);
+//                    format.setTextSize(23);
+//                    format.setStyle(PrnTextStyle.NORMAL);
+//                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+//                    mPrinter.setPrintAppendString("("+totaltexto+")", format);
+//
+//
+//                    format.setTextSize(80);
+//                    format.setStyle(PrnTextStyle.NORMAL);
+//                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+//
+//                    mPrinter.setPrintAppendString("$ " + total,format);
+//
+//                    //mPrinter.setPrintAppendQRCode(numeroRastreo, 200, 200, Layout.Alignment.ALIGN_CENTER);
+//                    format.setTextSize(23);
+//                    format.setStyle(PrnTextStyle.NORMAL);
+//                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+//                    String numerotarjeta = getArguments().getString("numerotarjeta");
+//                    String odometro = getArguments().getString("odometro");
+//                    String saldo = getArguments().getString("saldo");
+//                    mPrinter.setPrintAppendString("Número de Tarjeta: " + numerotarjeta ,format);
+//                    mPrinter.setPrintAppendString("Odometro: " + odometro ,format);
+//                   // mPrinter.setPrintAppendString("El saldo es: " + saldo ,format);
+//                    format.setTextSize(23);
+//                    format.setStyle(PrnTextStyle.NORMAL);
+//                    format.setAli(Layout.Alignment.ALIGN_CENTER);
+//                    //String mensaje = getArguments().getString("mensaje");
+//                    //mPrinter.setPrintAppendString(mensaje ,format);
+//                    mPrinter.setPrintAppendString("" ,format);
+//                    mPrinter.setPrintAppendString("" ,format);
+//                    mPrinter.setPrintAppendString("" ,format);
+//                    mPrinter.setPrintAppendString("" ,format);
                     format.setStyle(PrnTextStyle.NORMAL);
                     printStatus = mPrinter.setPrintStart();
                     if (printStatus == SdkResult.SDK_PRN_STATUS_PAPEROUT) {

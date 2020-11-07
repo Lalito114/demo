@@ -13,6 +13,7 @@ import android.preference.PreferenceFragment;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.v4.content.ContextCompat;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -36,6 +37,7 @@ import com.szzcs.smartpos.Puntada.Registrar.ClaveDespachadorPuntada;
 import com.szzcs.smartpos.Puntada.SeccionTarjeta;
 import com.szzcs.smartpos.TanqueLleno.ClaveDespachadorTL;
 import com.szzcs.smartpos.TanqueLleno.PosicionCargaTLl;
+import com.szzcs.smartpos.Ticket.Monederos.VentanaMensajesError;
 import com.szzcs.smartpos.configuracion.SQLiteBD;
 import com.szzcs.smartpos.utils.DialogUtils;
 import com.szzcs.smartpos.utils.SDK_Result;
@@ -63,6 +65,8 @@ import java.util.Map;
 
 import static android.support.v4.app.ActivityCompat.finishAffinity;
 import static android.support.v4.app.ActivityCompat.getPermissionCompatDelegate;
+import static android.support.v4.content.ContextCompat.createDeviceProtectedStorageContext;
+import static android.support.v4.content.ContextCompat.getCodeCacheDir;
 
 
 /**
@@ -347,28 +351,15 @@ public class CardFragment extends PreferenceFragment {
         String tk1 = cardInfo.getTk1();
         String tk3 = cardInfo.getTk3();
         String tk2 = cardInfo.getTk2();
-        //String tk2 = "3999999900100055";
-        String mtk2 =tk2.substring(0,16);
-        if(mtk2.isEmpty()){
-           Toast.makeText(getActivity(), "No se ha leido correctamente la tarjeta", Toast.LENGTH_LONG).show();
-        }else{
-            mMagCard.magCardClose();
-            // search again
-            mCardReadManager.searchCard(mCardType, READ_TIMEOUT, mListener);
-
-            String space = mtk2.substring(0,2);
-
-            CompararTarjetas(tk1,tk2,tk3);
-            getActivity().finish();
-
-
-        }
+        CompararTarjetas(tk1, tk2, tk3);
+        getActivity().finish();
 
     }
 
     private void CompararTarjetas(final String tk1, final String tk2, final String tk3) {
+
         SQLiteBD data = new SQLiteBD(getActivity());
-        String URL = "http://"+data.getIpEstacion()+"/CorpogasService/api/bines/obtieneBinTarjeta/sucursalId/" + data.getIdSucursal();
+        String URL = "http://" + data.getIpEstacion() + "/CorpogasService/api/bines/obtieneBinTarjeta/sucursalId/" + data.getIdSucursal();
         RequestQueue queue = Volley.newRequestQueue(getActivity());
         final JSONObject jsonObject = new JSONObject();
 
@@ -376,7 +367,7 @@ public class CardFragment extends PreferenceFragment {
             datos.put(tk1);
             datos.put(tk2);
             datos.put(tk3);
-            jsonObject.put("Pistas",datos);
+            jsonObject.put("Pistas", datos);
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -386,44 +377,73 @@ public class CardFragment extends PreferenceFragment {
             public void onResponse(JSONObject response) {
                 try {
                     String correcto = response.getString("Correcto");
-                    if (correcto.equals("true")){
+                    if (correcto.equals("true")) {
                         String mesanje = response.getString("Mensaje");
                         String objetorespuesta = response.getString("ObjetoRespuesta");
                         JSONObject ojjetores = new JSONObject(objetorespuesta);
                         String tipomonedero = ojjetores.getString("TipoMonederoId");
                         String monedero = ojjetores.getString("TipoMonedero");
 
-                        if (tipomonedero.equals("4")){
-                            Intent intent = new Intent(getActivity(),SeccionTarjeta.class);
-                            intent.putExtra("track",mesanje);
+                        if (tipomonedero.equals("4")) {
+                            Intent intent = new Intent(getActivity(), SeccionTarjeta.class);
+                            intent.putExtra("track", mesanje);
                             startActivity(intent);
 
-                        }else{
-                            if (tipomonedero.equals("1")){
-                                Intent intent = new Intent(getActivity(),ClaveDespachadorTL.class);
-                                intent.putExtra("track",mesanje);
+                        } else {
+                            if (tipomonedero.equals("1")) {
+                                Intent intent = new Intent(getActivity(), ClaveDespachadorTL.class);
+                                intent.putExtra("track", mesanje);
                                 startActivity(intent);
 
                             }
                         }
-                    }else{
-                        try {
-                            android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
-                            builder.setTitle("Respuesta");
-                            builder.setMessage("Esta tarjeta no pertenece a ningun tipo de monedero electronico")
-                                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int i) {
-                                            Intent intente = new Intent(getActivity(), Munu_Principal.class);
-                                            startActivity(intente);
-
-                                        }
-                                    }).show();
-                        }catch (Exception e){
-                            e.printStackTrace();
+                    } else
+                        if (correcto.equals("false")){
+                            try {
+                                String mensaje = response.getString("Mensaje");
+                                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                                builder.setTitle(Html.fromHtml("<font color='#000000'>Alerta</font>"));
+                                builder.setMessage(Html.fromHtml("<font color='#000000'>" + mensaje + "</font>"));
+                                builder.setIcon(R.drawable.alerta);
+                                builder.setCancelable(false);
+                                builder.setPositiveButton(Html.fromHtml("<font color='#000000'>Cerrar</font>"), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Intent intent = new Intent(getActivity(), Munu_Principal.class);
+                                        startActivity(intent);
+                                        getActivity().finish();
+                                    }
+                                });
+                                android.support.v7.app.AlertDialog dialog = builder.create();
+                                dialog.show();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }else{
+                            try {
+                                String mensaje = response.getString("Mensaje");
+                                android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(getActivity());
+                                builder.setTitle(Html.fromHtml("<font color='#000000'>Alerta</font>"));
+                                builder.setMessage(Html.fromHtml("<font color='#000000'>" + mensaje + "</font>"));
+                                builder.setIcon(R.drawable.alerta);
+                                builder.setCancelable(false);
+                                builder.setPositiveButton(Html.fromHtml("<font color='#000000'>Cerrar</font>"), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        Intent intent = new Intent(getActivity(), Munu_Principal.class);
+                                        startActivity(intent);
+                                        getActivity().finish();
+                                    }
+                                });
+                                android.support.v7.app.AlertDialog dialog = builder.create();
+                                dialog.show();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
                         }
 
-                    }
+
+
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -437,18 +457,19 @@ public class CardFragment extends PreferenceFragment {
             public void onErrorResponse(VolleyError error) {
 
             }
-        }){
-            public Map<String,String>getHeaders() throws AuthFailureError{
-                Map<String,String> headers = new HashMap<String, String>();
+        }) {
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> headers = new HashMap<String, String>();
                 return headers;
             }
-            protected  Response<JSONObject> parseNetwokResponse(NetworkResponse response){
-                if (response != null){
+
+            protected Response<JSONObject> parseNetwokResponse(NetworkResponse response) {
+                if (response != null) {
 
                     try {
                         String responseString;
                         JSONObject datos = new JSONObject();
-                        responseString = new String(response.data,HttpHeaderParser.parseCharset(response.headers));
+                        responseString = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
 
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
@@ -461,10 +482,6 @@ public class CardFragment extends PreferenceFragment {
 
 
     }
-
-
-
-
 
 
     private void readICCard(CardSlotNoEnum slotNo) {
@@ -686,7 +703,6 @@ public class CardFragment extends PreferenceFragment {
         mCardReadManager.closeCard();
         super.onDestroy();
     }
-
 
 
     class CardHandler extends Handler implements DialogInterface.OnClickListener, DialogInterface.OnCancelListener {
